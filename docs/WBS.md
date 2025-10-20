@@ -600,3 +600,165 @@ Planificación de la iteración con foco en ruta crítica.
 		- Incertidumbre: Baja
 		- Dependencias: 20.2 (FS)
 		- Spike: No
+
+21. **Pre-Proyecto / Anteproyecto**
+
+	- 21.1 Talleres (instancias de guía general).
+Participación en sesiones de taller para guía general del proyecto.
+		- Horas estimadas: No est.
+		- Margen: No est.
+		- Incertidumbre: No est.
+		- Dependencias: —
+		- Spike: No
+
+	- 21.2 Tutorías (guía con tutor asignado).
+Sesiones individuales de tutoría con el tutor asignado.
+		- Horas estimadas: No est.
+		- Margen: No est.
+		- Incertidumbre: No est.
+		- Dependencias: —
+		- Spike: No
+
+	- 21.3 Refinamiento de estructura.
+Refinamiento de la estructura general del documento de anteproyecto.
+		- Horas estimadas: No est.
+		- Margen: No est.
+		- Incertidumbre: No est.
+		- Dependencias: 21.1, 21.2 (FS)
+		- Spike: No
+
+	- 21.4 Refinar descripción de cliente.
+Mejora y refinamiento de la descripción del cliente objetivo.
+		- Horas estimadas: No est.
+		- Margen: No est.
+		- Incertidumbre: No est.
+		- Dependencias: 21.3 (FS)
+		- Spike: No
+
+	- 21.5 Refinar introducción.
+Refinamiento de la introducción del proyecto.
+		- Horas estimadas: No est.
+		- Margen: No est.
+		- Incertidumbre: No est.
+		- Dependencias: 21.3 (FS)
+		- Spike: No
+
+	- 21.6 Refinar presentación del problema.
+Mejora en la presentación y definición del problema a resolver.
+		- Horas estimadas: No est.
+		- Margen: No est.
+		- Incertidumbre: No est.
+		- Dependencias: 21.4, 21.5 (FS)
+		- Spike: No
+
+	- 21.7 Investigar competencia.
+Análisis y documentación de la competencia existente.
+		- Horas estimadas: No est.
+		- Margen: No est.
+		- Incertidumbre: No est.
+		- Dependencias: 21.6 (FS)
+		- Spike: No
+
+	- 21.8 Redactar alternativas a la solución.
+Documentación de alternativas consideradas para la solución.
+		- Horas estimadas: No est.
+		- Margen: No est.
+		- Incertidumbre: No est.
+		- Dependencias: 21.7 (FS)
+		- Spike: No
+
+	- 21.9 Refinar arquitectura.
+Refinamiento de la propuesta de arquitectura del sistema.
+		- Horas estimadas: No est.
+		- Margen: No est.
+		- Incertidumbre: No est.
+		- Dependencias: 21.8 (FS)
+		- Spike: No
+
+	- 21.10 Refinar tecnologías.
+Refinamiento de la selección y justificación de tecnologías.
+		- Horas estimadas: No est.
+		- Margen: No est.
+		- Incertidumbre: No est.
+		- Dependencias: 21.9 (FS)
+		- Spike: No
+
+	- 21.11 Refinar lista de necesidades.
+Mejora y completitud de la lista de necesidades del cliente.
+		- Horas estimadas: No est.
+		- Margen: No est.
+		- Incertidumbre: No est.
+		- Dependencias: 21.4 (FS)
+		- Spike: No
+
+	- 21.12 Crear sección de procesos identificados.
+Documentación de los procesos de negocio identificados.
+		- Horas estimadas: No est.
+		- Margen: No est.
+		- Incertidumbre: No est.
+		- Dependencias: 21.11 (FS)
+		- Spike: No
+
+	- 21.13 Refinar objetivos del proyecto.
+Refinamiento de los objetivos generales y específicos del proyecto.
+		- Horas estimadas: No est.
+		- Margen: No est.
+		- Incertidumbre: No est.
+		- Dependencias: 21.6 (FS)
+		- Spike: No
+
+	- 21.14 Redactar actores involucrados.
+Identificación y documentación de todos los actores del sistema.
+		- Horas estimadas: No est.
+		- Margen: No est.
+		- Incertidumbre: No est.
+		- Dependencias: 21.12 (FS)
+		- Spike: No
+
+	- 21.15 Refinar requerimientos.
+Refinamiento de los requerimientos funcionales y no funcionales.
+		- Horas estimadas: No est.
+		- Margen: No est.
+		- Incertidumbre: No est.
+		- Dependencias: 21.13, 21.14 (FS)
+		- Spike: No
+
+	- 21.16 Refinar alcances y limitaciones.
+Definición clara de alcances y limitaciones del proyecto.
+		- Horas estimadas: No est.
+		- Margen: No est.
+		- Incertidumbre: No est.
+		- Dependencias: 21.15 (FS)
+		- Spike: No
+
+	- 21.17 Diagramar arquitectura.
+Creación de diagramas de la arquitectura propuesta.
+		- Horas estimadas: No est.
+		- Margen: No est.
+		- Incertidumbre: No est.
+		- Dependencias: 21.9 (FS)
+		- Spike: No
+
+	- 21.18 Hacer diagrama Conceptual de Dominio.
+Creación del diagrama conceptual del dominio del problema.
+		- Horas estimadas: No est.
+		- Margen: No est.
+		- Incertidumbre: No est.
+		- Dependencias: 21.14, 21.12 (FS)
+		- Spike: No
+
+	- 21.19 Planear tareas y sprints.
+Planificación inicial de tareas y sprints del proyecto.
+		- Horas estimadas: No est.
+		- Margen: No est.
+		- Incertidumbre: No est.
+		- Dependencias: 21.16, 21.17, 21.18 (FS)
+		- Spike: No
+
+	- 21.20 Refinamientos varios.
+Refinamientos menores y ajustes finales del documento.
+		- Horas estimadas: No est.
+		- Margen: No est.
+		- Incertidumbre: No est.
+		- Dependencias: 21.19 (FS)
+		- Spike: No
