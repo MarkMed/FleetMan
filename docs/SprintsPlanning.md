@@ -9,18 +9,20 @@
 | Documentación | 21.18 Hacer diagrama Conceptual de Dominio | 4 | No est. | |
 | Gestión | 21.19 Planear tareas y sprints | 5 | No est. | |
 | Documentación | 21.20 Refinamientos varios | 6 | No est. | |
+| Gestión | 18.1 Scope freeze (MoSCoW) | 7 | 2 | ✓ |
+| Desarrollo | 0.3 Convención ramas & releases (main/dev/feature, Conventional Commits) | 8 | 3 | ✓ |
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales |
 |:---:|:----------:|
-| **No est.**| **0**hs |
+| **No est.** hs | **0**hs |
 
-Buffer reservado: **No est.**
-Total con buffer: **No est.**
+Buffer reservado: **No est.** hs
+Total con buffer: **No est.** hs
 
 Distribución por categoría:
 | Gestión | Desarrollo | QA | Capacitación | Documentación |
 |:-------:|:----------:|:--:|:------------:|:-------------:|
-| **No est.**| **No est.**| **No est.**| **No est.**| **No est.**|
+| **No est.** hs | **No est.** hs | **0**hs | **No est.** hs | **No est.** hs |
 
 **Nota:** Las estimaciones no están disponibles para este sprint ya que corresponde a tareas del anteproyecto que se definieron y ejecutaron mientras el sprint estaba en curso. Las tareas incluyen actividades académicas de talleres, tutorías y documentación final del anteproyecto.
 
@@ -33,23 +35,25 @@ Distribución por categoría:
 | Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | |
 | Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
-| Desarrollo | 0.1 Repos & monorepo (front React+Vite, back Node/TS, shared/DTO/Zod) | 4 | 8 | |
-| Gestión | 18.1 Scope freeze (MoSCoW) | 5 | 2 | |
-| Desarrollo | 0.2 CI mínima (lint, type-check, runner Jest) | 6 | 6 | |
-| Desarrollo | 0.3 Convención ramas & releases (main/dev/feature, Conventional Commits) | 7 | 3 | |
-| Desarrollo | 0.4 Entornos (local/dev + demo) | 8 | 7 | |
+| Gestión | 21.19 Planear tareas y sprints | 4 | No est. | |
+| Documentación | 21.20 Refinamientos varios | 5 | No est. | |
+| Capacitación | 21.1 Talleres (instancias de guía general) | 6 | 3 | |
+| Capacitación | 21.2 Tutorías (guía con tutor asignado) | 7 | 1 | |
+| Desarrollo | 0.1 Repos & monorepo (front React+Vite, back Node/TS, shared/DTO/Zod) | 8 | 8 | |
+| Desarrollo | 0.2 CI mínima (lint, type-check, runner Jest) | 9 | 6 | |
+| Desarrollo | 0.4 Entornos (local/dev + demo) | 10 | 7 | |
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales |
 |:---:|:----------:|
-| **29.7**hs | **0**hs |
+| **26.7**hs | **0**hs |
 
-Buffer reservado: **5.3**hs
+Buffer reservado: **8.3**hs
 Total con buffer: **35**hs
 
 Distribución por categoría:
 | Gestión | Desarrollo | QA | Capacitación | Documentación |
 |:-------:|:----------:|:--:|:------------:|:-------------:|
-| **5.7**hs | **24**hs | **0**hs | **0**hs | **0**hs |
+| **3.7**hs | **21**hs | **0**hs | **4**hs | **No est.** hs |
 
 **Riesgos:** Sprint denso enfocado en configuración inicial. La configuración del monorepo y entornos es crítica para el resto del proyecto.
 
