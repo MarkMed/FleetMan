@@ -2,39 +2,42 @@
 
 ### **Sprint #0**: dom 12 oct → sáb 18 oct 2025
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
-|-----------|-------|-------|:---------------:|:------------:|
+|-----------:|:-------|:---------------:|:---------------:|:------------:|
+| Capacitación | 21.1 Talleres (instancias de guía general) | 1 | No est. | |
+| Capacitación | 21.2 Tutorías (guía con tutor asignado) | 2 | No est. | |
+| Documentación | 21.17 Diagramar arquitectura | 3 | No est. | |
+| Documentación | 21.18 Hacer diagrama Conceptual de Dominio | 4 | No est. | |
+| Gestión | 21.19 Planear tareas y sprints | 5 | No est. | |
+| Documentación | 21.20 Refinamientos varios | 6 | No est. | |
+
+| Total Horas Estimadas (sin buffer) | Total Horas Reales |
+|:---:|:----------:|
+| **No est.**| **0**hs |
+
+Buffer reservado: **No est.**
+Total con buffer: **No est.**
+
+Distribución por categoría:
+| Gestión | Desarrollo | QA | Capacitación | Documentación |
+|:-------:|:----------:|:--:|:------------:|:-------------:|
+| **No est.**| **No est.**| **No est.**| **No est.**| **No est.**|
+
+**Nota:** Las estimaciones no están disponibles para este sprint ya que corresponde a tareas del anteproyecto que se definieron y ejecutaron mientras el sprint estaba en curso. Las tareas incluyen actividades académicas de talleres, tutorías y documentación final del anteproyecto.
+
+**Riesgos:** Sprint retrospectivo sin estimaciones previas; tareas ya completadas o en progreso.
+
+### **Sprint #1**: dom 19 oct → sáb 25 oct 2025
+
+| Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
+|-----------:|:-------|:---------------:|:---------------:|:------------:|
 | Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | |
 | Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
 | Desarrollo | 0.1 Repos & monorepo (front React+Vite, back Node/TS, shared/DTO/Zod) | 4 | 8 | |
 | Gestión | 18.1 Scope freeze (MoSCoW) | 5 | 2 | |
 | Desarrollo | 0.2 CI mínima (lint, type-check, runner Jest) | 6 | 6 | |
-| Gestión | 0.3 Convención ramas & releases (main/dev/feature, Conventional Commits) | 7 | 3 | |
-
-| Total Horas Estimadas (sin buffer) | Total Horas Reales |
-|:---:|:----------:|
-| **22.7**hs | **0**hs |
-
-Buffer reservado: **7.3**hs
-Total con buffer: **30**hs
-
-Distribución por categoría:
-| Gestión | Desarrollo | QA | Capacitación | Documentación |
-|:-------:|:----------:|:--:|:------------:|:-------------:|
-| **8.7**hs | **14**hs | **0**hs | **0**hs | **0**hs |
-
-**Riesgos:** Configuración inicial del monorepo puede tomar más tiempo del estimado.
-
-### **Sprint #1**: dom 19 oct → sáb 25 oct 2025
-
-| Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
-|-----------|-------|-------|:---------------:|:------------:|
-| Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | |
-| Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | |
-| Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
-| Desarrollo | 0.4 Entornos (local/dev + demo) | 4 | 7 | |
-| Desarrollo | 1.1 Modelo (User, Machine, MaintenanceReminder, MachineEvent, QuickCheck, Notification, SparePart, etc.) | 5 | 15 | |
-| Documentación | 17.1 README + guía arranque dev | 6 | 4 | |
+| Desarrollo | 0.3 Convención ramas & releases (main/dev/feature, Conventional Commits) | 7 | 3 | |
+| Desarrollo | 0.4 Entornos (local/dev + demo) | 8 | 7 | |
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales |
 |:---:|:----------:|
@@ -46,14 +49,14 @@ Total con buffer: **35**hs
 Distribución por categoría:
 | Gestión | Desarrollo | QA | Capacitación | Documentación |
 |:-------:|:----------:|:--:|:------------:|:-------------:|
-| **3.7**hs | **22**hs | **0**hs | **0**hs | **4**hs |
+| **5.7**hs | **24**hs | **0**hs | **0**hs | **0**hs |
 
-**Riesgos:** El modelado del dominio es crítico y puede requerir refinamientos.
+**Riesgos:** Sprint denso enfocado en configuración inicial. La configuración del monorepo y entornos es crítica para el resto del proyecto.
 
 ### **Sprint #2**: dom 26 oct → sáb 1 nov 2025
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
-|-----------|-------|-------|:---------------:|:------------:|
+|-----------:|:-------|:---------------:|:---------------:|:------------:|
 | Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | |
 | Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
@@ -79,7 +82,7 @@ Distribución por categoría:
 ### **Sprint #3**: dom 2 nov → sáb 8 nov 2025
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
-|-----------|-------|-------|:---------------:|:------------:|
+|-----------:|:-------|:---------------:|:---------------:|:------------:|
 | Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | |
 | Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
@@ -103,7 +106,7 @@ Distribución por categoría:
 ### **Sprint #4**: dom 9 nov → sáb 15 nov 2025
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
-|-----------|-------|-------|:---------------:|:------------:|
+|-----------:|:-------|:---------------:|:---------------:|:------------:|
 | Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | |
 | Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
@@ -127,7 +130,7 @@ Distribución por categoría:
 ### **Sprint #5**: dom 16 nov → sáb 22 nov 2025
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
-|-----------|-------|-------|:---------------:|:------------:|
+|-----------:|:-------|:---------------:|:---------------:|:------------:|
 | Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | |
 | Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
@@ -150,7 +153,7 @@ Distribución por categoría:
 ### **Sprint #6**: dom 23 nov → sáb 29 nov 2025
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
-|-----------|-------|-------|:---------------:|:------------:|
+|-----------:|:-------|:---------------:|:---------------:|:------------:|
 | Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | |
 | Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
@@ -173,7 +176,7 @@ Distribución por categoría:
 ### **Sprint #7**: dom 30 nov → sáb 6 dic 2025
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
-|-----------|-------|-------|:---------------:|:------------:|
+|-----------:|:-------|:---------------:|:---------------:|:------------:|
 | Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | |
 | Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
@@ -196,7 +199,7 @@ Distribución por categoría:
 ### **Sprint #8**: dom 7 dic → sáb 13 dic 2025
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
-|-----------|-------|-------|:---------------:|:------------:|
+|-----------:|:-------|:---------------:|:---------------:|:------------:|
 | Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | |
 | Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
@@ -221,7 +224,7 @@ Distribución por categoría:
 ### **Sprint #9**: dom 14 dic → sáb 20 dic 2025
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
-|-----------|-------|-------|:---------------:|:------------:|
+|-----------:|:-------|:---------------:|:---------------:|:------------:|
 | Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | |
 | Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
@@ -248,7 +251,7 @@ Distribución por categoría:
 ### **Sprint #10**: dom 21 dic → sáb 27 dic 2025
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
-|-----------|-------|-------|:---------------:|:------------:|
+|-----------:|:-------|:---------------:|:---------------:|:------------:|
 | Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | |
 | Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
@@ -273,7 +276,7 @@ Distribución por categoría:
 ### **Sprint #11**: dom 28 dic → sáb 3 ene 2026
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
-|-----------|-------|-------|:---------------:|:------------:|
+|-----------:|:-------|:---------------:|:---------------:|:------------:|
 | Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | |
 | Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
@@ -299,7 +302,7 @@ Distribución por categoría:
 ### **Sprint #12**: dom 4 ene → sáb 10 ene 2026
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
-|-----------|-------|-------|:---------------:|:------------:|
+|-----------:|:-------|:---------------:|:---------------:|:------------:|
 | Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | |
 | Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
@@ -323,7 +326,7 @@ Distribución por categoría:
 ### **Sprint #13**: dom 11 ene → sáb 17 ene 2026
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
-|-----------|-------|-------|:---------------:|:------------:|
+|-----------:|:-------|:---------------:|:---------------:|:------------:|
 | Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | |
 | Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
@@ -346,7 +349,7 @@ Distribución por categoría:
 ### **Sprint #14**: dom 18 ene → sáb 24 ene 2026
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
-|-----------|-------|-------|:---------------:|:------------:|
+|-----------:|:-------|:---------------:|:---------------:|:------------:|
 | Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | |
 | Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
@@ -373,7 +376,7 @@ Distribución por categoría:
 ### **Sprint #15**: dom 25 ene → sáb 31 ene 2026
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
-|-----------|-------|-------|:---------------:|:------------:|
+|-----------:|:-------|:---------------:|:---------------:|:------------:|
 | Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | |
 | Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
@@ -397,7 +400,7 @@ Distribución por categoría:
 ### **Sprint #16**: dom 1 feb → sáb 7 feb 2026
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
-|-----------|-------|-------|:---------------:|:------------:|
+|-----------:|:-------|:---------------:|:---------------:|:------------:|
 | Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | |
 | Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
