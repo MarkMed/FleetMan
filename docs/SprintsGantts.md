@@ -62,10 +62,10 @@ gantt
 
   %% Asumimos 5 h/día. Horas estimadas incluidas en el nombre.
 
-  21.19 Planear tareas y sprints               :t2119, 2025-10-19, 1.3d
-  21.20 Refinamientos varios                   :t2120, after t2119, 1d
-  21.1 Talleres (instancias de guía general) (3 h) :t211, after t2120, 0.6d
-  21.2 Tutorías (guía con tutor asignado) (1 h)    :t212, after t211, 0.2d
+  21.19 Planear tareas y sprints               :t2119, 2025-10-19, 2d
+  21.20 Refinamientos varios                   :t2120, 2025-10-19, 3d
+  21.1 Talleres (instancias de guía general) (3 h) :t211, after t2119, 1d
+  21.2 Tutorías (guía con tutor asignado) (1 h)    :t212, after t2119, 1d
   0.1 Repos & monorepo (front React+Vite, back Node/TS) (8 h) :t01, after t212, 1.6d
   0.2 CI mínima (lint, type-check, runner Jest) (6 h) :t02, after t01, 1.2d
   0.4 Entornos (local/dev + demo) (7 h)        :t04, after t02, 1.4d
