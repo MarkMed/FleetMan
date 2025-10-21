@@ -3,18 +3,18 @@
 ### **Sprint #0**: dom 12 oct → sáb 18 oct 2025
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
-| Capacitación | 21.1 Talleres (instancias de guía general) | 1 | No est. | |
-| Capacitación | 21.2 Tutorías (guía con tutor asignado) | 2 | No est. | |
-| Documentación | 21.17 Diagramar arquitectura | 3 | No est. | |
-| Documentación | 21.18 Hacer diagrama Conceptual de Dominio | 4 | No est. | |
-| Gestión | 21.19 Planear tareas y sprints | 5 | No est. | |
-| Documentación | 21.20 Refinamientos varios | 6 | No est. | |
-| Gestión | 18.1 Scope freeze (MoSCoW) | 7 | 2 | ✓ |
-| Desarrollo | 0.3 Convención ramas & releases (main/dev/feature, Conventional Commits) | 8 | 3 | ✓ |
+| Capacitación | 21.1 Talleres (instancias de guía general) | 1 | No est. | 2 |
+| Capacitación | 21.2 Tutorías (guía con tutor asignado) | 2 | No est. | 0.7 |
+| Documentación | 21.17 Diagramar arquitectura | 3 | No est. | 3.2 |
+| Documentación | 21.18 Hacer diagrama Conceptual de Dominio | 4 | No est. | 4 |
+| Gestión | 21.19 Planear tareas y sprints | 5 | No est. | 5.7 |
+| Documentación | 21.20 Refinamientos varios | 6 | No est. | 3 |
+| Gestión | 18.1 Scope freeze (MoSCoW) | 7 | 2 | 0.5 |
+| Desarrollo | 0.3 Convención ramas & releases (main/dev/feature, Conventional Commits) | 8 | 3 | 0.9 |
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales |
 |:---:|:----------:|
-| **No est.** hs | **0**hs |
+| **No est.** hs | **20**hs |
 
 Buffer reservado: **No est.** hs
 Total con buffer: **No est.** hs
@@ -32,7 +32,7 @@ Distribución por categoría:
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
-| Gestión | 21.19 Planear tareas y sprints | 1 | No est. | |
+| Gestión | 21.19 Planear tareas y sprints | 1 | No est. | 10.8 |
 | Documentación | 21.20 Refinamientos varios | 2 | No est. | |
 | Capacitación | 21.1 Talleres (instancias de guía general) | 3 | 3 | |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | |
