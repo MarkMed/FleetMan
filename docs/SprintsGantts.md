@@ -119,6 +119,7 @@ gantt
   15.1 Logger estructurado (niveles, request-id) (5hs) :t151, after t132, 1d
 
   section Hitos
+  Primera Instancia Académica                   :milestone, acad1, 2025-11-15, 0d
   Cierre Sprint 3                              :milestone, s3, 2025-11-08, 0d
 ```
 
@@ -235,6 +236,7 @@ gantt
   4.2 Registrar evento (RF-008) - Parte 1 (10hs) :t421, after t81, 2d
 
   section Hitos
+  Segunda Instancia Académica                   :milestone, acad2, 2025-12-20, 0d
   Cierre Sprint 8                              :milestone, s8, 2025-12-13, 0d
 ```
 
@@ -426,8 +428,38 @@ gantt
   16.3 Script "reset demo" (4hs)               :t163, after t72, 0.8d
   17.3 Manual breve de usuario (6hs)           :t173, after t163, 1.2d
 
+  section Buffer Final
+  21.21 Buffer de entrega final (10hs)         :t2121, 2026-02-08, 2d
+
   section Hitos
   Cierre Sprint 16                             :milestone, s16, 2026-02-07, 0d
+  Entrega Final del Proyecto                    :milestone, acadfinal, 2026-02-10, 0d
+```
+
+---
+
+## Eventos Académicos Post-MVP (2026-02-08 → 2026-04-30)
+
+```mermaid
+gantt
+  title Eventos Académicos Post-MVP (Feb-Abr 2026)
+  dateFormat  YYYY-MM-DD
+  axisFormat  %d/%m
+
+  %% Eventos académicos sin horas de desarrollo, solo hitos
+
+  section Transición
+  Buffer de Entrega (10hs desarrollo)         :buffer, 2026-02-08, 2d
+
+  section Eventos Académicos
+  Preparación Defensa                          :prep, 2026-02-11, 32d
+  Defensa del Proyecto                         :milestone, defense, 2026-03-15, 0d
+  Correcciones Post-Defensa                    :corrections, after defense, 21d
+  Cierre Académico                             :milestone, closure, 2026-04-15, 0d
+
+  section Hitos
+  Defensa del Proyecto                         :milestone, acaddefense, 2026-03-15, 0d
+  Cierre Académico Final                       :milestone, acadclosure, 2026-04-15, 0d
 ```
 
 ---
@@ -435,17 +467,24 @@ gantt
 ## Resumen General
 
 - **Total de sprints:** 16
-- **Duración del proyecto:** 12 de octubre 2025 - 7 de febrero 2026
+- **Duración del desarrollo:** 12 de octubre 2025 - 7 de febrero 2026
 - **Duración por sprint:** 7 días (domingo a sábado)
 - **Estimación de trabajo:** 5 horas por día laboral
-- **Hitos principales:**
+- **Hitos principales de desarrollo:**
   - Sprint 0: Configuración inicial y documentación del anteproyecto
   - Sprint 1: Entrega del Documento Anteproyecto (22 oct)
   - Sprints 2-11: Desarrollo del MVP
   - Sprints 12-16: Testing, refinamiento y funcionalidades adicionales
+- **Eventos académicos principales:**
+  - Primera Instancia: Noviembre 2025
+  - Segunda Instancia: Diciembre 2025
+  - Entrega Final: Febrero 2026
+  - Defensa del Proyecto: Marzo 2026
+  - Cierre Académico: Abril 2026
 
 **Notas:**
 - Cada sprint incluye actividades de gestión dominicales (Reporte, Demo/UAT, Planning)
 - Los sprints navideños (10-11) pueden tener productividad reducida
 - Las funcionalidades marcadas como `[NiceToHave]` pueden ajustarse según el progreso
 - El Sprint 14 es especialmente denso con poco buffer disponible
+- **Buffer de 3 días (8-10 feb):** Período estratégico para refinamientos finales, documentación y verificaciones de calidad antes de la entrega académica
