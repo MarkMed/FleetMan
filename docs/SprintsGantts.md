@@ -281,7 +281,7 @@ gantt
   20.3 Sprint Planning dominguero (1.3 h)      :t203, after t202, 0.3d
   4.3 Historial unificado (RF-009) (15 h)      :t43, after t203, 3d
   9.1 Datos de contacto por distribuidor (5 h) :t91, after t43, 1d
-  9.2 Acciones de contacto (tel:, mailto:, wa.me) (5 h) :t92, after t91, 1d
+  9.2 Acciones de contacto (tel, mailto, wa.me) (5 h) :t92, after t91, 1d
 
   section Hitos
   Cierre Sprint 10                             :milestone, s10, 2025-12-27, 0d
