@@ -762,3 +762,48 @@ Refinamientos menores y ajustes finales del documento.
 		- Incertidumbre: **No est.**
 		- Dependencias: 21.19 (FS)
 		- Spike: **No**
+
+	- 21.21 **Buffer de entrega final**.
+Instancia comodín para refinar últimos detalles del proyecto, completar documentación pendiente, finalizar features en curso, realizar verificaciones finales de calidad y atender ajustes de último momento previos a la entrega académica.
+		- Horas estimadas: **15**hs
+		- Margen: ±**2.0**hs (P80)
+		- Incertidumbre: **Media**
+		- Dependencias: Cierre Sprint 16 (FS)
+		- Spike: **No**
+
+22. **Eventos Académicos** (Hitos sin horas de desarrollo)
+
+	- 22.1 **Entrega Primera Instancia**.
+Presentación de primera instancia del proyecto para revisión académica.
+		- Fecha: **Noviembre 2025**
+		- Horas de desarrollo: **0**hs (Evento/Hito)
+		- Dependencias: Finalización Sprint correspondiente
+		- Preparación: Incluida en tareas de documentación existentes
+
+	- 22.2 **Entrega Segunda Instancia**.
+Presentación de segunda instancia con correcciones y mejoras.
+		- Fecha: **Diciembre 2025**
+		- Horas de desarrollo: **0**hs (Evento/Hito)
+		- Dependencias: 22.1, avances del MVP
+		- Preparación: Incluida en tareas de documentación existentes
+
+	- 22.3 **Entrega Final del Proyecto**.
+Entrega completa del MVP y documentación final del proyecto.
+		- Fecha: **Febrero 2026**
+		- Horas de desarrollo: **0**hs (Evento/Hito)
+		- Dependencias: Finalización de todos los sprints del MVP
+		- Preparación: Incluida en sprint final
+
+	- 22.4 **Defensa del Proyecto**.
+Presentación oral y defensa del proyecto ante tribunal académico.
+		- Fecha: **Marzo-Abril 2026**
+		- Horas de desarrollo: **0**hs (Evento/Hito)
+		- Dependencias: 22.3 (FS)
+		- Preparación: Requiere preparación de presentación (incluida en documentación)
+
+	- 22.5 **Cierre Académico**.
+Finalización formal del proceso académico y entrega de calificaciones.
+		- Fecha: **Abril 2026**
+		- Horas de desarrollo: **0**hs (Evento/Hito)
+		- Dependencias: 22.4 (FS)
+		- Preparación: No requiere trabajo adicional de desarrollo
