@@ -429,7 +429,7 @@ gantt
   17.3 Manual breve de usuario (6hs)           :t173, after t163, 1.2d
 
   section Buffer Final
-  21.21 Buffer de entrega final (10hs)         :t2121, 2026-02-08, 2d
+  21.21 Buffer de entrega final (10hs)         :t2121, 2026-02-07, 3d
 
   section Hitos
   Cierre Sprint 16                             :milestone, s16, 2026-02-07, 0d
