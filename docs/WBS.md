@@ -41,12 +41,12 @@ Manifest, iconos y SW liviano (sin offline completo).
 		- Dependencias: 0.1 (FS)
 		- Spike: **No**
 
-	- 0.6 **Design system base** (tokens, layout, UI core).
-Tokens de diseño, tipografía, grid y 3–4 componentes base.
-		- Horas estimadas: **10**hs
-		- Margen: ±**2.0**hs (P80)
+	- 0.6 **User Journey mapping** (flujos clave).
+Mapeo de flujos principales del usuario: Login → Máquina → Recordatorio → QuickCheck → Notificación → Contacto proveedor. Define los paths críticos de interacción y navegación del sistema.
+		- Horas estimadas: **6**hs
+		- Margen: ±**1.2**hs (P80)
 		- Incertidumbre: **Media**
-		- Dependencias: 0.1 (FS)
+		- Dependencias: 1.1 (FS)
 		- Spike: **No**
 
 	- 0.7 **i18n groundwork** (infra de strings).
@@ -54,7 +54,31 @@ Setup de i18n sin traducciones (solo infraestructura).
 		- Horas estimadas: **5**hs
 		- Margen: ±**1.0**hs (P80)
 		- Incertidumbre: **Baja**
+		- Dependencias: 0.10 (FS)
+		- Spike: **No**
+
+	- 0.8 **Setup VSCode remoto** (GitHub Codespaces/Gitpod).
+Configuración de entorno de desarrollo remoto para acceso desde cualquier dispositivo sin dependencia de hardware local.
+		- Horas estimadas: **4**hs
+		- Margen: ±**0.8**hs (P80)
+		- Incertidumbre: **Media**
+		- Dependencias: 0.1 (FS)
+		- Spike: **No**
+
+	- 0.9 **Investigación y definición de estilos**.
+User research básico con cliente para definir identidad visual. Incluye definición de paleta de colores, tipografías primarias, elementos de interfaz básicos y guía de estilo mínima. Establece las bases visuales que guiarán tanto el desarrollo frontend como la creación de mockups.
+		- Horas estimadas: **5**hs
+		- Margen: ±**1.0**hs (P80)
+		- Incertidumbre: **Media**
 		- Dependencias: 0.6 (FS)
+		- Spike: **No**
+
+	- 0.10 **Mockups básicos** (fidelidad 0.5).
+Wireframes con elementos estilísticos básicos aplicando la guía de estilos definida - entre wireframe puro (fidelidad 0) y mockup completo (fidelidad 1). Incluye layouts definidos, tipografías, paleta de colores y componentes con estilo mínimo para las pantallas principales del flujo de usuario.
+		- Horas estimadas: **8**hs
+		- Margen: ±**1.5**hs (P80)
+		- Incertidumbre: **Media**
+		- Dependencias: 0.9 (FS)
 		- Spike: **No**
 
 1. **Dominio & Datos**
@@ -98,7 +122,7 @@ Endpoint y formulario de alta con validaciones.
 		- Horas estimadas: **10**hs
 		- Margen: ±**2.0**hs (P80)
 		- Incertidumbre: **Media**
-		- Dependencias: 1.2, 1.3, 0.6 (FS)
+		- Dependencias: 1.2, 1.3, 0.10 (FS)
 		- Spike: **No**
 
 	- 2.2 **Login de usuario** (RF-002).
@@ -140,7 +164,7 @@ Formulario, validaciones y contacto distribuidor.
 		- Horas estimadas: **10**hs
 		- Margen: ±**2.0**hs (P80)
 		- Incertidumbre: **Media**
-		- Dependencias: 2.2, 1.2, 0.6 (FS)
+		- Dependencias: 2.2, 1.2, 0.10 (FS)
 		- Spike: **No**
 
 	- 3.2 **Listado + detalle**.
@@ -148,7 +172,7 @@ Lista/tiles, vista detalle y paginado simple.
 		- Horas estimadas: **9**hs
 		- Margen: ±**1.8**hs (P80)
 		- Incertidumbre: **Media**
-		- Dependencias: 3.1, 0.6 (FS)
+		- Dependencias: 3.1, 0.10 (FS)
 		- Spike: **No**
 
 	- 3.3 **Edición con historial** (RF-006).
@@ -226,7 +250,7 @@ Flujo mobile-first, validaciones y envío.
 		- Horas estimadas: **12**hs
 		- Margen: ±**2.5**hs (P80)
 		- Incertidumbre: **Media**
-		- Dependencias: 6.1, 3.1, 0.6 (FS)
+		- Dependencias: 6.1, 3.1, 0.10 (FS)
 		- Spike: **No**
 
 	- 6.3 **Persistencia en historial** (RF-011).
@@ -278,7 +302,7 @@ Filtros, marcar leído y paginado.
 		- Horas estimadas: **7**hs
 		- Margen: ±**1.2**hs (P80)
 		- Incertidumbre: **Media**
-		- Dependencias: 8.1, 0.6 (FS)
+		- Dependencias: 8.1, 0.10 (FS)
 		- Spike: **No**
 
 9. **Comunicación con Distribuidores** (RF-015)
@@ -332,7 +356,7 @@ Tooltips/accordions por pantalla.
 		- Horas estimadas: **6**hs
 		- Margen: ±**1.0**hs (P80)
 		- Incertidumbre: **Baja**
-		- Dependencias: 0.6 (FS)
+		- Dependencias: 0.10 (FS)
 		- Spike: **No**
 
 	- 11.2 **Tutorial overlay / tours** [Post-MVP].
@@ -350,7 +374,7 @@ Layouts móviles/desktop.
 		- Horas estimadas: **6**hs
 		- Margen: ±**1.0**hs (P80)
 		- Incertidumbre: **Baja**
-		- Dependencias: 0.6 (FS)
+		- Dependencias: 0.10 (FS)
 		- Spike: **No**
 
 	- 12.2 **A11y mínima** (focus, labels, contraste).
@@ -358,7 +382,7 @@ Roles/ARIA y navegación con teclado.
 		- Horas estimadas: **6**hs
 		- Margen: ±**1.0**hs (P80)
 		- Incertidumbre: **Baja**
-		- Dependencias: 0.6 (FS)
+		- Dependencias: 0.10 (FS)
 		- Spike: **No**
 
 	- 12.3 **Pruebas visuales móviles/desktop**.
@@ -765,7 +789,7 @@ Refinamientos menores y ajustes finales del documento.
 
 	- 21.21 **Buffer de entrega final**.
 Instancia comodín para refinar últimos detalles del proyecto, completar documentación pendiente, finalizar features en curso, realizar verificaciones finales de calidad y atender ajustes de último momento previos a la entrega académica.
-		- Horas estimadas: **15**hs
+		- Horas estimadas: **10**hs
 		- Margen: ±**2.0**hs (P80)
 		- Incertidumbre: **Media**
 		- Dependencias: Cierre Sprint 16 (FS)
