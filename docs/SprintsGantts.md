@@ -86,9 +86,9 @@ gantt
 
   %% Asumimos 5 h/día. Horas estimadas incluidas en el nombre.
 
-  20.1 Reporte Académico (0.9hs)               :t201, 2025-10-26, 0.2d
-  20.2 Demo/UAT con cliente (1.5hs)            :t202, after t201, 0.3d
-  20.3 Sprint Planning dominguero (1.3hs)      :t203, after t202, 0.3d
+  20.1 Reporte Académico (0.9hs)               :t201, 2025-10-26, 1d
+  20.2 Demo/UAT con cliente (1.5hs)            :t202, 2025-10-26, 1d
+  20.3 Sprint Planning dominguero (1.3hs)      :t203, 2025-10-26, 1d
   1.2 Esquemas DB (Mongoose + índices) (5hs)   :t12, after t203, 1d
   1.3 DTOs + Zod (contratos compartidos) (7hs) :t13, after t12, 1.4d
   0.6 Design system base (tokens, layout, UI) (10hs) :t06, after t13, 2d
