@@ -37,19 +37,19 @@ Distribución por categoría:
 | Capacitación | 21.1 Talleres (instancias de guía general) | 3 | 3 | |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | |
 | Desarrollo | 0.1 Repos & monorepo (front React+Vite, back Node/TS, shared/DTO/Zod) | 5 | 8 | |
-| Desarrollo | 0.4 Entornos (local/dev + demo) | 6 | 7 | |
+| Desarrollo | 0.8 Setup VSCode remoto (GitHub Codespaces/Gitpod) | 6 | 4 | |
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales |
 |:---:|:----------:|
-| **19**hs | **16.7**hs |
+| **16**hs | **16.7**hs |
 
 Buffer reservado: **16**hs
-Total con buffer: **35**hs
+Total con buffer: **32**hs
 
 Distribución por categoría:
 | Gestión | Desarrollo | QA | Capacitación | Documentación |
 |:-------:|:----------:|:--:|:------------:|:-------------:|
-| **No est.** hs | **15**hs | **0**hs | **4**hs | **No est.** hs |
+| **No est.** hs | **12**hs | **0**hs | **4**hs | **No est.** hs |
 
 **Nota:** A mitad del sprint (miércoles 22 oct) se entrega el Documento Anteproyecto. Las tareas 21.19 y 21.20 están relacionadas con esta entrega. No se realiza planning, ni demo, ni reporte académico ya que la etapa de desarrollo comienza post entrega.
 

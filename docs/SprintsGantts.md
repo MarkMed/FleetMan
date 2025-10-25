@@ -65,13 +65,12 @@ gantt
   21.19 Planear tareas y sprints               :t2119, 2025-10-19, 2d
   21.1 Talleres (instancias de guía general) (3hs) :t211, after t2119, 1d
   21.2 Tutorías (guía con tutor asignado) (1hs)    :t212, after t2119, 1d
-  21.20 Refinamientos varios (5.9hs)           :t2120, 2025-10-21, 2d
-  0.1 Repos & monorepo (front React+Vite, back Node/TS) (8hs) :t01, after t212, 1.6d
-  0.4 Entornos (local/dev + demo) (7hs)        :t04, after t01, 1.4d
+  21.20 Refinamientos varios (5.9hs)           :t2120, 2025-10-22, 3d
+  0.8 Setup VSCode remoto (4hs)                   :t08, 2025-10-23, 2d
 
   section Hitos
   Entrega Documento Anteproyecto                :milestone, doc, 2025-10-22, 1d
-  Cierre Sprint 1                              :milestone, s1, 2025-10-25, 0d
+  Cierre Sprint 1                              :milestone, s1, 2025-10-25, 1d
 ```
 
 ---
