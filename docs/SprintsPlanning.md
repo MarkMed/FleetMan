@@ -32,7 +32,7 @@ Distribución por categoría:
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
-| Gestión | 21.19 Planear tareas y sprints | 1 | No est. | 10.8 |
+| Gestión | 21.19 Planear tareas y sprints | 1 | No est. | 12.8 |
 | Documentación | 21.20 Refinamientos varios | 2 | No est. | 5.9 |
 | Capacitación | 21.1 Talleres (instancias de guía general) | 3 | 3 | 0.5 |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | 1,1 |
@@ -41,7 +41,7 @@ Distribución por categoría:
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales |
 |:---:|:----------:|
-| **16**hs | **20.86**hs |
+| **16**hs | **22.86**hs |
 
 Buffer reservado: **16**hs
 Total con buffer: **32**hs
@@ -50,13 +50,13 @@ Total con buffer: **32**hs
 xychart-beta
     title "Sprint #1: Horas Estimadas vs Reales"
     x-axis "Tareas" ["21.19", "21.20", "21.1", "21.2", "0.1", "0.8", "TOTAL"]
-    y-axis "Horas" 0 --> 20
+    y-axis "Horas" 0 --> 26
 	
 	%% Black line
     line [0, 0, 3, 1, 8, 4, 16]
 
 	%% Green line
-    line [10.8, 5.9, 0.5, 1.1, 1.7, 0.86, 20.86]
+    line [12.8, 5.9, 0.5, 1.1, 1.7, 0.86, 22.86]
 ```
 
 Distribución por categoría:
