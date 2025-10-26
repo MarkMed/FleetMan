@@ -45,13 +45,7 @@ Distribución por categoría:
 
 Buffer reservado: **16**hs
 Total con buffer: **32**hs
-<style>
-.mermaid svg {
-  max-width: 100% !important;
-  width: 100% !important;
-  height: auto !important;
-}
-</style>
+
 ```mermaid
 xychart-beta
     title "Sprint #1: Horas Estimadas vs Reales"
