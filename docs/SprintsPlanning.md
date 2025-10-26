@@ -34,22 +34,41 @@ Distribución por categoría:
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
 | Gestión | 21.19 Planear tareas y sprints | 1 | No est. | 10.8 |
 | Documentación | 21.20 Refinamientos varios | 2 | No est. | 5.9 |
-| Capacitación | 21.1 Talleres (instancias de guía general) | 3 | 3 | |
-| Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | |
-| Desarrollo | 0.1 Repos & monorepo (front React+Vite, back Node/TS, shared/DTO/Zod) | 5 | 8 | |
-| Desarrollo | 0.8 Setup VSCode remoto (GitHub Codespaces/Gitpod) | 6 | 4 | |
+| Capacitación | 21.1 Talleres (instancias de guía general) | 3 | 3 | 0.5 |
+| Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | 1,1 |
+| Desarrollo | 0.1 Repos & monorepo (front React+Vite, back Node/TS, shared/DTO/Zod) | 5 | 8 | 1.7 |
+| Desarrollo | 0.8 Setup VSCode remoto (GitHub Codespaces/Gitpod) | 6 | 4 | 0.86 |
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales |
 |:---:|:----------:|
-| **16**hs | **16.7**hs |
+| **16**hs | **20.86**hs |
 
 Buffer reservado: **16**hs
 Total con buffer: **32**hs
+<style>
+.mermaid svg {
+  max-width: 100% !important;
+  width: 100% !important;
+  height: auto !important;
+}
+</style>
+```mermaid
+xychart-beta
+    title "Sprint #1: Horas Estimadas vs Reales"
+    x-axis "Tareas" ["21.19", "21.20", "21.1", "21.2", "0.1", "0.8", "TOTAL"]
+    y-axis "Horas" 0 --> 20
+	
+	%% Black line
+    line [0, 0, 3, 1, 8, 4, 16]
+
+	%% Green line
+    line [10.8, 5.9, 0.5, 1.1, 1.7, 0.86, 20.86]
+```
 
 Distribución por categoría:
 | Gestión | Desarrollo | QA | Capacitación | Documentación |
 |:-------:|:----------:|:--:|:------------:|:-------------:|
-| **No est.** hs | **12**hs | **0**hs | **4**hs | **No est.** hs |
+| **16.7**hs | **2.56**hs | **0**hs | **1.6**hs | **0**hs |
 
 **Nota:** A mitad del sprint (miércoles 22 oct) se entrega el Documento Anteproyecto. Las tareas 21.19 y 21.20 están relacionadas con esta entrega. No se realiza planning, ni demo, ni reporte académico ya que la etapa de desarrollo comienza post entrega.
 
