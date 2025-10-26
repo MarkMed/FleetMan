@@ -83,16 +83,16 @@ gantt
 
   %% Asumimos 5 h/día. Horas estimadas incluidas en el nombre.
 
-  20.1 Reporte Académico (0.9hs)               :t201, 2025-10-26, 0.2d
-  20.2 Demo/UAT con cliente (1.5hs)            :t202, after t201, 0.3d
-  20.3 Sprint Planning dominguero (1.3hs)      :t203, after t202, 0.3d
+  20.1 Reporte Académico (0.9hs)               :t201, 2025-10-26, 1d
+  20.2 Demo/UAT con cliente (1.5hs)            :t202, 2025-10-26, 1d
+  20.3 Sprint Planning dominguero (1.3hs)      :t203, 2025-10-26, 1d
   1.2 Esquemas DB (Mongoose + índices) (5hs)   :t12, after t203, 1d
-  1.3 DTOs + Zod (contratos compartidos) (7hs) :t13, after t12, 1.4d
-  0.6 User Journey mapping (flujos clave) (6hs) :t06, after t13, 1.2d
+  1.3 DTOs + Zod (contratos compartidos) (7hs) :t13, after t12, 2d
+  0.6 User Journey mapping (flujos clave) (6hs) :t06, after t13, 2d
   13.1 Estrategia & DoD QA (5hs)               :t131, after t06, 1d
 
   section Hitos
-  Cierre Sprint 2                              :milestone, s2, 2025-11-01, 0d
+  Cierre Sprint 2                              :milestone, s2, 2025-11-01, 1d
 ```
 
 ---
@@ -107,17 +107,16 @@ gantt
 
   %% Asumimos 5 h/día. Horas estimadas incluidas en el nombre.
 
-  20.1 Reporte Académico (0.9hs)               :t201, 2025-11-02, 0.2d
-  20.2 Demo/UAT con cliente (1.5hs)            :t202, after t201, 0.3d
-  20.3 Sprint Planning dominguero (1.3hs)      :t203, after t202, 0.3d
-  1.4 Semillas demo (dataset mínimo) (4hs)     :t14, after t203, 0.8d
+  20.1 Reporte Académico (0.9hs)               :t201, 2025-11-02, 1d
+  20.2 Demo/UAT con cliente (1.5hs)            :t202, 2025-11-02, 1d
+  20.3 Sprint Planning dominguero (1.3hs)      :t203, 2025-11-02, 1d
+  1.4 Semillas demo (dataset mínimo) (4hs)     :t14, after t203, 1d
   2.1 Registro (RF-001) (10hs)                 :t21, after t14, 2d
-  13.2 Config Jest (front/back, TS, coverage) (6hs) :t132, after t21, 1.2d
+  13.2 Config Jest (front/back, TS, coverage) (6hs) :t132, after t21, 2d
   15.1 Logger estructurado (niveles, request-id) (5hs) :t151, after t132, 1d
 
   section Hitos
-  Primera Instancia Académica                   :milestone, acad1, 2025-11-15, 0d
-  Cierre Sprint 3                              :milestone, s3, 2025-11-08, 0d
+  Cierre Sprint 3                              :milestone, s3, 2025-11-08, 1d
 ```
 
 ---
@@ -132,16 +131,17 @@ gantt
 
   %% Asumimos 5 h/día. Horas estimadas incluidas en el nombre.
 
-  20.1 Reporte Académico (0.9hs)               :t201, 2025-11-09, 0.2d
-  20.2 Demo/UAT con cliente (1.5hs)            :t202, after t201, 0.3d
-  20.3 Sprint Planning dominguero (1.3hs)      :t203, after t202, 0.3d
-  2.2 Login de usuario (RF-002) (8hs)          :t22, after t203, 1.6d
-  2.3 Logout (RF-003) (4hs)                    :t23, after t22, 0.8d
-  2.5 AutZ por rol (admin/técnico/distribuidor) (7hs) :t25, after t23, 1.4d
-  14.1 Hashing, rate-limit, CORS (6hs)         :t141, after t25, 1.2d
+  20.1 Reporte Académico (0.9hs)               :t201, 2025-11-09, 1d
+  20.2 Demo/UAT con cliente (1.5hs)            :t202, 2025-11-09, 1d
+  20.3 Sprint Planning dominguero (1.3hs)      :t203, 2025-11-09, 1d
+  2.2 Login de usuario (RF-002) (8hs)          :t22, after t203, 2d
+  2.3 Logout (RF-003) (4hs)                    :t23, after t22, 1d
+  2.5 AutZ por rol (admin/técnico/distribuidor) (7hs) :t25, after t23, 2d
+  14.1 Hashing, rate-limit, CORS (6hs)         :t141, after t25, 2d
 
   section Hitos
-  Cierre Sprint 4                              :milestone, s4, 2025-11-15, 0d
+  Cierre Sprint 4                              :milestone, s4, 2025-11-15, 1d
+  Primer Informe de avance                   :milestone, acad1, 2025-11-15, 1d
 ```
 
 ---
@@ -156,15 +156,15 @@ gantt
 
   %% Asumimos 5 h/día. Horas estimadas incluidas en el nombre.
 
-  20.1 Reporte Académico (0.9hs)               :t201, 2025-11-16, 0.2d
-  20.2 Demo/UAT con cliente (1.5hs)            :t202, after t201, 0.3d
-  20.3 Sprint Planning dominguero (1.3hs)      :t203, after t202, 0.3d
+  20.1 Reporte Académico (0.9hs)               :t201, 2025-11-16, 1d
+  20.2 Demo/UAT con cliente (1.5hs)            :t202, 2025-11-16, 1d
+  20.3 Sprint Planning dominguero (1.3hs)      :t203, 2025-11-16, 1d
   3.1 Alta de máquina (RF-005) (10hs)          :t31, after t203, 2d
-  14.2 Validaciones Zod en controllers (8hs)   :t142, after t31, 1.6d
-  14.3 Permisos por endpoint (RBAC ligero) (6hs) :t143, after t142, 1.2d
+  14.2 Validaciones Zod en controllers (8hs)   :t142, after t31, 2d
+  14.3 Permisos por endpoint (RBAC ligero) (6hs) :t143, after t142, 2d
 
   section Hitos
-  Cierre Sprint 5                              :milestone, s5, 2025-11-22, 0d
+  Cierre Sprint 5                              :milestone, s5, 2025-11-22, 1d
 ```
 
 ---
@@ -179,15 +179,15 @@ gantt
 
   %% Asumimos 5 h/día. Horas estimadas incluidas en el nombre.
 
-  20.1 Reporte Académico (0.9hs)               :t201, 2025-11-23, 0.2d
-  20.2 Demo/UAT con cliente (1.5hs)            :t202, after t201, 0.3d
-  20.3 Sprint Planning dominguero (1.3hs)      :t203, after t202, 0.3d
-  3.2 Listado + detalle (9hs)                  :t32, after t203, 1.8d
-  4.1 Crear recordatorios (RF-007) (9hs)       :t41, after t32, 1.8d
+  20.1 Reporte Académico (0.9hs)               :t201, 2025-11-23, 1d
+  20.2 Demo/UAT con cliente (1.5hs)            :t202, 2025-11-23, 1d
+  20.3 Sprint Planning dominguero (1.3hs)      :t203, 2025-11-23, 1d
+  3.2 Listado + detalle (9hs)                  :t32, after t203, 2d
+  4.1 Crear recordatorios (RF-007) (9hs)       :t41, after t32, 2d
   6.1 Plantilla checklist (RF-011) (5hs)       :t61, after t41, 1d
 
   section Hitos
-  Cierre Sprint 6                              :milestone, s6, 2025-11-29, 0d
+  Cierre Sprint 6                              :milestone, s6, 2025-11-29, 1d
 ```
 
 ---
@@ -202,15 +202,15 @@ gantt
 
   %% Asumimos 5 h/día. Horas estimadas incluidas en el nombre.
 
-  20.1 Reporte Académico (0.9hs)               :t201, 2025-11-30, 0.2d
-  20.2 Demo/UAT con cliente (1.5hs)            :t202, after t201, 0.3d
-  20.3 Sprint Planning dominguero (1.3hs)      :t203, after t202, 0.3d
+  20.1 Reporte Académico (0.9hs)               :t201, 2025-11-30, 1d
+  20.2 Demo/UAT con cliente (1.5hs)            :t202, 2025-11-30, 1d
+  20.3 Sprint Planning dominguero (1.3hs)      :t203, 2025-11-30, 1d
   5.1 Scheduler (agenda/node-cron) (10hs)      :t51, after t203, 2d
-  5.2 Generación + persistencia de alertas (7hs) :t52, after t51, 1.4d
-  6.2 UI de ejecución (RF-011) (12hs)          :t62, after t52, 2.4d
+  5.2 Generación + persistencia de alertas (7hs) :t52, after t51, 2d
+  6.2 UI de ejecución (RF-011) (12hs)          :t62, after t52, 3d
 
   section Hitos
-  Cierre Sprint 7                              :milestone, s7, 2025-12-06, 0d
+  Cierre Sprint 7                              :milestone, s7, 2025-12-06, 1d
 ```
 
 ---
@@ -225,16 +225,16 @@ gantt
 
   %% Asumimos 5 h/día. Horas estimadas incluidas en el nombre.
 
-  20.1 Reporte Académico (0.9hs)               :t201, 2025-12-07, 0.2d
-  20.2 Demo/UAT con cliente (1.5hs)            :t202, after t201, 0.3d
-  20.3 Sprint Planning dominguero (1.3hs)      :t203, after t202, 0.3d
+  20.1 Reporte Académico (0.9hs)               :t201, 2025-12-07, 1d
+  20.2 Demo/UAT con cliente (1.5hs)            :t202, 2025-12-07, 1d
+  20.3 Sprint Planning dominguero (1.3hs)      :t203, 2025-12-07, 1d
   6.3 Persistencia en historial (RF-011) (5hs) :t63, after t203, 1d
-  8.1 Modelo + bandeja (12hs)                  :t81, after t63, 2.4d
+  8.1 Modelo + bandeja (12hs)                  :t81, after t63, 3d
   4.2 Registrar evento (RF-008) - Parte 1 (10hs) :t421, after t81, 2d
 
   section Hitos
-  Segunda Instancia Académica                   :milestone, acad2, 2025-12-20, 0d
-  Cierre Sprint 8                              :milestone, s8, 2025-12-13, 0d
+  Segunda Instancia Académica                   :milestone, acad2, 2025-12-20, 1d
+  Cierre Sprint 8                              :milestone, s8, 2025-12-13, 1d
 ```
 
 ---
@@ -249,17 +249,17 @@ gantt
 
   %% Asumimos 5 h/día. Horas estimadas incluidas en el nombre.
 
-  20.1 Reporte Académico (0.9hs)               :t201, 2025-12-14, 0.2d
-  20.2 Demo/UAT con cliente (1.5hs)            :t202, after t201, 0.3d
-  20.3 Sprint Planning dominguero (1.3hs)      :t203, after t202, 0.3d
+  20.1 Reporte Académico (0.9hs)               :t201, 2025-12-14, 1d
+  20.2 Demo/UAT con cliente (1.5hs)            :t202, 2025-12-14, 1d
+  20.3 Sprint Planning dominguero (1.3hs)      :t203, 2025-12-14, 1d
   4.2 Registrar evento (RF-008) - Parte 2 (5hs) :t422, after t203, 1d
-  5.3 Hook a Centro de Notificaciones (4hs)    :t53, after t422, 0.8d
-  8.2 UI lectura/estado (7hs)                  :t82, after t53, 1.4d
-  6.4 Aviso QuickCheck no aprobado (RF-017) (6hs) :t64, after t82, 1.2d
-  3.3 Edición con historial (RF-006) (8hs)     :t33, after t64, 1.6d
+  5.3 Hook a Centro de Notificaciones (4hs)    :t53, after t422, 1d
+  8.2 UI lectura/estado (7hs)                  :t82, after t53, 2d
+  6.4 Aviso QuickCheck no aprobado (RF-017) (6hs) :t64, after t82, 2d
+  3.3 Edición con historial (RF-006) (8hs)     :t33, after t64, 2d
 
   section Hitos
-  Cierre Sprint 9                              :milestone, s9, 2025-12-20, 0d
+  Cierre Sprint 9                              :milestone, s9, 2025-12-20, 1d
 ```
 
 ---
@@ -274,15 +274,15 @@ gantt
 
   %% Asumimos 5 h/día. Horas estimadas incluidas en el nombre.
 
-  20.1 Reporte Académico (0.9hs)               :t201, 2025-12-21, 0.2d
-  20.2 Demo/UAT con cliente (1.5hs)            :t202, after t201, 0.3d
-  20.3 Sprint Planning dominguero (1.3hs)      :t203, after t202, 0.3d
+  20.1 Reporte Académico (0.9hs)               :t201, 2025-12-21, 1d
+  20.2 Demo/UAT con cliente (1.5hs)            :t202, 2025-12-21, 1d
+  20.3 Sprint Planning dominguero (1.3hs)      :t203, 2025-12-21, 1d
   4.3 Historial unificado (RF-009) (15hs)      :t43, after t203, 3d
   9.1 Datos de contacto por distribuidor (5hs) :t91, after t43, 1d
   9.2 Acciones de contacto (tel, mailto, wa.me) (5hs) :t92, after t91, 1d
 
   section Hitos
-  Cierre Sprint 10                             :milestone, s10, 2025-12-27, 0d
+  Cierre Sprint 10                             :milestone, s10, 2025-12-27, 1d
 ```
 
 ---
@@ -297,16 +297,16 @@ gantt
 
   %% Asumimos 5 h/día. Horas estimadas incluidas en el nombre.
 
-  20.1 Reporte Académico (0.9hs)               :t201, 2025-12-28, 0.2d
-  20.2 Demo/UAT con cliente (1.5hs)            :t202, after t201, 0.3d
-  20.3 Sprint Planning dominguero (1.3hs)      :t203, after t202, 0.3d
-  0.5 PWA base (manifest + SW básico) (6hs)    :t05, after t203, 1.2d
+  20.1 Reporte Académico (0.9hs)               :t201, 2025-12-28, 1d
+  20.2 Demo/UAT con cliente (1.5hs)            :t202, 2025-12-28, 1d
+  20.3 Sprint Planning dominguero (1.3hs)      :t203, 2025-12-28, 1d
+  0.5 PWA base (manifest + SW básico) (6hs)    :t05, after t203, 2d
   0.7 i18n groundwork (infra de strings) (5hs) :t07, after t05, 1d
-  12.1 Responsive grid & breakpoints (6hs)     :t121, after t07, 1.2d
-  12.2 A11y mínima (focus, labels, contraste) (6hs) :t122, after t121, 1.2d
+  12.1 Responsive grid & breakpoints (6hs)     :t121, after t07, 2d
+  12.2 A11y mínima (focus, labels, contraste) (6hs) :t122, after t121, 2d
 
   section Hitos
-  Cierre Sprint 11                             :milestone, s11, 2026-01-03, 0d
+  Cierre Sprint 11                             :milestone, s11, 2026-01-03, 1d
 ```
 
 ---
@@ -321,16 +321,16 @@ gantt
 
   %% Asumimos 5 h/día. Horas estimadas incluidas en el nombre.
 
-  20.1 Reporte Académico (0.9hs)               :t201, 2026-01-04, 0.2d
-  20.2 Demo/UAT con cliente (1.5hs)            :t202, after t201, 0.3d
-  20.3 Sprint Planning dominguero (1.3hs)      :t203, after t202, 0.3d
-  13.3a Unit tests Backend (12hs)              :t133a, after t203, 2.4d
-  13.4 Datos de prueba (semillas y factories) (4hs) :t134, after t133a, 0.8d
-  16.2 Semillas demo (usar 1.4) (3hs)          :t162, after t134, 0.6d
+  20.1 Reporte Académico (0.9hs)               :t201, 2026-01-04, 1d
+  20.2 Demo/UAT con cliente (1.5hs)            :t202, 2026-01-04, 1d
+  20.3 Sprint Planning dominguero (1.3hs)      :t203, 2026-01-04, 1d
+  13.3a Unit tests Backend (12hs)              :t133a, after t203, 3d
+  13.4 Datos de prueba (semillas y factories) (4hs) :t134, after t133a, 1d
+  16.2 Semillas demo (usar 1.4) (3hs)          :t162, after t134, 1d
   12.3 Pruebas visuales móviles/desktop (5hs)  :t123, after t162, 1d
 
   section Hitos
-  Cierre Sprint 12                             :milestone, s12, 2026-01-10, 0d
+  Cierre Sprint 12                             :milestone, s12, 2026-01-10, 1d
 ```
 
 ---
@@ -345,15 +345,15 @@ gantt
 
   %% Asumimos 5 h/día. Horas estimadas incluidas en el nombre.
 
-  20.1 Reporte Académico (0.9hs)               :t201, 2026-01-11, 0.2d
-  20.2 Demo/UAT con cliente (1.5hs)            :t202, after t201, 0.3d
-  20.3 Sprint Planning dominguero (1.3hs)      :t203, after t202, 0.3d
+  20.1 Reporte Académico (0.9hs)               :t201, 2026-01-11, 1d
+  20.2 Demo/UAT con cliente (1.5hs)            :t202, 2026-01-11, 1d
+  20.3 Sprint Planning dominguero (1.3hs)      :t203, 2026-01-11, 1d
   13.3b Unit tests Frontend (10hs)             :t133b, after t203, 2d
-  16.1 Build & deploy demo (front estático + API) (8hs) :t161, after t133b, 1.6d
-  17.2 API docs (OpenAPI simple) (6hs)         :t172, after t161, 1.2d
+  16.1 Build & deploy demo (front estático + API) (8hs) :t161, after t133b, 2d
+  17.2 API docs (OpenAPI simple) (6hs)         :t172, after t161, 2d
 
   section Hitos
-  Cierre Sprint 13                             :milestone, s13, 2026-01-17, 0d
+  Cierre Sprint 13                             :milestone, s13, 2026-01-17, 1d
 ```
 
 ---
@@ -368,17 +368,17 @@ gantt
 
   %% Asumimos 5 h/día. Horas estimadas incluidas en el nombre.
 
-  20.1 Reporte Académico (0.9hs)               :t201, 2026-01-18, 0.2d
-  20.2 Demo/UAT con cliente (1.5hs)            :t202, after t201, 0.3d
-  20.3 Sprint Planning dominguero (1.3hs)      :t203, after t202, 0.3d
-  13.5 Sanitización manual por feature (8hs)   :t135, after t203, 1.6d
-  13.8 Smoke E2E de flujos críticos (6hs)      :t138, after t135, 1.2d
-  18.2 Control de cambios (3hs)                :t182, after t138, 0.6d
+  20.1 Reporte Académico (0.9hs)               :t201, 2026-01-18, 1d
+  20.2 Demo/UAT con cliente (1.5hs)            :t202, 2026-01-18, 1d
+  20.3 Sprint Planning dominguero (1.3hs)      :t203, 2026-01-18, 1d
+  13.5 Sanitización manual por feature (8hs)   :t135, after t203, 2d
+  13.8 Smoke E2E de flujos críticos (6hs)      :t138, after t135, 2d
+  18.2 Control de cambios (3hs)                :t182, after t138, 1d
   18.3 Feature toggles (5hs)                   :t183, after t182, 1d
-  2.4 Recuperación de contraseña (RF-004) (8hs) :t24, after t183, 1.6d
+  2.4 Recuperación de contraseña (RF-004) (8hs) :t24, after t183, 2d
 
   section Hitos
-  Cierre Sprint 14                             :milestone, s14, 2026-01-24, 0d
+  Cierre Sprint 14                             :milestone, s14, 2026-01-24, 1d
 ```
 
 ---
@@ -393,16 +393,16 @@ gantt
 
   %% Asumimos 5 h/día. Horas estimadas incluidas en el nombre.
 
-  20.1 Reporte Académico (0.9hs)               :t201, 2026-01-25, 0.2d
-  20.2 Demo/UAT con cliente (1.5hs)            :t202, after t201, 0.3d
-  20.3 Sprint Planning dominguero (1.3hs)      :t203, after t202, 0.3d
+  20.1 Reporte Académico (0.9hs)               :t201, 2026-01-25, 1d
+  20.2 Demo/UAT con cliente (1.5hs)            :t202, 2026-01-25, 1d
+  20.3 Sprint Planning dominguero (1.3hs)      :t203, 2026-01-25, 1d
   13.7 Triage & fix post-UAT (10hs)            :t137, after t203, 2d
-  13.9 Gestión de defectos (6hs)               :t139, after t137, 1.2d
-  11.1 Ayuda inline mínima / "cómo usar esta página" (6hs) :t111, after t139, 1.2d
-  19.1 Consolidación y tracking del backlog Post-MVP (2hs) :t191, after t111, 0.4d
+  13.9 Gestión de defectos (6hs)               :t139, after t137, 2d
+  11.1 Ayuda inline mínima / "cómo usar esta página" (6hs) :t111, after t139, 2d
+  19.1 Consolidación y tracking del backlog Post-MVP (2hs) :t191, after t111, 1d
 
   section Hitos
-  Cierre Sprint 15                             :milestone, s15, 2026-01-31, 0d
+  Cierre Sprint 15                             :milestone, s15, 2026-01-31, 1d
 ```
 
 ---
@@ -417,20 +417,20 @@ gantt
 
   %% Asumimos 5 h/día. Horas estimadas incluidas en el nombre.
 
-  20.1 Reporte Académico (0.9hs)               :t201, 2026-02-01, 0.2d
-  20.2 Demo/UAT con cliente (1.5hs)            :t202, after t201, 0.3d
-  20.3 Sprint Planning dominguero (1.3hs)      :t203, after t202, 0.3d
-  7.1 Alta/edición repuesto (RF-012/014) (8hs) :t71, after t203, 1.6d
-  7.2 Listado por máquina (RF-013) (6hs)       :t72, after t71, 1.2d
-  16.3 Script "reset demo" (4hs)               :t163, after t72, 0.8d
-  17.3 Manual breve de usuario (6hs)           :t173, after t163, 1.2d
+  20.1 Reporte Académico (0.9hs)               :t201, 2026-02-01, 1d
+  20.2 Demo/UAT con cliente (1.5hs)            :t202, 2026-02-01, 1d
+  20.3 Sprint Planning dominguero (1.3hs)      :t203, 2026-02-01, 1d
+  7.1 Alta/edición repuesto (RF-012/014) (8hs) :t71, after t203, 2d
+  7.2 Listado por máquina (RF-013) (6hs)       :t72, after t71, 2d
+  16.3 Script "reset demo" (4hs)               :t163, after t72, 1d
+  17.3 Manual breve de usuario (6hs)           :t173, after t163, 2d
 
   section Buffer Final
-  21.21 Buffer de entrega final (10hs)         :t2121, 2026-02-07, 3d
+  21.21 Buffer de entrega final (10hs)         :t2121, 2026-02-07, 2d
 
   section Hitos
-  Cierre Sprint 16                             :milestone, s16, 2026-02-07, 0d
-  Entrega Final del Proyecto                    :milestone, acadfinal, 2026-02-10, 0d
+  Cierre Sprint 16                             :milestone, s16, 2026-02-07, 1d
+  Entrega Final del Proyecto                    :milestone, acadfinal, 2026-02-10, 1d
 ```
 
 ---
