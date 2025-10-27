@@ -33,7 +33,7 @@ flowchart TD
     MACHINES --> DETAIL["Detalle de Máquina<br/>Tabs: Overview · Recordatorios · Repuestos · Historial"]
     MACHINES --> DASH
     
-    CREATE --> FORM["Formulario Alta Máquina<br/>Marca/Modelo/Serie/Alias/Año<br/>Contacto de distribuidor (opcional)"]
+    CREATE --> FORM["Formulario Alta Máquina<br/>Marca/Modelo/Serie/Alias/Año<br/>Contacto de distribuidor #40;opcional#41;"]
     FORM -->|Validación OK| DETAIL
     FORM -->|Error de validación| FORM
     
@@ -63,14 +63,14 @@ flowchart TD
     TAB_REM --> CREATE_REM[CTA: Nuevo recordatorio]
     
     CREATE_REM --> TYPE{Tipo de recordatorio}
-    TYPE --> DATE_TYPE[Por fecha<br/>(Cada N días / Fecha fija)]
-    TYPE --> USAGE_TYPE[Por uso<br/>(Cada N horas de uso)]
+    TYPE --> DATE_TYPE[Por fecha<br/>#40;Cada N días / Fecha fija#41;]
+    TYPE --> USAGE_TYPE[Por uso<br/>#40;Cada N horas de uso#41;]
     
     DATE_TYPE --> FORM_REM["Definir:<br/>• Nombre<br/>• Descripción<br/>• Anticipación<br/>• Responsable<br/>• Frecuencia/Fecha"]
     USAGE_TYPE --> FORM_REM
     
     FORM_REM --> SAVE_REM[Guardar Recordatorio]
-    SAVE_REM --> CARD_REM["Card en lista<br/>(Estado: Activo<br/>Próximo vencimiento)"]
+    SAVE_REM --> CARD_REM["Card en lista<br/>#40;Estado: Activo<br/>Próximo vencimiento#41;"]
     CARD_REM --> TAB_REM
     
     LIST_REM --> EDIT_REM[Editar Recordatorio]
@@ -138,7 +138,7 @@ flowchart TD
     DETAIL --> TAB_HIST[Tab: Historial]
     
     EVENT --> EVENT_TYPE{Tipo de Evento}
-    EVENT_TYPE --> MAINT[Mantenimiento<br/>(Preventivo/Correctivo)]
+    EVENT_TYPE --> MAINT[Mantenimiento<br/>#40;Preventivo/Correctivo#41;]
     EVENT_TYPE --> INCIDENT[Incidente]
     EVENT_TYPE --> FAILURE[Falla]
     EVENT_TYPE --> DOWNTIME[Detención]
@@ -197,7 +197,7 @@ flowchart TD
     CONTACT_METHOD --> PHONE[📞 Llamar]
     CONTACT_METHOD --> WHATSAPP[💬 WhatsApp]
     CONTACT_METHOD --> EMAIL[📧 Email]
-    CONTACT_METHOD --> INTERNAL[💼 Mensaje interno<br/>(si distribuidor registrado)]
+    CONTACT_METHOD --> INTERNAL[💼 Mensaje interno<br/>#40;si distribuidor registrado#41;]
     
     INTERNAL --> CHAT[Chat interno]
     CHAT --> NOTIF_CENTER
