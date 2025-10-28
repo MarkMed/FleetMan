@@ -1,11 +1,11 @@
 # Diagramas Gantt de Sprints
-<!-- <style>
+<style>
 .mermaid svg {
   max-width: 100% !important;
   width: 100% !important;
   height: auto !important;
 }
-</style> -->
+</style>
 **⚠️ Importante - Escala de Tiempo:**
 Los diagramas Gantt de este proyecto utilizan una **escala de tiempo basada en horas productivas**, no en tiempo calendario real:
 
@@ -86,10 +86,10 @@ gantt
   20.1 Reporte Académico (0.9hs)               :t201, 2025-10-26, 1d
   20.2 Demo/UAT con cliente (1.5hs)            :t202, 2025-10-26, 1d
   20.3 Sprint Planning dominguero (1.3hs)      :t203, 2025-10-26, 1d
-  1.2 Esquemas DB (Mongoose + índices) (5hs)   :t12, after t203, 1d
-  1.3 DTOs + Zod (contratos compartidos) (7hs) :t13, after t12, 2d
-  0.6 User Journey mapping (flujos clave) (6hs) :t06, after t13, 2d
-  13.1 Estrategia & DoD QA (5hs)               :t131, after t06, 1d
+  0.6 User Journey mapping (flujos clave) (6hs) :t06, after t203, 2d
+  1.3 DTOs + Zod (contratos compartidos) (7hs) :t13, after t06, 2d
+  1.2 Esquemas DB (Mongoose + índices) (5hs)   :t12, after t13, 1d
+  13.1 Estrategia & DoD QA (5hs)               :t131, after t12, 1d
 
   section Hitos
   Cierre Sprint 2                              :milestone, s2, 2025-11-01, 1d
