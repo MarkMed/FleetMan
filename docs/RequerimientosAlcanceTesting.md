@@ -26,6 +26,7 @@
 - RF-018 – Búsqueda y filtrado global. Permitir buscar y filtrar maquinaria, repuestos, mantenimientos o eventos por criterios básicos (nombre, estado, acción, etc). Dependencias: RF-005, RF-008 Prioridad: Could Have
 - RF-019 – Centro de ayuda y guías rápidas. Incluir una sección de ayuda dentro de la aplicación con tutoriales o pasos breves de uso. Dependencias: ninguna Prioridad: Could Have
 - RF-020 - Multilenguaje (i18n) Estructurar la app para permitir cambiar de idioma, disponibilizando la rápida implementación de nuevos. Dependencias: ninguna Prioridad: Could Have
+- RF-021 – QuickActions Dashboard. Proporcionar un componente de acciones rápidas en el Dashboard que permita acceso directo a las funcionalidades principales: QuickCheck, Reportar Evento, Solicitar Repuesto y Nueva Máquina. Incluye modal intermedio para selección de máquina cuando sea necesario y overlay con blur para reducir ruido visual. Dependencias: RF-005, RF-008, RF-011, RF-012 Prioridad: Should Have
 
 # Plan de Testing
 Las pruebas que se emplearán serán enfocadas en el MVP, cubriendo aspectos de código y usabilidad. El foco para esta fase de desarrollo es contar con pruebas unitarias automatizadas con la herramienta Jest, y pruebas manuales de sanitización y verificación. Por cada módulo, funcionalidad, feature, se planea tener una prueba unitaria que pueda cubrir puntos específicos de dicho modulo. En el backend se cubren casos de uso, servicios, validaciones y control de errores; en el frontend se valida la lógica de módulos, hooks y utilidades cuando aplique. Se aprovechará también tanto las instancias de Demostración como las versiones lanzadas disponibles para que paralelamente el cliente pueda realizar pruebas de validación (UAT). De esta manera se logrará asegurar que tanto la funcionalidad como la usabilidad de cada avance cumplan con las expectativas.
@@ -76,6 +77,7 @@ Incluyendo los requerimientos/funcionalidades del alcance obligatorio, el alcanc
 	- RF-018 Búsqueda y filtrado global básico
 	- RF-019 Centro de ayuda y guías rápidas (ayuda inline / mini-tutoriales)
 	- RF-020 Multilenguaje (infra i18n preparada y al menos 1 idioma adicional si el tiempo alcanza)
+	- RF-021 QuickActions Dashboard (componente de acciones rápidas para mejorar productividad del usuario)
 
 ## 2.8.3. Elementos fuera del alcance del MVP
 - Integración con sistemas externos.
