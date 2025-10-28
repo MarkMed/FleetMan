@@ -29,19 +29,19 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    DASH[Dashboard] --> MACHINES[Maquinaria - Lista]
+    DASH[Dashboard] --> MACHINES[Lista de Máquinas]
+    MACHINES --> DASH
     MACHINES --> CREATE[CTA: Nueva máquina]
     MACHINES --> DETAIL["Detalle de Máquina<br/>Tabs: Overview · Recordatorios · Repuestos · Historial"]
-    MACHINES --> DASH
     
     CREATE --> FORM["Formulario Alta Máquina<br/>Marca/Modelo/Serie/Alias/Año<br/>Contacto de distribuidor #40;opcional#41;"]
     FORM -->|Validación OK| DETAIL
     FORM -->|Error de validación| FORM
     
-    DETAIL --> DASH
+    DETAIL --> MACHINES
     DETAIL --> EDIT[Editar Máquina]
     DETAIL --> CONTACT[Contactar Distribuidor]
-    DETAIL --> QUICKCHECK_MACHINE[QuickCheck para esta máquina]
+    DETAIL --> QUICKCHECK_MACHINE[QuickCheck]
     DETAIL --> EVENT[Registrar Evento]
     
     EDIT --> EDIT_FORM[Formulario de Edición]
