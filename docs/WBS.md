@@ -183,6 +183,14 @@ Edición + auditoría básica de cambios.
 		- Dependencias: 3.2 (FS)
 		- Spike: **No**
 
+	- 3.4 **QuickActions Dashboard** (UX).
+Componente de acciones rápidas en Dashboard con overlay blur. Incluye: QuickCheck, Reportar Evento, Solicitar Repuesto, Nueva Máquina. Modal intermedio para selección de máquina en las primeras 3 acciones.
+		- Horas estimadas: **12**hs
+		- Margen: ±**2.5**hs (P80)
+		- Incertidumbre: **Media**
+		- Dependencias: 3.1, 0.10 (FS), SS con 4.2, 6.2, 7.1
+		- Spike: **No**
+
 4. **Mantenimiento & Eventos** (RF-007..RF-009)
 
 	- 4.1 **Crear recordatorios** (RF-007).
