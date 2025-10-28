@@ -7,8 +7,8 @@ flowchart TD
     START[App Launch] --> AUTH{¿Usuario autenticado?}
     AUTH -->|No| LOGIN[Login/Registro]
     AUTH -->|Sí| DASH[Dashboard]
-    LOGIN --> REGISTER[Formulario Registro<br/>Email, Contraseña, Rol]
-    LOGIN --> SIGNIN[Formulario Login<br/>Email, Contraseña]
+    LOGIN --> REGISTER[Formulario Registro<br/>#40;Email, Contraseña, Rol#41;]
+    LOGIN --> SIGNIN[<b>Formulario Login</b><br/>#40;Email, Contraseña#41;]
     LOGIN --> FORGOT[Recuperar Contraseña]
 	FORGOT --> SIGNIN
     
@@ -18,6 +18,7 @@ flowchart TD
     
     DASH --> MACHINES[Gestión de Maquinaria]
     DASH --> QUICKCHECK[QuickCheck Rápido]
+    DASH --> QUICKACTIONS[QuickActions]
     DASH --> NOTIFICATIONS[Centro de Notificaciones]
     DASH --> LOGOUT[Cerrar Sesión]
     
@@ -203,7 +204,58 @@ flowchart TD
     CHAT --> NOTIF_CENTER
 ```
 
-## 8. Flujo Completo Integrado - Vista de Alto Nivel
+## 8. QuickActions Dashboard
+
+```mermaid
+flowchart TD
+    DASH[Dashboard] --> QA_TRIGGER[QuickActions Button]
+    QA_TRIGGER --> QA_OVERLAY[Overlay con Blur<br/>+ Panel de Acciones]
+    
+    QA_OVERLAY --> QA_OPTIONS{Seleccionar Acción}
+    QA_OPTIONS --> QA_QUICKCHECK[🔍 QuickCheck]
+    QA_OPTIONS --> QA_EVENT[📝 Reportar Evento]
+    QA_OPTIONS --> QA_SPARE[🔧 Solicitar Repuesto]
+    QA_OPTIONS --> QA_MACHINE[➕ Nueva Máquina]
+    QA_OPTIONS --> QA_CLOSE[❌ Cerrar]
+    
+    %% Nueva Máquina - Redirect directo
+    QA_MACHINE --> MACHINE_FORM[Formulario Nueva Máquina]
+    MACHINE_FORM --> DASH
+    
+    %% Acciones que requieren selección de máquina
+    QA_QUICKCHECK --> SELECT_MODAL[Modal: Seleccionar Máquina]
+    QA_EVENT --> SELECT_MODAL
+    QA_SPARE --> SELECT_MODAL
+    
+    SELECT_MODAL --> MACHINE_LIST["Lista de Máquinas del Usuario<br/>📋 Cards compactas<br/>🔍 Filtro por nombre/modelo"]
+    MACHINE_LIST --> MACHINE_SELECTED{Máquina seleccionada}
+    
+    %% Redirecciones contextualizadas
+    MACHINE_SELECTED -->|QuickCheck| QC_CONTEXTUAL[QuickCheck<br/>para máquina seleccionada]
+    MACHINE_SELECTED -->|Evento| EVENT_CONTEXTUAL[Registrar Evento<br/>para máquina seleccionada]
+    MACHINE_SELECTED -->|Repuesto| SPARE_CONTEXTUAL[Solicitar Repuesto<br/>para máquina seleccionada]
+    
+    %% Flujos de salida
+    QC_CONTEXTUAL --> QC_FORM[Formulario CheckList]
+    EVENT_CONTEXTUAL --> EVENT_FORM[Formulario de Evento]
+    SPARE_CONTEXTUAL --> SPARE_FORM[Formulario de Repuesto]
+    
+    QC_FORM --> HISTORY[Historial de Máquina]
+    EVENT_FORM --> HISTORY
+    SPARE_FORM --> SPARE_LIST[Lista de Repuestos]
+    
+    HISTORY --> MACHINE_DETAIL[Detalle de Máquina]
+    SPARE_LIST --> MACHINE_DETAIL
+    
+    %% Navegación de retorno
+    QA_CLOSE --> DASH
+    MACHINE_DETAIL -.-> DASH
+    
+    %% Overlay interactions
+    QA_OVERLAY -.-> |Click fuera| DASH
+```
+
+## 9. Flujo Completo Integrado - Vista de Alto Nivel
 
 ```mermaid
 flowchart TD
@@ -212,6 +264,7 @@ flowchart TD
     
     DASH --> MACHINES[🏭 Gestión Maquinaria]
     DASH --> QC[✅ QuickCheck]
+    DASH --> QA[⚡ QuickActions]
     DASH --> NOTIF[🔔 Notificaciones]
     
     MACHINES --> DETAIL[📋 Detalle Máquina]
