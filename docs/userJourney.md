@@ -38,13 +38,15 @@ flowchart TD
     QA_OVERLAY --> QA_OPTIONS{Seleccionar Acción}
     QA_OPTIONS --> QA_QUICKCHECK[🔍 QuickCheck]
     QA_OPTIONS --> QA_EVENT[📝 Reportar Evento]
-    QA_OPTIONS --> QA_SPARE[🔧 Solicitar Repuesto]
-    QA_OPTIONS --> QA_MACHINE[➕ Nueva Máquina]
+    QA_OPTIONS --> QA_MACHINE[➕ Registrar Máquina]
     QA_OPTIONS --> QA_CLOSE[❌ Cerrar]
+    QA_OPTIONS --> QA_SPARE[🔧 Solicitar Repuesto]
     
-    %% Nueva Máquina - Redirect directo
-    QA_MACHINE --> MACHINE_FORM[Formulario Nueva Máquina]
-    MACHINE_FORM --> DASH
+    %% Registrar Máquina - Redirect directo
+    QA_MACHINE --> MACHINE_WIZARD[Formulario Wizard<br/>Registrar Máquina]
+    MACHINE_WIZARD --> MACHINE_DETAIL[Detalle de Máquina<br/>nueva máquina registrada]
+    MACHINE_DETAIL --> MACHINES[Mis Máquinas]
+    MACHINES --> DASH
     
     %% Acciones que requieren selección de máquina
     QA_QUICKCHECK --> SELECT_MODAL[Modal: Seleccionar Máquina]
@@ -68,12 +70,13 @@ flowchart TD
     EVENT_FORM --> HISTORY
     SPARE_FORM --> SPARE_LIST[Lista de Repuestos]
     
-    HISTORY --> MACHINE_DETAIL[Detalle de Máquina]
-    SPARE_LIST --> MACHINE_DETAIL
+    HISTORY --> DETAIL[Detalle de Máquina]
+    SPARE_LIST --> DETAIL
     
     %% Navegación de retorno
     QA_CLOSE --> DASH
-    MACHINE_DETAIL -.-> DASH
+    DETAIL -.-> MACHINES[Mis Máquinas]
+    MACHINES -.-> DASH
     
     %% Overlay interactions
     QA_OVERLAY -.-> |Click fuera| DASH
@@ -85,12 +88,12 @@ flowchart TD
 flowchart TD
     DASH[Dashboard] --> MACHINES[Mis Máquinas]
     MACHINES --> DASH
-    MACHINES --> CREATE[CTA: Nueva máquina]
+    MACHINES --> CREATE[CTA: ➕ Registrar Máquina]
     MACHINES --> DETAIL["Detalle de Máquina<br/>Tabs: Overview · Recordatorios · Repuestos · Historial"]
     
-    CREATE --> FORM["Formulario Alta Máquina<br/>Marca/Modelo/Serie/Alias/Año<br/>Contacto de distribuidor #40;opcional#41;"]
-    FORM -->|Validación OK| DETAIL
-    FORM -->|Error de validación| FORM
+    CREATE --> WIZARD["Formulario Wizard Registrar Máquina<br/>Marca/Modelo/Serie/Alias/Año<br/>Contacto de distribuidor #40;opcional#41;"]
+    WIZARD -->|Validación OK| DETAIL
+    WIZARD -->|Error de validación| WIZARD
     
     DETAIL --> MACHINES
     DETAIL --> EDIT[Editar Máquina]
@@ -104,8 +107,8 @@ flowchart TD
     %% Variante Proveedor
     subgraph "Variante Proveedor"
         PROVIDER[Proveedor Dashboard] --> SELECT_CLIENT[Seleccionar Cliente de cartera]
-        SELECT_CLIENT --> CREATE_FOR_CLIENT[Nueva máquina para Cliente]
-        CREATE_FOR_CLIENT --> FORM
+        SELECT_CLIENT --> CREATE_FOR_CLIENT[➕ Registrar Máquina para Cliente]
+        CREATE_FOR_CLIENT --> WIZARD
     end
 ```
 
@@ -285,7 +288,8 @@ flowchart TD
     ACTIONS --> CONTACT[📞 Comunicación]
     
     %% Navegación de retorno
-    DETAIL -.-> DASH
+    DETAIL -.-> MACHINES[Mis Máquinas]
+    MACHINES -.-> DASH
     NOTIF -.-> DASH
     QC -.-> DASH
     CONTACT -.-> DETAIL
