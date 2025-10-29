@@ -86,10 +86,10 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    DASH[Dashboard] --> MACHINES[Mis Máquinas]
+    DASH[Dashboard] --> MACHINES[**Mis Máquinas**<br/>*#40;Lísta de máquinas#41;*]
     MACHINES --> DASH
     MACHINES --> CREATE[CTA: ➕ Registrar Máquina]
-    MACHINES --> DETAIL["Detalle de Máquina<br/>Tabs: Overview · Recordatorios · Repuestos · Historial"]
+    MACHINES --> |Selecciona máquina| DETAIL["Detalle de Máquina<br/>Tabs: Overview · Recordatorios · Repuestos · Historial"]
     
     CREATE --> WIZARD["Formulario Wizard Registrar Máquina<br/>Marca/Modelo/Serie/Alias/Año<br/>Contacto de distribuidor #40;opcional#41;"]
     WIZARD -->|Validación OK| DETAIL
@@ -100,6 +100,7 @@ flowchart TD
     DETAIL --> CONTACT[Contactar Distribuidor]
     DETAIL --> QUICKCHECK_MACHINE[QuickCheck]
     DETAIL --> EVENT[Registrar Evento]
+    DETAIL --> REPUESTOS[Repuestos]
     
     EDIT --> EDIT_FORM[Formulario de Edición]
     EDIT_FORM --> DETAIL
