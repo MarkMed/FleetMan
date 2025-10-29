@@ -72,25 +72,38 @@ Distribución por categoría:
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
-| Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | |
-| Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | |
-| Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
-| Desarrollo | 1.2 Esquemas DB (Mongoose + índices clave) | 4 | 5 | |
+| Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | 0 |
+| Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | 1 |
+| Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | 0.6 |
+| Desarrollo | 0.6 User Journey mapping | 6 | 6 | 11.6 |
 | Desarrollo | 1.3 DTOs + Zod (contratos compartidos) | 5 | 7 | |
-| Desarrollo | 0.6 Design system base (tokens, layout, UI core) | 6 | 10 | |
+| Desarrollo | 1.2 Esquemas DB (Mongoose + índices clave) | 4 | 5 | |
 | QA | 13.1 Estrategia & DoD QA | 7 | 5 | |
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales |
 |:---:|:----------:|
-| **30.7**hs | **0**hs |
+| **30.7**hs | **13.2**hs |
 
 Buffer reservado: **4.3**hs
 Total con buffer: **35**hs
 
+```mermaid
+xychart-beta
+    title "Sprint #2: Horas Estimadas vs Reales"
+    x-axis "Tareas" ["20.1", "20.2", "20.3", "0.6", "1.3", "1.2", "13.1", "TOTAL"]
+    y-axis "Horas" 0 --> 32
+	
+	%% Black line
+    line [0.9, 1.5, 1.3, 6, 7, 5, 5, 30.7]
+
+	%% Green line
+    line [0, 1, 0.6, 11.6, 0, 0, 0, 13.2]
+```
+
 Distribución por categoría:
 | Gestión | Desarrollo | QA | Capacitación | Documentación |
 |:-------:|:----------:|:--:|:------------:|:-------------:|
-| **3.7**hs | **22**hs | **5**hs | **0**hs | **0**hs |
+| **1.6**hs | **11.6**hs | **0**hs | **0**hs | **0**hs |
 
 **Riesgos:** El design system puede requerir iteraciones con feedback del cliente.
 
