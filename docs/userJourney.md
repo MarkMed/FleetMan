@@ -113,7 +113,44 @@ flowchart TD
     end
 ```
 
-## 4. Gestión de Recordatorios de Mantenimiento
+## 4. QuickCheck de Seguridad
+
+```mermaid
+flowchart TD
+    %% Acceso desde QuickActions
+    QA_QUICKCHECK[🔍 QuickCheck desde QuickActions] --> SELECT_MACHINE[Seleccionar Máquina]
+    
+    %% Acceso directo desde Detalle de Máquina
+    DETAIL[Detalle de Máquina] --> QC_MACHINE[QuickCheck para esta máquina]
+    
+    %% Flujo común
+    SELECT_MACHINE --> QC_FORM[Formulario CheckList]
+    QC_MACHINE --> QC_FORM
+    
+    QC_FORM --> CHECKLIST["Lista de Verificación:<br/>☑ Frenos<br/>☑ Direcciones<br/>☑ Item 3: Mantenimiento<br/>☑ Item X: Prevención X<br/>📝 Observaciones"]
+    
+    CHECKLIST --> QC_SUBMIT[Completar QuickCheck]
+    CHECKLIST --> EMERGENCY_REPORT[🚨 Reportar Problema<br/>Inmediato]
+    
+    QC_SUBMIT --> QC_REPORT[Generar y enviar<br/>QuickCheck]
+    EMERGENCY_REPORT --> QC_REPORT
+    
+    QC_REPORT --> QC_RESULT{¿Hay items fallidos?}
+    
+    QC_RESULT -->|No| QC_SUCCESS[✅ QuickCheck Aprobado]
+    QC_RESULT -->|Sí| QC_FAILED[❌ QuickCheck No Aprobado<br/>⚠️Items fallidos identificados]
+    
+    %% Flujo común para ambos resultados
+    QC_SUCCESS --> SAVE_HISTORY[Guardar en Historial]
+    QC_FAILED --> SAVE_HISTORY
+    QC_FAILED --> EMAIL_SMS[📧📱 Aviso Email/SMS<br/>al usuario]
+    
+    SAVE_HISTORY --> GEN_ALERT[Generar Alerta<br/>en Centro de Notificaciones<br/> *#40;envía notificación en app#41;*]
+    
+    GEN_ALERT --> BACK_TO_DETAIL[Volver a Detalle de Máquina]
+    EMAIL_SMS --> BACK_TO_DETAIL
+```
+## 5. Gestión de Recordatorios de Mantenimiento
 
 ```mermaid
 flowchart TD
@@ -141,7 +178,7 @@ flowchart TD
     ALERT --> NOTIFICATION[Centro de Notificaciones]
 ```
 
-## 5. Gestión de Repuestos
+## 6. Gestión de Repuestos
 
 ```mermaid
 flowchart TD
@@ -158,35 +195,6 @@ flowchart TD
     LIST_SPARE --> VIEW_SPARE[Ver Detalle]
     
     EDIT_SPARE --> FORM_SPARE
-```
-
-## 6. QuickCheck de Seguridad
-
-```mermaid
-flowchart TD
-    DASH[Dashboard] --> QC_QUICK[QuickCheck Rápido]
-    DETAIL[Detalle de Máquina] --> QC_MACHINE[QuickCheck para esta máquina]
-    
-    QC_QUICK --> SELECT_MACHINE[Seleccionar Máquina]
-    SELECT_MACHINE --> QC_FORM[Formulario CheckList]
-    QC_MACHINE --> QC_FORM
-    
-    QC_FORM --> CHECKLIST["Lista de Verificación:<br/>☑ Item 1: Seguridad<br/>☑ Item 2: Funcionamiento<br/>☑ Item 3: Mantenimiento<br/>📝 Observaciones"]
-    
-    CHECKLIST --> QC_SUBMIT[Enviar QuickCheck]
-    QC_SUBMIT --> QC_RESULT{¿Todos los items OK?}
-    
-    QC_RESULT -->|Sí| QC_SUCCESS[✅ Aprobado<br/>Guardado en historial]
-    QC_RESULT -->|No| QC_FAILED[❌ No Aprobado<br/>Items fallidos identificados]
-    
-    QC_SUCCESS --> HISTORY[Historial de Máquina]
-    QC_FAILED --> QC_ALERT[Generar Alerta Automática]
-    QC_FAILED --> HISTORY
-    
-    QC_ALERT --> NOTIFICATION[Centro de Notificaciones]
-    QC_ALERT --> EMAIL_SMS[Aviso Email/SMS al usuario]
-    
-    HISTORY --> DETAIL
 ```
 
 ## 7. Registro de Eventos y Mantenimientos
