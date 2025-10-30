@@ -286,22 +286,15 @@ flowchart TD
     DASHBOARD --> QUICKACTIONS[⚡ QuickActions Overlay]
     DASHBOARD --> NOTIFICATIONS[🔔 Centro de Notificaciones]
     
-    %% Flujo de Máquinas
-    MACHINES --> MACHINE_DETAIL[📋 Detalle de Máquina]
-    MACHINES --> NEW_MACHINE[➕ Registrar Nueva Máquina]
-    NEW_MACHINE --> MACHINE_DETAIL
-    
     %% QuickActions - Acciones Rápidas
     QUICKACTIONS --> QA_QUICKCHECK[🔍 QuickCheck]
     QUICKACTIONS --> QA_EVENT[📝 Reportar Evento]
     QUICKACTIONS --> QA_SPARE[🔧 Solicitar Repuesto]
     QUICKACTIONS --> QA_NEW_MACHINE[➕ Registrar Máquina]
-    
-    %% Convergencia de QuickActions a contexto de máquina
-    QA_QUICKCHECK --> MACHINE_CONTEXT[🎯 Contexto de Máquina]
-    QA_EVENT --> MACHINE_CONTEXT
-    QA_SPARE --> MACHINE_CONTEXT
-    QA_NEW_MACHINE --> MACHINE_DETAIL
+    %% Flujo de Máquinas
+    MACHINES --> MACHINE_DETAIL[📋 Detalle de Máquina]
+    MACHINES --> NEW_MACHINE[➕ Registrar Nueva Máquina]
+    NEW_MACHINE --> MACHINE_DETAIL
     
     %% Gestión desde Detalle de Máquina
     MACHINE_DETAIL --> REMINDERS[⏰ Recordatorios]
@@ -310,6 +303,13 @@ flowchart TD
     MACHINE_DETAIL --> HISTORY[📈 Historial]
     MACHINE_DETAIL --> QUICKCHECK[🔍 QuickCheck]
     MACHINE_DETAIL --> CONTACT[� Contactar Distribuidor]
+    
+    %% Convergencia de QuickActions a contexto de máquina
+    QA_QUICKCHECK --> MACHINE_CONTEXT[🎯 Contexto de Máquina]
+    QA_EVENT --> MACHINE_CONTEXT
+    QA_SPARE --> MACHINE_CONTEXT
+    QA_NEW_MACHINE --> MACHINE_DETAIL
+    
     
     %% Flujos de trabajo específicos
     MACHINE_CONTEXT --> QUICKCHECK
@@ -324,7 +324,7 @@ flowchart TD
     
     %% Sistema de Notificaciones
     ALERTS --> NOTIFICATIONS
-    NOTIFICATIONS --> ACTIONS[🎯 Acciones Directas]
+    NOTIFICATIONS --> ACTIONS[🎯 Acciones Directas<br/>*#40;Ver detalle, Contactar distribuidor#41;*]
     ACTIONS --> MACHINE_DETAIL
     ACTIONS --> CONTACT
     
