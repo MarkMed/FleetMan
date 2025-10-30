@@ -154,27 +154,40 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    DETAIL[Detalle de Máquina] --> TAB_REM[Tab: Recordatorios]
-    TAB_REM --> LIST_REM[Lista de Recordatorios Activos]
-    TAB_REM --> CREATE_REM[CTA: Nuevo recordatorio]
+    DETAIL[Detalle de Máquina] -->|presiona en opción de Recordatorios| LIST_REM[Lista de Recordatorios]
     
+    %% Flujos desde la Lista
+    LIST_REM <--> REM_DETAIL_VIEW[Detalles De Recordatorio<br/>de Mantenimiento]
+    LIST_REM <--> DELETE_QA[Eliminar Item]
+    LIST_REM --> EDIT_QA[Editar Item]
+    EDIT_QA --> FORM_REM
+
+    %% Flujos desde Detalles
+    REM_DETAIL_VIEW --> EDIT_REM[Editar Recordatorio]
+    REM_DETAIL_VIEW --> DELETE_REM[Eliminar Recordatorio]
+
+    LIST_REM --> CREATE_REM[CTA: Nuevo recordatorio]
     CREATE_REM --> TYPE{Tipo de recordatorio}
     TYPE --> DATE_TYPE[Por fecha<br/>#40;Cada N días / Fecha fija#41;]
     TYPE --> USAGE_TYPE[Por uso<br/>#40;Cada N horas de uso#41;]
     
-    DATE_TYPE --> FORM_REM["Definir:<br/>• Nombre<br/>• Descripción<br/>• Anticipación<br/>• Responsable<br/>• Frecuencia/Fecha"]
+    DATE_TYPE --> FORM_REM["Formulario:<br/>• Nombre<br/>• Descripción<br/>• Anticipación<br/>• Tareas a realizar<br/>• Fecha<br/>• X Dato"]
     USAGE_TYPE --> FORM_REM
     
     FORM_REM --> SAVE_REM[Guardar Recordatorio]
-    SAVE_REM --> CARD_REM["Card en lista<br/>#40;Estado: Activo<br/>Próximo vencimiento#41;"]
-    CARD_REM --> TAB_REM
+    SAVE_REM --> REM_DETAIL_VIEW
     
-    LIST_REM --> EDIT_REM[Editar Recordatorio]
-    LIST_REM --> DELETE_REM[Eliminar Recordatorio]
+    
+    
+    %% Ediciones
     EDIT_REM --> FORM_REM
     
-    %% Automatización
-    SAVE_REM -. Scheduler .-> ALERT[Generar Alerta]
+    %% Eliminaciones
+    DELETE_REM --> LIST_REM
+    
+    %% Automatización del Scheduler
+    SAVE_REM -. Actualizar/Crear Scheduler .-> SCHEDULER_UPDATE[Scheduler Creado/Actualizado]
+    SCHEDULER_UPDATE -. Cuando corresponda .-> ALERT[Generar Alerta]
     ALERT --> NOTIFICATION[Centro de Notificaciones]
 ```
 
