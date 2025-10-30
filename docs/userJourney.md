@@ -101,6 +101,7 @@ flowchart TD
     DETAIL --> QUICKCHECK_MACHINE[QuickCheck]
     DETAIL --> EVENT[Registrar Evento]
     DETAIL --> REPUESTOS[Repuestos]
+    DETAIL --> HISTORY[Historial]
     
     EDIT --> EDIT_FORM[Formulario de Edición]
     EDIT_FORM --> DETAIL
@@ -202,9 +203,16 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    DETAIL[Detalle de Máquina] --> EVENT[Registrar Evento]
-    DETAIL --> TAB_HIST[Tab: Historial]
+    %% Acceso desde QuickActions
+    QA_EVENT[📝 Reportar Evento desde QuickActions] --> SELECT_MACHINE[Seleccionar Máquina]
     
+    %% Acceso directo desde Detalle de Máquina
+    DETAIL[Detalle de Máquina] --> EVENT[Registrar Evento]
+    DETAIL <--> TAB_HIST[Historial</br>*#40;Lista de items#41;*]
+    TAB_HIST --> |Selecciona item| HISTORY_DETAILS[Detalles de Historial]
+    
+    %% Flujo común
+    SELECT_MACHINE --> EVENT
     EVENT --> EVENT_TYPE{Tipo de Evento}
     EVENT_TYPE --> MAINT[Mantenimiento<br/>#40;Preventivo/Correctivo#41;]
     EVENT_TYPE --> INCIDENT[Incidente]
@@ -224,8 +232,7 @@ flowchart TD
     FAILURE_FORM --> SAVE_EVENT
     DOWNTIME_FORM --> SAVE_EVENT
     
-    SAVE_EVENT --> TIMELINE[Timeline de Eventos]
-    TIMELINE --> TAB_HIST
+    SAVE_EVENT --> TAB_HIST
     
     %% Algunos eventos pueden generar notificaciones
     SAVE_EVENT -. Eventos críticos .-> AUTO_NOTIF[Notificación Automática]
