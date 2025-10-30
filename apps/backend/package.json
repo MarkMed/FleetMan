@@ -1,0 +1,25 @@
+{
+  "name": "@app/backend",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/main.ts",
+    "build": "tsc -p tsconfig.build.json",
+    "start": "node dist/main.js",
+    "lint": "eslint .",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@packages/domain": "workspace:*",
+    "@packages/contracts": "workspace:*",
+    "@packages/persistence": "workspace:*",
+    "@packages/infra": "workspace:*",
+    "express": "^4.19.0",
+    "tsyringe": "^4.8.0",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.16.0",
+    "typescript": "^5.6.0"
+  }
+}
