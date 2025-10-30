@@ -22,7 +22,9 @@ flowchart TD
     DASH --> MENU[Menú]
     
     MENU --> ACCOUNT[Mi Cuenta]
+    MENU --> PROVIDERS[Mis Proveedores]
     MENU --> SETTINGS[Configuración]
+    MENU --> GUIDES[Guías]
     MENU --> LOGOUT[Cerrar Sesión]
     
     LOGOUT --> LOGIN
