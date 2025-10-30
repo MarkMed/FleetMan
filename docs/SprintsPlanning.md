@@ -75,14 +75,14 @@ Distribución por categoría:
 | Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | 0 |
 | Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | 1 |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | 0.6 |
-| Desarrollo | 0.6 User Journey mapping | 6 | 6 | 13 |
-| Desarrollo | 1.3 DTOs + Zod (contratos compartidos) | 5 | 7 | |
-| Desarrollo | 1.2 Esquemas DB (Mongoose + índices clave) | 4 | 5 | |
-| QA | 13.1 Estrategia & DoD QA | 7 | 5 | |
+| Desarrollo | 0.6 User Journey mapping | 6 | 6 | 14.8 |
+| Desarrollo | 1.3 DTOs + Zod (contratos compartidos) | 5 | 7 | 0 |
+| Desarrollo | 1.2 Esquemas DB (Mongoose + índices clave) | 4 | 5 | 0 |
+| QA | 13.1 Estrategia & DoD QA | 7 | 5 | 0 |
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales |
 |:---:|:----------:|
-| **30.7**hs | **14.6**hs |
+| **30.7**hs | **16.4**hs |
 
 Buffer reservado: **4.3**hs
 Total con buffer: **35**hs
@@ -97,13 +97,13 @@ xychart-beta
     line [0.9, 1.5, 1.3, 6, 7, 5, 5, 30.7]
 
 	%% Green line
-    line [0, 1, 0.6, 11.6, 0, 0, 0, 14.6]
+    line [0, 1, 0.6, 14.8, 0, 0, 0, 16.4]
 ```
 
 Distribución por categoría:
 | Gestión | Desarrollo | QA | Capacitación | Documentación |
 |:-------:|:----------:|:--:|:------------:|:-------------:|
-| **1.6**hs | **13**hs | **0**hs | **0**hs | **0**hs |
+| **1.6**hs | **14.8**hs | **0**hs | **0**hs | **0**hs |
 
 **Riesgos:** El design system puede requerir iteraciones con feedback del cliente.
 
