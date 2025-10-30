@@ -156,16 +156,15 @@ flowchart TD
 flowchart TD
     DETAIL[Detalle de Máquina] -->|presiona en opción de Recordatorios| LIST_REM[Lista de Recordatorios]
     
-    %% Flujos desde la Lista
+    FORM_REM -->|Guardar| LIST_REM
+    
+    LIST_REM <--> DELETE_REM[Eliminar Recordatorio]
     LIST_REM <--> REM_DETAIL_VIEW[Detalles De Recordatorio<br/>de Mantenimiento]
-    LIST_REM <--> DELETE_QA[Eliminar Item]
-    LIST_REM --> EDIT_QA[Editar Item]
-    EDIT_QA --> FORM_REM
-
-    %% Flujos desde Detalles
     REM_DETAIL_VIEW --> EDIT_REM[Editar Recordatorio]
-    REM_DETAIL_VIEW --> DELETE_REM[Eliminar Recordatorio]
-
+    LIST_REM --> EDIT_REM
+    EDIT_REM --> FORM_REM
+    REM_DETAIL_VIEW --> DELETE_REM
+    
     LIST_REM --> CREATE_REM[CTA: Nuevo recordatorio]
     CREATE_REM --> TYPE{Tipo de recordatorio}
     TYPE --> DATE_TYPE[Por fecha<br/>#40;Cada N días / Fecha fija#41;]
@@ -174,19 +173,8 @@ flowchart TD
     DATE_TYPE --> FORM_REM["Formulario:<br/>• Nombre<br/>• Descripción<br/>• Anticipación<br/>• Tareas a realizar<br/>• Fecha<br/>• X Dato"]
     USAGE_TYPE --> FORM_REM
     
-    FORM_REM --> SAVE_REM[Guardar Recordatorio]
-    SAVE_REM --> REM_DETAIL_VIEW
-    
-    
-    
-    %% Ediciones
-    EDIT_REM --> FORM_REM
-    
-    %% Eliminaciones
-    DELETE_REM --> LIST_REM
-    
     %% Automatización del Scheduler
-    SAVE_REM -. Actualizar/Crear Scheduler .-> SCHEDULER_UPDATE[Scheduler Creado/Actualizado]
+    FORM_REM -. Actualizar/Crear Scheduler .-> SCHEDULER_UPDATE[Scheduler Creado/Actualizado]
     SCHEDULER_UPDATE -. Cuando corresponda .-> ALERT[Generar Alerta]
     ALERT --> NOTIFICATION[Centro de Notificaciones]
 ```
@@ -195,19 +183,19 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    DETAIL[Detalle de Máquina] --> TAB_SPARE[Tab: Repuestos]
-    TAB_SPARE --> LIST_SPARE[Lista de Repuestos]
-    TAB_SPARE --> ADD_SPARE[CTA: Agregar repuesto]
+    DETAIL[Detalle de Máquina] -->|presiona en opción de Respuestos| LIST_SPARE[Lista de Repuestos]
     
-    ADD_SPARE --> FORM_SPARE["Formulario Repuesto<br/>• Nombre<br/>• Categoría<br/>• Cantidad<br/>• Estado<br/>• Notas"]
-    FORM_SPARE -->|Guardar| UPDATE_LIST[Lista de Repuestos actualizada]
-    UPDATE_LIST --> TAB_SPARE
+    FORM_SPARE -->|Guardar| LIST_SPARE
     
+    LIST_SPARE <--> DELETE_SPARE[Eliminar Repuesto]
+    LIST_SPARE <--> VIEW_SPARE[Detalles del Respuesto]
+    VIEW_SPARE --> EDIT_SPARE
     LIST_SPARE --> EDIT_SPARE[Editar Repuesto]
-    LIST_SPARE --> DELETE_SPARE[Eliminar Repuesto]
-    LIST_SPARE --> VIEW_SPARE[Ver Detalle]
-    
     EDIT_SPARE --> FORM_SPARE
+    VIEW_SPARE --> DELETE_SPARE
+    
+    LIST_SPARE --> ADD_SPARE[CTA: Agregar repuesto]
+    ADD_SPARE --> FORM_SPARE["Formulario Repuesto<br/>• Nombre<br/>• Categoría<br/>• Cantidad<br/>• Estado<br/>• Notas"]
 ```
 
 ## 7. Registro de Eventos y Mantenimientos
