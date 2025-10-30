@@ -247,35 +247,28 @@ flowchart TD
     
     %% Fuentes de notificaciones
     REMINDERS[Recordatorios de Mantenimiento] -. Scheduler .-> GEN_NOTIF[Generar Notificación]
-    QC_FAILED[QuickCheck No Aprobado] -. Automático .-> GEN_NOTIF
+    QC[QuickChecks] -. Automático .-> GEN_NOTIF
     CRITICAL_EVENTS[Eventos Críticos] -. Automático .-> GEN_NOTIF
     
     GEN_NOTIF --> NOTIF_CENTER
     
     NOTIF_CENTER --> NOTIF_LIST["Lista de Notificaciones<br/>🔴 Críticas<br/>🟡 Advertencias<br/>🔵 Informativas"]
+    DETAIL --> CONTACT_DIST[Contactar Distribuidor]
     
-    NOTIF_LIST --> NOTIF_DETAIL[Ver Detalle de Notificación]
-    NOTIF_LIST --> MARK_READ[Marcar como leída]
-    NOTIF_LIST --> NOTIF_ACTION[Acción directa]
-    
-    NOTIF_DETAIL --> MACHINE_CONTEXT[Ir a Máquina relacionada]
-    NOTIF_ACTION --> QUICK_FIX[Resolución rápida]
-    NOTIF_ACTION --> CONTACT_SUPPORT[Contactar Soporte]
-    
-    MACHINE_CONTEXT --> DETAIL[Detalle de Máquina]
     
     %% Comunicaciones
-    DETAIL --> CONTACT_DIST[Contactar Distribuidor]
-    CONTACT_SUPPORT --> CONTACT_DIST
+    NOTIF_LIST --> CONTACT_DIST
     
-    CONTACT_DIST --> CONTACT_METHOD{Método disponible}
-    CONTACT_METHOD --> PHONE[📞 Llamar]
-    CONTACT_METHOD --> WHATSAPP[💬 WhatsApp]
-    CONTACT_METHOD --> EMAIL[📧 Email]
-    CONTACT_METHOD --> INTERNAL[💼 Mensaje interno<br/>#40;si distribuidor registrado#41;]
+    NOTIF_LIST --> NOTIF_DETAIL[Ver Detalle de Notificación]
     
-    INTERNAL --> CHAT[Chat interno]
-    CHAT --> NOTIF_CENTER
+    NOTIF_DETAIL -->|Ir a Máquina relacionada| DETAIL[Detalle de Máquina]
+    CONTACT_DIST --> DIST_CHECK{¿Distribuidor registrado<br/>en plataforma?}
+    DIST_CHECK -->|No| NO_CONTACT[❌ Contacto no disponible<br/>Distribuidor no registrado]
+    NO_CONTACT --> DETAIL
+    DIST_CHECK -->|Sí| CHAT[Chat interno]
+    CHAT --> SAVE_CONTACT[Registrar contacto realizado<br/>en historial]
+    SAVE_CONTACT --> DETAIL
+    
 ```
 
 ## 9. Flujo Completo Integrado - Vista de Alto Nivel
@@ -295,7 +288,7 @@ flowchart TD
     DETAIL --> HISTORY[📈 Historial]
     DETAIL --> EVENTS[📝 Eventos]
     
-    QC --> QC_RESULT[Resultado QuickCheck]
+    QC[QuickCheck] --> QC_RESULT[Resultado QuickCheck]
     REMINDERS --> ALERTS[🚨 Alertas]
     EVENTS --> ALERTS
     QC_RESULT --> ALERTS
