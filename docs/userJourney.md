@@ -275,32 +275,86 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    START[🚀 Inicio App] --> AUTH[🔐 Autenticación]
-    AUTH --> DASH[📊 Dashboard]
+    %% Inicio y Autenticación
+    START[🚀 App Launch] --> AUTH{¿Usuario autenticado?}
+    AUTH -->|No| LOGIN[🔐 Login/Registro]
+    AUTH -->|Sí| DASHBOARD[📊 Dashboard Principal]
+    LOGIN --> DASHBOARD
     
-    DASH --> MACHINES[🏭 Mis Máquinas]
-    DASH --> QA[⚡ QuickActions]
-    DASH --> NOTIF[🔔 Notificaciones]
+    %% Puntos de entrada principales desde Dashboard
+    DASHBOARD --> MACHINES[🏭 Mis Máquinas]
+    DASHBOARD --> QUICKACTIONS[⚡ QuickActions Overlay]
+    DASHBOARD --> NOTIFICATIONS[🔔 Centro de Notificaciones]
     
-    MACHINES --> DETAIL[📋 Detalle Máquina]
-    DETAIL --> REMINDERS[⏰ Recordatorios]
-    DETAIL --> SPARES[🔧 Repuestos]
-    DETAIL --> HISTORY[📈 Historial]
-    DETAIL --> EVENTS[📝 Eventos]
+    %% Flujo de Máquinas
+    MACHINES --> MACHINE_DETAIL[📋 Detalle de Máquina]
+    MACHINES --> NEW_MACHINE[➕ Registrar Nueva Máquina]
+    NEW_MACHINE --> MACHINE_DETAIL
     
-    QC[QuickCheck] --> QC_RESULT[Resultado QuickCheck]
-    REMINDERS --> ALERTS[🚨 Alertas]
+    %% QuickActions - Acciones Rápidas
+    QUICKACTIONS --> QA_QUICKCHECK[🔍 QuickCheck]
+    QUICKACTIONS --> QA_EVENT[📝 Reportar Evento]
+    QUICKACTIONS --> QA_SPARE[🔧 Solicitar Repuesto]
+    QUICKACTIONS --> QA_NEW_MACHINE[➕ Registrar Máquina]
+    
+    %% Convergencia de QuickActions a contexto de máquina
+    QA_QUICKCHECK --> MACHINE_CONTEXT[🎯 Contexto de Máquina]
+    QA_EVENT --> MACHINE_CONTEXT
+    QA_SPARE --> MACHINE_CONTEXT
+    QA_NEW_MACHINE --> MACHINE_DETAIL
+    
+    %% Gestión desde Detalle de Máquina
+    MACHINE_DETAIL --> REMINDERS[⏰ Recordatorios]
+    MACHINE_DETAIL --> SPARES[🔧 Repuestos]
+    MACHINE_DETAIL --> EVENTS[📝 Eventos]
+    MACHINE_DETAIL --> HISTORY[📈 Historial]
+    MACHINE_DETAIL --> QUICKCHECK[🔍 QuickCheck]
+    MACHINE_DETAIL --> CONTACT[� Contactar Distribuidor]
+    
+    %% Flujos de trabajo específicos
+    MACHINE_CONTEXT --> QUICKCHECK
+    MACHINE_CONTEXT --> EVENTS
+    MACHINE_CONTEXT --> SPARES
+    
+    %% Generación de Alertas y Notificaciones
+    QUICKCHECK --> RESULTS[📊 Resultados]
+    REMINDERS --> ALERTS[🚨 Sistema de Alertas]
     EVENTS --> ALERTS
-    QC_RESULT --> ALERTS
+    RESULTS --> ALERTS
     
-    ALERTS --> NOTIF
-    NOTIF --> ACTIONS[🎯 Acciones]
-    ACTIONS --> CONTACT[📞 Comunicación]
+    %% Sistema de Notificaciones
+    ALERTS --> NOTIFICATIONS
+    NOTIFICATIONS --> ACTIONS[🎯 Acciones Directas]
+    ACTIONS --> MACHINE_DETAIL
+    ACTIONS --> CONTACT
     
-    %% Navegación de retorno
-    DETAIL -.-> MACHINES[Mis Máquinas]
-    MACHINES -.-> DASH
-    NOTIF -.-> DASH
-    QC -.-> DASH
-    CONTACT -.-> DETAIL
+    %% Comunicaciones
+    CONTACT --> COMM_CHECK{¿Distribuidor registrado?}
+    COMM_CHECK -->|Sí| CHAT[Chat Interno]
+    COMM_CHECK -->|No| NO_COMM[❌ Sin Comunicación]
+    CHAT --> COMM_HISTORY[📝 Registro en Historial]
+    COMM_HISTORY --> MACHINE_DETAIL
+    NO_COMM --> MACHINE_DETAIL
+    
+    %% Navegación de retorno principal
+    MACHINE_DETAIL -.-> MACHINES
+    MACHINES -.-> DASHBOARD
+    NOTIFICATIONS -.-> DASHBOARD
+    QUICKACTIONS -.-> DASHBOARD
+    
+    %% Flujos automáticos del sistema
+    REMINDERS -. Scheduler .-> ALERTS
+    RESULTS -. Auto .-> ALERTS
+    EVENTS -. Críticos .-> ALERTS
+    
+    %% Estilos para mejor visualización
+    classDef primary fill:#e1f5fe
+    classDef action fill:#f3e5f5
+    classDef alert fill:#fff3e0
+    classDef communication fill:#e8f5e8
+    
+    class DASHBOARD,MACHINES,MACHINE_DETAIL primary
+    class QUICKACTIONS,EVENTS,QUICKCHECK,CONTACT action
+    class ALERTS,NOTIFICATIONS,RESULTS alert
+    class CHAT,COMM_HISTORY communication
 ```
