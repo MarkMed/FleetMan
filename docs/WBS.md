@@ -521,7 +521,63 @@ Contadores por evento/acción en logs.
 
 16. **Deploy & Demo**
 
-	- 16.1 **Build & deploy demo** (front estático + API).
+	- 16.1 **Taller Deploy - Conceptos Generales** (Sesión 1).
+Primera sesión de conceptos fundamentales de deploy y DevOps.
+		- Horas estimadas: **3**hs
+		- Margen: ±**0.5**hs (P80)
+		- Incertidumbre: **Baja**
+		- Dependencias: —
+		- Spike: **No**
+
+	- 16.2 **Taller Deploy - Conceptos Generales** (Sesión 2).
+Segunda sesión de conceptos fundamentales de deploy y DevOps.
+		- Horas estimadas: **3**hs
+		- Margen: ±**0.5**hs (P80)
+		- Incertidumbre: **Baja**
+		- Dependencias: —
+		- Spike: **No**
+
+	- 16.3 **Taller Deploy - AWS** (Sesión 1).
+Primera sesión de capacitación en servicios AWS para deploy.
+		- Horas estimadas: **3**hs
+		- Margen: ±**0.5**hs (P80)
+		- Incertidumbre: **Baja**
+		- Dependencias: —
+		- Spike: **No**
+
+	- 16.4 **Taller Deploy - AWS** (Sesión 2).
+Segunda sesión de capacitación en servicios AWS para deploy.
+		- Horas estimadas: **3**hs
+		- Margen: ±**0.5**hs (P80)
+		- Incertidumbre: **Baja**
+		- Dependencias: —
+		- Spike: **No**
+
+	- 16.5 **Taller Deploy - Azure** (Sesión 1).
+Primera sesión de capacitación en servicios Azure para deploy.
+		- Horas estimadas: **3**hs
+		- Margen: ±**0.5**hs (P80)
+		- Incertidumbre: **Baja**
+		- Dependencias: —
+		- Spike: **No**
+
+	- 16.6 **Taller Deploy - Azure** (Sesión 2).
+Segunda sesión de capacitación en servicios Azure para deploy.
+		- Horas estimadas: **3**hs
+		- Margen: ±**0.5**hs (P80)
+		- Incertidumbre: **Baja**
+		- Dependencias: —
+		- Spike: **No**
+
+	- 16.7 **Taller Deploy - Deploy en Práctica**.
+Sesión práctica de implementación de deploy en entorno real.
+		- Horas estimadas: **3**hs
+		- Margen: ±**0.5**hs (P80)
+		- Incertidumbre: **Baja**
+		- Dependencias: —
+		- Spike: **No**
+
+	- 16.8 **Build & deploy demo** (front estático + API).
 Empaquetado, hosting y health-check simple.
 		- Horas estimadas: **8**hs
 		- Margen: ±**1.5**hs (P80)
@@ -529,7 +585,7 @@ Empaquetado, hosting y health-check simple.
 		- Dependencias: 0.4, 13.2 (FS)
 		- Spike: **No**
 
-	- 16.2 **Semillas demo** (usar 1.4).
+	- 16.9 **Semillas demo** (usar 1.4).
 Carga inicial del dataset de demo.
 		- Horas estimadas: **3**hs
 		- Margen: ±**0.5**hs (P80)
@@ -537,12 +593,12 @@ Carga inicial del dataset de demo.
 		- Dependencias: 1.4 (FS)
 		- Spike: **No**
 
-	- 16.3 **Script "reset demo"** [NiceToHave].
+	- 16.10 **Script "reset demo"** [NiceToHave].
 Script idempotente de reinicialización.
 		- Horas estimadas: **4**hs
 		- Margen: ±**0.7**hs (P80)
 		- Incertidumbre: **Baja**
-		- Dependencias: 16.2 (FS)
+		- Dependencias: 16.9 (FS)
 		- Spike: **No**
 
 17. **Documentación & Capacitación**
