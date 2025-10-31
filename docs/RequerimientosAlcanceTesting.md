@@ -20,7 +20,7 @@
 - RF-013 – Ver lista de repuestos de una máquina Permitir visualizar todos los repuestos asociados a una máquina, incluyendo su estado actual (solicitado, instalado, faltante). Dependencias: RF-012 Prioridad: Should Have
 - RF-014 – Modificar detalles de repuestos de máquina. Permitir editar los detalles de repuestos asociados a una máquina (cantidad, estado, observaciones). Dependencias: RF-012 Prioridad: Should Have
 ## 2.7.1.4. Comunicaciones y facilidades
-- RF-015 – Comunicación con distribuidores/proveedores. Permitir a los usuarios contactar distribuidores directamente desde la aplicación mediante los medios disponibles (llamada, SMS, correo electrónico, WhatsApp o mensajería interna si el distribuidor posee cuenta registrada). Dependencias: ninguna Prioridad: Must Have
+- RF-015 – Comunicación con distribuidores/proveedores registrados. Permitir a los usuarios contactar distribuidores exclusivamente a través de mensajería interna de la aplicación, siempre y cuando el distribuidor posea cuenta registrada en la plataforma. No se incluyen medios de comunicación externos (llamada, SMS, correo electrónico, WhatsApp). Dependencias: RF-001, RF-002 Prioridad: Must Have
 - RF-016 – Centro de notificaciones. Mostrar en una bandeja centralizada las alertas o mensajes generados por mantenimientos, eventos y QuickChecks. Dependencias: RF-010, RF-008, RF-011 Prioridad: Must Have
 - RF-017 – Aviso de QuickCheck no aprobado Enviar un aviso (correo o SMS) al usuario loggeado si un QuickCheck resulta no aprobado, indicando los ítems fallidos. El aviso se registra también en el historial y en el centro de notificaciones. Dependencias: RF-011, RF-016 Prioridad: Should have
 - RF-018 – Búsqueda y filtrado global. Permitir buscar y filtrar maquinaria, repuestos, mantenimientos o eventos por criterios básicos (nombre, estado, acción, etc). Dependencias: RF-005, RF-008 Prioridad: Could Have
@@ -58,9 +58,9 @@ El alcance contempla entregar una PWA funcional que centralice maquinaria, gesti
 	- RF-011 QuickCheck de seguridad (checklist y registro en historial)
 
 - Comunicaciones & notificaciones
-	- RF-015 Comunicación con distribuidores vía medios nativos (tel/SMS/email/WhatsApp link)
+	- RF-015 Comunicación con distribuidores vía mensajería interna (solo usuarios registrados)
 	- RF-016 Centro de notificaciones (bandeja unificada)
-	- RF-017 Aviso de QuickCheck no aprobado (pequeño y descartable si no cierran tiempos; “conditional must”)
+	- RF-017 Aviso de QuickCheck no aprobado (pequeño y descartable si no cierran tiempos; "conditional must")
 
 ## 2.8.2. Alcance deseado del MVP
 Incluyendo los requerimientos/funcionalidades del alcance obligatorio, el alcance deseado agrega las funcionalidades complementarias que serían implementadas si el cronograma y estado del proyecto lo permite. Estos ítems no comprometen los Must. Si hay riesgo en fechas, se prioriza terminar Must con su respectiva calidad.
@@ -99,7 +99,7 @@ El desarrollo de dashboards estadísticos, métricas o exportaciones (PDF/CSV) q
 Aunque la app será una PWA y se desea tener operatividad fuera de línea, en esta primera versión no incluirá persistencia total de datos ni sincronización en diferido debido al costo de desarrollo y complejidad. La primera versión requerirá conexión activa para operar.
 
 - Integración con sistemas de mensajería externos.
-La app no se conectará con APIs externas de mensajería (Twilio, WhatsApp Business API, SendGrid, etc.). Los contactos se realizarán mediante medios nativos del dispositivo o simulaciones internas.
+La app no se conectará con APIs externas de mensajería (Twilio, WhatsApp Business API, SendGrid, etc.) ni utilizará medios de comunicación nativos del dispositivo (llamadas, SMS, email nativo, WhatsApp). Los contactos se realizarán exclusivamente mediante mensajería interna entre usuarios registrados en la plataforma.
 
 - Módulo de inventario avanzado o gestión de stock.
 El MVP solo permitirá registrar, visualizar y modificar datos básicos de repuestos asociados a una máquina. No incluirá gestión de stock, reposición automática ni pedidos centralizados.
