@@ -86,10 +86,11 @@ gantt
   20.1 Reporte Académico (0.9hs)               :t201, 2025-10-26, 1d
   20.2 Demo/UAT con cliente (1.5hs)            :t202, 2025-10-26, 1d
   20.3 Sprint Planning dominguero (1.3hs)      :t203, 2025-10-26, 1d
-  0.6 User Journey mapping (flujos clave) (6hs) :t06, after t203, 2d
-  1.3 DTOs + Zod (contratos compartidos) (7hs) :t13, after t06, 2d
-  1.2 Esquemas DB (Mongoose + índices) (5hs)   :t12, after t13, 1d
-  13.1 Estrategia & DoD QA (5hs)               :t131, after t12, 1d
+  1.2 Esquemas DB (Mongoose + índices) (5hs)   :t12, after t203, 1d
+  1.3 DTOs + Zod (contratos compartidos) (7hs) :t13, after t12, 2d
+  16.1 Taller Deploy - Conceptos Generales (3hs) :t161, 2025-10-30, 1d
+  0.6 User Journey mapping (flujos clave) (6hs) :t06, after t13, 2d
+  13.1 Estrategia & DoD QA (5hs)               :t131, after t06, 1d
 
   section Hitos
   Cierre Sprint 2                              :milestone, s2, 2025-11-01, 1d
@@ -112,6 +113,7 @@ gantt
   20.3 Sprint Planning dominguero (1.3hs)      :t203, 2025-11-02, 1d
   1.4 Semillas demo (dataset mínimo) (4hs)     :t14, after t203, 1d
   2.1 Registro (RF-001) (10hs)                 :t21, after t14, 2d
+  16.2 Taller Deploy - Conceptos Generales (3hs) :t162, 2025-11-06, 1d
   13.2 Config Jest (front/back, TS, coverage) (6hs) :t132, after t21, 2d
   15.1 Logger estructurado (niveles, request-id) (5hs) :t151, after t132, 1d
 
@@ -135,7 +137,9 @@ gantt
   20.2 Demo/UAT con cliente (1.5hs)            :t202, 2025-11-09, 1d
   20.3 Sprint Planning dominguero (1.3hs)      :t203, 2025-11-09, 1d
   2.2 Login de usuario (RF-002) (8hs)          :t22, after t203, 2d
+  16.5 Taller Deploy - Azure (3hs)             :t165, 2025-11-11, 1d
   2.3 Logout (RF-003) (4hs)                    :t23, after t22, 1d
+  16.6 Taller Deploy - Azure (3hs)             :t166, 2025-11-13, 1d
   2.5 AutZ por rol (admin/técnico/distribuidor) (7hs) :t25, after t23, 2d
   14.1 Hashing, rate-limit, CORS (6hs)         :t141, after t25, 2d
 
@@ -160,7 +164,9 @@ gantt
   20.2 Demo/UAT con cliente (1.5hs)            :t202, 2025-11-16, 1d
   20.3 Sprint Planning dominguero (1.3hs)      :t203, 2025-11-16, 1d
   3.1 Alta de máquina (RF-005) (10hs)          :t31, after t203, 2d
+  16.3 Taller Deploy - AWS (3hs)               :t163, 2025-11-18, 1d
   14.2 Validaciones Zod en controllers (8hs)   :t142, after t31, 2d
+  16.4 Taller Deploy - AWS (3hs)               :t164, 2025-11-20, 1d
   14.3 Permisos por endpoint (RBAC ligero) (6hs) :t143, after t142, 2d
 
   section Hitos
@@ -185,6 +191,7 @@ gantt
   3.2 Listado + detalle (9hs)                  :t32, after t203, 2d
   4.1 Crear recordatorios (RF-007) (9hs)       :t41, after t32, 2d
   6.1 Plantilla checklist (RF-011) (5hs)       :t61, after t41, 1d
+  16.7 Taller Deploy - Deploy en Práctica (3hs) :t167, 2025-11-27, 1d
 
   section Hitos
   Cierre Sprint 6                              :milestone, s6, 2025-11-29, 1d

@@ -75,35 +75,36 @@ Distribución por categoría:
 | Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | 0 |
 | Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | 1 |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | 0.6 |
-| Desarrollo | 0.6 User Journey mapping | 6 | 6 | 14.8 |
-| Desarrollo | 1.3 DTOs + Zod (contratos compartidos) | 5 | 7 | 0 |
 | Desarrollo | 1.2 Esquemas DB (Mongoose + índices clave) | 4 | 5 | 0 |
+| Desarrollo | 1.3 DTOs + Zod (contratos compartidos) | 5 | 7 | 0 |
+| Desarrollo | 0.6 User Journey mapping | 6 | 6 | 14.8 |
 | QA | 13.1 Estrategia & DoD QA | 7 | 5 | 0 |
+| Capacitación | 16.1 Taller Deploy - Conceptos Generales (miérc 30 Oct) | 8 | 3 | 0 |
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales |
 |:---:|:----------:|
-| **30.7**hs | **16.4**hs |
+| **33.7**hs | **16.4**hs |
 
-Buffer reservado: **4.3**hs
+Buffer reservado: **1.3**hs
 Total con buffer: **35**hs
 
 ```mermaid
 xychart-beta
     title "Sprint #2: Horas Estimadas #40;negro#41; vs Reales #40;verde#41;"
-    x-axis "Tareas" ["20.1", "20.2", "20.3", "0.6", "1.3", "1.2", "13.1", "TOTAL"]
-    y-axis "Horas" 0 --> 32
+    x-axis "Tareas" ["20.1", "20.2", "20.3", "1.2", "1.3", "0.6", "13.1", "16.1", "TOTAL"]
+    y-axis "Horas" 0 --> 35
 	
 	%% Black line
-    line [0.9, 1.5, 1.3, 6, 7, 5, 5, 30.7]
+    line [0.9, 1.5, 1.3, 5, 7, 6, 5, 3, 33.7]
 
 	%% Green line
-    line [0, 1, 0.6, 14.8, 0, 0, 0, 16.4]
+    line [0, 1, 0.6, 0, 0, 14.8, 0, 0, 16.4]
 ```
 
 Distribución por categoría:
 | Gestión | Desarrollo | QA | Capacitación | Documentación |
 |:-------:|:----------:|:--:|:------------:|:-------------:|
-| **1.6**hs | **14.8**hs | **0**hs | **0**hs | **0**hs |
+| **1.6**hs | **14.8**hs | **0**hs | **3**hs | **0**hs |
 
 **Riesgos:** El design system puede requerir iteraciones con feedback del cliente.
 
@@ -116,20 +117,21 @@ Distribución por categoría:
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
 | Desarrollo | 1.4 Semillas demo (dataset mínimo) | 4 | 4 | |
 | Desarrollo | 2.1 Registro (RF-001) | 5 | 10 | |
-| QA | 13.2 Config Jest (front/back, TS, coverage) | 6 | 6 | |
-| Desarrollo | 15.1 Logger estructurado (niveles, request-id) | 7 | 5 | |
+| Capacitación | 16.2 Taller Deploy - Conceptos Generales (miérc 6 Nov) | 6 | 3 | |
+| QA | 13.2 Config Jest (front/back, TS, coverage) | 7 | 6 | |
+| Desarrollo | 15.1 Logger estructurado (niveles, request-id) | 8 | 5 | |
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales |
 |:---:|:----------:|
-| **28.7**hs | **0**hs |
+| **31.7**hs | **0**hs |
 
-Buffer reservado: **6.3**hs
+Buffer reservado: **3.3**hs
 Total con buffer: **35**hs
 
 Distribución por categoría:
 | Gestión | Desarrollo | QA | Capacitación | Documentación |
 |:-------:|:----------:|:--:|:------------:|:-------------:|
-| **3.7**hs | **19**hs | **6**hs | **0**hs | **0**hs |
+| **3.7**hs | **19**hs | **6**hs | **3**hs | **0**hs |
 
 ### **Sprint #4**: dom 9 nov → sáb 15 nov 2025
 
@@ -139,21 +141,23 @@ Distribución por categoría:
 | Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
 | Desarrollo | 2.2 Login de usuario (RF-002) | 4 | 8 | |
-| Desarrollo | 2.3 Logout (RF-003) | 5 | 4 | |
-| Desarrollo | 2.5 AutZ por rol (admin/técnico/distribuidor) | 6 | 7 | |
-| Desarrollo | 14.1 Hashing, rate-limit, CORS | 7 | 6 | |
+| Capacitación | 16.5 Taller Deploy - Azure (lun 11 Nov) | 5 | 3 | |
+| Capacitación | 16.6 Taller Deploy - Azure (miérc 13 Nov) | 6 | 3 | |
+| Desarrollo | 2.3 Logout (RF-003) | 7 | 4 | |
+| Desarrollo | 2.5 AutZ por rol (admin/técnico/distribuidor) | 8 | 7 | |
+| Desarrollo | 14.1 Hashing, rate-limit, CORS | 9 | 6 | |
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales |
 |:---:|:----------:|
-| **28.7**hs | **0**hs |
+| **34.7**hs | **0**hs |
 
-Buffer reservado: **6.3**hs
+Buffer reservado: **0.3**hs
 Total con buffer: **35**hs
 
 Distribución por categoría:
 | Gestión | Desarrollo | QA | Capacitación | Documentación |
 |:-------:|:----------:|:--:|:------------:|:-------------:|
-| **3.7**hs | **25**hs | **0**hs | **0**hs | **0**hs |
+| **3.7**hs | **25**hs | **0**hs | **6**hs | **0**hs |
 
 ### **Sprint #5**: dom 16 nov → sáb 22 nov 2025
 
@@ -162,21 +166,23 @@ Distribución por categoría:
 | Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | |
 | Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
-| Desarrollo | 3.1 Alta de máquina (RF-005) | 4 | 10 | |
-| Desarrollo | 14.2 Validaciones Zod en controllers | 5 | 8 | |
-| Desarrollo | 14.3 Permisos por endpoint (RBAC ligero) | 6 | 6 | |
+| Capacitación | 16.3 Taller Deploy - AWS (lun 18 Nov) | 4 | 3 | |
+| Capacitación | 16.4 Taller Deploy - AWS (miérc 20 Nov) | 5 | 3 | |
+| Desarrollo | 3.1 Alta de máquina (RF-005) | 6 | 10 | |
+| Desarrollo | 14.2 Validaciones Zod en controllers | 7 | 8 | |
+| Desarrollo | 14.3 Permisos por endpoint (RBAC ligero) | 8 | 6 | |
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales |
 |:---:|:----------:|
-| **27.7**hs | **0**hs |
+| **33.7**hs | **0**hs |
 
-Buffer reservado: **7.3**hs
+Buffer reservado: **1.3**hs
 Total con buffer: **35**hs
 
 Distribución por categoría:
 | Gestión | Desarrollo | QA | Capacitación | Documentación |
 |:-------:|:----------:|:--:|:------------:|:-------------:|
-| **3.7**hs | **24**hs | **0**hs | **0**hs | **0**hs |
+| **3.7**hs | **24**hs | **0**hs | **6**hs | **0**hs |
 
 ### **Sprint #6**: dom 23 nov → sáb 29 nov 2025
 
@@ -188,18 +194,19 @@ Distribución por categoría:
 | Desarrollo | 3.2 Listado + detalle | 4 | 9 | |
 | Desarrollo | 4.1 Crear recordatorios (RF-007) | 5 | 9 | |
 | Desarrollo | 6.1 Plantilla checklist (RF-011) | 6 | 5 | |
+| Capacitación | 16.7 Taller Deploy - Deploy en Práctica (miérc 27 Nov) | 7 | 3 | |
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales |
 |:---:|:----------:|
-| **26.7**hs | **0**hs |
+| **29.7**hs | **0**hs |
 
-Buffer reservado: **8.3**hs
+Buffer reservado: **5.3**hs
 Total con buffer: **35**hs
 
 Distribución por categoría:
 | Gestión | Desarrollo | QA | Capacitación | Documentación |
 |:-------:|:----------:|:--:|:------------:|:-------------:|
-| **3.7**hs | **23**hs | **0**hs | **0**hs | **0**hs |
+| **3.7**hs | **23**hs | **0**hs | **3**hs | **0**hs |
 
 ### **Sprint #7**: dom 30 nov → sáb 6 dic 2025
 
