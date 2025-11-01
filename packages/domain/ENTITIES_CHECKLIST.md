@@ -19,15 +19,18 @@ Este documento rastrea el progreso de implementación de las entidades principal
   - **Dependencias**: `Email` (VO) ✅, `UserId` (VO) ✅
   - **Estado**: Implementada con validaciones completas y métodos de negocio
 
-- [ ] **`ClientUser`** (extiende User)
+- [x] **`ClientUser`** (extiende User) ✅
   - **Propósito**: Usuario final que posee/gestiona flota de máquinas
   - **Propiedades Clave**: `ownedMachines[]`, `subscriptionLevel`, `companyInfo?`
   - **Reglas de Negocio**:
     - Puede registrar y gestionar sus propias máquinas
+    - Límites de máquinas según nivel de suscripción (Basic: 5, Premium: 25, Enterprise: 1000)
     - Puede crear recordatorios de mantenimiento
     - Puede ejecutar QuickChecks en sus máquinas
-  - **Archivo**: `packages/domain/src/entities/client-user.entity.ts`
-  - **Dependencias**: `User`, `MachineId[]`
+    - Validación de información de empresa opcional
+  - **Archivo**: `packages/domain/src/entities/client-user.entity.ts` ✅
+  - **Dependencias**: `User` ✅, `MachineId[]` ✅
+  - **Estado**: Implementada con gestión completa de máquinas y suscripciones
 
 - [ ] **`ProviderUser`** (extiende User)
   - **Propósito**: Proveedor de servicios que mantiene máquinas para clientes
@@ -178,14 +181,14 @@ export class NombreEntidad {
 ## 📊 Progreso de Implementación
 
 **Total de Entidades**: 12
-**Completadas**: 1 ✅  
+**Completadas**: 2 ✅  
 **En Progreso**: 0 🔄  
-**Pendientes**: 11 ⏳  
+**Pendientes**: 10 ⏳  
 
 ## 🔗 Value Objects Relacionados Necesarios
 
-- [x] `UserId` ✅, `Email` ✅
-- [ ] `MachineId`, `SerialNumber`
+- [x] `UserId` ✅, `Email` ✅, `MachineId` ✅
+- [ ] `SerialNumber`
 - [ ] `MaintenanceSchedule`, `NotificationType`
 - [ ] `MachineEventType`, `QuickCheckId`, `RepuestoId`
 - [ ] `MessageThreadId` (para hilos de mensajería interna)
