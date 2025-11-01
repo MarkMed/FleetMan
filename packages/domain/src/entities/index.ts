@@ -1,8 +1,9 @@
 // /packages/domain/src/entities/index.ts
 // Entidades del dominio
 
-// TODO: Implementar entidades según el modelo de dominio:
-// - User (base)
+export * from './user.entity';
+
+// TODO: Implementar entidades restantes según el modelo de dominio:
 // - ClientUser extends User
 // - ProviderUser extends User
 // - Machine
@@ -11,4 +12,5 @@
 // - QuickCheck
 // - QuickCheckItem
 // - Notification
-// - ContactMethod
+// - InternalMessage
+// - Repuesto
