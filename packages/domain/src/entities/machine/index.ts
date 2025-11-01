@@ -1,2 +1,2 @@
-// Machine entity exports - TODO: Implement
-// export * from './machine.entity';
+// Machine entity exports
+export * from './machine.entity';
