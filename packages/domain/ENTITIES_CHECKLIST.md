@@ -8,15 +8,16 @@ Este documento rastrea el progreso de implementación de las entidades principal
 
 ### **Entidades de Usuario Principales**
 
-- [ ] **`User`** (Entidad Base Abstracta)
+- [x] **`User`** (Entidad Base Abstracta) ✅
   - **Propósito**: Identidad base y autenticación para todos los usuarios
   - **Propiedades Clave**: `id`, `email`, `passwordHash`, `profile`, `createdAt`, `updatedAt`
   - **Reglas de Negocio**: 
     - Email debe ser único en todo el sistema
     - Password debe cumplir requisitos de seguridad
     - Información de perfil requerida para ambos tipos de usuario
-  - **Archivo**: `packages/domain/src/entities/user.entity.ts`
-  - **Dependencias**: `Email` (VO), `UserId` (VO)
+  - **Archivo**: `packages/domain/src/entities/user.entity.ts` ✅
+  - **Dependencias**: `Email` (VO) ✅, `UserId` (VO) ✅
+  - **Estado**: Implementada con validaciones completas y métodos de negocio
 
 - [ ] **`ClientUser`** (extiende User)
   - **Propósito**: Usuario final que posee/gestiona flota de máquinas
@@ -42,11 +43,13 @@ Este documento rastrea el progreso de implementación de las entidades principal
 
 - [ ] **`Machine`**
   - **Propósito**: Equipo/activo físico siendo gestionado
-  - **Propiedades Clave**: `id`, `serialNumber`, `brand`, `model`, `ownerId`, `providerContact?`, `installDate`, `specs`
+  - **Propiedades Clave**: `id`, `serialNumber`, `brand`, `model`, `ownerId`, `createdById`, `assignedProviderId?`, `providerAssignedAt?`, `installDate`, `specs`
   - **Reglas de Negocio**:
     - Número de serie + marca/modelo debe ser único
     - Debe tener un propietario (ClientUser)
-    - Puede tener contacto de proveedor opcional
+    - Puede ser creada por el propietario o por un ProviderUser en su nombre
+    - Proveedor asignado es opcional pero debe ser ProviderUser registrado si existe
+    - El proveedor puede ser oficial, de mantenimiento, casa de repuestos, etc.
     - No puede eliminarse si tiene recordatorios activos o eventos recientes
   - **Archivo**: `packages/domain/src/entities/machine.entity.ts`
   - **Dependencias**: `MachineId` (VO), `SerialNumber` (VO), `UserId`
@@ -106,7 +109,9 @@ Este documento rastrea el progreso de implementación de las entidades principal
     - `QUICK_CHECK_COMPLETED` (con resultados)
     - `MANUAL_EVENT` (creado por usuario)
     - `SPARE_PART_CHANGED`
-    - `CONTACT_PROVIDER_ATTEMPTED`
+    - `PROVIDER_CONTACTED` (comunicación mediante mensajería interna)
+    - `PROVIDER_ASSIGNED` (cuando se asigna proveedor a máquina)
+    - `PROVIDER_REMOVED` (cuando se remueve proveedor de máquina)
   - **Reglas de Negocio**:
     - Los eventos son inmutables una vez creados
     - Debe tener referencia válida a máquina
@@ -118,24 +123,25 @@ Este documento rastrea el progreso de implementación de las entidades principal
 
 - [ ] **`Notification`**
   - **Propósito**: Sistema de notificaciones para alertas y recordatorios
-  - **Propiedades Clave**: `id`, `userId`, `type`, `title`, `message`, `isRead`, `sourceEntityId?`, `createdAt`
+  - **Propiedades Clave**: `id`, `userId`, `type`, `title`, `message`, `isRead`, `sourceEntityId?`, `createdAt`, `actionData?`
   - **Reglas de Negocio**:
     - Debe ser entregada a usuario válido
     - No puede volver a estado no leída una vez marcada como leída
     - Auto-limpieza después de 90 días si está leída
+    - Puede incluir acciones rápidas como "contactar proveedor" o "registrar evento"
   - **Archivo**: `packages/domain/src/entities/notification.entity.ts`
   - **Dependencias**: `UserId`, `NotificationType` (VO)
 
-- [ ] **`ContactMethod`**
-  - **Propósito**: Información de contacto de proveedor externo para máquinas
-  - **Propiedades Clave**: `id`, `machineId`, `type`, `value`, `label`, `isPrimary`
-  - **Tipos de Contacto**: `PHONE`, `EMAIL`, `WHATSAPP`, `WEBSITE`
+- [ ] **`InternalMessage`**
+  - **Propósito**: Sistema de mensajería interna exclusiva entre usuarios registrados
+  - **Propiedades Clave**: `id`, `fromUserId`, `toUserId`, `subject`, `content`, `machineId?`, `threadId?`, `isRead`, `createdAt`
   - **Reglas de Negocio**:
-    - Debe tener valor de contacto válido para el tipo
-    - Solo un contacto primario por tipo por máquina
-    - Teléfono/WhatsApp debe tener formato válido
-  - **Archivo**: `packages/domain/src/entities/contact-method.entity.ts`
-  - **Dependencias**: `MachineId`, `ContactInfo` (VO)
+    - Comunicación exclusivamente entre usuarios registrados (ClientUser ↔ ProviderUser)
+    - No se permiten contactos externos o comunicación fuera de la plataforma
+    - Puede estar asociado con una máquina específica para contexto
+    - Soporte para hilos de conversación
+  - **Archivo**: `packages/domain/src/entities/internal-message.entity.ts`
+  - **Dependencias**: `UserId`, `MachineId?`, `MessageThreadId?` (VO)
 
 ## 🏗 Guías de Implementación
 
@@ -167,20 +173,22 @@ export class NombreEntidad {
 ### **Estrategia de Dependencias**
 - Empezar con **User → Machine → MaintenanceReminder → MachineEvent → Notification**
 - Agregar **QuickCheck + QuickCheckItem** después
-- Terminar con **Repuesto + ContactMethod**
+- Completar con **InternalMessage + Repuesto**
 
 ## 📊 Progreso de Implementación
 
-**Total de Entidades**: 11
-**Completadas**: 0 ✅  
+**Total de Entidades**: 12
+**Completadas**: 1 ✅  
 **En Progreso**: 0 🔄  
 **Pendientes**: 11 ⏳  
 
 ## 🔗 Value Objects Relacionados Necesarios
 
-- [ ] `UserId`, `MachineId`, `Email`, `SerialNumber`
-- [ ] `ContactInfo`, `MaintenanceSchedule`, `NotificationType`
+- [x] `UserId` ✅, `Email` ✅
+- [ ] `MachineId`, `SerialNumber`
+- [ ] `MaintenanceSchedule`, `NotificationType`
 - [ ] `MachineEventType`, `QuickCheckId`, `RepuestoId`
+- [ ] `MessageThreadId` (para hilos de mensajería interna)
 
 ## 📝 Próximos Pasos
 
@@ -190,7 +198,8 @@ export class NombreEntidad {
 4. **Construir sistema de eventos** (MachineEvent → Notification)
 5. **Agregar funciones de mantenimiento** (MaintenanceReminder)
 6. **Implementar funciones de seguridad** (QuickCheck + Items)
-7. **Completar con inventario** (Repuesto + ContactMethod)
+7. **Construir sistema de comunicación** (InternalMessage)
+8. **Completar con inventario** (Repuesto)
 
 ---
 *Última Actualización: 31 de Octubre, 2025*  
