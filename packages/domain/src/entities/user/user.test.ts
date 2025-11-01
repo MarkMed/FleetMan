@@ -1,7 +1,7 @@
 // Test básico para verificar que la entidad User funciona correctamente
 import { User, UserType, CreateUserProps } from './user.entity';
-import { Email } from '../value-objects/email.vo';
-import { UserId } from '../value-objects/user-id.vo';
+import { Email } from '../../value-objects/email.vo';
+import { UserId } from '../../value-objects/user-id.vo';
 
 // Esta función demuestra el uso básico de la entidad User
 function demonstrateUserUsage() {

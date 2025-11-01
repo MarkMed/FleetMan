@@ -1,6 +1,6 @@
-import { Result, ok, err, DomainError, DomainErrorCodes } from '../errors';
-import { UserId } from '../value-objects/user-id.vo';
-import { Email } from '../value-objects/email.vo';
+import { Result, ok, err, DomainError, DomainErrorCodes } from '../../errors';
+import { UserId } from '../../value-objects/user-id.vo';
+import { Email } from '../../value-objects/email.vo';
 
 /**
  * Tipos de usuario en el sistema
@@ -104,7 +104,7 @@ export abstract class User {
   /**
    * Valida que el hash de password tenga el formato correcto
    */
-  private static validatePasswordHash(passwordHash: string): Result<void, DomainError> {
+  protected static validatePasswordHash(passwordHash: string): Result<void, DomainError> {
     if (!passwordHash || passwordHash.trim().length === 0) {
       return err(DomainError.create(DomainErrorCodes.INVALID_PASSWORD, 'Password hash cannot be empty'));
     }
@@ -120,7 +120,7 @@ export abstract class User {
   /**
    * Valida la información del perfil del usuario
    */
-  private static validateProfile(profile: UserProfile): Result<void, DomainError> {
+  protected static validateProfile(profile: UserProfile): Result<void, DomainError> {
     if (!profile.firstName || profile.firstName.trim().length === 0) {
       return err(DomainError.validation('First name is required'));
     }
