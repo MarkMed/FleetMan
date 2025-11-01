@@ -44,18 +44,21 @@ Este documento rastrea el progreso de implementación de las entidades principal
 
 ### **Entidades de Máquina y Activos Principales**
 
-- [ ] **`Machine`**
+- [x] **`Machine`** ✅
   - **Propósito**: Equipo/activo físico siendo gestionado
-  - **Propiedades Clave**: `id`, `serialNumber`, `brand`, `model`, `ownerId`, `createdById`, `assignedProviderId?`, `providerAssignedAt?`, `installDate`, `specs`
+  - **Propiedades Clave**: `serialNumber`, `brand`, `model`, `ownerId`, `assignedProviderId`, `status`, `specs`, `location`
   - **Reglas de Negocio**:
     - Número de serie + marca/modelo debe ser único
     - Debe tener un propietario (ClientUser)
     - Puede ser creada por el propietario o por un ProviderUser en su nombre
     - Proveedor asignado es opcional pero debe ser ProviderUser registrado si existe
     - El proveedor puede ser oficial, de mantenimiento, casa de repuestos, etc.
+    - Estados válidos: ACTIVE, MAINTENANCE, OUT_OF_SERVICE, RETIRED
+    - Transiciones de estado controladas
     - No puede eliminarse si tiene recordatorios activos o eventos recientes
-  - **Archivo**: `packages/domain/src/entities/machine.entity.ts`
-  - **Dependencias**: `MachineId` (VO), `SerialNumber` (VO), `UserId`
+  - **Archivo**: `packages/domain/src/entities/machine/machine.entity.ts` ✅
+  - **Dependencias**: `MachineId` (VO) ✅, `SerialNumber` (VO) ✅, `UserId` ✅
+  - **Estado**: Implementada con gestión completa de estados, proveedor y especificaciones técnicas
 
 - [ ] **`Repuesto`** (Spare Part)
   - **Propósito**: Gestión de repuestos e inventario para máquinas
@@ -181,14 +184,13 @@ export class NombreEntidad {
 ## 📊 Progreso de Implementación
 
 **Total de Entidades**: 12
-**Completadas**: 2 ✅  
+**Completadas**: 3 ✅  
 **En Progreso**: 0 🔄  
-**Pendientes**: 10 ⏳  
+**Pendientes**: 9 ⏳  
 
 ## 🔗 Value Objects Relacionados Necesarios
 
-- [x] `UserId` ✅, `Email` ✅, `MachineId` ✅
-- [ ] `SerialNumber`
+- [x] `UserId` ✅, `Email` ✅, `MachineId` ✅, `SerialNumber` ✅
 - [ ] `MaintenanceSchedule`, `NotificationType`
 - [ ] `MachineEventType`, `QuickCheckId`, `RepuestoId`
 - [ ] `MessageThreadId` (para hilos de mensajería interna)
