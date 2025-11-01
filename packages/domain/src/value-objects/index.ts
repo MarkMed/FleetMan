@@ -3,9 +3,9 @@
 
 export * from './user-id.vo';
 export * from './email.vo';
+export * from './machine-id.vo';
 
 // TODO: Implementar Value Objects restantes:
-// - MachineId
 // - SerialNumber
 // - MaintenanceSchedule
 // - MessageThreadId
