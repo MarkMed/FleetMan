@@ -4,6 +4,7 @@
 export * from './user-id.vo';
 export * from './email.vo';
 export * from './machine-id.vo';
+export * from './machine-type-id.vo';
 export * from './serial-number.vo';
 
 // TODO: Implementar Value Objects restantes:
