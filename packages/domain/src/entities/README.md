@@ -1,92 +1,151 @@
-# Estructura de Entidades del Dominio
+# 🏗️ Entities - Núcleo del Dominio
 
-## 📁 Organización por Carpetas
+## � **Propósito**
+Las **Entidades** son el corazón del Domain-Driven Design. Representan conceptos del negocio con identidad única y encapsulan tanto datos como comportamientos (reglas de negocio).
 
-Cada entidad del dominio tiene su propia carpeta que contiene:
-- **`{entity}.entity.ts`**: Archivo principal de la entidad
-- **`{entity}.test.ts`**: Archivo de pruebas y ejemplos de uso
-- **`index.ts`**: Archivo de exportación para la entidad
-
-## 🏗 Estructura Actual
-
+## 📁 **Estructura Actual**
 ```
-src/entities/
-├── user/                     ✅ Implementada
-│   ├── user.entity.ts        # Entidad base abstracta User
-│   ├── user.test.ts          # Tests y ejemplos
-│   └── index.ts              # Exports
-├── client-user/              ✅ Implementada
-│   ├── client-user.entity.ts # ClientUser extends User
-│   ├── client-user.test.ts   # Tests completos con gestión de máquinas
-│   └── index.ts              # Exports
-├── provider-user/            🔄 Pendiente
-│   └── index.ts              # Placeholder
-├── machine/                  🔄 Pendiente
-│   └── index.ts              # Placeholder
-├── maintenance-reminder/     🔄 Pendiente
-│   └── index.ts              # Placeholder
-├── machine-event/            🔄 Pendiente
-│   └── index.ts              # Placeholder
-├── quick-check/              🔄 Pendiente
-│   └── index.ts              # Placeholder
-├── quick-check-item/         🔄 Pendiente
-│   └── index.ts              # Placeholder
-├── notification/             🔄 Pendiente
-│   └── index.ts              # Placeholder
-├── internal-message/         🔄 Pendiente
-│   └── index.ts              # Placeholder
-├── repuesto/                 🔄 Pendiente
-│   └── index.ts              # Placeholder
-└── index.ts                  # Punto de entrada principal
+entities/
+├── client-user/
+│   └── client-user.entity.ts      ← Usuario tipo cliente
+├── machine/
+│   ├── machine.entity.ts          ← Entidad principal: Máquina/Activo ✅
+│   └── machineStatus/             ← Estados de máquina (patrón State) ✅
+├── machine-type/
+│   └── machine-type.entity.ts     ← Tipo de máquina configurable ✅
+└── user/
+    └── user.entity.ts             ← Entidad base de usuario ✅
 ```
 
-## 🔗 Imports y Dependencias
+## 🎯 **Responsabilidades**
 
-### Patrón de Imports
+### **✅ Lo que SÍ hacen las Entidades:**
+- **🛡️ Validaciones de Negocio**: Garantizan que los datos cumplan reglas del dominio
+- **🎯 Lógica de Negocio**: Métodos que implementan operaciones del negocio
+- **🔒 Encapsulación**: Protegen su estado interno mediante getters inmutables
+- **📋 Invariantes**: Mantienen consistencia interna en todo momento
+- **🆔 Identidad**: Cada entidad tiene un ID único e inmutable
+
+### **❌ Lo que NO hacen las Entidades:**
+- **�️ Persistencia**: No saben cómo guardarse en base de datos
+- **🌐 Comunicación Externa**: No llaman APIs o servicios externos
+- **📧 Notificaciones**: No envían emails ni mensajes
+- **🎨 Presentación**: No saben cómo mostrarse en UI
+
+## 🔧 **Patrón de Implementación**
+
+### **🏭 Factory Method Pattern:**
 ```typescript
-// Para value objects (desde entidad)
-import { UserId } from '../../value-objects/user-id.vo';
+export class Machine {
+  private constructor(private props: MachineProps) {}
 
-// Para errores (desde entidad)
-import { DomainError } from '../../errors';
-
-// Para otras entidades (desde entidad)
-import { User } from '../user/user.entity';
+  // ✅ Constructor público estático con validaciones
+  public static create(createProps: CreateMachineProps): Result<Machine, DomainError> {
+    // Validaciones exhaustivas
+    // Creación segura
+    // Retorno inmutable
+  }
+}
 ```
 
-### Exports en index.ts
+### **�️ Encapsulación Total:**
 ```typescript
-// Cada carpeta de entidad exporta todo lo público
-export * from './user.entity';
+// ✅ Solo getters (inmutables)
+get serialNumber(): SerialNumber {
+  return this.props.serialNumber;
+}
 
-// El index principal de entities exporta todas las carpetas
-export * from './user';
-export * from './client-user';
+// ✅ Métodos de negocio que validan
+public assignProvider(providerId: UserId): Result<void, DomainError> {
+  // Validaciones de negocio
+  // Cambio de estado controlado
+  // Actualización de timestamp
+}
 ```
 
-## 🎯 Beneficios de esta Estructura
+## 💡 **Beneficios**
 
-✅ **Organización clara**: Cada entidad tiene su propio espacio  
-✅ **Escalabilidad**: Fácil agregar nuevas entidades sin contaminar carpetas  
-✅ **Tests co-ubicados**: Tests junto a la entidad que prueban  
-✅ **Imports limpios**: Estructura predecible de imports  
-✅ **Separación de responsabilidades**: Una entidad = una carpeta  
+### **🔄 Consistencia:**
+- Las reglas de negocio están centralizadas
+- Imposible crear entidades en estado inválido
+- Validaciones aplicadas siempre, sin excepción
 
-## 📝 Convenciones de Nomenclatura
+### **🧪 Testabilidad:**
+- Fácil unit testing sin dependencias externas
+- Lógica de negocio aislada y predecible
+- Mocking innecesario para reglas de dominio
 
-- **Carpetas**: `kebab-case` (ej: `client-user`, `machine-event`)
-- **Archivos**: `kebab-case.tipo.ts` (ej: `user.entity.ts`, `user.test.ts`)
-- **Clases**: `PascalCase` (ej: `User`, `ClientUser`, `MachineEvent`)
-- **Exports**: Siempre a través de `index.ts`
+### **🚀 Mantenibilidad:**
+- Cambio de regla en un solo lugar
+- Código autodocumentado mediante métodos de negocio
+- Refactoring seguro con TypeScript
 
-## 🚀 Próximos Pasos
+### **🛡️ Robustez:**
+- Estado siempre válido
+- Operaciones atómicas
+- Fallos controlados con Result types
 
-1. **ProviderUser**: Implementar proveedor de servicios
-2. **Machine**: Entidad central de equipos
-3. **MachineEvent**: Sistema de eventos y trazabilidad
-4. **Notification**: Sistema de notificaciones
-5. **QuickCheck**: Formularios de inspección
-6. **MaintenanceReminder**: Recordatorios de mantenimiento
+## 📚 **Ejemplos de Uso**
+
+### **✅ Crear Máquina:**
+```typescript
+const machineResult = Machine.create({
+  serialNumber: 'CAT-2024-001',
+  brand: 'Caterpillar',
+  model: 'D6T',
+  machineTypeId: 'mtype_excavator_001',
+  ownerId: 'user_client_123',
+  createdById: 'user_admin_456'
+});
+
+if (!machineResult.success) {
+  throw new Error(machineResult.error.message);
+}
+
+const machine = machineResult.data;
+```
+
+### **✅ Operaciones de Negocio:**
+```typescript
+// Asignar proveedor con validaciones automáticas
+const assignResult = machine.assignProvider(providerId);
+
+// Cambiar estado con transiciones validadas
+const statusResult = machine.changeStatus(MachineStatuses.Maintenance());
+
+// Actualizar specs con rangos validados
+const specsResult = machine.updateSpecs({
+  enginePower: 300,
+  maxCapacity: 5000
+});
+```
+
+## � **Próximas Entidades**
+
+### **👥 ProviderUser:**
+- Extenderá User base
+- Propiedades específicas del proveedor
+- Validaciones de certificaciones/licencias
+
+### **📋 MaintenanceRecord:**
+- Historial de mantenimientos
+- Relación con Machine y ProviderUser
+- Cálculos de costos y tiempos
+
+### **📄 Contract:**
+- Contratos entre clientes y proveedores
+- Términos, condiciones y tarifas
+- Estados del contrato
+
+## 🎯 **Reglas de Oro**
+
+1. **🎯 Una Entidad = Un Concepto del Negocio**
+2. **🛡️ Siempre Validar en Constructor**
+3. **🔒 Estado Inmutable desde el Exterior**
+4. **📋 Métodos de Negocio Expresivos**
+5. **🚫 Zero Dependencies Externas**
+6. **✅ Result Types para Operaciones**
 
 ---
-*Última Actualización: 1 de Noviembre, 2025*
+
+> 💡 **Recuerda**: Las entidades son el **alma del sistema**. Si están bien diseñadas, el resto de la aplicación fluye naturalmente.
