@@ -1,5 +1,6 @@
 import { Result, ok, err, DomainError, DomainErrorCodes } from '../../errors';
 import { MachineId } from '../../value-objects/machine-id.vo';
+import { MachineTypeId } from '../../value-objects/machine-type-id.vo';
 import { SerialNumber } from '../../value-objects/serial-number.vo';
 import { UserId } from '../../value-objects/user-id.vo';
 import { 
@@ -10,32 +11,6 @@ import {
 } from './machineStatus';
 
 /**
- * Estados posibles de una máquina (mantenido para compatibilidad)
- * @deprecated Use MachineStatus classes instead
- */
-export enum MachineStatusEnum {
-  ACTIVE = 'ACTIVE',
-  MAINTENANCE = 'MAINTENANCE',
-  OUT_OF_SERVICE = 'OUT_OF_SERVICE',
-  RETIRED = 'RETIRED',
-}
-
-/**
- * Tipos de máquina en el sistema
- */
-export enum MachineType {
-  EXCAVATOR = 'EXCAVATOR',
-  BULLDOZER = 'BULLDOZER',
-  CRANE = 'CRANE',
-  LOADER = 'LOADER',
-  DUMP_TRUCK = 'DUMP_TRUCK',
-  FORKLIFT = 'FORKLIFT',
-  GENERATOR = 'GENERATOR',
-  COMPRESSOR = 'COMPRESSOR',
-  OTHER = 'OTHER',
-}
-
-/**
  * Especificaciones técnicas de la máquina
  */
 export interface MachineSpecs {
@@ -44,11 +19,6 @@ export interface MachineSpecs {
   fuelType?: 'DIESEL' | 'GASOLINE' | 'ELECTRIC' | 'HYBRID';
   year?: number;
   weight?: number; // kg
-  dimensions?: {
-    length: number; // mm
-    width: number;  // mm
-    height: number; // mm
-  };
   operatingHours?: number; // Horas acumuladas de uso
 }
 
@@ -72,7 +42,7 @@ export interface CreateMachineProps {
   serialNumber: string;
   brand: string;
   model: string;
-  type: MachineType;
+  machineTypeId: string; // Se recibe como string y se valida internamente
   ownerId: string; // UserId string
   createdById: string; // UserId string
   specs?: MachineSpecs;
@@ -88,7 +58,7 @@ interface MachineProps {
   serialNumber: SerialNumber;
   brand: string;
   model: string;
-  type: MachineType;
+  machineTypeId: MachineTypeId;
   nickname?: string;
   status: MachineStatus; // Ahora usa la clase MachineStatus
   ownerId: UserId;
@@ -119,6 +89,12 @@ export class Machine {
     const serialNumberResult = SerialNumber.create(createProps.serialNumber);
     if (!serialNumberResult.success) {
       return err(serialNumberResult.error);
+    }
+
+    // Validar machine type ID
+    const machineTypeIdResult = MachineTypeId.create(createProps.machineTypeId);
+    if (!machineTypeIdResult.success) {
+      return err(machineTypeIdResult.error);
     }
 
     // Validar owner ID
@@ -161,7 +137,7 @@ export class Machine {
       serialNumber: serialNumberResult.data,
       brand: createProps.brand.trim(),
       model: createProps.model.trim(),
-      type: createProps.type,
+      machineTypeId: machineTypeIdResult.data,
       nickname: createProps.nickname?.trim(),
       status: MachineStatuses.Active(), // Usa el factory del nuevo patrón
       ownerId: ownerIdResult.data,
@@ -269,8 +245,8 @@ export class Machine {
     return this.props.model;
   }
 
-  get type(): MachineType {
-    return this.props.type;
+  get machineTypeId(): MachineTypeId {
+    return this.props.machineTypeId;
   }
 
   get nickname(): string | undefined {

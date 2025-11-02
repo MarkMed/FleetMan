@@ -2,7 +2,6 @@
 import { 
   Machine, 
   CreateMachineProps, 
-  MachineType, 
   MachineSpecs,
   MachineLocation 
 } from './machine.entity';
@@ -21,11 +20,6 @@ function demonstrateMachineUsage() {
     fuelType: 'DIESEL',
     year: 2022,
     weight: 25000, // kg
-    dimensions: {
-      length: 8500, // mm
-      width: 2800,  // mm
-      height: 3200, // mm
-    },
     operatingHours: 1250,
   };
 
@@ -45,7 +39,7 @@ function demonstrateMachineUsage() {
     serialNumber: 'CAT-240D-ABC123XYZ',
     brand: 'Caterpillar',
     model: '240D',
-    type: MachineType.EXCAVATOR,
+    machineTypeId: 'EXCAVATOR',
     ownerId: 'user_client_12345',
     createdById: 'user_client_12345', // Mismo cliente que la creó
     specs: specs,
@@ -65,7 +59,7 @@ function demonstrateMachineUsage() {
   console.log('✅ Machine creada exitosamente');
   console.log('🚜 Máquina:', machine.getDisplayName());
   console.log('🔢 Serie:', machine.serialNumber.toCensoredString());
-  console.log('📊 Tipo:', machine.type);
+  console.log('📊 Tipo ID:', machine.machineTypeId.getValue());
   console.log('⚡ Estado:', machine.status.displayName);
   console.log('🏭 Identificador único:', machine.getUniqueIdentifier());
   console.log('📍 Ubicación:', machine.location?.siteName);
@@ -153,7 +147,7 @@ function demonstrateMachineValidations() {
     serialNumber: 'abc', // Muy corto
     brand: 'Caterpillar',
     model: '320D',
-    type: MachineType.EXCAVATOR,
+    machineTypeId: 'EXCAVATOR',
     ownerId: 'user_test_123',
     createdById: 'user_test_123',
   };
@@ -166,7 +160,7 @@ function demonstrateMachineValidations() {
     serialNumber: 'CAT-320D-ABC123',
     brand: '', // Vacío
     model: '320D',
-    type: MachineType.EXCAVATOR,
+    machineTypeId: 'EXCAVATOR',
     ownerId: 'user_test_123',
     createdById: 'user_test_123',
   };
@@ -179,7 +173,7 @@ function demonstrateMachineValidations() {
     serialNumber: 'CAT-320D-ABC123',
     brand: 'Caterpillar',
     model: '320D',
-    type: MachineType.EXCAVATOR,
+    machineTypeId: 'EXCAVATOR',
     ownerId: 'user_test_123',
     createdById: 'user_test_123',
     specs: {
@@ -196,7 +190,7 @@ function demonstrateMachineValidations() {
     serialNumber: 'CAT-320D-ABC123',
     brand: 'Caterpillar',
     model: '320D',
-    type: MachineType.EXCAVATOR,
+    machineTypeId: 'EXCAVATOR',
     ownerId: 'user_test_123',
     createdById: 'user_test_123',
     location: {
@@ -218,28 +212,28 @@ function demonstrateMachineTypes() {
 
   const machineConfigs = [
     {
-      type: MachineType.EXCAVATOR,
+      machineTypeId: 'EXCAVATOR',
       brand: 'Caterpillar',
       model: '320D',
       serial: 'CAT-320D-EXC001',
       nickname: 'Excavadora Yellow'
     },
     {
-      type: MachineType.CRANE,
+      machineTypeId: 'CRANE',
       brand: 'Liebherr',
       model: 'LTM1090',
       serial: 'LIE-LTM1090-CRN001',
       nickname: 'Grúa Grande'
     },
     {
-      type: MachineType.FORKLIFT,
+      machineTypeId: 'FORKLIFT',
       brand: 'Toyota',
       model: '8FG25',
       serial: 'TOY-8FG25-FLT001',
       nickname: 'Montacarga Principal'
     },
     {
-      type: MachineType.GENERATOR,
+      machineTypeId: 'GENERATOR',
       brand: 'Cummins',
       model: 'C125D5',
       serial: 'CUM-C125D5-GEN001',
@@ -252,7 +246,7 @@ function demonstrateMachineTypes() {
       serialNumber: config.serial,
       brand: config.brand,
       model: config.model,
-      type: config.type,
+      machineTypeId: config.machineTypeId,
       ownerId: 'user_demo_client',
       createdById: 'user_demo_client',
       nickname: config.nickname,
@@ -263,7 +257,7 @@ function demonstrateMachineTypes() {
     if (result.success) {
       const machine = result.data;
       console.log(`${index + 1}. ${machine.getDisplayName()}`);
-      console.log(`   Tipo: ${machine.type}`);
+      console.log(`   Tipo: ${machine.machineTypeId.getValue()}`);
       console.log(`   Serie: ${machine.serialNumber.toCensoredString()}`);
       console.log(`   ID: ${machine.getUniqueIdentifier()}`);
       console.log('');
