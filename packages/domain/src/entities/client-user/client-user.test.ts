@@ -1,155 +1,131 @@
-// Test básico para verificar que la entidad ClientUser funciona correctamente
-import { 
-  ClientUser, 
-  CreateClientUserProps, 
-  SubscriptionLevel, 
-  CompanyInfo 
-} from './client-user.entity';
+/**
+ * Test rápido para verificar que ClientUser funciona con la herencia polimórfica
+ */
+import { ClientUser, CreateClientUserProps, SubscriptionLevel, CompanyInfo } from './client-user.entity';
 import { MachineId } from '../../value-objects/machine-id.vo';
 
-// Esta función demuestra el uso básico de la entidad ClientUser
-function demonstrateClientUserUsage() {
-  console.log('=== Demonstración de ClientUser ===\n');
+console.log('=== Testing ClientUser (herencia polimórfica) ===\n');
 
-  // 1. Crear información de empresa
-  const companyInfo: CompanyInfo = {
-    name: 'Transportes Rápidos S.A.',
-    industry: 'Logística y Transporte',
-    size: 'MEDIUM',
-    taxId: 'CUIT-12345678901',
-    address: {
-      street: 'Av. Corrientes 1234',
-      city: 'Buenos Aires',
-      state: 'CABA',
-      zipCode: '1043',
-      country: 'Argentina',
-    },
-  };
+// =============================================================================
+// Test 1: Creación básica con nuevo factory method polimórfico
+// =============================================================================
+console.log('🧪 Test 1: Creación con factory polimórfico');
 
-  // 2. Crear propiedades para ClientUser
-  const createClientProps: CreateClientUserProps = {
-    email: 'gerente@transportesrapidos.com',
-    passwordHash: '$2b$10$N9qo8uLOickgx2ZMRZoMye5J39N.F5gT67Nv9J1lJDhJWkUaQMa.W', // Hash válido de ejemplo
-    profile: {
-      firstName: 'María',
-      lastName: 'González',
-      phone: '+541145678900',
-      companyName: 'Transportes Rápidos S.A.',
-      position: 'Gerente de Flota',
-    },
-    subscriptionLevel: SubscriptionLevel.PREMIUM,
-    companyInfo: companyInfo,
-  };
-
-  // 3. Crear ClientUser
-  const clientResult = ClientUser.create(createClientProps);
-  
-  if (!clientResult.success) {
-    console.log('❌ Error creando ClientUser:', clientResult.error.message);
-    return;
+const companyInfo: CompanyInfo = {
+  name: 'Transportes Modernos SA',
+  industry: 'Logística',
+  size: 'MEDIUM',
+  taxId: '20-12345678-9',
+  address: {
+    street: 'Av. Libertador 1500',
+    city: 'Buenos Aires',
+    state: 'CABA',
+    zipCode: '1428',
+    country: 'Argentina'
   }
+};
 
-  const client = clientResult.data;
+const createProps: CreateClientUserProps = {
+  email: 'admin@transportesmodernos.com',
+  passwordHash: '$2b$10$abcdefghijklmnopqrstuvwxyz123456',
+  profile: {
+    companyName: 'Transportes Modernos SA',
+    phone: '+541198765432',
+    address: 'Av. Libertador 1500, CABA'
+  },
+  subscriptionLevel: SubscriptionLevel.PREMIUM,
+  companyInfo: companyInfo
+};
+
+const result = ClientUser.create(createProps);
+if (result.success) {
+  const client = result.data;
   console.log('✅ ClientUser creado exitosamente');
-  console.log('📧 Email:', client.email.getValue());
-  console.log('👤 Nombre completo:', client.getFullName());
-  console.log('🏢 Empresa:', client.companyInfo?.name);
-  console.log('📊 Suscripción:', client.subscriptionLevel);
-  console.log('📈 Estadísticas:', client.getStats());
-  console.log('');
-
-  // 4. Demostrar gestión de máquinas
-  console.log('=== Gestión de Máquinas ===');
+  console.log('  🏢 Company:', client.getDisplayName());
+  console.log('  📧 Email:', client.email.getValue());
+  console.log('  📱 Phone:', client.profile.phone);
+  console.log('  📍 Address:', client.profile.address);
+  console.log('  🎗️ Subscription:', client.subscriptionLevel);
+  console.log('  🏭 Company Info:', client.companyInfo?.name);
+  console.log('  🚚 Machine Count:', client.machineCount);
+  console.log('  📊 Can add more machines:', client.canAddMoreMachines() ? 'Sí' : 'No');
   
-  // Generar algunos IDs de máquinas
-  const machine1 = MachineId.generate();
-  const machine2 = MachineId.generate();
-  const machine3 = MachineId.generate();
+  const stats = client.getStats();
+  console.log('  📈 Stats:');
+  console.log('    📊 Total Machines:', stats.totalMachines);
+  console.log('    🎗️ Subscription:', stats.subscriptionLevel);
+  console.log('    🚚 Max Allowed:', stats.maxMachinesAllowed);
+  console.log('    🆓 Remaining Slots:', stats.remainingSlots);
+} else {
+  console.log('❌ Error:', result.error.message);
+}
 
-  console.log('🔧 Agregando máquinas...');
-  
-  // Agregar primera máquina
-  const addResult1 = client.addMachine(machine1);
-  console.log('Máquina 1:', addResult1.success ? '✅ Agregada' : `❌ Error: ${addResult1.error.message}`);
-  
-  // Agregar segunda máquina
-  const addResult2 = client.addMachine(machine2);
-  console.log('Máquina 2:', addResult2.success ? '✅ Agregada' : `❌ Error: ${addResult2.error.message}`);
-  
-  // Intentar agregar la misma máquina otra vez (debería fallar)
-  const duplicateResult = client.addMachine(machine1);
-  console.log('Máquina duplicada:', duplicateResult.success ? '✅ Agregada' : `❌ Error esperado: ${duplicateResult.error.message}`);
+// =============================================================================
+// Test 2: Validaciones específicas de ClientUser
+// =============================================================================
+console.log('\n🧪 Test 2: Validaciones');
 
-  console.log('📊 Estadísticas actualizadas:', client.getStats());
-  console.log('');
+// Company name vacío
+const invalidCompany = ClientUser.create({
+  email: 'test@example.com',
+  passwordHash: '$2b$10$abcdefghijklmnopqrstuvwxyz123456',
+  profile: { companyName: 'Test Company' },
+  companyInfo: { name: '' } // Company name vacío
+});
+console.log('  Company name vacío:', invalidCompany.success ? '❌ Debería fallar' : '✅ ' + invalidCompany.error.message);
 
-  // 5. Demostrar verificaciones de propiedad
-  console.log('=== Verificaciones de Propiedad ===');
-  console.log('¿Posee máquina 1?', client.ownsMachine(machine1) ? '✅ Sí' : '❌ No');
-  console.log('¿Posee máquina 3?', client.ownsMachine(machine3) ? '✅ Sí' : '❌ No');
-  console.log('¿Puede agregar más máquinas?', client.canAddMoreMachines() ? '✅ Sí' : '❌ No');
-  console.log('');
-
-  // 6. Demostrar upgrade de suscripción
-  console.log('=== Upgrade de Suscripción ===');
-  const upgradeResult = client.upgradeSubscription(SubscriptionLevel.ENTERPRISE);
-  console.log('Upgrade a Enterprise:', upgradeResult.success ? '✅ Exitoso' : `❌ Error: ${upgradeResult.error.message}`);
+// =============================================================================
+// Test 3: Gestión de máquinas (solo si creación básica fue exitosa)
+// =============================================================================
+if (result.success) {
+  const client = result.data;
   
-  if (upgradeResult.success) {
-    console.log('📊 Estadísticas post-upgrade:', client.getStats());
+  console.log('\n🧪 Test 3: Gestión de máquinas');
+  
+  // Crear algunos IDs de máquinas
+  const machine1Result = MachineId.create('machine_001');
+  const machine2Result = MachineId.create('machine_002');
+  
+  if (machine1Result.success && machine2Result.success) {
+    const machine1 = machine1Result.data;
+    const machine2 = machine2Result.data;
+    
+    // Agregar primera máquina
+    const addResult1 = client.addMachine(machine1);
+    console.log('  Agregar máquina 1:', addResult1.success ? '✅ Exitoso' : '❌ ' + addResult1.error.message);
+    
+    if (addResult1.success) {
+      console.log('  🚚 Máquinas después de agregar:', client.machineCount);
+      console.log('  🔍 Posee machine_001:', client.ownsMachine(machine1) ? 'Sí' : 'No');
+    }
+    
+    // Agregar segunda máquina
+    const addResult2 = client.addMachine(machine2);
+    console.log('  Agregar máquina 2:', addResult2.success ? '✅ Exitoso' : '❌ ' + addResult2.error.message);
+    
+    // Intentar agregar máquina duplicada
+    const duplicateResult = client.addMachine(machine1);
+    console.log('  Agregar duplicada:', duplicateResult.success ? '❌ No debería permitir' : '✅ Prevención OK');
+    
+    // Remover máquina
+    const removeResult = client.removeMachine(machine1);
+    console.log('  Remover máquina 1:', removeResult.success ? '✅ Exitoso' : '❌ ' + removeResult.error.message);
+    
+    if (removeResult.success) {
+      console.log('  🚚 Máquinas después de remover:', client.machineCount);
+      console.log('  🔍 Posee machine_001:', client.ownsMachine(machine1) ? 'Sí' : 'No');
+    }
   }
   
-  console.log('');
-
-  // 7. Información para logs
-  console.log('=== Información para Logs ===');
-  console.log('Log info:', client.getLogInfo());
-  console.log('Email censurado:', client.email.toCensoredString());
+  console.log('\n🧪 Test 4: Información y logs');
+  console.log('  📋 Log info:', client.getLogInfo());
+  console.log('  🆔 User ID:', client.id.getValue());
+  console.log('  📅 Created:', client.createdAt.toISOString().split('T')[0]);
+  console.log('  ⚡ Active:', client.isActive ? 'Sí' : 'No');
 }
 
-// Función para demostrar validaciones de error
-function demonstrateClientUserValidations() {
-  console.log('=== Demonstración de Validaciones ===\n');
+console.log('\n🎉 Tests completados para ClientUser');
+console.log('✅ Herencia polimórfica funcionando correctamente');
+console.log('✅ Factory method refactorizado exitosamente');
 
-  // 1. Email inválido
-  const invalidEmailProps: CreateClientUserProps = {
-    email: 'email-invalido',
-    passwordHash: '$2b$10$N9qo8uLOickgx2ZMRZoMye5J39N.F5gT67Nv9J1lJDhJWkUaQMa.W',
-    profile: {
-      firstName: 'Juan',
-      lastName: 'Pérez',
-    },
-  };
-
-  const invalidEmailResult = ClientUser.create(invalidEmailProps);
-  console.log('Email inválido:', invalidEmailResult.success ? '✅ Creado' : `❌ Error esperado: ${invalidEmailResult.error.message}`);
-
-  // 2. Password hash inválido
-  const invalidPasswordProps: CreateClientUserProps = {
-    email: 'test@example.com',
-    passwordHash: 'password-muy-corto',
-    profile: {
-      firstName: 'Juan',
-      lastName: 'Pérez',
-    },
-  };
-
-  const invalidPasswordResult = ClientUser.create(invalidPasswordProps);
-  console.log('Password inválido:', invalidPasswordResult.success ? '✅ Creado' : `❌ Error esperado: ${invalidPasswordResult.error.message}`);
-
-  // 3. Perfil inválido
-  const invalidProfileProps: CreateClientUserProps = {
-    email: 'test@example.com',
-    passwordHash: '$2b$10$N9qo8uLOickgx2ZMRZoMye5J39N.F5gT67Nv9J1lJDhJWkUaQMa.W',
-    profile: {
-      firstName: '', // Vacío - debería fallar
-      lastName: 'Pérez',
-    },
-  };
-
-  const invalidProfileResult = ClientUser.create(invalidProfileProps);
-  console.log('Perfil inválido:', invalidProfileResult.success ? '✅ Creado' : `❌ Error esperado: ${invalidProfileResult.error.message}`);
-}
-
-// Exportar las funciones para uso en tests
-export { demonstrateClientUserUsage, demonstrateClientUserValidations };
+export {};

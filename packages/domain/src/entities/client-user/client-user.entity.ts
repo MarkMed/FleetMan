@@ -1,7 +1,5 @@
 import { Result, ok, err, DomainError } from '../../errors';
 import { User, UserType, UserProfile, CreateUserProps } from '../user/user.entity';
-import { UserId } from '../../value-objects/user-id.vo';
-import { Email } from '../../value-objects/email.vo';
 import { MachineId } from '../../value-objects/machine-id.vo';
 
 /**
@@ -61,28 +59,11 @@ export class ClientUser extends User {
 
   /**
    * Crea un nuevo ClientUser con validaciones de dominio
+   * Usa el factory method polimórfico de la clase base User
    * @param createProps - Propiedades para crear el cliente
    * @returns Result con ClientUser válido o error de dominio
    */
   public static create(createProps: CreateClientUserProps): Result<ClientUser, DomainError> {
-    // Validar email
-    const emailResult = Email.create(createProps.email);
-    if (!emailResult.success) {
-      return err(emailResult.error);
-    }
-
-    // Validar password hash usando método protegido de User
-    const passwordValidation = User.validatePasswordHash(createProps.passwordHash);
-    if (!passwordValidation.success) {
-      return err(passwordValidation.error);
-    }
-
-    // Validar perfil usando método protegido de User
-    const profileValidation = User.validateProfile(createProps.profile);
-    if (!profileValidation.success) {
-      return err(profileValidation.error);
-    }
-
     // Validar información de la empresa si está presente
     if (createProps.companyInfo) {
       const companyValidation = ClientUser.validateCompanyInfo(createProps.companyInfo);
@@ -91,25 +72,26 @@ export class ClientUser extends User {
       }
     }
 
-    const now = new Date();
-    const userProps = {
-      id: UserId.generate(),
-      email: emailResult.data,
+    // Usar el factory method protegido de la clase base User
+    const userPropsResult = User.createUserProps({
+      email: createProps.email,
       passwordHash: createProps.passwordHash,
       profile: createProps.profile,
-      type: UserType.CLIENT,
-      isActive: true,
-      createdAt: now,
-      updatedAt: now,
-    };
+      type: UserType.CLIENT
+    });
 
+    if (!userPropsResult.success) {
+      return err(userPropsResult.error);
+    }
+
+    // Construir props específicas del cliente
     const clientProps: ClientUserProps = {
       ownedMachineIds: [],
       subscriptionLevel: createProps.subscriptionLevel || SubscriptionLevel.BASIC,
       companyInfo: createProps.companyInfo,
     };
 
-    return ok(new ClientUser(userProps, clientProps));
+    return ok(new ClientUser(userPropsResult.data, clientProps));
   }
 
   /**
