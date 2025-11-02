@@ -48,6 +48,7 @@ export interface CreateMachineProps {
   specs?: MachineSpecs;
   location?: MachineLocation;
   nickname?: string; // Nombre amigable para la máquina
+  initialStatus?: MachineStatusCode
 }
 
 /**
@@ -67,7 +68,6 @@ interface MachineProps {
   providerAssignedAt?: Date;
   specs?: MachineSpecs;
   location?: MachineLocation;
-  installDate?: Date;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -132,6 +132,16 @@ export class Machine {
     }
 
     const now = new Date();
+
+    // Determinar estado inicial
+    const initialStatus = createProps.initialStatus 
+      ? MachineStatusRegistry.getByCode(createProps.initialStatus)
+      : MachineStatuses.Active();
+
+    if (!initialStatus) {
+      return err(DomainError.validation(`Invalid initial status: ${createProps.initialStatus}`));
+    }
+
     const props: MachineProps = {
       id: MachineId.generate(),
       serialNumber: serialNumberResult.data,
@@ -139,7 +149,7 @@ export class Machine {
       model: createProps.model.trim(),
       machineTypeId: machineTypeIdResult.data,
       nickname: createProps.nickname?.trim(),
-      status: MachineStatuses.Active(), // Usa el factory del nuevo patrón
+      status: initialStatus,
       ownerId: ownerIdResult.data,
       createdById: creatorIdResult.data,
       specs: createProps.specs,
@@ -281,10 +291,6 @@ export class Machine {
     return this.props.location ? { ...this.props.location } : undefined;
   }
 
-  get installDate(): Date | undefined {
-    return this.props.installDate ? new Date(this.props.installDate) : undefined;
-  }
-
   get createdAt(): Date {
     return new Date(this.props.createdAt);
   }
@@ -417,14 +423,48 @@ export class Machine {
   }
 
   /**
-   * Establece la fecha de instalación
+   * Actualiza las propiedades básicas de la máquina
    */
-  public setInstallDate(installDate: Date): Result<void, DomainError> {
-    if (installDate > new Date()) {
-      return err(DomainError.validation('Install date cannot be in the future'));
+  public updateMachineProps(updates: {
+    brand?: string;
+    model?: string;
+    nickname?: string;
+  }): Result<void, DomainError> {
+    // Validar y limpiar inputs antes de aplicar
+    const cleanedBrand = updates.brand?.trim();
+    const cleanedModel = updates.model?.trim();
+    const cleanedNickname = updates.nickname?.trim();
+
+    // Determinar valores finales (usar actuales si no se proporcionan nuevos)
+    const finalBrand = cleanedBrand !== undefined ? cleanedBrand : this.props.brand;
+    const finalModel = cleanedModel !== undefined ? cleanedModel : this.props.model;
+    const finalNickname = cleanedNickname !== undefined ? cleanedNickname : this.props.nickname;
+
+    // Validar las propiedades finales
+    if (finalBrand.length === 0) {
+      return err(DomainError.validation('Brand is required'));
     }
 
-    this.props.installDate = new Date(installDate);
+    if (finalModel.length === 0) {
+      return err(DomainError.validation('Model is required'));
+    }
+
+    if (finalBrand.length > 50) {
+      return err(DomainError.validation('Brand name is too long'));
+    }
+
+    if (finalModel.length > 50) {
+      return err(DomainError.validation('Model name is too long'));
+    }
+
+    if (finalNickname && finalNickname.length > 30) {
+      return err(DomainError.validation('Nickname is too long'));
+    }
+
+    // Aplicar cambios
+    this.props.brand = finalBrand;
+    this.props.model = finalModel;
+    this.props.nickname = finalNickname || undefined;
     this.props.updatedAt = new Date();
 
     return ok(undefined);
