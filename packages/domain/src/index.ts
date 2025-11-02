@@ -10,13 +10,13 @@ export * from "./entities";
 // Value Objects
 export * from "./value-objects";
 
+// Puertos (interfaces) - Implementados
+export * from "./ports";
+
+// Servicios de dominio - Implementados
+export * from "./services";
+
 // TODO: Descomentar cuando estén implementados
-// Puertos (interfaces)
-// export * from "./ports";
-
-// Servicios de dominio
-// export * from "./services";
-
 // Políticas y estrategias
 // export * from "./policies";
 

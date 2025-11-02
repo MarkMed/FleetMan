@@ -4,6 +4,7 @@
 export * from './user';
 export * from './client-user';
 export * from './machine';
+export * from './machine-type';
 
 // TODO: Implementar entidades restantes según el modelo de dominio:
 // export * from './provider-user';
