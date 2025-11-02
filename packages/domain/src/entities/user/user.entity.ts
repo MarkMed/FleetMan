@@ -12,17 +12,16 @@ export enum UserType {
 
 /**
  * Información del perfil de usuario
+ * Los usuarios representan empresas/compañías, no personas individuales
  */
 export interface UserProfile {
-  firstName: string;
-  lastName: string;
   phone?: string;
   companyName?: string;
-  position?: string;
+  address?: string;
 }
 
 /**
- * Propiedades para crear un usuario
+ * Propiedades para CREAR un usuario
  */
 export interface CreateUserProps {
   email: string;
@@ -48,16 +47,44 @@ interface UserProps {
 /**
  * Entidad base abstracta User
  * Representa la identidad y autenticación base para todos los usuarios del sistema
+ * 
+ * Esta clase no se puede instanciar directamente. Use las clases derivadas:
+ * - ClientUser para usuarios tipo CLIENT
+ * - ProviderUser para usuarios tipo PROVIDER
+ * 
+ * Las clases derivadas deben implementar su propio método create() que use createUserProps()
  */
 export abstract class User {
   protected constructor(protected props: UserProps) {}
 
   /**
-   * Crea un nuevo usuario con validaciones de dominio
-   * @param createProps - Propiedades para crear el usuario
-   * @returns Result con Usuario válido o error de dominio
+   * Método factory protegido para ser usado por las clases derivadas
+   * Valida y construye las props básicas del usuario
+   * 
+   * Ejemplo de uso en una clase derivada:
+   * 
+   * ```typescript
+   * export class ClientUser extends User {
+   *   static create(createProps: CreateClientUserProps): Result<ClientUser, DomainError> {
+   *     // Validaciones específicas de ClientUser aquí...
+   *     
+   *     const userPropsResult = User.createUserProps({
+   *       email: createProps.email,
+   *       passwordHash: createProps.passwordHash,
+   *       profile: createProps.profile,
+   *       type: UserType.CLIENT
+   *     });
+   *     
+   *     if (!userPropsResult.success) {
+   *       return err(userPropsResult.error);
+   *     }
+   *     
+   *     return ok(new ClientUser(userPropsResult.data));
+   *   }
+   * }
+   * ```
    */
-  public static create(createProps: CreateUserProps): Result<User, DomainError> {
+  protected static createUserProps(createProps: CreateUserProps): Result<UserProps, DomainError> {
     // Validar email
     const emailResult = Email.create(createProps.email);
     if (!emailResult.success) {
@@ -76,9 +103,15 @@ export abstract class User {
       return err(profileValidation.error);
     }
 
+    // Generar ID único
+    const userIdResult = UserId.create(`user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
+    if (!userIdResult.success) {
+      return err(DomainError.create('USER_ID_GENERATION_FAILED', 'Failed to generate user ID'));
+    }
+
     const now = new Date();
     const props: UserProps = {
-      id: UserId.generate(),
+      id: userIdResult.data,
       email: emailResult.data,
       passwordHash: createProps.passwordHash,
       profile: createProps.profile,
@@ -88,17 +121,7 @@ export abstract class User {
       updatedAt: now,
     };
 
-    // Retornar la clase concreta basada en el tipo
-    switch (createProps.type) {
-      case UserType.CLIENT:
-        // Esto se implementará en ClientUser
-        throw new Error('ClientUser creation not implemented yet');
-      case UserType.PROVIDER:
-        // Esto se implementará en ProviderUser
-        throw new Error('ProviderUser creation not implemented yet');
-      default:
-        return err(DomainError.create('INVALID_USER_TYPE', 'Invalid user type provided'));
-    }
+    return ok(props);
   }
 
   /**
@@ -121,20 +144,24 @@ export abstract class User {
    * Valida la información del perfil del usuario
    */
   protected static validateProfile(profile: UserProfile): Result<void, DomainError> {
-    if (!profile.firstName || profile.firstName.trim().length === 0) {
-      return err(DomainError.validation('First name is required'));
+    // Validar companyName si está presente
+    if (profile.companyName !== undefined) {
+      if (profile.companyName.trim().length === 0) {
+        return err(DomainError.validation('Company name cannot be empty when provided'));
+      }
+      if (profile.companyName.length > 100) {
+        return err(DomainError.validation('Company name is too long (max 100 characters)'));
+      }
     }
 
-    if (!profile.lastName || profile.lastName.trim().length === 0) {
-      return err(DomainError.validation('Last name is required'));
-    }
-
-    if (profile.firstName.length > 50) {
-      return err(DomainError.validation('First name is too long'));
-    }
-
-    if (profile.lastName.length > 50) {
-      return err(DomainError.validation('Last name is too long'));
+    // Validar address si está presente
+    if (profile.address !== undefined) {
+      if (profile.address.trim().length === 0) {
+        return err(DomainError.validation('Address cannot be empty when provided'));
+      }
+      if (profile.address.length > 200) {
+        return err(DomainError.validation('Address is too long (max 200 characters)'));
+      }
     }
 
     // Validar teléfono si está presente
@@ -257,10 +284,22 @@ export abstract class User {
   }
 
   /**
-   * Obtiene el nombre completo del usuario
+   * Obtiene el nombre para mostrar del usuario (empresa)
+   * Usa companyName si está disponible, sino el email
+   */
+  public getDisplayName(): string {
+    if (this.props.profile.companyName && this.props.profile.companyName.trim().length > 0) {
+      return this.props.profile.companyName.trim();
+    }
+    return this.props.email.getValue();
+  }
+
+  /**
+   * @deprecated Use getDisplayName() instead
+   * Mantiene compatibilidad con código existente
    */
   public getFullName(): string {
-    return `${this.props.profile.firstName} ${this.props.profile.lastName}`.trim();
+    return this.getDisplayName();
   }
 
   /**

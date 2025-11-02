@@ -18,23 +18,25 @@ function demonstrateUserUsage() {
     console.log('Email censored:', emailResult.data.toCensoredString());
   }
 
-  // 3. Intentar crear un usuario (esto fallaría porque las clases derivadas no están implementadas)
+  // 3. Preparar propiedades de usuario
   const createUserProps: CreateUserProps = {
-    email: 'juan.perez@example.com',
+    email: 'contacto@miempresa.com',
     passwordHash: '$2b$10$abcdefghijklmnopqrstuvwxyz123456', // Hash de ejemplo
     profile: {
-      firstName: 'Juan',
-      lastName: 'Pérez',
       phone: '+54911234567',
-      companyName: 'Mi Empresa',
-      position: 'Gerente',
+      companyName: 'Mi Empresa SA',
+      address: 'Calle Example 123, Galpón 2, Ciudad Autónoma de Buenos Aires',
     },
     type: UserType.CLIENT,
   };
 
   console.log('User creation props ready:', !!createUserProps);
+  console.log('User type:', createUserProps.type);
+  console.log('Profile has company name:', !!createUserProps.profile.companyName);
+  console.log('Profile has address:', !!createUserProps.profile.address);
   
-  // Nota: No podemos crear el usuario aún porque necesitamos implementar ClientUser y ProviderUser
+  // Nota: Para crear usuarios reales, use ClientUser.create() o ProviderUser.create()
+  // La clase User base es abstracta y no se puede instanciar directamente
 }
 
 // Exportar la función para uso en tests
