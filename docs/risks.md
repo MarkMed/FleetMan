@@ -7,7 +7,7 @@
   - **Contingencia**: Quitar lo no esencial; entregar una versión básica o marcador de posición; mover nuevas ideas a una fase posterior.
 
 - **R02** - Amenaza - Gestión - **Riesgo de cronograma**
-  subestimación, bloqueos o deuda técnica afectan la fecha académica
+  - subestimación, bloqueos o deuda técnica afectan la fecha académica
   - **Probabilidad**: Alta
   - **Impacto**: Alto
   - **Exposición**: 9
