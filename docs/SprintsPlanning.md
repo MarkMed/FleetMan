@@ -14,7 +14,7 @@
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales |
 |:---:|:----------:|
-| **No est.** hs | **20**hs |
+| **No est.** hs | **16**hs |
 
 Buffer reservado: **No est.** hs
 Total con buffer: **No est.** hs
@@ -48,7 +48,7 @@ Total con buffer: **32**hs
 
 ```mermaid
 xychart-beta
-    title "Sprint #1: Horas Estimadas vs Reales"
+    title "Sprint #1: Horas Estimadas #40;azul#41; vs Reales #40;verde#41;"
     x-axis "Tareas" ["21.19", "21.20", "21.1", "21.2", "0.1", "0.8", "TOTAL"]
     y-axis "Horas" 0 --> 26
 	
@@ -72,25 +72,25 @@ Distribución por categoría:
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
-| Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | 0 |
+| Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | 1.8 |
 | Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | 1 |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | 0.6 |
 | Desarrollo | 1.2 Esquemas DB (Mongoose + índices clave) | 4 | 5 | 0 |
 | Desarrollo | 1.3 DTOs + Zod (contratos compartidos) | 5 | 7 | 9.02 |
 | Desarrollo | 0.6 User Journey mapping | 6 | 6 | 14.8 |
-| QA | 13.1 Estrategia & DoD QA | 7 | 5 | 0 |
-| Capacitación | 16.1 Taller Deploy - Conceptos Generales (miérc 30 Oct) | 8 | 3 | 0 |
+| QA | 13.1 Estrategia & DoD QA | 7 | 5 | 1.5 |
+| Capacitación | 16.1 Taller Deploy - Conceptos Generales (miérc 30 Oct) | 8 | 3 | 3 |
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales |
 |:---:|:----------:|
-| **33.7**hs | **25.42**hs |
+| **33.7**hs | **31.72**hs |
 
 Buffer reservado: **1.3**hs
 Total con buffer: **35**hs
 
 ```mermaid
 xychart-beta
-    title "Sprint #2: Horas Estimadas #40;negro#41; vs Reales #40;verde#41;"
+    title "Sprint #2: Horas Estimadas #40;azul#41; vs Reales #40;verde#41;"
     x-axis "Tareas" ["20.1", "20.2", "20.3", "1.2", "1.3", "0.6", "13.1", "16.1", "TOTAL"]
     y-axis "Horas" 0 --> 35
 	
@@ -98,13 +98,13 @@ xychart-beta
     line [0.9, 1.5, 1.3, 5, 7, 6, 5, 3, 33.7]
 
 	%% Green line
-    line [0, 1, 0.6, 0, 9.02, 14.8, 0, 0, 25.42]
+    line [1.8, 1, 0.6, 0, 9.02, 14.8, 1.5, 3, 31.72]
 ```
 
 Distribución por categoría:
 | Gestión | Desarrollo | QA | Capacitación | Documentación |
 |:-------:|:----------:|:--:|:------------:|:-------------:|
-| **1.6**hs | **23.82**hs | **0**hs | **3**hs | **0**hs |
+| **3.4**hs | **23.82**hs | **1.5**hs | **3**hs | **0**hs |
 
 **Riesgos:** El design system puede requerir iteraciones con feedback del cliente.
 
@@ -112,8 +112,8 @@ Distribución por categoría:
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
-| Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | |
-| Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | |
+| Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | 2.4 |
+| Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | 1.1 |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
 | Desarrollo | 1.4 Semillas demo (dataset mínimo) | 4 | 4 | |
 | Desarrollo | 2.1 Registro (RF-001) | 5 | 10 | |
@@ -123,7 +123,7 @@ Distribución por categoría:
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales |
 |:---:|:----------:|
-| **31.7**hs | **0**hs |
+| **31.7**hs | **3.5**hs |
 
 Buffer reservado: **3.3**hs
 Total con buffer: **35**hs
@@ -131,7 +131,7 @@ Total con buffer: **35**hs
 Distribución por categoría:
 | Gestión | Desarrollo | QA | Capacitación | Documentación |
 |:-------:|:----------:|:--:|:------------:|:-------------:|
-| **3.7**hs | **19**hs | **6**hs | **3**hs | **0**hs |
+| **3.5**hs | **0**hs | **0**hs | **0**hs | **0**hs |
 
 ### **Sprint #4**: dom 9 nov → sáb 15 nov 2025
 
