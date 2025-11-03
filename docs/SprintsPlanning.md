@@ -48,7 +48,7 @@ Total con buffer: **32**hs
 
 ```mermaid
 xychart-beta
-    title "Sprint #1: Horas Estimadas #40;azul#41; vs Reales #40;verde#41;"
+    title "Sprint #1: Horas Estimadas #40;verde#41; vs Reales #40;azúl#41;"
     x-axis "Tareas" ["21.19", "21.20", "21.1", "21.2", "0.1", "0.8", "TOTAL"]
     y-axis "Horas" 0 --> 26
 	
@@ -90,7 +90,7 @@ Total con buffer: **35**hs
 
 ```mermaid
 xychart-beta
-    title "Sprint #2: Horas Estimadas #40;azul#41; vs Reales #40;verde#41;"
+    title "Sprint #2: Horas Estimadas #40;verde#41; vs Reales #40;azúl#41;"
     x-axis "Tareas" ["20.1", "20.2", "20.3", "1.2", "1.3", "0.6", "13.1", "16.1", "TOTAL"]
     y-axis "Horas" 0 --> 35
 	
@@ -112,7 +112,7 @@ Distribución por categoría:
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
-| Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | 2.4 |
+| Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | 3.4 |
 | Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | 1.1 |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
 | Desarrollo | 1.4 Semillas demo (dataset mínimo) | 4 | 4 | |
