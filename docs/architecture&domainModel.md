@@ -1,6 +1,33 @@
 # 2.9. Arquitectura 
 
-La solución adopta un monolito por capas con separación estricta de responsabilidades y límites de dependencia bien definidos. Operamos en un mono-repo basado en TypeScript con workspaces para aislar preocupaciones aumentando la calidad de experiencia de desarrollo. 
+La solución adopta un monolito por capas con separación estricta de responsabilidades y límites de dependencia bien definidos. Operamos en un mono-repo basado en TypeScript con workspaces para aislar preocupaciones aumentando la calidad de experiencia de desarrollo.
+
+## 2.9.0. Stack Tecnológico
+
+### Frontend (MVVM-lite)
+- **Core:** React + TypeScript, Vite (build tool)
+- **Routing:** React Router
+- **State Management:** TanStack Query (server state), Zustand (client state)
+- **Forms & Validation:** React Hook Form + Zod
+- **UI & Styling:** Radix UI + shadcn/ui + Tailwind CSS
+- **PWA:** vite-plugin-pwa + workbox-window
+- **Internacionalización:** react-i18next
+
+### Backend (Layered + Features)
+- **Core:** Node.js + Express + TypeScript
+- **Dependency Injection:** tsyringe
+- **Validation:** Zod (compartido con frontend)
+- **Authentication:** JWT
+- **Database:** MongoDB + Mongoose
+- **Scheduling:** node-cron
+- **Email:** nodemailer
+- **Configuration:** dotenv, envalid
+- **Security:** helmet + cors, express-rate-limit, argon2 (hashing)
+- **Logging:** pino
+
+### Shared Packages
+- **packages/contracts:** Esquemas Zod compartidos para validación y tipado
+- **packages/shared:** Utilidades comunes (Result/Either, error factories, feature flags) 
 
 ## 2.9.1. Estructura de folders
  
