@@ -111,11 +111,10 @@ gantt
   20.1 Reporte Académico (0.9hs)               :t201, 2025-11-02, 1d
   20.2 Demo/UAT con cliente (1.5hs)            :t202, 2025-11-02, 1d
   20.3 Sprint Planning dominguero (1.3hs)      :t203, 2025-11-02, 1d
-  1.4 Semillas demo (dataset mínimo) (4hs)     :t14, after t203, 1d
-  2.1 Registro (RF-001) (10hs)                 :t21, after t14, 2d
+  0.11 Setup Backend Básico (8hs)              :t011, after t203, 2d
+  0.13 Setup Frontend Básico (8hs)             :t013, after t011, 2d
   16.2 Taller Deploy - Conceptos Generales (3hs) :t162, 2025-11-06, 1d
-  13.2 Config Jest (front/back, TS, coverage) (6hs) :t132, after t21, 2d
-  15.1 Logger estructurado (niveles, request-id) (5hs) :t151, after t132, 1d
+  13.2 Config Jest (front/back, TS, coverage) (6hs) :t132, after t013, 2d
 
   section Hitos
   Cierre Sprint 3                              :milestone, s3, 2025-11-08, 1d

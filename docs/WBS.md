@@ -81,6 +81,38 @@ Wireframes con elementos estilísticos básicos aplicando la guía de estilos de
 		- Dependencias: 0.9 (FS)
 		- Spike: **No**
 
+	- 0.11 **Setup Backend Básico**.
+Instalación y configuración de dependencias core del backend: Express, MongoDB, Mongoose, JWT, Swagger, bcrypt, cors, dotenv, helmet y otras librerías fundamentales. Configuración inicial de servidor, conexión a base de datos y middleware básico.
+		- Horas estimadas: **8**hs
+		- Margen: ±**1.5**hs (P80)
+		- Incertidumbre: **Media**
+		- Dependencias: 0.1 (FS)
+		- Spike: **No**
+
+	- 0.12 **Archivos Backend Básicos**.
+Creación de estructura inicial del backend: controladores ping-pong/health-check, rutas básicas, middleware de manejo de errores, configuración de conexión a BD, archivos de configuración de entorno y estructura de carpetas básica para el desarrollo.
+		- Horas estimadas: **6**hs
+		- Margen: ±**1.0**hs (P80)
+		- Incertidumbre: **Baja**
+		- Dependencias: 0.11 (FS)
+		- Spike: **No**
+
+	- 0.13 **Setup Frontend Básico**.
+Instalación y configuración de dependencias core del frontend: React, Vite, ShadCN UI, TanStack Query, React Hook Form, Zod, i18next, React Router, Tailwind CSS y otras librerías fundamentales. Configuración inicial de build y desarrollo.
+		- Horas estimadas: **8**hs
+		- Margen: ±**1.5**hs (P80)
+		- Incertidumbre: **Media**
+		- Dependencias: 0.1 (FS)
+		- Spike: **No**
+
+	- 0.14 **Archivos Frontend Básicos**.
+Creación de estructura inicial del frontend: componentes base, páginas iniciales, configuración de routing, viewModels básicos, configuración de i18n, setup de TanStack Query, y estructura de carpetas para el desarrollo del frontend.
+		- Horas estimadas: **6**hs
+		- Margen: ±**1.0**hs (P80)
+		- Incertidumbre: **Baja**
+		- Dependencias: 0.13 (FS)
+		- Spike: **No**
+
 1. **Dominio & Datos**
 
 	- 1.1 **Modelo** (User, Machine, MaintenanceReminder, MachineEvent, QuickCheck, Notification, SparePart, etc.).
@@ -104,7 +136,7 @@ DTOs de entrada/salida y validaciones Zod en shared/.
 		- Horas estimadas: **7**hs
 		- Margen: ±**1.0**hs (P80)
 		- Incertidumbre: **Baja**
-		- Dependencias: 1.1 (FS)
+		- Dependencias: 1.1, 0.12, 0.14 (FS)
 		- Spike: **No**
 
 	- 1.4 **Semillas demo** (dataset mínimo).
@@ -122,7 +154,7 @@ Endpoint y formulario de alta con validaciones.
 		- Horas estimadas: **10**hs
 		- Margen: ±**2.0**hs (P80)
 		- Incertidumbre: **Media**
-		- Dependencias: 1.2, 1.3, 0.10 (FS)
+		- Dependencias: 1.2, 1.3, 0.10, 0.12, 0.14 (FS)
 		- Spike: **No**
 
 	- 2.2 **Login de usuario** (RF-002).
@@ -508,7 +540,7 @@ Logging JSON y correlación simple.
 		- Horas estimadas: **5**hs
 		- Margen: ±**1.0**hs (P80)
 		- Incertidumbre: **Baja**
-		- Dependencias: 0.2 (FS)
+		- Dependencias: 0.2, 0.12 (FS)
 		- Spike: **No**
 
 	- 15.2 **Métricas mínimas en logs** (contadores) [Post-MVP].

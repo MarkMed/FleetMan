@@ -112,26 +112,25 @@ Distribución por categoría:
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
-| Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | 2.4 |
+| Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | 2.5 |
 | Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | 1.1 |
-| Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
-| Desarrollo | 1.4 Semillas demo (dataset mínimo) | 4 | 4 | |
-| Desarrollo | 2.1 Registro (RF-001) | 5 | 10 | |
-| Capacitación | 16.2 Taller Deploy - Conceptos Generales (miérc 6 Nov) | 6 | 3 | |
-| QA | 13.2 Config Jest (front/back, TS, coverage) | 7 | 6 | |
-| Desarrollo | 15.1 Logger estructurado (niveles, request-id) | 8 | 5 | |
+| Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | 1.3 |
+| Desarrollo | 0.11 Setup Backend Básico | 4 | 8 | |
+| Desarrollo | 0.13 Setup Frontend Básico | 5 | 8 | |
+| QA | 13.2 Config Jest (front/back, TS, coverage) | 6 | 6 | |
+| Capacitación | 16.2 Taller Deploy - Conceptos Generales (miérc 6 Nov) | 7 | 3 | |
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales |
 |:---:|:----------:|
-| **31.7**hs | **3.5**hs |
+| **28.7**hs | **3.5**hs |
 
-Buffer reservado: **3.3**hs
+Buffer reservado: **6.3**hs
 Total con buffer: **35**hs
 
 Distribución por categoría:
 | Gestión | Desarrollo | QA | Capacitación | Documentación |
 |:-------:|:----------:|:--:|:------------:|:-------------:|
-| **3.5**hs | **0**hs | **0**hs | **0**hs | **0**hs |
+| **3.5**hs | **16**hs | **6**hs | **3**hs | **0**hs |
 
 ### **Sprint #4**: dom 9 nov → sáb 15 nov 2025
 
