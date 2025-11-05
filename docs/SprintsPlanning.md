@@ -143,6 +143,34 @@ Distribución por categoría:
 
 ### **Sprint #4**: dom 9 nov → sáb 15 nov 2025
 
+**Objetivo:** Implementar capacidades PWA, internacionalización básica y mejorar accesibilidad y responsive design antes del desarrollo de funcionalidades de dominio.
+
+| Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
+|-----------:|:-------|:---------------:|:---------------:|:------------:|
+| Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | |
+| Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | |
+| Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
+| Desarrollo | 0.5 PWA base (manifest + SW básico) | 4 | 6 | |
+| Desarrollo | 0.7 i18n groundwork (infra de strings) | 5 | 5 | |
+| Desarrollo | 12.1 Responsive grid & breakpoints | 6 | 6 | |
+| Desarrollo | 12.2 A11y mínima (focus, labels, contraste) | 7 | 6 | |
+| Capacitación | 16.5 Taller Deploy - Azure (lun 11 Nov) | 8 | 3 | |
+| Capacitación | 16.6 Taller Deploy - Azure (miérc 13 Nov) | 9 | 3 | |
+
+| Total Horas Estimadas (sin buffer) | Total Horas Reales |
+|:---:|:----------:|
+| **32.7**hs | **0**hs |
+
+Buffer reservado: **2.3**hs
+Total con buffer: **35**hs
+
+Distribución por categoría:
+| Gestión | Desarrollo | QA | Capacitación | Documentación |
+|:-------:|:----------:|:--:|:------------:|:-------------:|
+| **3.7**hs | **23**hs | **0**hs | **6**hs | **0**hs |
+
+### **Sprint #5**: dom 16 nov → sáb 22 nov 2025
+
 **Objetivo:** Implementar autenticación completa (RF-001, RF-002, RF-003) y establecer medidas de seguridad básicas del sistema.
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
@@ -151,8 +179,8 @@ Distribución por categoría:
 | Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
 | Desarrollo | 2.2 Login de usuario (RF-002) | 4 | 8 | |
-| Capacitación | 16.5 Taller Deploy - Azure (lun 11 Nov) | 5 | 3 | |
-| Capacitación | 16.6 Taller Deploy - Azure (miérc 13 Nov) | 6 | 3 | |
+| Capacitación | 16.3 Taller Deploy - AWS (lun 18 Nov) | 5 | 3 | |
+| Capacitación | 16.4 Taller Deploy - AWS (miérc 20 Nov) | 6 | 3 | |
 | Desarrollo | 2.3 Logout (RF-003) | 7 | 4 | |
 | Desarrollo | 2.5 AutZ por rol (admin/técnico/distribuidor) | 8 | 7 | |
 | Desarrollo | 14.1 Hashing, rate-limit, CORS | 9 | 6 | |
@@ -169,7 +197,7 @@ Distribución por categoría:
 |:-------:|:----------:|:--:|:------------:|:-------------:|
 | **3.7**hs | **25**hs | **0**hs | **6**hs | **0**hs |
 
-### **Sprint #5**: dom 16 nov → sáb 22 nov 2025
+### **Sprint #6**: dom 23 nov → sáb 29 nov 2025
 
 **Objetivo:** Desarrollar gestión básica de maquinaria (RF-005) con alta de equipos y validaciones robustas en toda la aplicación.
 
@@ -178,25 +206,23 @@ Distribución por categoría:
 | Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | |
 | Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
-| Capacitación | 16.3 Taller Deploy - AWS (lun 18 Nov) | 4 | 3 | |
-| Capacitación | 16.4 Taller Deploy - AWS (miérc 20 Nov) | 5 | 3 | |
-| Desarrollo | 3.1 Alta de máquina (RF-005) | 6 | 10 | |
-| Desarrollo | 14.2 Validaciones Zod en controllers | 7 | 8 | |
-| Desarrollo | 14.3 Permisos por endpoint (RBAC ligero) | 8 | 6 | |
+| Desarrollo | 3.1 Alta de máquina (RF-005) | 4 | 10 | |
+| Desarrollo | 14.2 Validaciones Zod en controllers | 5 | 8 | |
+| Desarrollo | 14.3 Permisos por endpoint (RBAC ligero) | 6 | 6 | |
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales |
 |:---:|:----------:|
-| **33.7**hs | **0**hs |
+| **27.7**hs | **0**hs |
 
-Buffer reservado: **1.3**hs
+Buffer reservado: **7.3**hs
 Total con buffer: **35**hs
 
 Distribución por categoría:
 | Gestión | Desarrollo | QA | Capacitación | Documentación |
 |:-------:|:----------:|:--:|:------------:|:-------------:|
-| **3.7**hs | **24**hs | **0**hs | **6**hs | **0**hs |
+| **3.7**hs | **24**hs | **0**hs | **0**hs | **0**hs |
 
-### **Sprint #6**: dom 23 nov → sáb 29 nov 2025
+### **Sprint #7**: dom 30 nov → sáb 6 dic 2025
 
 **Objetivo:** Completar módulo de maquinaria con listado/detalle y establecer bases del sistema de mantenimiento preventivo (RF-007, RF-011).
 
@@ -208,7 +234,7 @@ Distribución por categoría:
 | Desarrollo | 3.2 Listado + detalle | 4 | 9 | |
 | Desarrollo | 4.1 Crear recordatorios (RF-007) | 5 | 9 | |
 | Desarrollo | 6.1 Plantilla checklist (RF-011) | 6 | 5 | |
-| Capacitación | 16.7 Taller Deploy - Deploy en Práctica (miérc 27 Nov) | 7 | 3 | |
+| Capacitación | 16.7 Taller Deploy - Deploy en Práctica (miérc 4 Dic) | 7 | 3 | |
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales |
 |:---:|:----------:|
@@ -222,7 +248,7 @@ Distribución por categoría:
 |:-------:|:----------:|:--:|:------------:|:-------------:|
 | **3.7**hs | **23**hs | **0**hs | **3**hs | **0**hs |
 
-### **Sprint #7**: dom 30 nov → sáb 6 dic 2025
+### **Sprint #8**: dom 7 dic → sáb 13 dic 2025
 
 **Objetivo:** Implementar sistema de alertas automáticas (RF-010) y funcionalidad completa de QuickCheck de seguridad (RF-011).
 
@@ -247,7 +273,7 @@ Distribución por categoría:
 |:-------:|:----------:|:--:|:------------:|:-------------:|
 | **3.7**hs | **29**hs | **0**hs | **0**hs | **0**hs |
 
-### **Sprint #8**: dom 7 dic → sáb 13 dic 2025
+### **Sprint #9**: dom 14 dic → sáb 20 dic 2025
 
 **Objetivo:** Desarrollar centro de notificaciones (RF-016) y módulo de registro de eventos de maquinaria (RF-008) parte 1.
 
@@ -274,7 +300,7 @@ Distribución por categoría:
 
 **Riesgos:** Integración entre notificaciones y eventos puede ser compleja.
 
-### **Sprint #9**: dom 14 dic → sáb 20 dic 2025
+### **Sprint #10**: dom 21 dic → sáb 27 dic 2025
 
 **Objetivo:** Completar integración entre eventos, notificaciones y QuickCheck. Implementar edición con historial de máquinas (RF-006, RF-008, RF-017).
 
@@ -301,9 +327,9 @@ Distribución por categoría:
 |:-------:|:----------:|:--:|:------------:|:-------------:|
 | **3.7**hs | **30**hs | **0**hs | **0**hs | **0**hs |
 
-**Riesgos:** Sprint denso con múltiples integraciones críticas.
+**Riesgos:** Sprint denso con múltiples integraciones críticas. Período navideño puede afectar productividad.
 
-### **Sprint #10**: dom 21 dic → sáb 27 dic 2025
+### **Sprint #11**: dom 28 dic → sáb 3 ene 2026
 
 **Objetivo:** Implementar historial unificado de maquinaria (RF-009) y módulo de comunicación con distribuidores (RF-015).
 
@@ -327,34 +353,6 @@ Distribución por categoría:
 | Gestión | Desarrollo | QA | Capacitación | Documentación |
 |:-------:|:----------:|:--:|:------------:|:-------------:|
 | **3.7**hs | **25**hs | **0**hs | **0**hs | **0**hs |
-
-**Riesgos:** Período navideño puede afectar productividad.
-
-### **Sprint #11**: dom 28 dic → sáb 3 ene 2026
-
-**Objetivo:** Implementar capacidades PWA, internacionalización básica y mejorar accesibilidad y responsive design.
-
-| Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
-|-----------:|:-------|:---------------:|:---------------:|:------------:|
-| Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | |
-| Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | |
-| Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
-| Desarrollo | 0.5 PWA base (manifest + SW básico) | 4 | 6 | |
-| Desarrollo | 0.7 i18n groundwork (infra de strings) | 5 | 5 | |
-| Desarrollo | 12.1 Responsive grid & breakpoints | 6 | 6 | |
-| Desarrollo | 12.2 A11y mínima (focus, labels, contraste) | 7 | 6 | |
-
-| Total Horas Estimadas (sin buffer) | Total Horas Reales |
-|:---:|:----------:|
-| **26.7**hs | **0**hs |
-
-Buffer reservado: **8.3**hs
-Total con buffer: **35**hs
-
-Distribución por categoría:
-| Gestión | Desarrollo | QA | Capacitación | Documentación |
-|:-------:|:----------:|:--:|:------------:|:-------------:|
-| **3.7**hs | **23**hs | **0**hs | **0**hs | **0**hs |
 
 **Riesgos:** Período de fiestas navideñas puede impactar disponibilidad.
 
@@ -491,4 +489,29 @@ Distribución por categoría:
 | **3.7**hs | **18**hs | **0**hs | **0**hs | **6**hs |
 
 **Nota:** Este sprint incluye principalmente funcionalidades NiceToHave y puede ajustarse según el estado del proyecto.
+
+### **Sprint #17**: dom 8 feb → sáb 14 feb 2026
+
+**Objetivo:** Buffer final de entrega - refinamientos, documentación y verificaciones finales para la entrega académica.
+
+| Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
+|-----------:|:-------|:---------------:|:---------------:|:------------:|
+| Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | |
+| Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | |
+| Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
+| Gestión | 21.21 Buffer de entrega final | 4 | 10 | |
+
+| Total Horas Estimadas (sin buffer) | Total Horas Reales |
+|:---:|:----------:|
+| **13.7**hs | **0**hs |
+
+Buffer reservado: **21.3**hs
+Total con buffer: **35**hs
+
+Distribución por categoría:
+| Gestión | Desarrollo | QA | Capacitación | Documentación |
+|:-------:|:----------:|:--:|:------------:|:-------------:|
+| **13.7**hs | **0**hs | **0**hs | **0**hs | **0**hs |
+
+**Nota:** Sprint de cierre con amplio buffer para refinamientos finales y preparación de entrega académica.
 
