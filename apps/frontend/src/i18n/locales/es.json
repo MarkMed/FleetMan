@@ -1,0 +1,231 @@
+{
+  "common": {
+    "loading": "Cargando...",
+    "error": "Error",
+    "success": "Éxito",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "create": "Crear",
+    "update": "Actualizar",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "export": "Exportar",
+    "import": "Importar",
+    "print": "Imprimir",
+    "refresh": "Actualizar",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "previous": "Anterior",
+    "confirm": "Confirmar",
+    "yes": "Sí",
+    "no": "No",
+    "ok": "OK",
+    "close": "Cerrar",
+    "submit": "Enviar",
+    "reset": "Restablecer",
+    "clear": "Limpiar",
+    "select": "Seleccionar",
+    "selectAll": "Seleccionar Todo",
+    "none": "Ninguno",
+    "all": "Todos",
+    "actions": "Acciones",
+    "details": "Detalles",
+    "settings": "Configuración",
+    "profile": "Perfil",
+    "logout": "Cerrar Sesión",
+    "login": "Iniciar Sesión",
+    "register": "Registrarse"
+  },
+  "navigation": {
+    "dashboard": "Panel Principal",
+    "machines": "Máquinas",
+    "maintenance": "Mantenimiento",
+    "quickcheck": "Chequeo Rápido",
+    "notifications": "Notificaciones",
+    "reports": "Reportes",
+    "settings": "Configuración"
+  },
+  "auth": {
+    "login": {
+      "title": "Iniciar Sesión",
+      "subtitle": "Accede a tu cuenta de gestión de flota",
+      "email": "Correo Electrónico",
+      "password": "Contraseña",
+      "rememberMe": "Recordarme",
+      "forgotPassword": "¿Olvidaste tu contraseña?",
+      "loginButton": "Iniciar Sesión",
+      "noAccount": "¿No tienes una cuenta?",
+      "signUpLink": "Regístrate aquí"
+    },
+    "register": {
+      "title": "Registrarse",
+      "subtitle": "Crea tu cuenta de gestión de flota",
+      "name": "Nombre Completo",
+      "email": "Correo Electrónico",
+      "password": "Contraseña",
+      "confirmPassword": "Confirmar Contraseña",
+      "role": "Tipo de Cuenta",
+      "roleClient": "Cliente",
+      "roleProvider": "Proveedor de Servicios",
+      "phone": "Número de Teléfono",
+      "companyName": "Nombre de la Empresa",
+      "businessName": "Nombre del Negocio",
+      "registerButton": "Crear Cuenta",
+      "hasAccount": "¿Ya tienes una cuenta?",
+      "signInLink": "Inicia sesión aquí"
+    },
+    "errors": {
+      "invalidCredentials": "Correo o contraseña inválidos",
+      "emailRequired": "El correo es requerido",
+      "passwordRequired": "La contraseña es requerida",
+      "passwordMinLength": "La contraseña debe tener al menos 8 caracteres",
+      "passwordMatch": "Las contraseñas no coinciden",
+      "emailInvalid": "Ingresa un correo válido",
+      "nameRequired": "El nombre es requerido",
+      "roleRequired": "Selecciona un tipo de cuenta"
+    }
+  },
+  "machines": {
+    "title": "Máquinas",
+    "addMachine": "Agregar Máquina",
+    "machineDetails": "Detalles de la Máquina",
+    "serialNumber": "Número de Serie",
+    "model": "Modelo",
+    "brand": "Marca",
+    "year": "Año",
+    "location": "Ubicación",
+    "status": "Estado",
+    "owner": "Propietario",
+    "provider": "Proveedor de Servicios",
+    "hoursUsed": "Horas de Uso",
+    "lastMaintenance": "Último Mantenimiento",
+    "nextMaintenance": "Próximo Mantenimiento",
+    "purchaseDate": "Fecha de Compra",
+    "warrantyExpiry": "Vencimiento de Garantía",
+    "notes": "Notas",
+    "specifications": "Especificaciones",
+    "history": "Historial",
+    "reminders": "Recordatorios de Mantenimiento",
+    "quickcheck": "Chequeo Rápido",
+    "statuses": {
+      "active": "Activa",
+      "inactive": "Inactiva",
+      "maintenance": "En Mantenimiento",
+      "broken": "Averiada"
+    }
+  },
+  "maintenance": {
+    "title": "Mantenimiento",
+    "reminders": "Recordatorios",
+    "history": "Historial",
+    "addReminder": "Agregar Recordatorio",
+    "addEvent": "Agregar Evento",
+    "reminderTitle": "Título del Recordatorio",
+    "description": "Descripción",
+    "type": "Tipo",
+    "intervalDays": "Intervalo en Días",
+    "intervalHours": "Intervalo en Horas",
+    "lastExecuted": "Último Ejecutado",
+    "nextDue": "Próximo Vencimiento",
+    "isActive": "Activo",
+    "types": {
+      "time": "Basado en Tiempo",
+      "hours": "Basado en Horas",
+      "both": "Tiempo y Horas"
+    },
+    "eventTypes": {
+      "maintenance": "Mantenimiento",
+      "breakdown": "Avería",
+      "inspection": "Inspección",
+      "repair": "Reparación",
+      "manual": "Entrada Manual"
+    },
+    "severity": {
+      "low": "Baja",
+      "medium": "Media",
+      "high": "Alta",
+      "critical": "Crítica"
+    }
+  },
+  "quickcheck": {
+    "title": "Chequeo Rápido",
+    "execute": "Ejecutar Chequeo",
+    "items": "Elementos de Chequeo",
+    "addItem": "Agregar Elemento",
+    "itemTitle": "Título del Elemento",
+    "itemDescription": "Descripción del Elemento",
+    "required": "Requerido",
+    "status": {
+      "ok": "OK",
+      "fail": "Falla",
+      "omit": "Omitir"
+    },
+    "results": {
+      "passed": "Aprobado",
+      "failed": "Fallido",
+      "partial": "Parcial"
+    },
+    "executeButton": "Iniciar Chequeo",
+    "completeButton": "Completar Chequeo",
+    "overallStatus": "Estado General",
+    "executedBy": "Ejecutado Por",
+    "executedAt": "Ejecutado En"
+  },
+  "notifications": {
+    "title": "Notificaciones",
+    "markAsRead": "Marcar como Leída",
+    "markAllAsRead": "Marcar Todas como Leídas",
+    "noNotifications": "No hay notificaciones",
+    "types": {
+      "maintenance_due": "Mantenimiento Vencido",
+      "maintenance_overdue": "Mantenimiento Atrasado",
+      "quickcheck_failed": "Chequeo Rápido Fallido",
+      "machine_down": "Máquina Fuera de Servicio",
+      "reminder": "Recordatorio",
+      "system": "Sistema"
+    },
+    "priority": {
+      "low": "Baja",
+      "medium": "Media",
+      "high": "Alta"
+    }
+  },
+  "dashboard": {
+    "title": "Panel Principal",
+    "overview": "Resumen",
+    "quickActions": "Acciones Rápidas",
+    "recentActivity": "Actividad Reciente",
+    "statistics": "Estadísticas",
+    "totalMachines": "Total de Máquinas",
+    "activeMachines": "Máquinas Activas",
+    "maintenanceDue": "Mantenimiento Vencido",
+    "criticalAlerts": "Alertas Críticas",
+    "actions": {
+      "quickCheck": "Chequeo Rápido",
+      "reportEvent": "Reportar Evento",
+      "requestSpare": "Solicitar Repuesto",
+      "newMachine": "Nueva Máquina"
+    }
+  },
+  "forms": {
+    "validation": {
+      "required": "Este campo es requerido",
+      "emailInvalid": "Ingresa un correo válido",
+      "phoneInvalid": "Ingresa un número de teléfono válido",
+      "urlInvalid": "Ingresa una URL válida",
+      "numberInvalid": "Ingresa un número válido",
+      "dateInvalid": "Ingresa una fecha válida"
+    }
+  },
+  "errors": {
+    "general": "Ocurrió un error",
+    "network": "Error de red",
+    "notFound": "No encontrado",
+    "unauthorized": "No autorizado",
+    "forbidden": "Prohibido",
+    "serverError": "Error del servidor",
+    "unknownError": "Error desconocido"
+  }
+}

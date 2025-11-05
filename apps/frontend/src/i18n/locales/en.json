@@ -1,0 +1,231 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "create": "Create",
+    "update": "Update",
+    "search": "Search",
+    "filter": "Filter",
+    "export": "Export",
+    "import": "Import",
+    "print": "Print",
+    "refresh": "Refresh",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "confirm": "Confirm",
+    "yes": "Yes",
+    "no": "No",
+    "ok": "OK",
+    "close": "Close",
+    "submit": "Submit",
+    "reset": "Reset",
+    "clear": "Clear",
+    "select": "Select",
+    "selectAll": "Select All",
+    "none": "None",
+    "all": "All",
+    "actions": "Actions",
+    "details": "Details",
+    "settings": "Settings",
+    "profile": "Profile",
+    "logout": "Logout",
+    "login": "Login",
+    "register": "Register"
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "machines": "Machines",
+    "maintenance": "Maintenance",
+    "quickcheck": "Quick Check",
+    "notifications": "Notifications",
+    "reports": "Reports",
+    "settings": "Settings"
+  },
+  "auth": {
+    "login": {
+      "title": "Login",
+      "subtitle": "Access your fleet management account",
+      "email": "Email",
+      "password": "Password",
+      "rememberMe": "Remember me",
+      "forgotPassword": "Forgot password?",
+      "loginButton": "Sign In",
+      "noAccount": "Don't have an account?",
+      "signUpLink": "Sign up here"
+    },
+    "register": {
+      "title": "Register",
+      "subtitle": "Create your fleet management account",
+      "name": "Full Name",
+      "email": "Email",
+      "password": "Password",
+      "confirmPassword": "Confirm Password",
+      "role": "Account Type",
+      "roleClient": "Client",
+      "roleProvider": "Service Provider",
+      "phone": "Phone Number",
+      "companyName": "Company Name",
+      "businessName": "Business Name",
+      "registerButton": "Create Account",
+      "hasAccount": "Already have an account?",
+      "signInLink": "Sign in here"
+    },
+    "errors": {
+      "invalidCredentials": "Invalid email or password",
+      "emailRequired": "Email is required",
+      "passwordRequired": "Password is required",
+      "passwordMinLength": "Password must be at least 8 characters",
+      "passwordMatch": "Passwords do not match",
+      "emailInvalid": "Please enter a valid email",
+      "nameRequired": "Name is required",
+      "roleRequired": "Please select an account type"
+    }
+  },
+  "machines": {
+    "title": "Machines",
+    "addMachine": "Add Machine",
+    "machineDetails": "Machine Details",
+    "serialNumber": "Serial Number",
+    "model": "Model",
+    "brand": "Brand",
+    "year": "Year",
+    "location": "Location",
+    "status": "Status",
+    "owner": "Owner",
+    "provider": "Service Provider",
+    "hoursUsed": "Hours Used",
+    "lastMaintenance": "Last Maintenance",
+    "nextMaintenance": "Next Maintenance",
+    "purchaseDate": "Purchase Date",
+    "warrantyExpiry": "Warranty Expiry",
+    "notes": "Notes",
+    "specifications": "Specifications",
+    "history": "History",
+    "reminders": "Maintenance Reminders",
+    "quickcheck": "Quick Check",
+    "statuses": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "maintenance": "In Maintenance",
+      "broken": "Broken"
+    }
+  },
+  "maintenance": {
+    "title": "Maintenance",
+    "reminders": "Reminders",
+    "history": "History",
+    "addReminder": "Add Reminder",
+    "addEvent": "Add Event",
+    "reminderTitle": "Reminder Title",
+    "description": "Description",
+    "type": "Type",
+    "intervalDays": "Days Interval",
+    "intervalHours": "Hours Interval",
+    "lastExecuted": "Last Executed",
+    "nextDue": "Next Due",
+    "isActive": "Active",
+    "types": {
+      "time": "Time Based",
+      "hours": "Hours Based",
+      "both": "Time and Hours"
+    },
+    "eventTypes": {
+      "maintenance": "Maintenance",
+      "breakdown": "Breakdown",
+      "inspection": "Inspection",
+      "repair": "Repair",
+      "manual": "Manual Entry"
+    },
+    "severity": {
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High",
+      "critical": "Critical"
+    }
+  },
+  "quickcheck": {
+    "title": "Quick Check",
+    "execute": "Execute Check",
+    "items": "Check Items",
+    "addItem": "Add Item",
+    "itemTitle": "Item Title",
+    "itemDescription": "Item Description",
+    "required": "Required",
+    "status": {
+      "ok": "OK",
+      "fail": "Fail",
+      "omit": "Omit"
+    },
+    "results": {
+      "passed": "Passed",
+      "failed": "Failed",
+      "partial": "Partial"
+    },
+    "executeButton": "Start Check",
+    "completeButton": "Complete Check",
+    "overallStatus": "Overall Status",
+    "executedBy": "Executed By",
+    "executedAt": "Executed At"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "markAsRead": "Mark as Read",
+    "markAllAsRead": "Mark All as Read",
+    "noNotifications": "No notifications",
+    "types": {
+      "maintenance_due": "Maintenance Due",
+      "maintenance_overdue": "Maintenance Overdue",
+      "quickcheck_failed": "Quick Check Failed",
+      "machine_down": "Machine Down",
+      "reminder": "Reminder",
+      "system": "System"
+    },
+    "priority": {
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High"
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "overview": "Overview",
+    "quickActions": "Quick Actions",
+    "recentActivity": "Recent Activity",
+    "statistics": "Statistics",
+    "totalMachines": "Total Machines",
+    "activeMachines": "Active Machines",
+    "maintenanceDue": "Maintenance Due",
+    "criticalAlerts": "Critical Alerts",
+    "actions": {
+      "quickCheck": "Quick Check",
+      "reportEvent": "Report Event",
+      "requestSpare": "Request Spare Part",
+      "newMachine": "New Machine"
+    }
+  },
+  "forms": {
+    "validation": {
+      "required": "This field is required",
+      "emailInvalid": "Please enter a valid email",
+      "phoneInvalid": "Please enter a valid phone number",
+      "urlInvalid": "Please enter a valid URL",
+      "numberInvalid": "Please enter a valid number",
+      "dateInvalid": "Please enter a valid date"
+    }
+  },
+  "errors": {
+    "general": "An error occurred",
+    "network": "Network error",
+    "notFound": "Not found",
+    "unauthorized": "Unauthorized",
+    "forbidden": "Forbidden",
+    "serverError": "Server error",
+    "unknownError": "Unknown error"
+  }
+}

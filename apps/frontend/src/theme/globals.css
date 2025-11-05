@@ -1,0 +1,220 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Color palette - Fleet Management */
+  --color-primary: 220 90% 56%;
+  --color-primary-foreground: 220 90% 95%;
+  --color-secondary: 220 15% 96%;
+  --color-secondary-foreground: 220 15% 16%;
+  --color-accent: 220 15% 91%;
+  --color-accent-foreground: 220 15% 16%;
+  --color-background: 0 0% 100%;
+  --color-foreground: 220 15% 9%;
+  --color-muted: 220 15% 96%;
+  --color-muted-foreground: 220 15% 46%;
+  --color-border: 220 15% 91%;
+  --color-input: 220 15% 91%;
+  --color-ring: 220 90% 56%;
+  --color-card: 0 0% 100%;
+  --color-card-foreground: 220 15% 9%;
+  --color-popover: 0 0% 100%;
+  --color-popover-foreground: 220 15% 9%;
+
+  /* Status colors */
+  --color-destructive: 0 84% 60%;
+  --color-destructive-foreground: 0 0% 98%;
+  --color-success: 142 76% 36%;
+  --color-success-foreground: 142 76% 95%;
+  --color-warning: 38 92% 50%;
+  --color-warning-foreground: 38 92% 5%;
+  --color-info: 199 89% 48%;
+  --color-info-foreground: 199 89% 95%;
+
+  /* Machine status colors */
+  --color-machine-active: 142 76% 36%;
+  --color-machine-maintenance: 38 92% 50%;
+  --color-machine-broken: 0 84% 60%;
+  --color-machine-inactive: 220 15% 46%;
+
+  /* Semantic colors */
+  --radius: 0.5rem;
+  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+.dark {
+  --color-background: 220 15% 9%;
+  --color-foreground: 220 15% 98%;
+  --color-muted: 220 15% 15%;
+  --color-muted-foreground: 220 15% 63%;
+  --color-border: 220 15% 15%;
+  --color-input: 220 15% 15%;
+  --color-card: 220 15% 12%;
+  --color-card-foreground: 220 15% 98%;
+  --color-popover: 220 15% 12%;
+  --color-popover-foreground: 220 15% 98%;
+  --color-secondary: 220 15% 15%;
+  --color-secondary-foreground: 220 15% 98%;
+  --color-accent: 220 15% 15%;
+  --color-accent-foreground: 220 15% 98%;
+}
+
+* {
+  border-color: hsl(var(--color-border));
+}
+
+body {
+  background-color: hsl(var(--color-background));
+  color: hsl(var(--color-foreground));
+  font-feature-settings: "rlig" 1, "calt" 1;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--color-muted));
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--color-muted-foreground) / 0.3);
+  border-radius: var(--radius);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--color-muted-foreground) / 0.5);
+}
+
+/* Focus styles */
+.focus-visible:focus-visible {
+  outline: 2px solid hsl(var(--color-ring));
+  outline-offset: 2px;
+}
+
+/* Animation utilities */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slide-in-from-top {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-in-from-bottom {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-in-from-left {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-in-from-right {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.2s ease-out;
+}
+
+.animate-slide-in-from-top {
+  animation: slide-in-from-top 0.3s ease-out;
+}
+
+.animate-slide-in-from-bottom {
+  animation: slide-in-from-bottom 0.3s ease-out;
+}
+
+.animate-slide-in-from-left {
+  animation: slide-in-from-left 0.3s ease-out;
+}
+
+.animate-slide-in-from-right {
+  animation: slide-in-from-right 0.3s ease-out;
+}
+
+/* Utility classes */
+.text-balance {
+  text-wrap: balance;
+}
+
+/* Machine status badges */
+.status-active {
+  @apply bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200;
+}
+
+.status-maintenance {
+  @apply bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200;
+}
+
+.status-broken {
+  @apply bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200;
+}
+
+.status-inactive {
+  @apply bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200;
+}
+
+/* Priority badges */
+.priority-low {
+  @apply bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200;
+}
+
+.priority-medium {
+  @apply bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200;
+}
+
+.priority-high {
+  @apply bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200;
+}
+
+.priority-critical {
+  @apply bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200;
+}
+
+/* Loading skeleton */
+.skeleton {
+  @apply animate-pulse bg-muted rounded;
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  body {
+    background: white !important;
+    color: black !important;
+  }
+}

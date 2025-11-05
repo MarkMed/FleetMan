@@ -1,0 +1,195 @@
+import { config } from '@config';
+import { ApiResponse } from '@models';
+
+// Base API configuration
+const BASE_URL = config.API_BASE_URL;
+const TIMEOUT = config.API.TIMEOUT;
+
+export interface RequestConfig {
+  method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+  headers?: Record<string, string>;
+  body?: any;
+  params?: Record<string, string>;
+  timeout?: number;
+}
+
+class ApiClient {
+  private baseURL: string;
+  private defaultHeaders: Record<string, string>;
+
+  constructor(baseURL: string) {
+    this.baseURL = baseURL;
+    this.defaultHeaders = {
+      'Content-Type': 'application/json',
+    };
+  }
+
+  // Set authorization token
+  setAuthToken(token: string | null) {
+    if (token) {
+      this.defaultHeaders['Authorization'] = `Bearer ${token}`;
+    } else {
+      delete this.defaultHeaders['Authorization'];
+    }
+  }
+
+  // Build URL with query parameters
+  private buildUrl(endpoint: string, params?: Record<string, string>): string {
+    const url = new URL(endpoint, this.baseURL);
+    
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          url.searchParams.append(key, value.toString());
+        }
+      });
+    }
+    
+    return url.toString();
+  }
+
+  // Generic request method
+  async request<T = any>(
+    endpoint: string,
+    config: RequestConfig = {}
+  ): Promise<ApiResponse<T>> {
+    const {
+      method = 'GET',
+      headers = {},
+      body,
+      params,
+      timeout = TIMEOUT,
+    } = config;
+
+    const url = this.buildUrl(endpoint, params);
+    const requestHeaders = { ...this.defaultHeaders, ...headers };
+
+    // Create AbortController for timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeout);
+
+    try {
+      const requestConfig: RequestInit = {
+        method,
+        headers: requestHeaders,
+        signal: controller.signal,
+      };
+
+      // Add body for non-GET requests
+      if (body && method !== 'GET') {
+        if (body instanceof FormData) {
+          // For FormData, don't set Content-Type (browser will set it with boundary)
+          delete requestHeaders['Content-Type'];
+          requestConfig.body = body;
+        } else {
+          requestConfig.body = JSON.stringify(body);
+        }
+      }
+
+      const response = await fetch(url, requestConfig);
+      clearTimeout(timeoutId);
+
+      // Handle different response types
+      let data: any;
+      const contentType = response.headers.get('content-type');
+      
+      if (contentType?.includes('application/json')) {
+        data = await response.json();
+      } else if (contentType?.includes('text/')) {
+        data = await response.text();
+      } else {
+        data = await response.blob();
+      }
+
+      // Handle HTTP errors
+      if (!response.ok) {
+        return {
+          success: false,
+          error: data?.message || data?.error || `HTTP ${response.status}: ${response.statusText}`,
+          data: data,
+        };
+      }
+
+      return {
+        success: true,
+        data: data,
+      };
+    } catch (error: any) {
+      clearTimeout(timeoutId);
+      
+      if (error.name === 'AbortError') {
+        return {
+          success: false,
+          error: 'Request timeout',
+        };
+      }
+
+      return {
+        success: false,
+        error: error.message || 'Network error',
+      };
+    }
+  }
+
+  // Convenience methods
+  get<T = any>(endpoint: string, params?: Record<string, string>, headers?: Record<string, string>): Promise<ApiResponse<T>> {
+    return this.request<T>(endpoint, { method: 'GET', params, headers });
+  }
+
+  post<T = any>(endpoint: string, body?: any, headers?: Record<string, string>): Promise<ApiResponse<T>> {
+    return this.request<T>(endpoint, { method: 'POST', body, headers });
+  }
+
+  put<T = any>(endpoint: string, body?: any, headers?: Record<string, string>): Promise<ApiResponse<T>> {
+    return this.request<T>(endpoint, { method: 'PUT', body, headers });
+  }
+
+  patch<T = any>(endpoint: string, body?: any, headers?: Record<string, string>): Promise<ApiResponse<T>> {
+    return this.request<T>(endpoint, { method: 'PATCH', body, headers });
+  }
+
+  delete<T = any>(endpoint: string, headers?: Record<string, string>): Promise<ApiResponse<T>> {
+    return this.request<T>(endpoint, { method: 'DELETE', headers });
+  }
+}
+
+// Create and export the API client instance
+export const apiClient = new ApiClient(BASE_URL);
+
+// Helper function to handle API responses
+export function handleApiResponse<T>(response: ApiResponse<T>): T {
+  if (!response.success) {
+    throw new Error(response.error || 'API request failed');
+  }
+  return response.data!;
+}
+
+// Helper function for retry logic
+export async function withRetry<T>(
+  apiCall: () => Promise<ApiResponse<T>>,
+  maxRetries: number = config.API.RETRY_ATTEMPTS,
+  delay: number = config.API.RETRY_DELAY
+): Promise<ApiResponse<T>> {
+  let lastError: any;
+  
+  for (let i = 0; i <= maxRetries; i++) {
+    try {
+      const result = await apiCall();
+      if (result.success) {
+        return result;
+      }
+      lastError = result.error;
+    } catch (error) {
+      lastError = error;
+    }
+    
+    if (i < maxRetries) {
+      await new Promise(resolve => setTimeout(resolve, delay * Math.pow(2, i)));
+    }
+  }
+  
+  return {
+    success: false,
+    error: lastError?.message || lastError || 'Max retries exceeded',
+  };
+}

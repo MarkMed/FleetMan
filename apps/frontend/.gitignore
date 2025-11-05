@@ -1,0 +1,43 @@
+# Dependencies
+node_modules/
+dist/
+build/
+
+# Environment variables
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Runtime
+*.pid
+*.seed
+*.tgz
+
+# Coverage
+coverage/
+.coverage
+*.lcov
+
+# Cache
+.cache/
+.tmp/
+.temp/
+
+# PWA
+sw.js
+workbox-*.js
