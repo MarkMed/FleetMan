@@ -150,8 +150,8 @@ Distribución por categoría:
 | Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | |
 | Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
-| Desarrollo | 0.5 PWA base (manifest + SW básico) | 4 | 6 | |
-| Desarrollo | 0.7 i18n groundwork (infra de strings) | 5 | 5 | |
+| Desarrollo | 0.7 i18n groundwork (infra de strings) | 4 | 5 | |
+| Desarrollo | 0.5 PWA base (manifest + SW básico) | 5 | 6 | |
 | Desarrollo | 12.1 Responsive grid & breakpoints | 6 | 6 | |
 | Desarrollo | 12.2 A11y mínima (focus, labels, contraste) | 7 | 6 | |
 | Capacitación | 16.5 Taller Deploy - Azure (lun 11 Nov) | 8 | 3 | |

@@ -135,12 +135,12 @@ gantt
   20.1 Reporte Académico (0.9hs)               :t201, 2025-11-09, 1d
   20.2 Demo/UAT con cliente (1.5hs)            :t202, 2025-11-09, 1d
   20.3 Sprint Planning dominguero (1.3hs)      :t203, 2025-11-09, 1d
-  2.2 Login de usuario (RF-002) (8hs)          :t22, after t203, 2d
+  0.7 i18n groundwork (infra de strings) (5hs) :t07, after t203, 1d
+  0.5 PWA base (manifest + SW básico) (6hs)    :t05, after t203, 2d
   16.5 Taller Deploy - Azure (3hs)             :t165, 2025-11-11, 1d
-  2.3 Logout (RF-003) (4hs)                    :t23, after t22, 1d
+  12.1 Responsive grid & breakpoints (6hs)     :t121, after t07, 2d
   16.6 Taller Deploy - Azure (3hs)             :t166, 2025-11-13, 1d
-  2.5 AutZ por rol (admin/técnico/distribuidor) (7hs) :t25, after t23, 2d
-  14.1 Hashing, rate-limit, CORS (6hs)         :t141, after t25, 2d
+  12.2 A11y mínima (focus, labels, contraste) (6hs) :t122, after t121, 2d
 
   section Hitos
   Cierre Sprint 4                              :milestone, s4, 2025-11-15, 1d
@@ -162,11 +162,12 @@ gantt
   20.1 Reporte Académico (0.9hs)               :t201, 2025-11-16, 1d
   20.2 Demo/UAT con cliente (1.5hs)            :t202, 2025-11-16, 1d
   20.3 Sprint Planning dominguero (1.3hs)      :t203, 2025-11-16, 1d
-  3.1 Alta de máquina (RF-005) (10hs)          :t31, after t203, 2d
+  2.2 Login de usuario (RF-002) (8hs)          :t22, after t203, 2d
   16.3 Taller Deploy - AWS (3hs)               :t163, 2025-11-18, 1d
-  14.2 Validaciones Zod en controllers (8hs)   :t142, after t31, 2d
   16.4 Taller Deploy - AWS (3hs)               :t164, 2025-11-20, 1d
-  14.3 Permisos por endpoint (RBAC ligero) (6hs) :t143, after t142, 2d
+  2.3 Logout (RF-003) (4hs)                    :t23, after t22, 1d
+  2.5 AutZ por rol (admin/técnico/distribuidor) (7hs) :t25, after t23, 2d
+  14.1 Hashing, rate-limit, CORS (6hs)         :t141, after t25, 2d
 
   section Hitos
   Cierre Sprint 5                              :milestone, s5, 2025-11-22, 1d
@@ -187,10 +188,9 @@ gantt
   20.1 Reporte Académico (0.9hs)               :t201, 2025-11-23, 1d
   20.2 Demo/UAT con cliente (1.5hs)            :t202, 2025-11-23, 1d
   20.3 Sprint Planning dominguero (1.3hs)      :t203, 2025-11-23, 1d
-  3.2 Listado + detalle (9hs)                  :t32, after t203, 2d
-  4.1 Crear recordatorios (RF-007) (9hs)       :t41, after t32, 2d
-  6.1 Plantilla checklist (RF-011) (5hs)       :t61, after t41, 1d
-  16.7 Taller Deploy - Deploy en Práctica (3hs) :t167, 2025-11-27, 1d
+  3.1 Alta de máquina (RF-005) (10hs)          :t31, after t203, 2d
+  14.2 Validaciones Zod en controllers (8hs)   :t142, after t31, 2d
+  14.3 Permisos por endpoint (RBAC ligero) (6hs) :t143, after t142, 2d
 
   section Hitos
   Cierre Sprint 6                              :milestone, s6, 2025-11-29, 1d
@@ -211,9 +211,10 @@ gantt
   20.1 Reporte Académico (0.9hs)               :t201, 2025-11-30, 1d
   20.2 Demo/UAT con cliente (1.5hs)            :t202, 2025-11-30, 1d
   20.3 Sprint Planning dominguero (1.3hs)      :t203, 2025-11-30, 1d
-  5.1 Scheduler (agenda/node-cron) (10hs)      :t51, after t203, 2d
-  5.2 Generación + persistencia de alertas (7hs) :t52, after t51, 2d
-  6.2 UI de ejecución (RF-011) (12hs)          :t62, after t52, 3d
+  3.2 Listado + detalle (9hs)                  :t32, after t203, 2d
+  4.1 Crear recordatorios (RF-007) (9hs)       :t41, after t32, 2d
+  6.1 Plantilla checklist (RF-011) (5hs)       :t61, after t41, 1d
+  16.7 Taller Deploy - Deploy en Práctica (3hs) :t167, 2025-12-04, 1d
 
   section Hitos
   Cierre Sprint 7                              :milestone, s7, 2025-12-06, 1d
@@ -234,12 +235,11 @@ gantt
   20.1 Reporte Académico (0.9hs)               :t201, 2025-12-07, 1d
   20.2 Demo/UAT con cliente (1.5hs)            :t202, 2025-12-07, 1d
   20.3 Sprint Planning dominguero (1.3hs)      :t203, 2025-12-07, 1d
-  6.3 Persistencia en historial (RF-011) (5hs) :t63, after t203, 1d
-  8.1 Modelo + bandeja (12hs)                  :t81, after t63, 3d
-  4.2 Registrar evento (RF-008) - Parte 1 (10hs) :t421, after t81, 2d
+  5.1 Scheduler (agenda/node-cron) (10hs)      :t51, after t203, 2d
+  5.2 Generación + persistencia de alertas (7hs) :t52, after t51, 2d
+  6.2 UI de ejecución (RF-011) (12hs)          :t62, after t52, 3d
 
   section Hitos
-  Segunda Instancia Académica                   :milestone, acad2, 2025-12-20, 1d
   Cierre Sprint 8                              :milestone, s8, 2025-12-13, 1d
 ```
 
@@ -258,11 +258,9 @@ gantt
   20.1 Reporte Académico (0.9hs)               :t201, 2025-12-14, 1d
   20.2 Demo/UAT con cliente (1.5hs)            :t202, 2025-12-14, 1d
   20.3 Sprint Planning dominguero (1.3hs)      :t203, 2025-12-14, 1d
-  4.2 Registrar evento (RF-008) - Parte 2 (5hs) :t422, after t203, 1d
-  5.3 Hook a Centro de Notificaciones (4hs)    :t53, after t422, 1d
-  8.2 UI lectura/estado (7hs)                  :t82, after t53, 2d
-  6.4 Aviso QuickCheck no aprobado (RF-017) (6hs) :t64, after t82, 2d
-  3.3 Edición con historial (RF-006) (8hs)     :t33, after t64, 2d
+  6.3 Persistencia en historial (RF-011) (5hs) :t63, after t203, 1d
+  8.1 Modelo + bandeja (12hs)                  :t81, after t63, 3d
+  4.2 Registrar evento (RF-008) - Parte 1 (10hs) :t421, after t81, 2d
 
   section Hitos
   Cierre Sprint 9                              :milestone, s9, 2025-12-20, 1d
@@ -283,9 +281,11 @@ gantt
   20.1 Reporte Académico (0.9hs)               :t201, 2025-12-21, 1d
   20.2 Demo/UAT con cliente (1.5hs)            :t202, 2025-12-21, 1d
   20.3 Sprint Planning dominguero (1.3hs)      :t203, 2025-12-21, 1d
-  4.3 Historial unificado (RF-009) (15hs)      :t43, after t203, 3d
-  9.1 Datos de contacto por distribuidor (5hs) :t91, after t43, 1d
-  9.2 Acciones de contacto (tel, mailto, wa.me) (5hs) :t92, after t91, 1d
+  4.2 Registrar evento (RF-008) - Parte 2 (5hs) :t422, after t203, 1d
+  5.3 Hook a Centro de Notificaciones (4hs)    :t53, after t422, 1d
+  8.2 UI lectura/estado (7hs)                  :t82, after t53, 2d
+  6.4 Aviso QuickCheck no aprobado (RF-017) (6hs) :t64, after t82, 2d
+  3.3 Edición con historial (RF-006) (8hs)     :t33, after t64, 2d
 
   section Hitos
   Cierre Sprint 10                             :milestone, s10, 2025-12-27, 1d
@@ -306,10 +306,9 @@ gantt
   20.1 Reporte Académico (0.9hs)               :t201, 2025-12-28, 1d
   20.2 Demo/UAT con cliente (1.5hs)            :t202, 2025-12-28, 1d
   20.3 Sprint Planning dominguero (1.3hs)      :t203, 2025-12-28, 1d
-  0.5 PWA base (manifest + SW básico) (6hs)    :t05, after t203, 2d
-  0.7 i18n groundwork (infra de strings) (5hs) :t07, after t05, 1d
-  12.1 Responsive grid & breakpoints (6hs)     :t121, after t07, 2d
-  12.2 A11y mínima (focus, labels, contraste) (6hs) :t122, after t121, 2d
+  4.3 Historial unificado (RF-009) (15hs)      :t43, after t203, 3d
+  9.1 Datos de contacto por distribuidor (5hs) :t91, after t43, 1d
+  9.2 Acciones de contacto (tel, mailto, wa.me) (5hs) :t92, after t91, 1d
 
   section Hitos
   Cierre Sprint 11                             :milestone, s11, 2026-01-03, 1d
@@ -431,12 +430,30 @@ gantt
   16.3 Script "reset demo" (4hs)               :t163, after t72, 1d
   17.3 Manual breve de usuario (6hs)           :t173, after t163, 2d
 
-  section Buffer Final
-  21.21 Buffer de entrega final (10hs)         :t2121, 2026-02-07, 2d
-
   section Hitos
   Cierre Sprint 16                             :milestone, s16, 2026-02-07, 1d
-  Entrega Final del Proyecto                    :milestone, acadfinal, 2026-02-10, 1d
+```
+
+---
+
+## Sprint #17 (2026-02-08 → 2026-02-14)
+
+```mermaid
+gantt
+  title Sprint 17 (2026-02-08 → 2026-02-14)
+  dateFormat  YYYY-MM-DD
+  axisFormat  %d
+
+  %% Asumimos 5 h/día. Horas estimadas incluidas en el nombre.
+
+  20.1 Reporte Académico (0.9hs)               :t201, 2026-02-08, 1d
+  20.2 Demo/UAT con cliente (1.5hs)            :t202, 2026-02-08, 1d
+  20.3 Sprint Planning dominguero (1.3hs)      :t203, 2026-02-08, 1d
+  21.21 Buffer de entrega final (10hs)         :t2121, after t203, 2d
+
+  section Hitos
+  Cierre Sprint 17                             :milestone, s17, 2026-02-14, 1d
+  Entrega Final del Proyecto                    :milestone, acadfinal, 2026-02-14, 1d
 ```
 
 ---
@@ -469,15 +486,17 @@ gantt
 
 ## Resumen General
 
-- **Total de sprints:** 16
-- **Duración del desarrollo:** 12 de octubre 2025 - 7 de febrero 2026
+- **Total de sprints:** 17 (Sprint #0 a Sprint #17)
+- **Duración del desarrollo:** 12 de octubre 2025 - 14 de febrero 2026
 - **Duración por sprint:** 7 días (domingo a sábado)
 - **Estimación de trabajo:** 5 horas por día laboral
 - **Hitos principales de desarrollo:**
   - Sprint 0: Configuración inicial y documentación del anteproyecto
   - Sprint 1: Entrega del Documento Anteproyecto (22 oct)
-  - Sprints 2-11: Desarrollo del MVP
-  - Sprints 12-16: Testing, refinamiento y funcionalidades adicionales
+  - Sprint 2-3: Configuración base de desarrollo
+  - Sprint 4: PWA y UX (movido desde posición anterior del Sprint #11)
+  - Sprints 5-11: Desarrollo del MVP core
+  - Sprints 12-17: Testing, refinamiento y funcionalidades adicionales
 - **Eventos académicos principales:**
   - Primera Instancia: Noviembre 2025
   - Segunda Instancia: Diciembre 2025
@@ -490,4 +509,5 @@ gantt
 - Los sprints navideños (10-11) pueden tener productividad reducida
 - Las funcionalidades marcadas como `[NiceToHave]` pueden ajustarse según el progreso
 - El Sprint 14 es especialmente denso con poco buffer disponible
-- **Buffer de 3 días (8-10 feb):** Período estratégico para refinamientos finales, documentación y verificaciones de calidad antes de la entrega académica
+- **Cambio importante:** El Sprint #4 ahora se enfoca en PWA/UX (anteriormente era Sprint #11), estableciendo las bases de UX antes del desarrollo de funcionalidades de dominio
+- **Sprint #17:** Buffer final para refinamientos, documentación y verificaciones de calidad antes de la entrega académica
