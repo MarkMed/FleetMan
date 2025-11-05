@@ -1,6 +1,9 @@
 # Planes de Sprints
 
 ### **Sprint #0**: dom 12 oct → sáb 18 oct 2025
+
+**Objetivo:** Finalizar y entregar documento de Anteproyecto.
+
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
 | Capacitación | 21.1 Talleres (instancias de guía general) | 1 | No est. | 2 |
@@ -29,6 +32,8 @@ Distribución por categoría:
 **Riesgos:** Sprint retrospectivo sin estimaciones previas; tareas ya completadas o en progreso.
 
 ### **Sprint #1**: dom 19 oct → sáb 25 oct 2025
+
+**Objetivo:** Configurar entornos y herramientas de desarrollo (dependencias, monorepo, editor online).
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
@@ -70,6 +75,8 @@ Distribución por categoría:
 
 ### **Sprint #2**: dom 26 oct → sáb 1 nov 2025
 
+**Objetivo:** Lograr un User Journey refinado y aprobado por el cliente. Crear entidades (clases) básicas.
+
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
 | Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | 1.8 |
@@ -110,12 +117,14 @@ Distribución por categoría:
 
 ### **Sprint #3**: dom 2 nov → sáb 8 nov 2025
 
+**Objetivo:** Establecer la infraestructura básica de backend y frontend necesaria para el desarrollo posterior de funcionalidades de dominio.
+
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
-| Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | 2.5 |
+| Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | 3.5 |
 | Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | 1.1 |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | 1.3 |
-| Desarrollo | 0.11 Setup Backend Básico | 4 | 8 | |
+| Desarrollo | 0.11 Setup Backend Básico | 4 | 8 | 0.2 |
 | Desarrollo | 0.13 Setup Frontend Básico | 5 | 8 | |
 | QA | 13.2 Config Jest (front/back, TS, coverage) | 6 | 6 | |
 | Capacitación | 16.2 Taller Deploy - Conceptos Generales (miérc 6 Nov) | 7 | 3 | |
@@ -133,6 +142,8 @@ Distribución por categoría:
 | **3.5**hs | **16**hs | **6**hs | **3**hs | **0**hs |
 
 ### **Sprint #4**: dom 9 nov → sáb 15 nov 2025
+
+**Objetivo:** Implementar autenticación completa (RF-001, RF-002, RF-003) y establecer medidas de seguridad básicas del sistema.
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
@@ -160,6 +171,8 @@ Distribución por categoría:
 
 ### **Sprint #5**: dom 16 nov → sáb 22 nov 2025
 
+**Objetivo:** Desarrollar gestión básica de maquinaria (RF-005) con alta de equipos y validaciones robustas en toda la aplicación.
+
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
 | Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | |
@@ -185,6 +198,8 @@ Distribución por categoría:
 
 ### **Sprint #6**: dom 23 nov → sáb 29 nov 2025
 
+**Objetivo:** Completar módulo de maquinaria con listado/detalle y establecer bases del sistema de mantenimiento preventivo (RF-007, RF-011).
+
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
 | Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | |
@@ -209,6 +224,8 @@ Distribución por categoría:
 
 ### **Sprint #7**: dom 30 nov → sáb 6 dic 2025
 
+**Objetivo:** Implementar sistema de alertas automáticas (RF-010) y funcionalidad completa de QuickCheck de seguridad (RF-011).
+
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
 | Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | |
@@ -231,6 +248,8 @@ Distribución por categoría:
 | **3.7**hs | **29**hs | **0**hs | **0**hs | **0**hs |
 
 ### **Sprint #8**: dom 7 dic → sáb 13 dic 2025
+
+**Objetivo:** Desarrollar centro de notificaciones (RF-016) y módulo de registro de eventos de maquinaria (RF-008) parte 1.
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
@@ -256,6 +275,8 @@ Distribución por categoría:
 **Riesgos:** Integración entre notificaciones y eventos puede ser compleja.
 
 ### **Sprint #9**: dom 14 dic → sáb 20 dic 2025
+
+**Objetivo:** Completar integración entre eventos, notificaciones y QuickCheck. Implementar edición con historial de máquinas (RF-006, RF-008, RF-017).
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
@@ -284,6 +305,8 @@ Distribución por categoría:
 
 ### **Sprint #10**: dom 21 dic → sáb 27 dic 2025
 
+**Objetivo:** Implementar historial unificado de maquinaria (RF-009) y módulo de comunicación con distribuidores (RF-015).
+
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
 | Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | |
@@ -308,6 +331,8 @@ Distribución por categoría:
 **Riesgos:** Período navideño puede afectar productividad.
 
 ### **Sprint #11**: dom 28 dic → sáb 3 ene 2026
+
+**Objetivo:** Implementar capacidades PWA, internacionalización básica y mejorar accesibilidad y responsive design.
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
@@ -335,6 +360,8 @@ Distribución por categoría:
 
 ### **Sprint #12**: dom 4 ene → sáb 10 ene 2026
 
+**Objetivo:** Establecer cobertura robusta de testing unitario en backend y frontend, junto con datos de prueba y semillas demo.
+
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
 | Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | |
@@ -359,6 +386,8 @@ Distribución por categoría:
 
 ### **Sprint #13**: dom 11 ene → sáb 17 ene 2026
 
+**Objetivo:** Completar testing frontend, preparar build de producción y establecer documentación técnica básica (API docs).
+
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
 | Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | |
@@ -381,6 +410,8 @@ Distribución por categoría:
 | **3.7**hs | **8**hs | **10**hs | **0**hs | **6**hs |
 
 ### **Sprint #14**: dom 18 ene → sáb 24 ene 2026
+
+**Objetivo:** Realizar validación exhaustiva del MVP con sanitización manual, testing E2E y implementar recuperación de contraseña (RF-004).
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
@@ -409,6 +440,8 @@ Distribución por categoría:
 
 ### **Sprint #15**: dom 25 ene → sáb 31 ene 2026
 
+**Objetivo:** Ejecutar ciclo de UAT, triage y corrección de defectos para asegurar calidad del MVP final.
+
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
 | Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | |
@@ -432,6 +465,8 @@ Distribución por categoría:
 | **5.7**hs | **6**hs | **16**hs | **0**hs | **0**hs |
 
 ### **Sprint #16**: dom 1 feb → sáb 7 feb 2026
+
+**Objetivo:** Completar funcionalidades Nice-to-Have del módulo de repuestos (RF-012, RF-013, RF-014) y finalizar documentación para entrega.
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
