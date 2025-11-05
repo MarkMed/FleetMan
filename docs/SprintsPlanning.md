@@ -123,8 +123,8 @@ Distribución por categoría:
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
 | Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | 3.5 |
 | Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | 1.1 |
-| Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | 1.3 |
-| Desarrollo | 0.11 Setup Backend Básico | 4 | 8 | 0.2 |
+| Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | 1.8 |
+| Desarrollo | 0.11 Setup Backend Básico | 4 | 8 | 0.5 |
 | Desarrollo | 0.13 Setup Frontend Básico | 5 | 8 | |
 | QA | 13.2 Config Jest (front/back, TS, coverage) | 6 | 6 | |
 | Capacitación | 16.2 Taller Deploy - Conceptos Generales (miérc 6 Nov) | 7 | 3 | |
