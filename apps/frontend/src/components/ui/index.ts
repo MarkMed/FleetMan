@@ -46,3 +46,9 @@ export { Toaster } from './Toaster';
 
 // Re-export hooks for convenience
 export { useToast, toast } from '@hooks/useToast';
+
+// Global Modal System
+export { modal } from '@helpers/modal';
+export type { ModalConfig, InfoModalConfig, ConfirmationModalConfig } from '@helpers/modal';
+export { useModalStore } from '@store/slices/modalSlice';
+export type { ModalVariant, ModalStore } from '@store/slices/modalSlice';

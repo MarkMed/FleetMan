@@ -10,6 +10,7 @@
       "@hooks/*": ["./hooks/*"],
       "@services/*": ["./services/*"],
       "@utils/*": ["./utils/*"],
+      "@helpers/*": ["./helpers/*"],
       "@models/*": ["./models/*"],
       "@store/*": ["./store/*"],
       "@constants/*": ["./constants/*"],

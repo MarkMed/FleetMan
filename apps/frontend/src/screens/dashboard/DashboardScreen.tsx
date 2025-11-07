@@ -9,8 +9,8 @@ import {
   Card,
   CardContent,
   StatCard,
-  Modal,
-  toast
+  toast,
+  modal
 } from '@components/ui';
 import { 
   Activity, 
@@ -25,7 +25,6 @@ import {
 
 export const DashboardScreen: React.FC = () => {
   const { t } = useTranslation();
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   /**
    * Quick actions handlers
@@ -34,10 +33,41 @@ export const DashboardScreen: React.FC = () => {
    */
   const handleQuickCheck = () => {
     console.log('Quick check initiated');
-    setIsModalOpen(true);
-    toast.success({
-      title: "Chequeo Iniciado",
-      description: "El proceso de chequeo rápido ha comenzado correctamente.",
+    
+    // Show global modal instead of local state
+    modal.show({
+      title: "Chequeo Rápido",
+      description: "Selecciona una máquina para iniciar el chequeo de seguridad",
+      content: (
+        <div className="space-y-4">
+          <BodyText>
+            Esta es una demostración del Modal Global. Aquí podrías mostrar:
+          </BodyText>
+          <ul className="space-y-2 ml-4">
+            <li className="flex items-center gap-2">
+              <div className="w-1 h-1 rounded-full bg-primary"></div>
+              <SmallText>Lista de máquinas disponibles</SmallText>
+            </li>
+            <li className="flex items-center gap-2">
+              <div className="w-1 h-1 rounded-full bg-primary"></div>
+              <SmallText>Formulario de chequeo rápido</SmallText>
+            </li>
+            <li className="flex items-center gap-2">
+              <div className="w-1 h-1 rounded-full bg-primary"></div>
+              <SmallText>Resultados del chequeo</SmallText>
+            </li>
+          </ul>
+        </div>
+      ),
+      variant: 'info',
+      confirmText: "Iniciar Chequeo",
+      cancelText: "Cancelar",
+      onConfirm: () => {
+        toast.success({
+          title: "Chequeo Iniciado",
+          description: "El proceso de chequeo rápido ha comenzado correctamente.",
+        });
+      }
     });
   };
 
@@ -322,41 +352,120 @@ export const DashboardScreen: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Demo Modal - Showcasing Modal component */}
-      <Modal
-        open={isModalOpen}
-        onOpenChange={setIsModalOpen}
-        title="Chequeo Rápido"
-        description="Selecciona una máquina para iniciar el chequeo de seguridad"
-      >
-        <div className="space-y-4">
-          <BodyText>
-            Esta es una demostración del componente Modal. Aquí podrías mostrar:
+      {/* Global Modal Demonstrations Section */}
+      <Card>
+        <CardContent className="p-6">
+          <TextBlock as="h3" size="large" weight="medium" style="mb-4">
+            Sistema de Modal Global
+          </TextBlock>
+          <BodyText style="mb-4" color="textSecondary">
+            Demuestra el sistema de modal global que puede ser controlado desde cualquier componente de la aplicación.
           </BodyText>
-          <ul className="space-y-2 ml-4">
-            <li className="flex items-center gap-2">
-              <div className="w-1 h-1 rounded-full bg-primary"></div>
-              <SmallText>Lista de máquinas disponibles</SmallText>
-            </li>
-            <li className="flex items-center gap-2">
-              <div className="w-1 h-1 rounded-full bg-primary"></div>
-              <SmallText>Formulario de chequeo rápido</SmallText>
-            </li>
-            <li className="flex items-center gap-2">
-              <div className="w-1 h-1 rounded-full bg-primary"></div>
-              <SmallText>Resultados del chequeo</SmallText>
-            </li>
-          </ul>
-          <div className="flex gap-2 pt-4">
-            <Button variant="filled" onPress={() => setIsModalOpen(false)}>
-              Iniciar Chequeo
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            <Button 
+              variant="filled" 
+              onPress={() => modal.info({
+                title: "Información",
+                description: "Este es un modal informativo que se muestra usando el sistema global.",
+                dismissText: "Entendido"
+              })}
+            >
+              Modal Info
             </Button>
-            <Button variant="ghost" onPress={() => setIsModalOpen(false)}>
-              Cancelar
+            
+            <Button 
+              variant="warning" 
+              onPress={() => modal.warning({
+                title: "Advertencia",
+                description: "Esta es una advertencia importante que debes leer cuidadosamente.",
+                dismissText: "He sido advertido"
+              })}
+            >
+              Modal Advertencia
+            </Button>
+            
+            <Button 
+              variant="destructive" 
+              onPress={() => modal.error({
+                title: "Error Crítico",
+                description: "Se ha detectado un error que requiere tu atención inmediata.",
+                dismissText: "Cerrar"
+              })}
+            >
+              Modal Error
+            </Button>
+            
+            <Button 
+              variant="success" 
+              onPress={() => modal.success({
+                title: "¡Operación Exitosa!",
+                description: "La acción se completó correctamente sin errores.",
+                dismissText: "Continuar"
+              })}
+            >
+              Modal Éxito
+            </Button>
+            
+            <Button 
+              variant="outline" 
+              onPress={async () => {
+                const confirmed = await modal.confirm({
+                  title: "Confirmar Acción",
+                  description: "¿Estás seguro de que quieres continuar con esta acción?",
+                  confirmText: "Sí, continuar",
+                  cancelText: "No, cancelar"
+                });
+                
+                if (confirmed) {
+                  toast.success({ 
+                    title: "Confirmado", 
+                    description: "Has confirmado la acción." 
+                  });
+                } else {
+                  toast.info({ 
+                    title: "Cancelado", 
+                    description: "Has cancelado la acción." 
+                  });
+                }
+              }}
+            >
+              Modal Confirmación
+            </Button>
+            
+            <Button 
+              variant="secondary" 
+              onPress={async () => {
+                const confirmed = await modal.confirm({
+                  title: "Eliminar Elemento",
+                  description: "¿Estás seguro? Esta acción no se puede deshacer.",
+                  action: "danger",
+                  confirmText: "Sí, eliminar",
+                  cancelText: "Cancelar"
+                });
+                
+                if (confirmed) {
+                  // Simulate async operation
+                  modal.setLoading(true);
+                  setTimeout(() => {
+                    modal.hide();
+                    toast.success({ 
+                      title: "Eliminado", 
+                      description: "El elemento ha sido eliminado exitosamente." 
+                    });
+                  }, 2000);
+                } else {
+                  toast.info({ 
+                    title: "Cancelado", 
+                    description: "No se eliminó el elemento." 
+                  });
+                }
+              }}
+            >
+              Modal Peligroso
             </Button>
           </div>
-        </div>
-      </Modal>
+        </CardContent>
+      </Card>
     </div>
   );
 };
