@@ -82,7 +82,7 @@ Distribución por categoría:
 | Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | 1.8 |
 | Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | 1 |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | 0.6 |
-| Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | |
+| Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | 0 |
 | Desarrollo | 1.2 Esquemas DB (Mongoose + índices clave) | 5 | 5 | 0 |
 | Desarrollo | 1.3 DTOs + Zod (contratos compartidos) | 6 | 7 | 9.02 |
 | Desarrollo | 0.6 User Journey mapping | 7 | 6 | 14.8 |
@@ -125,7 +125,7 @@ Distribución por categoría:
 | Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | 3.5 |
 | Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | 1.1 |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | 1.9 |
-| Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | |
+| Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | 0.9 |
 | Desarrollo | 0.11 Setup Backend Básico | 5 | 8 | 0.5 |
 | Desarrollo | 0.13 Setup Frontend Básico | 6 | 8 | 4.2 |
 | QA | 13.2 Config Jest (front/back, TS, coverage) | 7 | 6 | |
@@ -133,7 +133,7 @@ Distribución por categoría:
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales |
 |:---:|:----------:|
-| **29.7**hs | **14.2**hs |
+| **29.7**hs | **15.1**hs |
 
 Buffer reservado: **5.3**hs
 Total con buffer: **35**hs
@@ -148,7 +148,7 @@ xychart-beta
     line [0.9, 1.5, 1.3, 1, 8, 8, 6, 3, 29.7]
 
 	%% Black line
-    line [3.5, 1.1, 1.9, 0, 0.5, 4.2, 0, 3, 14.2]
+    line [3.5, 1.1, 1.9, 0.9, 0.5, 4.2, 0, 3, 15.1]
 ```
 
 Distribución por categoría:
