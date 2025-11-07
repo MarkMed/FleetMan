@@ -123,23 +123,36 @@ Distribución por categoría:
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
 | Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | 3.5 |
 | Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | 1.1 |
-| Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | 1.8 |
+| Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | 1.9 |
 | Desarrollo | 0.11 Setup Backend Básico | 4 | 8 | 0.5 |
-| Desarrollo | 0.13 Setup Frontend Básico | 5 | 8 | |
+| Desarrollo | 0.13 Setup Frontend Básico | 5 | 8 | 4.2 |
 | QA | 13.2 Config Jest (front/back, TS, coverage) | 6 | 6 | |
-| Capacitación | 16.2 Taller Deploy - Conceptos Generales (miérc 6 Nov) | 7 | 3 | |
+| Capacitación | 16.2 Taller Deploy - Conceptos Generales (miérc 6 Nov) | 7 | 3 | 3 |
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales |
 |:---:|:----------:|
-| **28.7**hs | **3.5**hs |
+| **28.7**hs | **14.2**hs |
 
 Buffer reservado: **6.3**hs
 Total con buffer: **35**hs
 
+```mermaid
+xychart-beta
+    title "Sprint #3: Horas Estimadas #40;azul#41; vs Reales #40;verde#41;"
+    x-axis "Tareas" ["20.1", "20.2", "20.3", "0.11", "0.13", "13.2", "16.2", "TOTAL"]
+    y-axis "Horas" 0 --> 30
+	
+	%% Green line
+    line [0.9, 1.5, 1.3, 8, 8, 6, 3, 28.7]
+
+	%% Black line
+    line [3.5, 1.1, 1.9, 0.5, 4.2, 0, 3, 14.2]
+```
+
 Distribución por categoría:
 | Gestión | Desarrollo | QA | Capacitación | Documentación |
 |:-------:|:----------:|:--:|:------------:|:-------------:|
-| **3.5**hs | **16**hs | **6**hs | **3**hs | **0**hs |
+| **6.5**hs | **4.7**hs | **0**hs | **3**hs | **0**hs |
 
 ### **Sprint #4**: dom 9 nov → sáb 15 nov 2025
 
