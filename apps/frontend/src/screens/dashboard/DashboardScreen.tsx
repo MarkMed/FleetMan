@@ -34,14 +34,15 @@ export const DashboardScreen: React.FC = () => {
   const handleQuickCheck = () => {
     console.log('Quick check initiated');
     
-    // Show global modal instead of local state
+    // Show global modal with colored border
     modal.show({
       title: "Chequeo Rápido",
       description: "Selecciona una máquina para iniciar el chequeo de seguridad",
+      showColoredBorder: true,
       content: (
         <div className="space-y-4">
           <BodyText>
-            Esta es una demostración del Modal Global. Aquí podrías mostrar:
+            Esta es una demostración del Modal Global con borde coloreado. Aquí podrías mostrar:
           </BodyText>
           <ul className="space-y-2 ml-4">
             <li className="flex items-center gap-2">
@@ -54,7 +55,7 @@ export const DashboardScreen: React.FC = () => {
             </li>
             <li className="flex items-center gap-2">
               <div className="w-1 h-1 rounded-full bg-primary"></div>
-              <SmallText>Resultados del chequeo</SmallText>
+              <SmallText>Resultados del chequeo en tiempo real</SmallText>
             </li>
           </ul>
         </div>
@@ -413,7 +414,8 @@ export const DashboardScreen: React.FC = () => {
                   title: "Confirmar Acción",
                   description: "¿Estás seguro de que quieres continuar con esta acción?",
                   confirmText: "Sí, continuar",
-                  cancelText: "No, cancelar"
+                  cancelText: "No, cancelar",
+                  showColoredBorder: true
                 });
                 
                 if (confirmed) {
@@ -440,7 +442,8 @@ export const DashboardScreen: React.FC = () => {
                   description: "¿Estás seguro? Esta acción no se puede deshacer.",
                   action: "danger",
                   confirmText: "Sí, eliminar",
-                  cancelText: "Cancelar"
+                  cancelText: "Cancelar",
+                  showColoredBorder: true
                 });
                 
                 if (confirmed) {
@@ -463,6 +466,37 @@ export const DashboardScreen: React.FC = () => {
             >
               Modal Peligroso
             </Button>
+          </div>
+          
+          <div className="mt-4 pt-4 border-t">
+            <BodyText style="mb-3" color="textSecondary" size="small">
+              Ejemplos con borde personalizable:
+            </BodyText>
+            <div className="flex flex-wrap gap-2">
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onPress={() => modal.info({
+                  title: "Modal Sin Borde",
+                  description: "Este modal mantiene el estilo por defecto sin borde coloreado.",
+                  showColoredBorder: false
+                })}
+              >
+                Info Sin Borde
+              </Button>
+              
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onPress={() => modal.warning({
+                  title: "Modal Con Borde",
+                  description: "Este modal tiene borde coloreado que coincide con la variante warning.",
+                  showColoredBorder: true
+                })}
+              >
+                Warning Con Borde
+              </Button>
+            </div>
           </div>
         </CardContent>
       </Card>

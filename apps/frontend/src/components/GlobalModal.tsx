@@ -100,8 +100,50 @@ export function GlobalModal() {
   };
 
   /**
-   * Get modal size classes based on size prop
+   * Get modal border classes based on variant and showColoredBorder
    */
+  const getBorderClasses = () => {
+    if (!config.showColoredBorder) {
+      return ''; // Use default border from Modal component
+    }
+
+    switch (config.variant) {
+      case 'danger':
+        return 'border-l-4 border-l-red-500 border-t-red-500/40 border-r-red-500/40 border-b-red-500/40';
+      case 'warning':
+        return 'border-l-4 border-l-yellow-500 border-t-yellow-500/40 border-r-yellow-500/40 border-b-yellow-500/40';
+      case 'success':
+        return 'border-l-4 border-l-green-500 border-t-green-500/40 border-r-green-500/40 border-b-green-500/40';
+      case 'info':
+        return 'border-l-4 border-l-blue-500 border-t-blue-500/40 border-r-blue-500/40 border-b-blue-500/40';
+      case 'confirmation':
+      default:
+        return 'border-l-4 border-l-blue-600 border-t-blue-600/40 border-r-blue-600/40 border-b-blue-600/40';
+    }
+  };
+
+  /**
+   * Get background accent classes for colored border modals
+   */
+  const getBackgroundAccent = () => {
+    if (!config.showColoredBorder) {
+      return '';
+    }
+
+    switch (config.variant) {
+      case 'danger':
+        return 'bg-gradient-to-r from-red-50/50 via-background to-background dark:from-red-950/40 dark:via-background dark:to-background';
+      case 'warning':
+        return 'bg-gradient-to-r from-yellow-50/50 via-background to-background dark:from-yellow-950/40 dark:via-background dark:to-background';
+      case 'success':
+        return 'bg-gradient-to-r from-green-50/50 via-background to-background dark:from-green-950/40 dark:via-background dark:to-background';
+      case 'info':
+        return 'bg-gradient-to-r from-blue-50/50 via-background to-background dark:from-blue-950/40 dark:via-background dark:to-background';
+      case 'confirmation':
+      default:
+        return 'bg-gradient-to-r from-blue-50/50 via-background to-background dark:from-blue-950/40 dark:via-background dark:to-background';
+    }
+  };
   const getSizeClasses = () => {
     switch (config.size) {
       case 'sm':
@@ -159,7 +201,9 @@ export function GlobalModal() {
       <ModalContent 
         className={cn(
           'w-full',
-          getSizeClasses()
+          getSizeClasses(),
+          getBorderClasses(),
+          getBackgroundAccent()
         )}
         showCloseButton={config.showCloseButton}
       >

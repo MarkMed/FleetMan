@@ -166,6 +166,7 @@ class ModalHelper {
       variant: 'info',
       showConfirm: false,
       showCancel: true,
+      showColoredBorder: true,
       cancelText: dismissText,
     });
   }
@@ -192,6 +193,7 @@ class ModalHelper {
       variant: 'warning',
       showConfirm: false,
       showCancel: true,
+      showColoredBorder: true,
       cancelText: dismissText,
     });
   }
@@ -218,6 +220,7 @@ class ModalHelper {
       variant: 'danger',
       showConfirm: false,
       showCancel: true,
+      showColoredBorder: true,
       cancelText: dismissText,
     });
   }
@@ -244,6 +247,7 @@ class ModalHelper {
       variant: 'success',
       showConfirm: false,
       showCancel: true,
+      showColoredBorder: true,
       cancelText: dismissText,
     });
   }

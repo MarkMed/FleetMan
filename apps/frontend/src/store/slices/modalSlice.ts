@@ -45,6 +45,11 @@ export interface ModalConfig {
    */
   size?: 'sm' | 'md' | 'lg' | 'xl' | 'full';
   /**
+   * Whether to show colored border based on variant
+   * @default false (keeps current default appearance)
+   */
+  showColoredBorder?: boolean;
+  /**
    * Callback fired when confirm/primary button is clicked
    */
   onConfirm?: () => void | Promise<void>;
@@ -145,6 +150,7 @@ const defaultConfig: ModalConfig = {
   showConfirm: true,
   showCancel: true,
   loading: false,
+  showColoredBorder: false,
   confirmText: 'Confirmar',
   cancelText: 'Cancelar',
 };
