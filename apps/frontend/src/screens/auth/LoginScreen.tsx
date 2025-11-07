@@ -4,8 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '@components/ui/Button';
 import { useZodForm } from '@hooks/useZodForm';
 import { useLogin } from '@hooks/useAuth';
-import { loginSchema } from '@validators';
-import { ROUTES } from '@constants';
+import { loginSchema, type LoginFormData } from '@validators/index';
+import { ROUTES } from '@constants/index';
 
 export const LoginScreen: React.FC = () => {
   const { t } = useTranslation();
@@ -24,7 +24,7 @@ export const LoginScreen: React.FC = () => {
     },
   });
 
-  const onSubmit = handleSubmit(async (data) => {
+  const onSubmit = handleSubmit(async (data: LoginFormData) => {
     try {
       await loginMutation.mutateAsync(data);
     } catch (error) {
