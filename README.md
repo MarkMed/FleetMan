@@ -30,7 +30,11 @@ GITHUB_TOKEN=tu_token_aqui
 
 ### Opción 1: GitHub Codespaces (Recomendado)
 
-La forma más rápida de empezar a desarrollar es usando GitHub Codespaces:
+La forma más rápida de empezar a desarrollar es usando GitHub Codespaces.
+
+📖 **[Ver guía completa de Codespaces](./docs/CODESPACES.md)** - Guía detallada con troubleshooting y tips.
+
+**Resumen rápido:**
 
 1. **Crear un Codespace:**
    - Haz clic en el botón "Code" en GitHub
