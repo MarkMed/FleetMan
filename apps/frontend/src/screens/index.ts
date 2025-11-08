@@ -14,7 +14,7 @@ export { NewMachineScreen } from './machines/NewMachineScreen';
 export { MaintenanceScreen } from './maintenance/MaintenanceScreen';
 
 // Quickcheck Screens
-export { QuickCheckScreen } from './quickcheck/QuickCheckScreen';
+export { QuickCheckScreen } from './quickcheck/QuickcheckScreen';
 
 // Notifications Screens
 export { NotificationsScreen } from './notifications/NotificationsScreen';
