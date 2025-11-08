@@ -1,20 +1,21 @@
 import React from 'react';
+import { Heading1, BodyText, Button } from '@components/ui';
 
 export const MachinesScreen: React.FC = () => {
   return (
     <div className="space-y-8">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground">
+          <Heading1 size="headline" className="tracking-tight text-foreground">
             Gestión de Máquinas
-          </h1>
-          <p className="text-muted-foreground">
+          </Heading1>
+          <BodyText className="text-muted-foreground">
             Administra tu inventario de máquinas y su información
-          </p>
+          </BodyText>
         </div>
-        <button className="bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90">
+        <Button variant="filled" size="default">
           + Nueva Máquina
-        </button>
+        </Button>
       </div>
 
       <div className="flex gap-4 mb-6">

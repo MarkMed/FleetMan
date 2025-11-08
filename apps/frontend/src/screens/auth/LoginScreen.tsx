@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button } from '@components/ui/Button';
+import { Button, Heading1, BodyText } from '@components/ui';
 import { useZodForm } from '@hooks/useZodForm';
 import { useLogin } from '@hooks/useAuth';
 import { loginSchema, type LoginFormData } from '@validators/index';
@@ -37,12 +37,12 @@ export const LoginScreen: React.FC = () => {
     <div className="flex min-h-screen items-center justify-center bg-background px-4 py-12 sm:px-6 lg:px-8">
       <div className="w-full max-w-md space-y-8">
         <div className="text-center">
-          <h1 className="text-3xl font-bold tracking-tight text-foreground">
+          <Heading1 size="headline" className="tracking-tight text-foreground">
             {t('auth.login.title')}
-          </h1>
-          <p className="mt-2 text-sm text-muted-foreground">
+          </Heading1>
+          <BodyText size="small" className="mt-2 text-muted-foreground">
             {t('auth.login.subtitle')}
-          </p>
+          </BodyText>
         </div>
 
         <form className="mt-8 space-y-6" onSubmit={onSubmit}>
@@ -115,12 +115,16 @@ export const LoginScreen: React.FC = () => {
 
           <div>
             <Button
-              type="submit"
+              asChild
+              variant="filled"
+              size="lg"
               className="w-full"
               loading={isSubmitting || loginMutation.isPending}
               disabled={isSubmitting || loginMutation.isPending}
             >
-              {t('auth.login.loginButton')}
+              <button type="submit">
+                {t('auth.login.loginButton')}
+              </button>
             </Button>
           </div>
 

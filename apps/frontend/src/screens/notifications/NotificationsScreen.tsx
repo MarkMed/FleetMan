@@ -1,58 +1,67 @@
 import React from 'react';
+import { Heading1, Heading2, BodyText, Button, Card } from '@components/ui';
 
 export const NotificationsScreen: React.FC = () => {
   return (
     <div className="space-y-8">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground">
+          <Heading1 size="headline" className="tracking-tight text-foreground">
             Notificaciones y Alertas
-          </h1>
-          <p className="text-muted-foreground">
+          </Heading1>
+          <BodyText className="text-muted-foreground">
             Mantente al día con todas las alertas y notificaciones del sistema
-          </p>
+          </BodyText>
         </div>
         <div className="flex gap-2">
-          <button className="px-4 py-2 border border-border rounded-lg hover:bg-muted">
+          <Button variant="outline" size="default">
             Marcar todas como leídas
-          </button>
-          <button className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90">
+          </Button>
+          <Button variant="filled" size="default">
             Configurar
-          </button>
+          </Button>
         </div>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-4">
-        <div className="rounded-lg border border-border bg-card p-6">
-          <h3 className="text-sm font-medium text-muted-foreground">Total</h3>
-          <p className="text-3xl font-bold text-foreground">24</p>
-          <p className="text-xs text-muted-foreground mt-1">Notificaciones</p>
-        </div>
+        <Card>
+          <div className="p-6">
+            <BodyText size="small" weight="medium" className="text-muted-foreground">Total</BodyText>
+            <Heading2 size="headline" weight="bold" className="text-foreground">24</Heading2>
+            <BodyText size="small" className="text-muted-foreground mt-1">Notificaciones</BodyText>
+          </div>
+        </Card>
         
-        <div className="rounded-lg border border-border bg-card p-6">
-          <h3 className="text-sm font-medium text-muted-foreground">Sin Leer</h3>
-          <p className="text-3xl font-bold text-warning">7</p>
-          <p className="text-xs text-muted-foreground mt-1">Nuevas</p>
-        </div>
+        <Card>
+          <div className="p-6">
+            <BodyText size="small" weight="medium" className="text-muted-foreground">Sin Leer</BodyText>
+            <Heading2 size="headline" weight="bold" className="text-warning">7</Heading2>
+            <BodyText size="small" className="text-muted-foreground mt-1">Nuevas</BodyText>
+          </div>
+        </Card>
         
-        <div className="rounded-lg border border-border bg-card p-6">
-          <h3 className="text-sm font-medium text-muted-foreground">Críticas</h3>
-          <p className="text-3xl font-bold text-destructive">2</p>
-          <p className="text-xs text-muted-foreground mt-1">Requieren atención</p>
-        </div>
+        <Card>
+          <div className="p-6">
+            <BodyText size="small" weight="medium" className="text-muted-foreground">Críticas</BodyText>
+            <Heading2 size="headline" weight="bold" className="text-destructive">2</Heading2>
+            <BodyText size="small" className="text-muted-foreground mt-1">Requieren atención</BodyText>
+          </div>
+        </Card>
         
-        <div className="rounded-lg border border-border bg-card p-6">
-          <h3 className="text-sm font-medium text-muted-foreground">Esta semana</h3>
-          <p className="text-3xl font-bold text-info">15</p>
-          <p className="text-xs text-muted-foreground mt-1">Notificaciones</p>
-        </div>
+        <Card>
+          <div className="p-6">
+            <BodyText size="small" weight="medium" className="text-muted-foreground">Esta semana</BodyText>
+            <Heading2 size="headline" weight="bold" className="text-info">15</Heading2>
+            <BodyText size="small" className="text-muted-foreground mt-1">Notificaciones</BodyText>
+          </div>
+        </Card>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2 space-y-6">
-          <div className="rounded-lg border border-border bg-card">
+          <Card>
             <div className="p-6 border-b border-border">
-              <h3 className="text-lg font-semibold text-foreground">Todas las Notificaciones</h3>
+              <Heading2 size="large" weight="bold">Todas las Notificaciones</Heading2>
             </div>
             
             <div className="divide-y divide-border">
@@ -184,12 +193,12 @@ export const NotificationsScreen: React.FC = () => {
 
             <div className="p-4 border-t border-border">
               <div className="flex justify-center">
-                <button className="px-4 py-2 text-sm text-primary hover:text-primary/80">
+                <Button variant="ghost" size="default">
                   Cargar más notificaciones
-                </button>
+                </Button>
               </div>
             </div>
-          </div>
+          </Card>
         </div>
 
         <div className="space-y-6">
