@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useModalStore } from '@store/slices/modalSlice';
+import { modalVariantStrategyFactory } from '@strategies/modalVariantStrategies';
 import {
   Modal,
   ModalContent,
@@ -20,10 +21,17 @@ import { cn } from '@utils/cn';
  * 
  * Features:
  * - Automatically syncs with global modal state
+ * - Uses Strategy pattern for variant-specific styling and behavior
  * - Handles different modal variants (info, warning, danger, success, confirmation)
  * - Supports custom content rendering
  * - Manages button states and callbacks
  * - Responsive sizing
+ * - Extensible through custom variant strategies
+ * 
+ * Architecture:
+ * - Uses ModalVariantStrategyFactory to determine styling and behavior
+ * - Each variant has its own strategy implementing ModalVariantStrategy interface
+ * - Easy to extend with new variants without modifying existing code
  * 
  * @example
  * ```tsx
@@ -100,6 +108,13 @@ export function GlobalModal() {
   };
 
   /**
+   * Get the appropriate strategy for the current modal variant
+   */
+  const getVariantStrategy = () => {
+    return modalVariantStrategyFactory.getStrategy(config.variant);
+  };
+
+  /**
    * Get modal border classes based on variant and showColoredBorder
    */
   const getBorderClasses = () => {
@@ -107,19 +122,7 @@ export function GlobalModal() {
       return ''; // Use default border from Modal component
     }
 
-    switch (config.variant) {
-      case 'danger':
-        return 'border-l-4 border-l-red-500 border-t-red-500/40 border-r-red-500/40 border-b-red-500/40';
-      case 'warning':
-        return 'border-l-4 border-l-yellow-500 border-t-yellow-500/40 border-r-yellow-500/40 border-b-yellow-500/40';
-      case 'success':
-        return 'border-l-4 border-l-green-500 border-t-green-500/40 border-r-green-500/40 border-b-green-500/40';
-      case 'info':
-        return 'border-l-4 border-l-blue-500 border-t-blue-500/40 border-r-blue-500/40 border-b-blue-500/40';
-      case 'confirmation':
-      default:
-        return 'border-l-4 border-l-blue-600 border-t-blue-600/40 border-r-blue-600/40 border-b-blue-600/40';
-    }
+    return getVariantStrategy().getBorderClasses();
   };
 
   /**
@@ -130,19 +133,7 @@ export function GlobalModal() {
       return '';
     }
 
-    switch (config.variant) {
-      case 'danger':
-        return 'bg-gradient-to-r from-red-50/50 via-background to-background dark:from-red-950/40 dark:via-background dark:to-background';
-      case 'warning':
-        return 'bg-gradient-to-r from-yellow-50/50 via-background to-background dark:from-yellow-950/40 dark:via-background dark:to-background';
-      case 'success':
-        return 'bg-gradient-to-r from-green-50/50 via-background to-background dark:from-green-950/40 dark:via-background dark:to-background';
-      case 'info':
-        return 'bg-gradient-to-r from-blue-50/50 via-background to-background dark:from-blue-950/40 dark:via-background dark:to-background';
-      case 'confirmation':
-      default:
-        return 'bg-gradient-to-r from-blue-50/50 via-background to-background dark:from-blue-950/40 dark:via-background dark:to-background';
-    }
+    return getVariantStrategy().getBackgroundAccent();
   };
   const getSizeClasses = () => {
     switch (config.size) {
@@ -165,32 +156,21 @@ export function GlobalModal() {
    * Get button variant based on modal variant
    */
   const getConfirmButtonVariant = (): "destructive" | "warning" | "success" | "filled" | "ghost" | "link" | "outline" | "secondary" => {
-    switch (config.variant) {
-      case 'danger':
-        return 'destructive';
-      case 'warning':
-        return 'warning';
-      case 'success':
-        return 'success';
-      case 'info':
-        return 'filled';
-      case 'confirmation':
-      default:
-        return 'filled';
-    }
+    return getVariantStrategy().getConfirmButtonVariant();
   };
 
   /**
    * Get cancel button variant based on modal variant
    */
   const getCancelButtonVariant = (): "destructive" | "warning" | "success" | "filled" | "ghost" | "link" | "outline" | "secondary" => {
-    switch (config.variant) {
-      case 'danger':
-      case 'warning':
-        return 'ghost';
-      default:
-        return 'ghost';
-    }
+    return getVariantStrategy().getCancelButtonVariant();
+  };
+
+  /**
+   * Get title color classes based on modal variant
+   */
+  const getTitleColorClasses = () => {
+    return getVariantStrategy().getTitleColorClasses();
   };
 
   return (
@@ -212,11 +192,8 @@ export function GlobalModal() {
           <ModalHeader>
             {config.title && (
               <ModalTitle className={cn(
-                // Color the title based on variant
-                config.variant === 'danger' && 'text-destructive',
-                config.variant === 'warning' && 'text-yellow-600',
-                config.variant === 'success' && 'text-green-600',
-                config.variant === 'info' && 'text-blue-600'
+                // Color the title based on variant using strategy
+                getTitleColorClasses()
               )}>
                 {config.title}
               </ModalTitle>

@@ -82,6 +82,7 @@ export default defineConfig({
       '@hooks': path.resolve(__dirname, './src/hooks'),
       '@utils': path.resolve(__dirname, './src/utils'),
       '@helpers': path.resolve(__dirname, './src/helpers'),
+      '@strategies': path.resolve(__dirname, './src/strategies'),
       '@config': path.resolve(__dirname, './src/config'),
       '@constants': path.resolve(__dirname, './src/constants'),
       '@models': path.resolve(__dirname, './src/models'),

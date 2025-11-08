@@ -11,6 +11,7 @@
       "@services/*": ["./services/*"],
       "@utils/*": ["./utils/*"],
       "@helpers/*": ["./helpers/*"],
+      "@strategies/*": ["./strategies/*"],
       "@models/*": ["./models/*"],
       "@store/*": ["./store/*"],
       "@constants/*": ["./constants/*"],
