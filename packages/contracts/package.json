@@ -14,13 +14,16 @@
     }
   },
   "scripts": {
-    "build": "tsup src/index.ts --dts --format esm,cjs",
+    "build": "tsc --build tsconfig.json && tsup src/index.ts --format esm,cjs",
+    "build:types": "tsc --build tsconfig.json",
+    "build:js": "tsup src/index.ts --format esm,cjs",
     "dev": "tsup src/index.ts --watch --dts --format esm,cjs",
     "lint": "eslint .",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
-    "zod": "^3.23.0"
+    "zod": "^3.23.0",
+    "@packages/domain": "workspace:*"
   },
   "devDependencies": {
     "tsup": "^8.0.0",
