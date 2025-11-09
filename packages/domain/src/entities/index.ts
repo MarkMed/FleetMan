@@ -7,6 +7,7 @@ export * from './provider-user';
 export * from './machine';
 export * from './machine-type';
 export * from './machine-event';
+export * from './machine-event-type';
 
 // TODO: Implementar entidades restantes según el modelo de dominio:
 // export * from './maintenance-reminder';
