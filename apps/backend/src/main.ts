@@ -7,9 +7,11 @@ import express from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
 import rateLimit from 'express-rate-limit';
+import { setupSwagger } from './config/swagger.config';
+import { requestSanitization } from './middlewares/requestSanitization';
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 
 // Security middlewares
 app.use(helmet({
@@ -26,8 +28,8 @@ app.use(cors({
 
 // Rate limiting
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
+  windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS || '900000'), // 15 minutes
+  max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || '100'),
   message: {
     error: 'Too many requests from this IP, please try again later.',
   },
@@ -40,7 +42,27 @@ app.use(limiter);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Health check endpoint
+// XSS Sanitization middleware - aplicar después del body parsing
+app.use(requestSanitization);
+
+// Setup Swagger documentation
+setupSwagger(app);
+
+/**
+ * @swagger
+ * /health:
+ *   get:
+ *     summary: Health check endpoint
+ *     description: Returns the current status of the API server
+ *     tags: [System]
+ *     responses:
+ *       200:
+ *         description: Server is healthy
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/HealthCheck'
+ */
 app.get('/health', (req, res) => {
   res.status(200).json({
     status: 'ok',
@@ -50,7 +72,21 @@ app.get('/health', (req, res) => {
   });
 });
 
-// Basic API info endpoint
+/**
+ * @swagger
+ * /api:
+ *   get:
+ *     summary: API information
+ *     description: Returns basic information about the FleetMan API
+ *     tags: [System]
+ *     responses:
+ *       200:
+ *         description: API information retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiInfo'
+ */
 app.get('/api', (req, res) => {
   res.status(200).json({
     name: 'FleetMan API',
@@ -67,6 +103,7 @@ app.listen(PORT, () => {
   console.log(`🚀 FleetMan Backend running on port ${PORT}`);
   console.log(`🌐 API available at http://localhost:${PORT}/api`);
   console.log(`❤️  Health check at http://localhost:${PORT}/health`);
+  console.log(`📚 Swagger docs at http://localhost:${PORT}/api-docs`);
   console.log(`📝 Environment: ${process.env.NODE_ENV || 'development'}`);
 });
 
