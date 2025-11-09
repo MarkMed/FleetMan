@@ -1,2 +1,2 @@
-// MachineEvent entity exports - TODO: Implement
-// export * from './machine-event.entity';
+// MachineEvent entity exports
+export * from './machine-event.entity';

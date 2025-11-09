@@ -32,15 +32,18 @@ Este documento rastrea el progreso de implementación de las entidades principal
   - **Dependencias**: `User` ✅, `MachineId[]` ✅
   - **Estado**: Implementada con gestión completa de máquinas y suscripciones
 
-- [ ] **`ProviderUser`** (extiende User)
+- [x] **`ProviderUser`** (extiende User) ✅
   - **Propósito**: Proveedor de servicios que mantiene máquinas para clientes
-  - **Propiedades Clave**: `managedClients[]`, `serviceAreas[]`, `certifications[]`
+  - **Propiedades Clave**: `specialties[]`, `specs` (experiencia, certificaciones, radio de servicio, rating), `isVerified`
   - **Reglas de Negocio**:
-    - Puede gestionar máquinas para múltiples clientes
-    - Puede registrar máquinas en nombre de clientes
-    - Puede proporcionar información de contacto para reparaciones
-  - **Archivo**: `packages/domain/src/entities/provider-user.entity.ts`
-  - **Dependencias**: `User`, `UserId[]` (clientes gestionados)
+    - Máximo 10 especialidades permitidas
+    - Radio de servicio entre 0-1000 km
+    - Sistema de rating 1-5 basado en trabajos completados
+    - Verificación requerida para asignación a trabajos
+    - Gestión de trabajos completados y rating promedio
+  - **Archivo**: `packages/domain/src/entities/provider-user/provider-user.entity.ts` ✅
+  - **Dependencias**: `User` ✅, herencia completa implementada
+  - **Estado**: Implementada con sistema completo de especialidades, verificación y rating
 
 ### **Entidades de Máquina y Activos Principales**
 
@@ -59,6 +62,18 @@ Este documento rastrea el progreso de implementación de las entidades principal
   - **Archivo**: `packages/domain/src/entities/machine/machine.entity.ts` ✅
   - **Dependencias**: `MachineId` (VO) ✅, `SerialNumber` (VO) ✅, `UserId` ✅
   - **Estado**: Implementada con gestión completa de estados, proveedor y especificaciones técnicas
+
+- [x] **`MachineType`** ✅ (BONUS - Configuración de tipos)
+  - **Propósito**: Definición configurable de tipos de máquinas y sus características
+  - **Propiedades Clave**: `name`, `category`, `defaultSpecs`, `customFields`, `isActive`
+  - **Reglas de Negocio**:
+    - Nombre único por categoría
+    - Especificaciones por defecto configurables
+    - Campos customizables por tipo de máquina
+    - Habilita flexibilidad para diferentes tipos de equipo
+  - **Archivo**: `packages/domain/src/entities/machine-type/machine-type.entity.ts` ✅
+  - **Dependencias**: `MachineTypeId` (VO), configuración flexible
+  - **Estado**: Implementada - Permite configurar diferentes tipos de máquinas
 
 - [ ] **`Repuesto`** (Spare Part)
   - **Propósito**: Gestión de repuestos e inventario para máquinas
@@ -107,7 +122,7 @@ Este documento rastrea el progreso de implementación de las entidades principal
 
 ### **Entidades de Eventos e Historial**
 
-- [ ] **`MachineEvent`**
+- [x] **`MachineEvent`** ✅
   - **Propósito**: Registro unificado del historial para todas las actividades relacionadas con máquinas
   - **Propiedades Clave**: `id`, `machineId`, `type`, `description`, `createdBy`, `createdAt`, `metadata?`
   - **Tipos de Eventos**:
@@ -122,8 +137,9 @@ Este documento rastrea el progreso de implementación de las entidades principal
     - Los eventos son inmutables una vez creados
     - Debe tener referencia válida a máquina
     - CreatedBy debe ser usuario válido
-  - **Archivo**: `packages/domain/src/entities/machine-event.entity.ts`
-  - **Dependencias**: `MachineId`, `UserId`, `MachineEventType` (VO)
+  - **Archivo**: `packages/domain/src/entities/machine-event/machine-event.entity.ts` ✅
+  - **Dependencias**: `MachineId`, `UserId`, `MachineEventType` (VO) ✅
+  - **Estado**: Implementada con sistema extensible de tipos y metadatos, factory methods para eventos específicos
 
 ### **Entidades de Comunicación y Notificación**
 
@@ -183,10 +199,10 @@ export class NombreEntidad {
 
 ## 📊 Progreso de Implementación
 
-**Total de Entidades**: 12
-**Completadas**: 3 ✅  
-**En Progreso**: 0 🔄  
-**Pendientes**: 9 ⏳  
+**Total de Entidades**: 12  
+**Completadas**: 6 ✅ (User, ClientUser, ProviderUser, Machine, MachineType, MachineEvent)
+**Estructuras Creadas**: 6 📁 (con folders y index.ts preparados)
+**Pendientes de Implementación**: 6 ⏳
 
 ## 🔗 Value Objects Relacionados Necesarios
 
@@ -197,15 +213,28 @@ export class NombreEntidad {
 
 ## 📝 Próximos Pasos
 
-1. **Crear Value Objects** primero (fundación)
-2. **Implementar jerarquía User** (User → ClientUser → ProviderUser)
-3. **Agregar entidad Machine** con propiedades básicas
-4. **Construir sistema de eventos** (MachineEvent → Notification)
-5. **Agregar funciones de mantenimiento** (MaintenanceReminder)
-6. **Implementar funciones de seguridad** (QuickCheck + Items)
-7. **Construir sistema de comunicación** (InternalMessage)
-8. **Completar con inventario** (Repuesto)
+1. **Implementar sistema de notificaciones** (Notification - habilitado por MachineEvent ✅)
+2. **Agregar funciones de mantenimiento** (MaintenanceReminder)
+3. **Implementar funciones de seguridad** (QuickCheck + Items)
+4. **Construir sistema de comunicación** (InternalMessage)
+5. **Completar con inventario** (Repuesto)
+
+### 🚀 **Estado Actual - ¡Excelente Progreso!**
+
+✅ **Base sólida completada**: Jerarquía de usuarios y máquinas implementada  
+✅ **Modelo de negocio funcional**: ClientUser ↔ ProviderUser ↔ Machine + MachineType  
+✅ **Sistema de eventos implementado**: MachineEvent con tipos extensibles y metadatos ✅
+✅ **Todas las entidades core implementadas**: User, ClientUser, ProviderUser, Machine, MachineType, MachineEvent
+🎯 **Siguiente prioridad**: Notification (sistema de alertas basado en eventos)  
+
+### 📋 **Estructuras ya creadas (listas para implementar)**:
+- `/machine-event/` - Historial unificado de actividades
+- `/maintenance-reminder/` - Recordatorios automatizados 
+- `/notification/` - Sistema de alertas
+- `/quick-check/` y `/quick-check-item/` - Inspecciones de seguridad
+- `/internal-message/` - Comunicación entre usuarios
+- `/repuesto/` - Gestión de inventario
 
 ---
-*Última Actualización: 31 de Octubre, 2025*  
-*Próxima Revisión: Después de completar las primeras 3 entidades*
+*Última Actualización: 8 de Noviembre, 2024*  
+*Próxima Revisión: Después de completar MachineEvent*

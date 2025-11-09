@@ -3,13 +3,13 @@
 
 export * from './user';
 export * from './client-user';
+export * from './provider-user';
 export * from './machine';
 export * from './machine-type';
+export * from './machine-event';
 
 // TODO: Implementar entidades restantes según el modelo de dominio:
-// export * from './provider-user';
 // export * from './maintenance-reminder';
-// export * from './machine-event';
 // export * from './quick-check';
 // export * from './quick-check-item';
 // export * from './notification';
