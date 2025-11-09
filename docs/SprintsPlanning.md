@@ -122,18 +122,18 @@ Distribución por categoría:
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
-| Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | 3.5 |
+| Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | 5.5 |
 | Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | 1.1 |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | 1.9 |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | 0.9 |
 | Desarrollo | 0.11 Setup Backend Básico | 5 | 8 | 3.5 |
 | Desarrollo | 0.13 Setup Frontend Básico | 6 | 8 | 4.2 |
-| Desarrollo | 1.3 DTOs + Zod (contratos compartidos) - continuación | 7 | 6 | 5.2 |
+| Desarrollo | 1.3 DTOs + Zod (contratos compartidos) - continuación | 7 | 6 | 7.2 |
 | Capacitación | 16.2 Taller Deploy - Conceptos Generales (miérc 6 Nov) | 8 | 3 | 3 |
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales |
 |:---:|:----------:|
-| **29.7**hs | **23.3**hs |
+| **29.7**hs | **27.3**hs |
 
 Buffer reservado: **5.3**hs
 Total con buffer: **35**hs
@@ -148,7 +148,7 @@ xychart-beta
     line [0.9, 1.5, 1.3, 1, 8, 8, 6, 3, 29.7]
 
 	%% Black line
-    line [3.5, 1.1, 1.9, 0.9, 3.5, 4.2, 5.2, 3, 23.3]
+    line [5.5, 1.1, 1.9, 0.9, 3.5, 4.2, 7.2, 3, 27.3]
 ```
 
 Distribución por categoría:
