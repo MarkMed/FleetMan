@@ -126,14 +126,14 @@ Distribución por categoría:
 | Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | 1.1 |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | 1.9 |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | 0.9 |
-| Desarrollo | 0.11 Setup Backend Básico | 5 | 8 | 0.5 |
+| Desarrollo | 0.11 Setup Backend Básico | 5 | 8 | 2.5 |
 | Desarrollo | 0.13 Setup Frontend Básico | 6 | 8 | 4.2 |
 | QA | 13.2 Config Jest (front/back, TS, coverage) | 7 | 6 | |
 | Capacitación | 16.2 Taller Deploy - Conceptos Generales (miérc 6 Nov) | 8 | 3 | 3 |
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales |
 |:---:|:----------:|
-| **29.7**hs | **15.1**hs |
+| **29.7**hs | **17.1**hs |
 
 Buffer reservado: **5.3**hs
 Total con buffer: **35**hs
@@ -148,13 +148,13 @@ xychart-beta
     line [0.9, 1.5, 1.3, 1, 8, 8, 6, 3, 29.7]
 
 	%% Black line
-    line [3.5, 1.1, 1.9, 0.9, 0.5, 4.2, 0, 3, 15.1]
+    line [3.5, 1.1, 1.9, 2.9, 0.5, 4.2, 0, 3, 17.1]
 ```
 
 Distribución por categoría:
 | Gestión | Desarrollo | QA | Capacitación | Documentación |
 |:-------:|:----------:|:--:|:------------:|:-------------:|
-| **6.5**hs | **4.7**hs | **0**hs | **3**hs | **0**hs |
+| **6.5**hs | **6.7**hs | **0**hs | **3**hs | **0**hs |
 
 ### **Sprint #4**: dom 9 nov → sáb 15 nov 2025
 
