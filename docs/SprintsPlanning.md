@@ -154,7 +154,7 @@ xychart-beta
 Distribución por categoría:
 | Gestión | Desarrollo | QA | Capacitación | Documentación |
 |:-------:|:----------:|:--:|:------------:|:-------------:|
-| **6.5**hs | **11.9**hs | **0**hs | **3.9**hs | **0**hs |
+| **8.5**hs | **14.9**hs | **0**hs | **3.9**hs | **0**hs |
 
 ### **Sprint #4**: dom 9 nov → sáb 15 nov 2025
 
