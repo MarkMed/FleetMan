@@ -1,5 +1,6 @@
 import { Result, ok, err, DomainError } from '../../errors';
 import { MachineTypeId } from '../../value-objects/machine-type-id.vo';
+import { FuelType } from '../machine/machine.entity';
 
 /**
  * Metadata extendida para tipos de máquina
@@ -24,7 +25,7 @@ export interface MachineTypeMetadata {
   defaultSpecs?: {
     enginePowerRange?: { min: number; max: number };
     capacityRange?: { min: number; max: number };
-    recommendedFuelType?: 'DIESEL' | 'GASOLINE' | 'ELECTRIC' | 'HYBRID';
+    recommendedFuelType?: FuelType;
   };
 }
 

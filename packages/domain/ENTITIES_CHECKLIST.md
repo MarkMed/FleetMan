@@ -122,24 +122,25 @@ Este documento rastrea el progreso de implementación de las entidades principal
 
 ### **Entidades de Eventos e Historial**
 
-- [x] **`MachineEvent`** ✅
+- [x] **`MachineEvent`** ✅ **SIMPLIFICADO PARA MVP**
   - **Propósito**: Registro unificado del historial para todas las actividades relacionadas con máquinas
-  - **Propiedades Clave**: `id`, `machineId`, `type`, `description`, `createdBy`, `createdAt`, `metadata?`
-  - **Tipos de Eventos**:
-    - `MAINTENANCE_REMINDER_TRIGGERED`
-    - `QUICK_CHECK_COMPLETED` (con resultados)
-    - `MANUAL_EVENT` (creado por usuario)
-    - `SPARE_PART_CHANGED`
-    - `PROVIDER_CONTACTED` (comunicación mediante mensajería interna)
-    - `PROVIDER_ASSIGNED` (cuando se asigna proveedor a máquina)
-    - `PROVIDER_REMOVED` (cuando se remueve proveedor de máquina)
-  - **Reglas de Negocio**:
+  - **Propiedades Core**: `id`, `machineId`, `createdBy`, `type`, `title`, `description`, `metadata`, `createdAt`, `isSystemGenerated`
+  - **Simplificaciones MVP**:
+    - ❌ **Removido `priority`**: Sin sistema de prioridades para evitar confusión
+    - ❌ **Removido lógica de seguimiento**: Sin automatización compleja
+    - ✅ **Metadatos flexibles**: `Record<string, any>` en lugar de tipos específicos
+    - ✅ **7 tipos esenciales**: Reducido para MVP
+  - **Tipos de Eventos Esenciales**:
+    - **Manuales**: `breakdown`, `repair_completed`, `maintenance_performed`, `operator_note`
+    - **Automáticos**: `quickcheck_completed`, `maintenance_reminder`, `system_alert`
+  - **Reglas de Negocio Simplificadas**:
     - Los eventos son inmutables una vez creados
-    - Debe tener referencia válida a máquina
-    - CreatedBy debe ser usuario válido
+    - Registro de qué pasó, cuándo y quién lo reportó
+    - Usuario decide qué es prioritario o requiere acción
+    - Trackeo simple sin automatización compleja
   - **Archivo**: `packages/domain/src/entities/machine-event/machine-event.entity.ts` ✅
-  - **Dependencias**: `MachineId`, `UserId`, `MachineEventType` (VO) ✅
-  - **Estado**: Implementada con sistema extensible de tipos y metadatos, factory methods para eventos específicos
+  - **Dependencias**: `MachineId`, `UserId` ✅
+  - **Estado**: **Implementada y simplificada** para MVP, enfoque en trackeo básico
 
 ### **Entidades de Comunicación y Notificación**
 

@@ -11,12 +11,17 @@ import {
 } from './machineStatus';
 
 /**
+ * Tipos de combustible para máquinas
+ */
+export type FuelType = 'DIESEL' | 'GASOLINE' | 'ELECTRIC' | 'HYBRID';
+
+/**
  * Especificaciones técnicas de la máquina
  */
 export interface MachineSpecs {
   enginePower?: number; // HP
   maxCapacity?: number; // kg o m3
-  fuelType?: 'DIESEL' | 'GASOLINE' | 'ELECTRIC' | 'HYBRID';
+  fuelType?: FuelType;
   year?: number;
   weight?: number; // kg
   operatingHours?: number; // Horas acumuladas de uso
