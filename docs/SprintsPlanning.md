@@ -158,78 +158,49 @@ Distribución por categoría:
 
 ### **Sprint #4**: dom 9 nov → sáb 15 nov 2025
 
-**Objetivo:** Implementar capacidades PWA, internacionalización básica y mejorar accesibilidad y responsive design antes del desarrollo de funcionalidades de dominio.
+**Objetivo:** 🎯 Auth Básico Funcional - Registro, login, autologin, session JWT y logout.
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
-| Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | 3.1 |
+| Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | 7.1 |
 | Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | 1.6 |
-| Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | 2.1 |
-| Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | |
-| Desarrollo | 0.7 i18n groundwork (infra de strings) | 5 | 5 | |
-| Desarrollo | 0.5 PWA base (manifest + SW básico) | 6 | 6 | |
-| Desarrollo | 12.1 Responsive grid & breakpoints | 7 | 6 | |
-| Desarrollo | 12.2 A11y mínima (focus, labels, contraste) | 8 | 6 | |
-| Capacitación | 16.5 Taller Deploy - Azure (lun 11 Nov) | 9 | 3 | |
-| Capacitación | 16.6 Taller Deploy - Azure (miérc 13 Nov) | 10 | 3 | |
+| Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | 4.1 |
+| Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | 0.88 |
+| Desarrollo | 2.1 Registro de usuario (RF-001) | 5 | 10 | |
+| Desarrollo | 2.2 Login de usuario (RF-002) | 6 | 8 | |
+| Desarrollo | 2.3 Logout (RF-003) | 7 | 4 | |
+| Desarrollo | 2.5 AutZ por rol básico | 8 | 7 | |
+| Capacitación | 16.5 Taller Deploy - Azure (mar 11 Nov) | 9 | 3 |0|
+| Capacitación | 16.6 Taller Deploy - Azure (jue 13 Nov) | 10 | 3 | |
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales |
 |:---:|:----------:|
-| **33.7**hs | **6.8**hs |
+| **39.7**hs | **13.68**hs |
 
-Buffer reservado: **1.3**hs
+Buffer reservado: **-4.7**hs
 Total con buffer: **35**hs
 
 Distribución por categoría:
 | Gestión | Desarrollo | QA | Capacitación | Documentación |
 |:-------:|:----------:|:--:|:------------:|:-------------:|
-| **6.8**hs | **0**hs | **0**hs | **0**hs | **0**hs |
+| **12.9**hs | **29**hs | **0**hs | **7.88**hs | **0**hs |
 
 ```mermaid
 xychart-beta
     title "Sprint #4: Horas Estimadas #40;azul#41; vs Reales #40;verde#41;"
-    x-axis "Tareas" ["20.1", "20.2", "20.3", "21.2", "0.7", "0.5", "12.1", "12.2", "16.5", "16.6", "TOTAL"]
-    y-axis "Horas" 0 --> 35
+    x-axis "Tareas" ["20.1", "20.2", "20.3", "21.2", "2.1", "2.2", "2.3", "2.5", "16.5", "16.6", "TOTAL"]
+    y-axis "Horas" 0 --> 40
 	
 	%% Green line
-    line [0.9, 1.5, 1.3, 1, 5, 6, 6, 6, 3, 3, 33.7]
+    line [0.9, 1.5, 1.3, 1, 10, 8, 4, 7, 3, 3, 39.7]
 
 	%% Black line
-    line [3.1, 1.6, 2.1, 0, 0, 0, 0, 0, 0, 0, 6.8]
+    line [7.1, 1.6, 4.1, 0.88, 0, 0, 0, 0, 0, 0, 13.68]
 ```
 
 ### **Sprint #5**: dom 16 nov → sáb 22 nov 2025
 
-**Objetivo:** Implementar autenticación completa (RF-001, RF-002, RF-003) y establecer medidas de seguridad básicas del sistema.
-
-| Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
-|-----------:|:-------|:---------------:|:---------------:|:------------:|
-| Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | |
-| Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | |
-| Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
-| Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | |
-| Desarrollo | 2.2 Login de usuario (RF-002) | 5 | 8 | |
-| Capacitación | 16.3 Taller Deploy - AWS (lun 18 Nov) | 6 | 3 | |
-| Capacitación | 16.4 Taller Deploy - AWS (miérc 20 Nov) | 7 | 3 | |
-| Desarrollo | 2.3 Logout (RF-003) | 8 | 4 | |
-| Desarrollo | 2.5 AutZ por rol (admin/técnico/distribuidor) | 9 | 7 | |
-| Desarrollo | 14.1 Hashing, rate-limit, CORS | 10 | 6 | |
-
-| Total Horas Estimadas (sin buffer) | Total Horas Reales |
-|:---:|:----------:|
-| **35.7**hs | **0**hs |
-
-Buffer reservado: **-0.7**hs
-Total con buffer: **35**hs
-
-Distribución por categoría:
-| Gestión | Desarrollo | QA | Capacitación | Documentación |
-|:-------:|:----------:|:--:|:------------:|:-------------:|
-| **3.7**hs | **25**hs | **0**hs | **7**hs | **0**hs |
-
-### **Sprint #6**: dom 23 nov → sáb 29 nov 2025
-
-**Objetivo:** Desarrollar gestión básica de maquinaria (RF-005) con alta de equipos y validaciones robustas en toda la aplicación.
+**Objetivo:** 🏭 Navegación + Inicio Máquinas - Pulir navigation y empezar registro de máquinas.
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
@@ -238,24 +209,65 @@ Distribución por categoría:
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | |
 | Desarrollo | 3.1 Alta de máquina (RF-005) | 5 | 10 | |
-| Desarrollo | 14.2 Validaciones Zod en controllers | 6 | 8 | |
-| Desarrollo | 14.3 Permisos por endpoint (RBAC ligero) | 7 | 6 | |
+| Desarrollo | 12.4a Setup navegación básica + React Router | 6 | 4 | |
+| Capacitación | 16.3 Taller Deploy - AWS (mar 18 Nov) | 7 | 3 | |
+| Capacitación | 16.4 Taller Deploy - AWS (jue 20 Nov) | 8 | 3 | |
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales |
 |:---:|:----------:|
-| **28.7**hs | **0**hs |
+| **23.7**hs | **0**hs |
 
-Buffer reservado: **6.3**hs
+Buffer reservado: **11.3**hs
 Total con buffer: **35**hs
 
 Distribución por categoría:
 | Gestión | Desarrollo | QA | Capacitación | Documentación |
 |:-------:|:----------:|:--:|:------------:|:-------------:|
-| **3.7**hs | **24**hs | **0**hs | **1**hs | **0**hs |
+| **3.7**hs | **14**hs | **0**hs | **6**hs | **0**hs |
+
+### **Sprint #6**: dom 23 nov → sáb 29 nov 2025
+
+**Objetivo:** 🚀 Deploy Azure + Máquinas Completas - Focus disponibilizar la solución al cliente y pulir pantallas de máquinas.
+
+| Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
+|-----------:|:-------|:---------------:|:---------------:|:------------:|
+| Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | |
+| Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | |
+| Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
+| Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | |
+| Desarrollo | 16.8 Build & deploy demo (front estático + API) | 5 | 8 | |
+| Desarrollo | 3.2 Listado + detalle | 6 | 9 | |
+| Desarrollo | 1.2 Esquemas DB (Mongoose + índices clave) | 7 | 5 | |
+| Desarrollo | 1.4 Semillas demo (dataset mínimo) | 8 | 4 | |
+
+| Total Horas Estimadas (sin buffer) | Total Horas Reales |
+|:---:|:----------:|
+| **29.7**hs | **0**hs |
+
+Buffer reservado: **5.3**hs
+Total con buffer: **35**hs
+
+```mermaid
+xychart-beta
+    title "Sprint #6: Horas Estimadas #40;azul#41; vs Reales #40;verde#41;"
+    x-axis "Tareas" ["20.1", "20.2", "20.3", "21.2", "16.8", "3.2", "1.2", "1.4", "TOTAL"]
+    y-axis "Horas" 0 --> 30
+	
+	%% Green line
+    line [0.9, 1.5, 1.3, 1, 8, 9, 5, 4, 29.7]
+
+	%% Black line
+    line [0, 0, 0, 0, 0, 0, 0, 0, 0]
+```
+
+Distribución por categoría:
+| Gestión | Desarrollo | QA | Capacitación | Documentación |
+|:-------:|:----------:|:--:|:------------:|:-------------:|
+| **3.7**hs | **26**hs | **0**hs | **1**hs | **0**hs |
 
 ### **Sprint #7**: dom 30 nov → sáb 6 dic 2025
 
-**Objetivo:** Completar módulo de maquinaria con listado/detalle y establecer bases del sistema de mantenimiento preventivo (RF-007, RF-011).
+**Objetivo:** 📋 Full QuickCheck - Sistema completo de inspecciones rápidas end-to-end.
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
@@ -282,7 +294,7 @@ Distribución por categoría:
 
 ### **Sprint #8**: dom 7 dic → sáb 13 dic 2025
 
-**Objetivo:** Implementar sistema de alertas automáticas (RF-010) y funcionalidad completa de QuickCheck de seguridad (RF-011).
+**Objetivo:** ⚙️ PWA + Testing + Cronjobs - Infraestructura crítica y testing de lo implementado.
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
@@ -308,7 +320,7 @@ Distribución por categoría:
 
 ### **Sprint #9**: dom 14 dic → sáb 20 dic 2025
 
-**Objetivo:** Desarrollar centro de notificaciones (RF-016) y módulo de registro de eventos de maquinaria (RF-008) parte 1.
+**Objetivo:** 🔔 Full Notificaciones - Sistema completo front y back de notificaciones.
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
@@ -336,7 +348,7 @@ Distribución por categoría:
 
 ### **Sprint #10**: dom 21 dic → sáb 27 dic 2025
 
-**Objetivo:** Completar integración entre eventos, notificaciones y QuickCheck. Implementar edición con historial de máquinas (RF-006, RF-008, RF-017).
+**Objetivo:** 📅 Reporte Eventos + Eventos Automáticos - Sistema eventos básico sin features no solicitadas.
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
@@ -366,7 +378,7 @@ Distribución por categoría:
 
 ### **Sprint #11**: dom 28 dic → sáb 3 ene 2026
 
-**Objetivo:** Implementar historial unificado de maquinaria (RF-009) y módulo de comunicación con distribuidores (RF-015).
+**Objetivo:** ⚙️ Full Mantenimiento - Feature completa sin cosas no solicitadas.
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
@@ -394,7 +406,7 @@ Distribución por categoría:
 
 ### **Sprint #12**: dom 4 ene → sáb 10 ene 2026
 
-**Objetivo:** Establecer cobertura robusta de testing unitario en backend y frontend, junto con datos de prueba y semillas demo.
+**Objetivo:** 💬 Full Comunicaciones - Listado usuarios + gestión contactos + chat sencillo.
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
@@ -421,7 +433,7 @@ Distribución por categoría:
 
 ### **Sprint #13**: dom 11 ene → sáb 17 ene 2026
 
-**Objetivo:** Completar testing frontend, preparar build de producción y establecer documentación técnica básica (API docs).
+**Objetivo:** 🧪 Smoke Tests + Buffer - Testing, refinamientos y mejoras necesarias.
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
@@ -447,7 +459,7 @@ Distribución por categoría:
 
 ### **Sprint #14**: dom 18 ene → sáb 24 ene 2026
 
-**Objetivo:** Realizar validación exhaustiva del MVP con sanitización manual, testing E2E y implementar recuperación de contraseña (RF-004).
+**Objetivo:** 🔧 Feature Básica Repuestos - Módulo repuestos básico funcional.
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
@@ -477,7 +489,7 @@ Distribución por categoría:
 
 ### **Sprint #15**: dom 25 ene → sáb 31 ene 2026
 
-**Objetivo:** Ejecutar ciclo de UAT, triage y corrección de defectos para asegurar calidad del MVP final.
+**Objetivo:** 🎁 Full Nice-to-Have + UX - Recuperación password + búsqueda + ayuda + mejoras UX.
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
@@ -504,7 +516,7 @@ Distribución por categoría:
 
 ### **Sprint #16**: dom 1 feb → sáb 7 feb 2026
 
-**Objetivo:** Completar funcionalidades Nice-to-Have del módulo de repuestos (RF-012, RF-013, RF-014) y finalizar documentación para entrega.
+**Objetivo:** ✨ Último Sprint Desarrollo - Full pulida, nada de features nuevas, documentación.
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
