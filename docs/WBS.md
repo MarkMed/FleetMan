@@ -449,6 +449,22 @@ Validación en 2–3 navegadores + móvil.
 		- Dependencias: 12.1 (FS)
 		- Spike: **No**
 
+	- 12.4a **Setup navegación básica + React Router**.
+Frontend: Configuración básica de React Router con definición de rutas principales, navegación entre páginas, actualización de URLs, rutas protegidas simples por autenticación, y layout básico. Establece la navegación fundamental para cambio de páginas y URLs sin complejidades adicionales.
+		- Horas estimadas: **4**hs
+		- Margen: ±**0.8**hs (P80)
+		- Incertidumbre: **Baja**
+		- Dependencias: 0.14, 2.2 (FS)
+		- Spike: **No**
+
+	- 12.4b **Navegación avanzada + UX**.
+Frontend: Extensión del routing con lazy loading de rutas, breadcrumbs, guards de navegación por rol, navegación programática con hooks personalizados, layouts anidados, y utilidades para transiciones. Mejoras de UX y patrones escalables para desarrollo posterior.
+		- Horas estimadas: **4**hs
+		- Margen: ±**0.8**hs (P80)
+		- Incertidumbre: **Media**
+		- Dependencias: 12.4a, 2.5 (FS)
+		- Spike: **No**
+
 13. **Calidad & Pruebas** (alineado a SQA)
 
 	- 13.1 **Estrategia & DoD QA**.
