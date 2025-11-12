@@ -150,7 +150,11 @@ Datos de ejemplo para dev, pruebas y demo.
 2. **Autenticación & Roles** (RF-001..004)
 
 	- 2.1 **Registro** (RF-001).
-Endpoint y formulario de alta con validaciones.
+Frontend: Wizard form component con validación multi-step (datos personales, 
+credenciales, confirmación), estados de loading/success/error, navegación 
+post-registro y integración con backend. Backend: Endpoint POST /auth/register, 
+controller con validaciones Zod, middleware de sanitización, hash de contraseñas, 
+respuestas estructuradas y manejo de errores (email duplicado, etc.).
 		- Horas estimadas: **10**hs
 		- Margen: ±**2.0**hs (P80)
 		- Incertidumbre: **Media**
@@ -158,7 +162,9 @@ Endpoint y formulario de alta con validaciones.
 		- Spike: **No**
 
 	- 2.2 **Login de usuario** (RF-002).
-Autenticación (JWT/refresh), sesiones y expiración.
+Frontend: Formulario de login con validación, recordar usuario, estados de error,
+loading y redirección post-auth. Backend: Endpoint POST /auth/login, generación 
+JWT + refresh token, middleware de rate limiting, manejo de credenciales inválidas.
 		- Horas estimadas: **8**hs
 		- Margen: ±**1.5**hs (P80)
 		- Incertidumbre: **Media**
@@ -192,7 +198,10 @@ Guards/claims por rol en API y UI.
 3. **Maquinaria** (RF-005, RF-006)
 
 	- 3.1 **Alta de máquina** (RF-005).
-Formulario, validaciones y contacto distribuidor.
+Frontend: Formulario multi-step con datos de máquina, selección/búsqueda de 
+distribuidor, validaciones y confirmación. Backend: Endpoint POST /machines,
+controller con validaciones, asociación con usuario/distribuidor, respuestas 
+estructuradas.
 		- Horas estimadas: **10**hs
 		- Margen: ±**2.0**hs (P80)
 		- Incertidumbre: **Media**
@@ -345,31 +354,38 @@ Filtros, marcar leído y paginado.
 		- Dependencias: 8.1, 0.10 (FS)
 		- Spike: **No**
 
-9. **Comunicación con Distribuidores** (RF-015)
+9. **Comunicación entre Usuarios** (RF-015)
 
-	- 9.1 **Datos de contacto por distribuidor**.
-Tel/mail/WA y validaciones mínimas.
-		- Horas estimadas: **5**hs
-		- Margen: ±**1.0**hs (P80)
-		- Incertidumbre: **Baja**
-		- Dependencias: 3.1 (FS)
+	- 9.1 **Listado de usuarios para contactos**.
+Frontend: Lista paginada de todos los usuarios registrados (clientes/proveedores) 
+mostrando datos esenciales: nombre, empresa/rubro, especialidad. Incluye paginación 
+simple y botón "Agregar contacto". Backend: Endpoint GET /users/directory con 
+paginación, filtrado básico por rol y respuesta con datos públicos básicos.
+		- Horas estimadas: **8**hs
+		- Margen: ±**1.5**hs (P80)
+		- Incertidumbre: **Media**
+		- Dependencias: 2.5 (FS)
 		- Spike: **No**
 
-	- 9.2 **Acciones de contacto** (tel:, mailto:, wa.me).
-CTA desde UI con fallback por dispositivo.
-		- Horas estimadas: **5**hs
+	- 9.2 **Gestión de contactos personal**.
+Frontend: Lista de "Mis Contactos", agregar/quitar contactos, acceso desde 
+múltiples pantallas. Backend: Endpoints POST/DELETE /contacts/{userId}, 
+modelo ContactList como array de userIds, validaciones básicas.
+		- Horas estimadas: **6**hs
 		- Margen: ±**1.0**hs (P80)
 		- Incertidumbre: **Baja**
 		- Dependencias: 9.1 (FS)
 		- Spike: **No**
 
-	- 9.3 **Mensajería interna** (si ambos tienen cuenta) [Post-MVP].
-Canal in-app con hilos y lectura.
-		- Horas estimadas: **14**hs
-		- Margen: ±**3.0**hs (P80)
-		- Incertidumbre: **Alta**
-		- Dependencias: 2.5, 8.1 (FS)
-		- Spike: **Sí** (8hs)
+	- 9.3 **Mensajería interna simple**.
+Frontend: Chat básico entre contactos, lista de conversaciones, envío/recepción 
+de mensajes. Backend: Endpoints POST /messages, GET /conversations, modelo Message 
+con fromUser/toUser/content/timestamp, persistencia simple sin threading complejo.
+		- Horas estimadas: **12**hs
+		- Margen: ±**2.5**hs (P80)
+		- Incertidumbre: **Media**
+		- Dependencias: 9.2 (FS)
+		- Spike: **No**
 
 10. **Búsqueda & Filtros** (RF-018) [Post-MVP]
 
