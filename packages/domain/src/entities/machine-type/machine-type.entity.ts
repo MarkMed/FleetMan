@@ -1,6 +1,7 @@
 import { Result, ok, err, DomainError } from '../../errors';
 import { MachineTypeId } from '../../value-objects/machine-type-id.vo';
 import { FuelType } from '../machine/machine.entity';
+import { IMachineType } from '../../models/interfaces';
 
 /**
  * Metadata extendida para tipos de máquina
@@ -71,6 +72,38 @@ interface MachineTypeProps {
  */
 export class MachineType {
   private constructor(private props: MachineTypeProps) {}
+
+  /**
+   * Convierte la entidad a su representación de interfaz pública
+   * Para uso en frontend y contratos
+   */
+  public toPublicInterface(): IMachineType {
+    return {
+      id: this.props.id.getValue(),
+      code: this.props.code,
+      displayName: this.props.displayName,
+      description: this.props.description,
+      category: this.props.category,
+      isActive: this.props.isActive,
+      metadata: this.props.metadata ? {
+        color: this.props.metadata.color,
+        icon: this.props.metadata.icon,
+        imageUrl: this.props.metadata.imageUrl,
+        tags: this.props.metadata.tags,
+        sortOrder: this.props.metadata.sortOrder,
+        requiresLicense: this.props.metadata.requiresLicense,
+        minimumOperatorLevel: this.props.metadata.minimumOperatorLevel,
+        defaultMaintenanceInterval: this.props.metadata.defaultMaintenanceInterval,
+        defaultSpecs: this.props.metadata.defaultSpecs ? {
+          enginePowerRange: this.props.metadata.defaultSpecs.enginePowerRange,
+          capacityRange: this.props.metadata.defaultSpecs.capacityRange,
+          recommendedFuelType: this.props.metadata.defaultSpecs.recommendedFuelType
+        } : undefined
+      } : undefined,
+      createdAt: this.props.createdAt,
+      updatedAt: this.props.updatedAt
+    };
+  }
 
   /**
    * Crea un nuevo tipo de máquina con validaciones de dominio

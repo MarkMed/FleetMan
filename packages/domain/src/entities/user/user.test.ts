@@ -1,5 +1,5 @@
 // Test básico para verificar que la entidad User funciona correctamente
-import { User, UserType, CreateUserProps } from './user.entity';
+import { User, CreateUserProps } from './user.entity';
 import { Email } from '../../value-objects/email.vo';
 import { UserId } from '../../value-objects/user-id.vo';
 
@@ -27,7 +27,7 @@ function demonstrateUserUsage() {
       companyName: 'Mi Empresa SA',
       address: 'Calle Example 123, Galpón 2, Ciudad Autónoma de Buenos Aires',
     },
-    type: UserType.CLIENT,
+    type: 'CLIENT',
   };
 
   console.log('User creation props ready:', !!createUserProps);

@@ -75,7 +75,7 @@ export class ProviderUser extends User {
       email: createProps.email,
       passwordHash: createProps.passwordHash,
       profile: createProps.profile,
-      type: UserType.PROVIDER
+      type: 'PROVIDER'
     });
 
     if (!userPropsResult.success) {

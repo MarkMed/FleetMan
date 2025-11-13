@@ -9,6 +9,7 @@ import {
   MachineStatuses,
   MachineStatusCode 
 } from './machineStatus';
+import { IMachine } from '../../models/interfaces';
 
 /**
  * Tipos de combustible para máquinas
@@ -16,19 +17,19 @@ import {
 export type FuelType = 'DIESEL' | 'GASOLINE' | 'ELECTRIC' | 'HYBRID';
 
 /**
- * Especificaciones técnicas de la máquina
+ * Especificaciones técnicas de la máquina (interna - mutable)
  */
 export interface MachineSpecs {
-  enginePower?: number; // HP
-  maxCapacity?: number; // kg o m3
-  fuelType?: FuelType;
+  enginePower?: number;
+  maxCapacity?: number;
+  fuelType?: 'DIESEL' | 'GASOLINE' | 'ELECTRIC' | 'HYBRID';
   year?: number;
-  weight?: number; // kg
-  operatingHours?: number; // Horas acumuladas de uso
+  weight?: number;
+  operatingHours?: number;
 }
 
 /**
- * Información de ubicación de la máquina
+ * Información de ubicación de la máquina (interna - mutable)
  */
 export interface MachineLocation {
   siteName?: string;
@@ -83,6 +84,48 @@ interface MachineProps {
  */
 export class Machine {
   private constructor(private props: MachineProps) {}
+
+  /**
+   * Convierte la entidad a su representación de interfaz pública
+   * Para uso en frontend y contratos
+   */
+  public toPublicInterface(): IMachine {
+    return {
+      id: this.props.id.getValue(),
+      serialNumber: this.props.serialNumber.getValue(),
+      brand: this.props.brand,
+      model: this.props.model,
+      nickname: this.props.nickname,
+      machineTypeId: this.props.machineTypeId.getValue(),
+      ownerId: this.props.ownerId.getValue(),
+      createdById: this.props.createdById.getValue(),
+      assignedProviderId: this.props.assignedProviderId?.getValue(),
+      providerAssignedAt: this.props.providerAssignedAt,
+      status: {
+        code: this.props.status.code as 'ACTIVE' | 'MAINTENANCE' | 'OUT_OF_SERVICE' | 'RETIRED',
+        displayName: this.props.status.displayName,
+        description: this.props.status.description,
+        color: this.props.status.color,
+        isOperational: this.props.status.isOperational
+      },
+      specs: this.props.specs ? {
+        enginePower: this.props.specs.enginePower,
+        maxCapacity: this.props.specs.maxCapacity,
+        fuelType: this.props.specs.fuelType,
+        year: this.props.specs.year,
+        weight: this.props.specs.weight,
+        operatingHours: this.props.specs.operatingHours
+      } : undefined,
+      location: this.props.location ? {
+        siteName: this.props.location.siteName,
+        address: this.props.location.address,
+        coordinates: this.props.location.coordinates,
+        lastUpdated: this.props.location.lastUpdated
+      } : undefined,
+      createdAt: this.props.createdAt,
+      updatedAt: this.props.updatedAt
+    };
+  }
 
   /**
    * Crea una nueva máquina con validaciones de dominio

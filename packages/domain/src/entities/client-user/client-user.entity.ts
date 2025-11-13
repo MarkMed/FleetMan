@@ -77,7 +77,7 @@ export class ClientUser extends User {
       email: createProps.email,
       passwordHash: createProps.passwordHash,
       profile: createProps.profile,
-      type: UserType.CLIENT
+      type: 'CLIENT'
     });
 
     if (!userPropsResult.success) {

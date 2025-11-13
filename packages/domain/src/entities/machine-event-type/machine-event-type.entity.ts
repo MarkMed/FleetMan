@@ -7,6 +7,7 @@
 
 import { Result, ok, err, DomainError } from '../../errors';
 import { UserId } from '../../value-objects/user-id.vo';
+import { IMachineEventType } from '../../models/interfaces';
 
 // =============================================================================
 // Interfaces para MachineEventType
@@ -40,6 +41,24 @@ interface MachineEventTypeProps {
 
 export class MachineEventType {
   private constructor(private props: MachineEventTypeProps) {}
+
+  /**
+   * Convierte la entidad a su representación de interfaz pública
+   * Para uso en frontend y contratos
+   */
+  public toPublicInterface(): IMachineEventType {
+    return {
+      id: this.props.id,
+      name: this.props.name,
+      normalizedName: this.props.normalizedName,
+      systemGenerated: this.props.systemGenerated,
+      createdBy: this.props.createdBy?.getValue(),
+      timesUsed: this.props.timesUsed,
+      isActive: this.props.isActive,
+      createdAt: this.props.createdAt,
+      updatedAt: this.props.createdAt // MachineEventType no tiene updatedAt, usa createdAt
+    };
+  }
 
   // ==========================================================================
   // Factory Methods

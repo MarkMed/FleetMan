@@ -1,24 +1,21 @@
 import { Result, ok, err, DomainError, DomainErrorCodes } from '../../errors';
 import { UserId } from '../../value-objects/user-id.vo';
 import { Email } from '../../value-objects/email.vo';
+import { IUser, UserType, IUserProfile } from '../../models';
 
 /**
  * Tipos de usuario en el sistema
  */
-export enum UserType {
-  CLIENT = 'CLIENT',
-  PROVIDER = 'PROVIDER',
-}
+export { UserType } from '../../models';
 
 /**
  * Información del perfil de usuario
  * Los usuarios representan empresas/compañías, no personas individuales
  */
-export interface UserProfile {
-  phone?: string;
-  companyName?: string;
-  address?: string;
-}
+export interface UserProfile extends IUserProfile {}
+
+// Re-export for backwards compatibility
+export { IUserProfile };
 
 /**
  * Propiedades para CREAR un usuario

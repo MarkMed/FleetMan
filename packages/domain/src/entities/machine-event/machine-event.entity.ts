@@ -9,6 +9,7 @@
 import { Result, ok, err, DomainError } from '../../errors';
 import { UserId } from '../../value-objects/user-id.vo';
 import { MachineId } from '../../value-objects/machine-id.vo';
+import { IMachineEvent } from '../../models/interfaces';
 
 // =============================================================================
 // Types para MachineEvent
@@ -62,6 +63,28 @@ interface MachineEventProps {
 
 export class MachineEvent {
   private constructor(private props: MachineEventProps) {}
+
+  /**
+   * Convierte la entidad a su representación de interfaz pública
+   * Para uso en frontend y contratos
+   */
+  public toPublicInterface(): IMachineEvent {
+    return {
+      id: this.props.id,
+      machineId: this.props.machineId.getValue(),
+      createdBy: this.props.createdBy.getValue(),
+      typeId: this.props.typeId,
+      title: this.props.title,
+      description: this.props.description,
+      metadata: this.props.metadata ? {
+        additionalInfo: this.props.metadata.additionalInfo,
+        notes: this.props.metadata.notes
+      } : undefined,
+      isSystemGenerated: this.props.isSystemGenerated,
+      createdAt: this.props.createdAt,
+      updatedAt: this.props.createdAt // MachineEvent no tiene updatedAt, usa createdAt
+    };
+  }
 
   // ==========================================================================
   // Factory Methods
