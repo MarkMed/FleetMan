@@ -1,20 +1,32 @@
 import { apiClient, handleApiResponse } from './apiClient';
-import { API_ENDPOINTS } from '@constants';
-import { 
-  Machine, 
-  MachineFormData, 
-  MachineEvent, 
-  EventFormData, 
-  MaintenanceReminder,
-  MaintenanceReminderFormData,
-  PaginatedResponse,
-  MachineFilters,
-  EventFilters
-} from '@models';
+import { API_ENDPOINTS } from '../../constants';
+import type { 
+  CreateMachineResponse as Machine,
+  CreateMachineRequest as MachineFormData,
+  ListMachinesResponse
+} from '@packages/contracts';
+
+// Temporary basic types for MVP
+interface MachineFilters {
+  status?: string[];
+  brand?: string[];
+  location?: string[];
+  ownerId?: string;
+  managedById?: string;
+  searchTerm?: string;
+}
+
+interface EventFilters {
+  type?: string[];
+  severity?: string[];
+  dateFrom?: string;
+  dateTo?: string;
+  searchTerm?: string;
+}
 
 export class MachineService {
   // Get all machines with optional filters
-  async getMachines(filters?: MachineFilters): Promise<PaginatedResponse<Machine>> {
+  async getMachines(filters?: MachineFilters): Promise<ListMachinesResponse> {
     const params: Record<string, string> = {};
     
     if (filters) {
@@ -38,7 +50,7 @@ export class MachineService {
       }
     }
 
-    const response = await apiClient.get<PaginatedResponse<Machine>>(
+    const response = await apiClient.get<ListMachinesResponse>(
       API_ENDPOINTS.MACHINES,
       params
     );
@@ -73,96 +85,6 @@ export class MachineService {
   async deleteMachine(id: string): Promise<void> {
     const response = await apiClient.delete(API_ENDPOINTS.MACHINE(id));
     handleApiResponse(response);
-  }
-
-  // Get machine events/history
-  async getMachineEvents(
-    machineId: string, 
-    filters?: EventFilters
-  ): Promise<PaginatedResponse<MachineEvent>> {
-    const params: Record<string, string> = {};
-    
-    if (filters) {
-      if (filters.type?.length) {
-        params.type = filters.type.join(',');
-      }
-      if (filters.severity?.length) {
-        params.severity = filters.severity.join(',');
-      }
-      if (filters.dateFrom) {
-        params.dateFrom = filters.dateFrom;
-      }
-      if (filters.dateTo) {
-        params.dateTo = filters.dateTo;
-      }
-      if (filters.searchTerm) {
-        params.search = filters.searchTerm;
-      }
-    }
-
-    const response = await apiClient.get<PaginatedResponse<MachineEvent>>(
-      API_ENDPOINTS.MACHINE_EVENTS(machineId),
-      params
-    );
-    return handleApiResponse(response);
-  }
-
-  // Create machine event
-  async createMachineEvent(machineId: string, eventData: EventFormData): Promise<MachineEvent> {
-    const response = await apiClient.post<MachineEvent>(
-      API_ENDPOINTS.MACHINE_EVENTS(machineId),
-      eventData
-    );
-    return handleApiResponse(response);
-  }
-
-  // Get machine maintenance reminders
-  async getMachineReminders(machineId: string): Promise<MaintenanceReminder[]> {
-    const response = await apiClient.get<MaintenanceReminder[]>(
-      API_ENDPOINTS.MACHINE_REMINDERS(machineId)
-    );
-    return handleApiResponse(response);
-  }
-
-  // Create maintenance reminder for machine
-  async createMachineReminder(
-    machineId: string, 
-    reminderData: MaintenanceReminderFormData
-  ): Promise<MaintenanceReminder> {
-    const response = await apiClient.post<MaintenanceReminder>(
-      API_ENDPOINTS.MACHINE_REMINDERS(machineId),
-      reminderData
-    );
-    return handleApiResponse(response);
-  }
-
-  // Update maintenance reminder
-  async updateMachineReminder(
-    reminderId: string, 
-    reminderData: Partial<MaintenanceReminderFormData>
-  ): Promise<MaintenanceReminder> {
-    const response = await apiClient.put<MaintenanceReminder>(
-      API_ENDPOINTS.MAINTENANCE_REMINDER(reminderId),
-      reminderData
-    );
-    return handleApiResponse(response);
-  }
-
-  // Delete maintenance reminder
-  async deleteMachineReminder(reminderId: string): Promise<void> {
-    const response = await apiClient.delete(
-      API_ENDPOINTS.MAINTENANCE_REMINDER(reminderId)
-    );
-    handleApiResponse(response);
-  }
-
-  // Update machine hours
-  async updateMachineHours(id: string, hours: number): Promise<Machine> {
-    const response = await apiClient.patch<Machine>(
-      API_ENDPOINTS.MACHINE(id),
-      { hoursUsed: hours }
-    );
-    return handleApiResponse(response);
   }
 
   // Get machine statistics (for dashboard)

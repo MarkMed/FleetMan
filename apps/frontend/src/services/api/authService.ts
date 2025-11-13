@@ -1,22 +1,21 @@
 import { apiClient, handleApiResponse } from './apiClient';
-import { API_ENDPOINTS } from '@constants';
-import { User, LoginFormData, RegisterFormData, ApiResponse } from '@models';
-
-export interface AuthResponse {
-  user: User;
-  token: string;
-  refreshToken: string;
-}
-
-export interface RefreshTokenResponse {
-  token: string;
-  refreshToken: string;
-}
+import { API_ENDPOINTS } from '../../constants';
+import {
+  LoginRequest,
+  LoginResponse,
+  RegisterRequest,
+  RegisterResponse,
+  RefreshTokenRequest,
+  RefreshTokenResponse,
+  ForgotPasswordRequest,
+  ResetPasswordRequest,
+  CreateUserResponse
+} from '@packages/contracts';
 
 export class AuthService {
   // Login user
-  async login(credentials: LoginFormData): Promise<AuthResponse> {
-    const response = await apiClient.post<AuthResponse>(
+  async login(credentials: LoginRequest): Promise<LoginResponse> {
+    const response = await apiClient.post<LoginResponse>(
       API_ENDPOINTS.AUTH.LOGIN,
       credentials
     );
@@ -24,8 +23,8 @@ export class AuthService {
   }
 
   // Register new user
-  async register(userData: RegisterFormData): Promise<AuthResponse> {
-    const response = await apiClient.post<AuthResponse>(
+  async register(userData: RegisterRequest): Promise<RegisterResponse> {
+    const response = await apiClient.post<RegisterResponse>(
       API_ENDPOINTS.AUTH.REGISTER,
       userData
     );
@@ -39,34 +38,34 @@ export class AuthService {
   }
 
   // Refresh authentication token
-  async refreshToken(refreshToken: string): Promise<RefreshTokenResponse> {
+  async refreshToken(refreshTokenData: RefreshTokenRequest): Promise<RefreshTokenResponse> {
     const response = await apiClient.post<RefreshTokenResponse>(
       API_ENDPOINTS.AUTH.REFRESH,
-      { refreshToken }
+      refreshTokenData
     );
     return handleApiResponse(response);
   }
 
   // Get current user information
-  async me(): Promise<User> {
-    const response = await apiClient.get<User>(API_ENDPOINTS.AUTH.ME);
+  async me(): Promise<CreateUserResponse> {
+    const response = await apiClient.get<CreateUserResponse>(API_ENDPOINTS.AUTH.ME);
     return handleApiResponse(response);
   }
 
   // Forgot password
-  async forgotPassword(email: string): Promise<void> {
+  async forgotPassword(emailData: ForgotPasswordRequest): Promise<void> {
     const response = await apiClient.post(
       API_ENDPOINTS.AUTH.FORGOT_PASSWORD,
-      { email }
+      emailData
     );
     handleApiResponse(response);
   }
 
   // Reset password
-  async resetPassword(token: string, newPassword: string): Promise<void> {
+  async resetPassword(resetData: ResetPasswordRequest): Promise<void> {
     const response = await apiClient.post(
       API_ENDPOINTS.AUTH.RESET_PASSWORD,
-      { token, newPassword }
+      resetData
     );
     handleApiResponse(response);
   }

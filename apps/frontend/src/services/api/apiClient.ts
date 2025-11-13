@@ -1,5 +1,10 @@
-import { config } from '@config';
-import { ApiResponse } from '@models';
+import { config } from '../../config';
+
+export interface ApiResponse<T = any> {
+  success: boolean;
+  data?: T;
+  error?: string;
+}
 
 // Base API configuration
 const BASE_URL = config.API_BASE_URL;
