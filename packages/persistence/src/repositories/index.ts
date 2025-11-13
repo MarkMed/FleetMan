@@ -1,8 +1,7 @@
-// /packages/persistence/src/repositories/index.ts
-// Repositorios concretos que implementan puertos del dominio
-
-// TODO: Implementar repositorios:
-// - UserRepository (implementa IUserRepository)
-// - MachineRepository (implementa IMachineRepository)
-// - MaintenanceReminderRepository
-// - NotificationRepository
+// =============================================================================
+// CONCRETE REPOSITORY IMPLEMENTATIONS  
+// =============================================================================
+export { UserRepository } from './user.repository';
+export { MachineRepository } from './machine.repository';
+export { MachineEventRepository } from './machine-event.repository';
+export { MachineEventTypeRepository } from './machine-event-type.repository';

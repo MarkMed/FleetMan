@@ -1,10 +1,23 @@
-// /packages/persistence/src/models/index.ts
-// Modelos Mongoose (internos al paquete, no se exportan)
+// =============================================================================
+// PERSISTENCE LAYER MODELS - Internal Mongoose Models
+// =============================================================================
+// These models are NOT exported from the package to maintain encapsulation
+// Only repositories and mappers should use these models directly
 
-// TODO: Implementar modelos Mongoose:
-// - UserDocument
-// - MachineDocument
-// - MaintenanceReminderDocument
-// - NotificationDocument
+// Export all Mongoose models for internal package use
+export * from './user.model';
+export * from './machine.model';
+export * from './machine-type.model';
+export * from './machine-event.model';
+export * from './machine-event-type.model';
 
-// NOTA: Estos modelos NO se exportan del paquete para mantener encapsulación
+// Re-export commonly used types for convenience
+export type { Document, Types } from 'mongoose';
+
+// TODO: Future models to implement:
+// - NotificationDocument & NotificationModel
+// - MaintenanceReminderDocument & MaintenanceReminderModel  
+// - QuickCheckDocument & QuickCheckModel
+// - QuickCheckItemDocument & QuickCheckItemModel
+// - InternalMessageDocument & InternalMessageModel
+// - RepuestoDocument & RepuestoModel
