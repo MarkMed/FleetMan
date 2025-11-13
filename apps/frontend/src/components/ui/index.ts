@@ -12,6 +12,7 @@ export {
   ModalClose,
 } from './Modal';
 export { InputField } from './InputField';
+export { Checkbox } from './Checkbox';
 export { 
   TextBlock, 
   textVariants,
