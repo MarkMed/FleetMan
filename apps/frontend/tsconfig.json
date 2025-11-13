@@ -19,7 +19,8 @@
       "@validators/*": ["./validators/*"],
       "@assets/*": ["./assets/*"],
       "@theme/*": ["./theme/*"],
-      "@i18n/*": ["./i18n/*"]
+      "@i18n/*": ["./i18n/*"],
+      "@contracts": ["../../packages/contracts/src"]
     }
   },
   "include": ["src", "vite.config.ts"]

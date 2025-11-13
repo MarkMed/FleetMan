@@ -92,7 +92,8 @@ export default defineConfig({
       '@assets': path.resolve(__dirname, './src/assets'),
       '@i18n': path.resolve(__dirname, './src/i18n'),
       '@validators': path.resolve(__dirname, './src/validators'),
-      '@navigation': path.resolve(__dirname, './src/navigation')
+      '@navigation': path.resolve(__dirname, './src/navigation'),
+      '@contracts': path.resolve(__dirname, '../../packages/contracts/src')
     }
   },
   server: {
