@@ -2,26 +2,48 @@ import { z } from 'zod';
 import { SortOrderSchema, PaginationSchema, BasePaginatedResponseSchema } from './common.types';
 
 // =============================================================================
-// REAL DRY APPROACH: Re-export de types del dominio
-// =============================================================================
-
-// Re-exportamos los types exactos del dominio para reutilización
-export { UserType, UserProfile, CreateUserProps } from '../../domain/src/entities/user/user.entity';
-
-// Import local para uso en schemas
-import { UserType, UserProfile, CreateUserProps } from '../../domain/src/entities/user/user.entity';
-
-// =============================================================================
-// Schemas Zod basados en types IMPORTADOS del dominio (DRY REAL)
+// User Types & Enums
 // =============================================================================
 
 /**
- * Schema derivado del enum UserType del dominio
+ * Tipos de usuario en el sistema
+ */
+export enum UserType {
+  CLIENT = 'CLIENT',
+  PROVIDER = 'PROVIDER',
+}
+
+/**
+ * Información del perfil de usuario
+ * Los usuarios representan empresas/compañías, no personas individuales
+ */
+export interface UserProfile {
+  phone?: string;
+  companyName?: string;
+  address?: string;
+}
+
+/**
+ * Propiedades para crear usuario
+ */
+export interface CreateUserProps {
+  email: string;
+  password: string; // Sin hash para requests
+  profile: UserProfile;
+  type: UserType;
+}
+
+// =============================================================================
+// Schemas Zod
+// =============================================================================
+
+/**
+ * Schema derivado del enum UserType
  */
 export const UserTypeSchema = z.nativeEnum(UserType);
 
 /**
- * Schema basado en la interfaz UserProfile del dominio
+ * Schema basado en la interfaz UserProfile
  */
 export const UserProfileSchema = z.object({
   phone: z.string().optional(),
@@ -30,8 +52,7 @@ export const UserProfileSchema = z.object({
 }) satisfies z.ZodType<UserProfile>;
 
 /**
- * Schema para crear usuario basado en CreateUserProps del dominio
- * (password sin hash para requests)
+ * Schema para crear usuario (password sin hash para requests)
  */
 export const CreateUserRequestSchema = z.object({
   email: z.string().email('Invalid email format'),
@@ -74,7 +95,7 @@ export const UpdateUserRequestSchema = z.object({
 export const UpdateUserResponseSchema = CreateUserResponseSchema;
 
 /**
- * Schema para listar usuarios (usando types comunes)
+ * Schema para listar usuarios
  */
 export const ListUsersRequestSchema = PaginationSchema.extend({
   type: UserTypeSchema.optional(),
@@ -87,7 +108,7 @@ export const ListUsersResponseSchema = BasePaginatedResponseSchema.extend({
 });
 
 // =============================================================================
-// Type Inference (derivados automáticamente del dominio)
+// Type Inference
 // =============================================================================
 
 export type CreateUserRequest = z.infer<typeof CreateUserRequestSchema>;
