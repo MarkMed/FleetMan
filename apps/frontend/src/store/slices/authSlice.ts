@@ -1,8 +1,16 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { AuthState, User } from '@models';
-import { authService } from '@services/api/authService';
-import { STORAGE_KEYS } from '@constants';
+import { authService } from '../../services/api/authService';
+import { config } from '../../config';
+import type { CreateUserResponse as User } from '@packages/contracts';
+
+interface AuthState {
+  user: User | null;
+  token: string | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  error?: string;
+}
 
 interface AuthStore extends AuthState {
   // Actions
@@ -179,7 +187,7 @@ export const useAuthStore = create<AuthStore>()(
       },
     }),
     {
-      name: STORAGE_KEYS.AUTH_TOKEN,
+      name: config.STORAGE_KEYS.AUTH_TOKEN,
       partialize: (state) => ({
         token: state.token,
         user: state.user,

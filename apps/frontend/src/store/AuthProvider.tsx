@@ -1,24 +1,46 @@
 import React, { createContext, useContext, useEffect } from 'react';
 import { useAuthStore } from './slices/authSlice';
+import type { CreateUserResponse as User } from '@packages/contracts';
+
+interface AuthContextValue {
+  // State
+  user: User | null;
+  token: string | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  error?: string;
+  
+  // Actions
+  login: (email: string, password: string) => Promise<void>;
+  register: (userData: any) => Promise<void>;
+  logout: () => Promise<void>;
+  refreshToken: () => Promise<void>;
+  loadUser: () => Promise<void>;
+  setUser: (user: User | null) => void;
+  setToken: (token: string | null) => void;
+  setLoading: (isLoading: boolean) => void;
+  setError: (error: string | null) => void;
+  clearError: () => void;
+}
 
 interface AuthProviderProps {
   children: React.ReactNode;
 }
 
-const AuthContext = createContext<{}>({});
+const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const { token, loadUser, isAuthenticated } = useAuthStore();
+  const authStore = useAuthStore();
 
   useEffect(() => {
     // Load user data on app start if we have a token
-    if (token && !isAuthenticated) {
-      loadUser();
+    if (authStore.token && !authStore.isAuthenticated) {
+      authStore.loadUser();
     }
-  }, [token, isAuthenticated, loadUser]);
+  }, [authStore.token, authStore.isAuthenticated, authStore.loadUser]);
 
   return (
-    <AuthContext.Provider value={{}}>
+    <AuthContext.Provider value={authStore}>
       {children}
     </AuthContext.Provider>
   );
