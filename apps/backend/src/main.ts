@@ -9,6 +9,8 @@ import cors from 'cors';
 import rateLimit from 'express-rate-limit';
 import { setupSwagger } from './config/swagger.config';
 import { requestSanitization } from './middlewares/requestSanitization';
+import authRoutes from './routes/auth.routes';
+import { connectDatabase } from './config/database.config';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -47,6 +49,9 @@ app.use(requestSanitization);
 
 // Setup Swagger documentation
 setupSwagger(app);
+
+// API Routes
+app.use('/api/v1/auth', authRoutes);
 
 /**
  * @swagger
@@ -99,21 +104,38 @@ app.get('/api', (req, res) => {
 // TODO: Add routes here
 // app.use('/api/v1', routes);
 
-app.listen(PORT, () => {
-  console.log(`🚀 FleetMan Backend running on port ${PORT}`);
-  console.log(`🌐 API available at http://localhost:${PORT}/api`);
-  console.log(`❤️  Health check at http://localhost:${PORT}/health`);
-  console.log(`📚 Swagger docs at http://localhost:${PORT}/api-docs`);
-  console.log(`📝 Environment: ${process.env.NODE_ENV || 'development'}`);
-});
+// Función principal para inicializar la aplicación
+(async () => {
+  try {
+    // 1. Conectar con DB
+    await connectDatabase();
+    
+    // 2. Iniciar servidor HTTP
+    app.listen(PORT, () => {
+      console.log(`🚀 FleetMan Backend running on port ${PORT}`);
+      console.log(`🌐 API available at http://localhost:${PORT}/api`);
+      console.log(`❤️  Health check at http://localhost:${PORT}/health`);
+      console.log(`📚 Swagger docs at http://localhost:${PORT}/api-docs`);
+      console.log(`📝 Environment: ${process.env.NODE_ENV || 'development'}`);
+    });
+    
+  } catch (error) {
+    console.error("Error al inicializar la aplicación:", error);
+    process.exit(1);
+  }
+})();
 
 // Graceful shutdown
-process.on('SIGTERM', () => {
+process.on('SIGTERM', async () => {
   console.log('SIGTERM received, shutting down gracefully');
+  const { disconnectDatabase } = await import('./config/database.config');
+  await disconnectDatabase();
   process.exit(0);
 });
 
-process.on('SIGINT', () => {
+process.on('SIGINT', async () => {
   console.log('SIGINT received, shutting down gracefully');
+  const { disconnectDatabase } = await import('./config/database.config');
+  await disconnectDatabase();
   process.exit(0);
 });
