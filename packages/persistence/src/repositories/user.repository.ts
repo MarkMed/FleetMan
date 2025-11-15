@@ -99,6 +99,54 @@ export class UserRepository implements IUserRepository {
   }
 
   /**
+   * Crea un nuevo usuario en la base de datos
+   * @param userData - Datos del usuario a crear
+   * @returns Promise con resultado de la creación
+   */
+  async create(userData: Pick<IUserDocument, 'email' | 'passwordHash' | 'profile' | 'type'>): Promise<Result<{ id: string; email: string; profile: any; type: string; isActive: boolean; createdAt: string; updatedAt: string }, DomainError>> {
+    try {
+      // Usar el UserModel que ya tiene toda la configuración de Mongoose
+      const savedUser = await UserModel.create({
+        email: userData.email.toLowerCase(),
+        passwordHash: userData.passwordHash,
+        profile: userData.profile,
+        type: userData.type,
+        isActive: true
+      });
+      
+      // El modelo ya maneja automáticamente:
+      // - Validaciones de schema
+      // - Timestamps (createdAt, updatedAt) 
+      // - Virtual fields (id desde _id)
+      // - Discriminators para CLIENT/PROVIDER
+      // - Transformaciones JSON
+      
+      // Retornar datos usando la transformación automática del modelo
+      const result = {
+        id: savedUser.id,
+        email: savedUser.email,
+        profile: savedUser.profile,
+        type: savedUser.type,
+        isActive: savedUser.isActive,
+        createdAt: savedUser.createdAt.toISOString(),
+        updatedAt: savedUser.updatedAt.toISOString()
+      };
+      
+      return ok(result);
+    } catch (error: any) {
+      if (error.code === 11000) {
+        // Error de duplicado de email (índice único)
+        return err(DomainError.create('EMAIL_ALREADY_EXISTS', 'Email already registered'));
+      }
+      if (error.name === 'ValidationError') {
+        // Errores de validación del schema de Mongoose
+        return err(DomainError.create('VALIDATION_ERROR', `Invalid data: ${error.message}`));
+      }
+      return err(DomainError.create('PERSISTENCE_ERROR', `Error creating user: ${error.message}`));
+    }
+  }
+
+  /**
    * Guarda un usuario (crear o actualizar)
    */
   async save(user: User): Promise<Result<void, DomainError>> {

@@ -13,11 +13,12 @@ import {
 
 /**
  * Base User Document interface extending domain IUser
- * Adds Mongoose-specific _id and document methods
+ * Adds Mongoose-specific _id, document methods, and passwordHash for persistence
  */
 export interface IUserDocument extends Omit<IUser, 'id'>, Document {
   _id: Types.ObjectId;
   id: string; // Virtual getter from _id
+  passwordHash: string; // Solo para persistencia, no expuesta en domain interfaces
 }
 
 /**
@@ -26,6 +27,7 @@ export interface IUserDocument extends Omit<IUser, 'id'>, Document {
 export interface IClientUserDocument extends Omit<IClientUser, 'id'>, Document {
   _id: Types.ObjectId;
   id: string;
+  passwordHash: string;
 }
 
 /**
@@ -34,6 +36,7 @@ export interface IClientUserDocument extends Omit<IClientUser, 'id'>, Document {
 export interface IProviderUserDocument extends Omit<IProviderUser, 'id'>, Document {
   _id: Types.ObjectId;
   id: string;
+  passwordHash: string;
 }
 
 // =============================================================================
@@ -52,6 +55,12 @@ const userSchema = new Schema<IUserDocument>({
     trim: true,
     lowercase: true,
     index: true
+  },
+  
+  passwordHash: {
+    type: String,
+    required: true,
+    select: false // No incluir en queries por defecto (seguridad)
   },
   
   profile: {

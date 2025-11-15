@@ -4,8 +4,7 @@
 // This package provides concrete persistence implementations for the domain
 
 // Export concrete repository implementations
-// TODO: Enable when TypeScript compilation issues are resolved
-// export * from "./repositories";
+export * from "./repositories";
 
 // TODO: Export mappers when implemented  
 // export * from "./mappers";
