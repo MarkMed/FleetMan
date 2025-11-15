@@ -166,16 +166,16 @@ Distribución por categoría:
 | Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | 1.6 |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | 4.1 |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | 0.88 |
-| Desarrollo | 2.1 Registro de usuario (RF-001) | 5 | 10 | |
-| Desarrollo | 2.2 Login de usuario (RF-002) | 6 | 8 | |
+| Desarrollo | 2.1 Registro de usuario (RF-001) | 5 | 10 | 8.7 |
+| Desarrollo | 2.2 Login de usuario (RF-002) | 6 | 8 | 4.2 |
 | Desarrollo | 2.3 Logout (RF-003) | 7 | 4 | |
 | Desarrollo | 2.5 AutZ por rol básico | 8 | 7 | |
 | Capacitación | 16.5 Taller Deploy - Azure (mar 11 Nov) | 9 | 3 |0|
-| Capacitación | 16.6 Taller Deploy - Azure (jue 13 Nov) | 10 | 3 | |
+| Capacitación | 16.6 Taller Deploy - Azure (jue 13 Nov) | 10 | 3 | 2.9 |
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales |
 |:---:|:----------:|
-| **39.7**hs | **13.68**hs |
+| **39.7**hs | **29.38**hs |
 
 Buffer reservado: **-4.7**hs
 Total con buffer: **35**hs
@@ -183,7 +183,7 @@ Total con buffer: **35**hs
 Distribución por categoría:
 | Gestión | Desarrollo | QA | Capacitación | Documentación |
 |:-------:|:----------:|:--:|:------------:|:-------------:|
-| **12.9**hs | **29**hs | **0**hs | **7.88**hs | **0**hs |
+| **12.8**hs | **12.9**hs | **0**hs | **3.68**hs | **0**hs |
 
 ```mermaid
 xychart-beta
@@ -195,7 +195,7 @@ xychart-beta
     line [0.9, 1.5, 1.3, 1, 10, 8, 4, 7, 3, 3, 39.7]
 
 	%% Black line
-    line [7.1, 1.6, 4.1, 0.88, 0, 0, 0, 0, 0, 0, 13.68]
+    line [7.1, 1.6, 4.1, 0.88, 8.7, 4.2, 0, 0, 0, 2.9, 29.38]
 ```
 
 ### **Sprint #5**: dom 16 nov → sáb 22 nov 2025
