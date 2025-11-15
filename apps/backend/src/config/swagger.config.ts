@@ -92,6 +92,151 @@ const swaggerOptions: swaggerJsdoc.Options = {
             },
           },
         },
+        RegisterUserRequest: {
+          type: 'object',
+          required: ['email', 'password', 'name', 'userType'],
+          properties: {
+            email: {
+              type: 'string',
+              format: 'email',
+              description: 'User email address',
+              example: 'user@example.com',
+            },
+            password: {
+              type: 'string',
+              minLength: 8,
+              description: 'User password (minimum 8 characters)',
+              example: 'securePassword123',
+            },
+            name: {
+              type: 'string',
+              minLength: 2,
+              description: 'User full name',
+              example: 'John Doe',
+            },
+            userType: {
+              type: 'string',
+              enum: ['client', 'provider'],
+              description: 'Type of user account',
+              example: 'client',
+            },
+            company: {
+              type: 'string',
+              description: 'Company name (optional for clients, required for providers)',
+              example: 'Acme Corp',
+            },
+          },
+        },
+        RegisterUserResponse: {
+          type: 'object',
+          properties: {
+            success: {
+              type: 'boolean',
+              example: true,
+            },
+            message: {
+              type: 'string',
+              example: 'User registered successfully',
+            },
+            data: {
+              type: 'object',
+              properties: {
+                id: {
+                  type: 'string',
+                  description: 'User unique identifier',
+                  example: '507f1f77bcf86cd799439011',
+                },
+                email: {
+                  type: 'string',
+                  format: 'email',
+                  example: 'user@example.com',
+                },
+                name: {
+                  type: 'string',
+                  example: 'John Doe',
+                },
+                userType: {
+                  type: 'string',
+                  enum: ['client', 'provider'],
+                  example: 'client',
+                },
+                createdAt: {
+                  type: 'string',
+                  format: 'date-time',
+                  description: 'Account creation timestamp',
+                },
+              },
+            },
+          },
+        },
+        LoginRequest: {
+          type: 'object',
+          required: ['email', 'password'],
+          properties: {
+            email: {
+              type: 'string',
+              format: 'email',
+              description: 'User email address',
+              example: 'user@example.com',
+            },
+            password: {
+              type: 'string',
+              description: 'User password',
+              example: 'securePassword123',
+            },
+          },
+        },
+        LoginResponse: {
+          type: 'object',
+          properties: {
+            success: {
+              type: 'boolean',
+              example: true,
+            },
+            message: {
+              type: 'string',
+              example: 'Login successful',
+            },
+            data: {
+              type: 'object',
+              properties: {
+                user: {
+                  type: 'object',
+                  properties: {
+                    id: {
+                      type: 'string',
+                      example: '507f1f77bcf86cd799439011',
+                    },
+                    email: {
+                      type: 'string',
+                      format: 'email',
+                      example: 'user@example.com',
+                    },
+                    name: {
+                      type: 'string',
+                      example: 'John Doe',
+                    },
+                    userType: {
+                      type: 'string',
+                      enum: ['client', 'provider'],
+                      example: 'client',
+                    },
+                  },
+                },
+                token: {
+                  type: 'string',
+                  description: 'JWT access token',
+                  example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+                },
+                expiresIn: {
+                  type: 'string',
+                  description: 'Token expiration time',
+                  example: '24h',
+                },
+              },
+            },
+          },
+        },
       },
     },
     security: [

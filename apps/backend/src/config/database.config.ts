@@ -35,7 +35,7 @@ export const connectDatabase = async (): Promise<void> => {
     });
 
   } catch (error) {
-    logger.error('Failed to connect to MongoDB:', error);
+    logger.error({ error }, 'Failed to connect to MongoDB:');
     process.exit(1);
   }
 };
@@ -45,6 +45,6 @@ export const disconnectDatabase = async (): Promise<void> => {
     await mongoose.connection.close();
     logger.info('📦 Disconnected from MongoDB');
   } catch (error) {
-    logger.error('Error disconnecting from MongoDB:', error);
+    logger.error({ error }, 'Error disconnecting from MongoDB:');
   }
 };
