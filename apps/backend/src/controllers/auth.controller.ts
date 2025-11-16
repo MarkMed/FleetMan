@@ -42,7 +42,10 @@ export class AuthController {
       // Ejecutar Use Case
       const result = await this.registerUseCase.execute(userData);
       
-      logger.info({ userId: result.id }, 'User registration completed successfully');
+      logger.info({ 
+        userId: result.user.id,
+        hasTokens: !!(result.token && result.refreshToken) 
+      }, 'User registration completed successfully with auto-login tokens');
       
       res.status(201).json({
         success: true,

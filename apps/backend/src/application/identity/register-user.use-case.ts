@@ -1,6 +1,6 @@
 import { 
   CreateUserRequest, 
-  CreateUserResponse,
+  RegisterResponse,
   UserType 
 } from '@packages/contracts';
 import { logger } from '../../config/logger.config';
@@ -23,9 +23,9 @@ export class RegisterUserUseCase {
   /**
    * Ejecuta el caso de uso de registro de usuario
    * @param request - Datos del usuario a registrar
-   * @returns Promise con la respuesta del usuario creado
+   * @returns Promise con la respuesta del usuario creado + tokens para auto-login
    */
-  async execute(request: CreateUserRequest): Promise<CreateUserResponse> {
+  async execute(request: CreateUserRequest): Promise<RegisterResponse> {
     logger.info({ email: request.email, type: request.type }, 'Starting user registration');
 
     try {
@@ -58,22 +58,33 @@ export class RegisterUserUseCase {
 
       const savedUser = createResult.data;
 
+      // 5. Generar tokens para auto-login
+      const { accessToken, refreshToken } = await AuthService.generateTokenPair({
+        userId: savedUser.id,
+        email: savedUser.email,
+        type: savedUser.type as UserType
+      });
+
       logger.info({ 
         userId: savedUser.id, 
         email: savedUser.email,
         type: savedUser.type,
-        hashedPassword: hashedPassword ? 'generated' : 'failed' 
-      }, '🎉 User registered successfully in MongoDB!');
+        hasTokens: !!(accessToken && refreshToken)
+      }, '🎉 User registered successfully with auto-login tokens!');
 
-      // 5. Retornar respuesta (sin contraseña)
+      // 6. Retornar respuesta completa con tokens para auto-login
       return {
-        id: savedUser.id,
-        email: savedUser.email,
-        profile: savedUser.profile,
-        type: savedUser.type as UserType,
-        isActive: savedUser.isActive,
-        createdAt: savedUser.createdAt,
-        updatedAt: savedUser.updatedAt,
+        user: {
+          id: savedUser.id,
+          email: savedUser.email,
+          profile: savedUser.profile,
+          type: savedUser.type as UserType,
+          isActive: savedUser.isActive,
+          createdAt: savedUser.createdAt,
+          updatedAt: savedUser.updatedAt,
+        },
+        token: accessToken,
+        refreshToken: refreshToken
       };
 
     } catch (error) {
