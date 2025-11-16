@@ -127,37 +127,37 @@ export const quickActions = [
 ];
 
 // Breadcrumb configuration
-export const getBreadcrumbs = (pathname: string) => {
-  const segments = pathname.split('/').filter(Boolean);
-  const breadcrumbs = [
-    { title: 'Inicio', href: ROUTES.DASHBOARD },
-  ];
+// export const getBreadcrumbs = (pathname: string) => {
+//   const segments = pathname.split('/').filter(Boolean);
+//   const breadcrumbs = [
+//     { title: 'Inicio', href: ROUTES.DASHBOARD },
+//   ];
 
-  if (segments.length === 0) {
-    return breadcrumbs;
-  }
+//   if (segments.length === 0) {
+//     return breadcrumbs;
+//   }
 
-  // Map common routes
-  const routeMap: Record<string, string> = {
-    'dashboard': 'Panel Principal',
-    'machines': 'Máquinas',
-    'maintenance': 'Mantenimiento',
-    'quickcheck': 'Chequeo Rápido',
-    'notifications': 'Notificaciones',
-    'profile': 'Perfil',
-    'settings': 'Configuración',
-  };
+//   // Map common routes
+//   const routeMap: Record<string, string> = {
+//     'dashboard': 'Panel Principal',
+//     'machines': 'Máquinas',
+//     'maintenance': 'Mantenimiento',
+//     'quickcheck': 'Chequeo Rápido',
+//     'notifications': 'Notificaciones',
+//     'profile': 'Perfil',
+//     'settings': 'Configuración',
+//   };
 
-  let currentPath = '';
-  segments.forEach((segment, index) => {
-    currentPath += `/${segment}`;
-    const title = routeMap[segment] || segment;
+//   let currentPath = '';
+//   segments.forEach((segment, index) => {
+//     currentPath += `/${segment}`;
+//     const title = routeMap[segment] || segment;
     
-    breadcrumbs.push({
-      title: title.charAt(0).toUpperCase() + title.slice(1),
-      href: currentPath,
-    });
-  });
+//     breadcrumbs.push({
+//       title: title.charAt(0).toUpperCase() + title.slice(1),
+//       href: currentPath,
+//     });
+//   });
 
-  return breadcrumbs;
-};
+//   return breadcrumbs;
+// };
