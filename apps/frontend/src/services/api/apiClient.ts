@@ -211,6 +211,16 @@ export function handleApiResponse<T>(response: ApiResponse<T>): T {
   return response.data!;
 }
 
+// Helper function to handle backend API responses that have the wrapper structure
+export function handleBackendApiResponse<T>(response: ApiResponse<{ success: boolean; message: string; data: T }>): T {
+  if (!response.success) {
+    throw new Error(response.error || "API request failed");
+  }
+  // response.data is the backend response: { success, message, data: T }
+  // We want to return T (which is response.data.data)
+  return response.data!.data;
+}
+
 // Helper function for retry logic
 export async function withRetry<T>(
   apiCall: () => Promise<ApiResponse<T>>,

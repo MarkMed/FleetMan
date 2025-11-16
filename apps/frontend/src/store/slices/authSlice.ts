@@ -75,22 +75,22 @@ export const useAuthStore = create<AuthStore>()(
           set({ isLoading: true, error: undefined });
           
           console.log('📤 Calling authService.register...');
-          const response = await authService.register(userData);
+          const response: RegisterResponse = await authService.register(userData);
           console.log('📥 Register response received (after handleApiResponse):', response);
           
           // Auto-login strategy: Backend returns token + refreshToken on registration
-          // Note: handleApiResponse already extracts .data, so response is already flattened
-          if (response.data.token) {
+          // Note: handleApiResponse already extracts .data, so response is RegisterResponse directly
+          if (response.token) {
             console.log('✅ Registration successful with auto-login', {
-              hasToken: !!response.data.token,
-              hasUser: !!response.data.user,
-              tokenPreview: response.data.token?.substring(0, 20) + '...'
+              hasToken: !!response.token,
+              hasUser: !!response.user,
+              tokenPreview: response.token?.substring(0, 20) + '...'
             });
-            authService.setAuthToken(response.data.token);
+            authService.setAuthToken(response.token);
             
             const newState = {
-              user: response.data.user,
-              token: response.data.token,
+              user: response.user,
+              token: response.token,
               isAuthenticated: true,
               isLoading: false,
               isHydrated: true,
