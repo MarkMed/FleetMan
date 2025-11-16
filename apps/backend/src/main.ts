@@ -9,7 +9,7 @@ import cors from 'cors';
 import rateLimit from 'express-rate-limit';
 import { setupSwagger } from './config/swagger.config';
 import { requestSanitization } from './middlewares/requestSanitization';
-import authRoutes from './routes/auth.routes';
+import routes from './routes';
 import { connectDatabase } from './config/database.config';
 
 const app = express();
@@ -50,8 +50,8 @@ app.use(requestSanitization);
 // Setup Swagger documentation
 setupSwagger(app);
 
-// API Routes
-app.use('/api/v1/auth', authRoutes);
+// API Routes v1
+app.use('/api/v1', routes);
 
 /**
  * @swagger
@@ -101,7 +101,7 @@ app.get('/api', (req, res) => {
   });
 });
 
-// TODO: Add routes here
+// TODO: Remove this line when routes are registered above
 // app.use('/api/v1', routes);
 
 // Función principal para inicializar la aplicación
