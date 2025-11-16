@@ -1,10 +1,13 @@
 import { useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../store/AuthProvider';
 import type { LoginRequest } from '@packages/contracts';
 import type { LoginFormData, LoginFormErrors } from '../../models';
+import { ROUTES } from '../../constants';
 
 export const useLoginViewModel = () => {
   const { login, isLoading, error: authError } = useAuth();
+  const navigate = useNavigate();
   
   const [formData, setFormData] = useState<LoginFormData>({
     email: '',
@@ -69,13 +72,18 @@ export const useLoginViewModel = () => {
           password: formData.password,
         };
         
-        await login(loginRequest.email, loginRequest.password);
+        const result = await login(loginRequest.email, loginRequest.password);
+        
+        // Navigate to dashboard if login was successful
+        if (result.shouldNavigate) {
+          navigate(ROUTES.DASHBOARD, { replace: true });
+        }
       } catch (error) {
         // Auth error is handled by the AuthProvider
         console.error('Login error:', error);
       }
     }
-  }, [formData, validateForm, login]);
+  }, [formData, validateForm, login, navigate]);
 
   const clearErrors = useCallback(() => {
     setFormErrors({});

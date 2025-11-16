@@ -104,7 +104,6 @@ export const LoginScreen: React.FC = () => {
                 size="default"
                 disabled={!canSubmit}
                 loading={isLoading}
-                onPress={() => {}} // handleSubmit is managed by form
                 className="w-full"
               >
                 {isLoading ? 'Iniciando sesión...' : 'Iniciar sesión'}

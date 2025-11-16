@@ -290,3 +290,6 @@ export const useFormValidation = <T extends Record<string, any>>(
     isValid: Object.keys(errors).length === 0,
   };
 };
+
+// Navigation hooks
+export { useNavigateOnAuth, useRedirectAfterLogin } from './useNavigateOnAuth';

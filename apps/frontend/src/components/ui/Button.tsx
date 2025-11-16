@@ -75,9 +75,17 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     
     /**
      * Handles button click events with validation.
-     * Prevents execution if button is disabled, loading, or no callback provided.
+     * For submit buttons, allows natural form submission.
+     * For other buttons, prevents default and executes onPress.
      */
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+      // For submit buttons, allow natural form submission
+      if (htmlType === 'submit') {
+        // Don't prevent default - let the form handle submission
+        return;
+      }
+      
+      // For other button types, prevent default and handle with onPress
       event.preventDefault();
       
       // Prevent execution if button is disabled, loading, or no callback

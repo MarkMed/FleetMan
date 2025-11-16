@@ -1,6 +1,9 @@
 // Environment configuration
+console.log('🔍 Debug - VITE_API_BASE_URL:', import.meta.env.VITE_API_BASE_URL);
+console.log('🔍 Debug - MODE:', import.meta.env.MODE);
+
 export const config = {
-  API_BASE_URL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api',
+  API_BASE_URL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api/v1',
   APP_NAME: import.meta.env.VITE_APP_NAME || 'FleetMan',
   APP_VERSION: import.meta.env.VITE_APP_VERSION || '1.0.0',
   ENVIRONMENT: import.meta.env.MODE || 'development',
@@ -36,5 +39,8 @@ export const config = {
     THEME: 'fleetman_theme',
   },
 } as const;
+
+// Debug final config
+console.log('🎯 Final API_BASE_URL:', config.API_BASE_URL);
 
 export type Config = typeof config;

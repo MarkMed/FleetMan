@@ -23,12 +23,21 @@ export class AuthService {
   }
 
   // Register new user
-  async register(userData: RegisterRequest): Promise<RegisterResponse> {
-    const response = await apiClient.post<RegisterResponse>(
+  async register(userData: RegisterRequest): Promise<any> {
+    console.log('🔗 AuthService.register called with:', userData);
+    
+    const response = await apiClient.post<any>(
       API_ENDPOINTS.AUTH.REGISTER,
       userData
     );
-    return handleApiResponse(response);
+    
+    console.log('🔗 Raw API response:', response);
+    
+    const result = handleApiResponse(response);
+    
+    console.log('🔗 Processed registration result:', result);
+    
+    return result;
   }
 
   // Logout user

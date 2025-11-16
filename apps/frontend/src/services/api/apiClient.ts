@@ -1,4 +1,4 @@
-import { config } from '../../config';
+import { config } from "../../config";
 
 export interface ApiResponse<T = any> {
   success: boolean;
@@ -11,7 +11,7 @@ const BASE_URL = config.API_BASE_URL;
 const TIMEOUT = config.API.TIMEOUT;
 
 export interface RequestConfig {
-  method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+  method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
   headers?: Record<string, string>;
   body?: any;
   params?: Record<string, string>;
@@ -25,23 +25,40 @@ class ApiClient {
   constructor(baseURL: string) {
     this.baseURL = baseURL;
     this.defaultHeaders = {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     };
   }
 
   // Set authorization token
   setAuthToken(token: string | null) {
     if (token) {
-      this.defaultHeaders['Authorization'] = `Bearer ${token}`;
+      this.defaultHeaders["Authorization"] = `Bearer ${token}`;
     } else {
-      delete this.defaultHeaders['Authorization'];
+      delete this.defaultHeaders["Authorization"];
     }
   }
 
   // Build URL with query parameters
   private buildUrl(endpoint: string, params?: Record<string, string>): string {
-    const url = new URL(endpoint, this.baseURL);
-    
+    // Remove leading slash from endpoint to avoid path replacement
+    const cleanEndpoint = endpoint.startsWith("/")
+      ? endpoint.slice(1)
+      : endpoint;
+
+    // Ensure baseURL ends with /
+    const baseURL = this.baseURL.endsWith("/")
+      ? this.baseURL
+      : `${this.baseURL}/`;
+
+    // Debug: Let's see what URLs are being constructed
+    console.log("🔧 Building URL:", {
+      baseURL,
+      cleanEndpoint,
+      fullUrl: `${baseURL}${cleanEndpoint}`,
+    });
+
+    const url = new URL(cleanEndpoint, baseURL);
+
     if (params) {
       Object.entries(params).forEach(([key, value]) => {
         if (value !== undefined && value !== null) {
@@ -49,8 +66,11 @@ class ApiClient {
         }
       });
     }
-    
-    return url.toString();
+
+    const finalUrl = url.toString();
+    console.log("🎯 Final URL:", finalUrl);
+
+    return finalUrl;
   }
 
   // Generic request method
@@ -59,7 +79,7 @@ class ApiClient {
     config: RequestConfig = {}
   ): Promise<ApiResponse<T>> {
     const {
-      method = 'GET',
+      method = "GET",
       headers = {},
       body,
       params,
@@ -81,10 +101,10 @@ class ApiClient {
       };
 
       // Add body for non-GET requests
-      if (body && method !== 'GET') {
+      if (body && method !== "GET") {
         if (body instanceof FormData) {
           // For FormData, don't set Content-Type (browser will set it with boundary)
-          delete requestHeaders['Content-Type'];
+          delete requestHeaders["Content-Type"];
           requestConfig.body = body;
         } else {
           requestConfig.body = JSON.stringify(body);
@@ -96,11 +116,11 @@ class ApiClient {
 
       // Handle different response types
       let data: any;
-      const contentType = response.headers.get('content-type');
-      
-      if (contentType?.includes('application/json')) {
+      const contentType = response.headers.get("content-type");
+
+      if (contentType?.includes("application/json")) {
         data = await response.json();
-      } else if (contentType?.includes('text/')) {
+      } else if (contentType?.includes("text/")) {
         data = await response.text();
       } else {
         data = await response.blob();
@@ -110,7 +130,10 @@ class ApiClient {
       if (!response.ok) {
         return {
           success: false,
-          error: data?.message || data?.error || `HTTP ${response.status}: ${response.statusText}`,
+          error:
+            data?.message ||
+            data?.error ||
+            `HTTP ${response.status}: ${response.statusText}`,
           data: data,
         };
       }
@@ -121,40 +144,59 @@ class ApiClient {
       };
     } catch (error: any) {
       clearTimeout(timeoutId);
-      
-      if (error.name === 'AbortError') {
+
+      if (error.name === "AbortError") {
         return {
           success: false,
-          error: 'Request timeout',
+          error: "Request timeout",
         };
       }
 
       return {
         success: false,
-        error: error.message || 'Network error',
+        error: error.message || "Network error",
       };
     }
   }
 
   // Convenience methods
-  get<T = any>(endpoint: string, params?: Record<string, string>, headers?: Record<string, string>): Promise<ApiResponse<T>> {
-    return this.request<T>(endpoint, { method: 'GET', params, headers });
+  get<T = any>(
+    endpoint: string,
+    params?: Record<string, string>,
+    headers?: Record<string, string>
+  ): Promise<ApiResponse<T>> {
+    return this.request<T>(endpoint, { method: "GET", params, headers });
   }
 
-  post<T = any>(endpoint: string, body?: any, headers?: Record<string, string>): Promise<ApiResponse<T>> {
-    return this.request<T>(endpoint, { method: 'POST', body, headers });
+  post<T = any>(
+    endpoint: string,
+    body?: any,
+    headers?: Record<string, string>
+  ): Promise<ApiResponse<T>> {
+    return this.request<T>(endpoint, { method: "POST", body, headers });
   }
 
-  put<T = any>(endpoint: string, body?: any, headers?: Record<string, string>): Promise<ApiResponse<T>> {
-    return this.request<T>(endpoint, { method: 'PUT', body, headers });
+  put<T = any>(
+    endpoint: string,
+    body?: any,
+    headers?: Record<string, string>
+  ): Promise<ApiResponse<T>> {
+    return this.request<T>(endpoint, { method: "PUT", body, headers });
   }
 
-  patch<T = any>(endpoint: string, body?: any, headers?: Record<string, string>): Promise<ApiResponse<T>> {
-    return this.request<T>(endpoint, { method: 'PATCH', body, headers });
+  patch<T = any>(
+    endpoint: string,
+    body?: any,
+    headers?: Record<string, string>
+  ): Promise<ApiResponse<T>> {
+    return this.request<T>(endpoint, { method: "PATCH", body, headers });
   }
 
-  delete<T = any>(endpoint: string, headers?: Record<string, string>): Promise<ApiResponse<T>> {
-    return this.request<T>(endpoint, { method: 'DELETE', headers });
+  delete<T = any>(
+    endpoint: string,
+    headers?: Record<string, string>
+  ): Promise<ApiResponse<T>> {
+    return this.request<T>(endpoint, { method: "DELETE", headers });
   }
 }
 
@@ -164,7 +206,7 @@ export const apiClient = new ApiClient(BASE_URL);
 // Helper function to handle API responses
 export function handleApiResponse<T>(response: ApiResponse<T>): T {
   if (!response.success) {
-    throw new Error(response.error || 'API request failed');
+    throw new Error(response.error || "API request failed");
   }
   return response.data!;
 }
@@ -176,7 +218,7 @@ export async function withRetry<T>(
   delay: number = config.API.RETRY_DELAY
 ): Promise<ApiResponse<T>> {
   let lastError: any;
-  
+
   for (let i = 0; i <= maxRetries; i++) {
     try {
       const result = await apiCall();
@@ -187,14 +229,16 @@ export async function withRetry<T>(
     } catch (error) {
       lastError = error;
     }
-    
+
     if (i < maxRetries) {
-      await new Promise(resolve => setTimeout(resolve, delay * Math.pow(2, i)));
+      await new Promise((resolve) =>
+        setTimeout(resolve, delay * Math.pow(2, i))
+      );
     }
   }
-  
+
   return {
     success: false,
-    error: lastError?.message || lastError || 'Max retries exceeded',
+    error: lastError?.message || lastError || "Max retries exceeded",
   };
 }

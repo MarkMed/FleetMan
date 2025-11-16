@@ -1,11 +1,14 @@
 import { useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../store/AuthProvider';
 import type { RegisterRequest } from '@packages/contracts';
 import { UserType } from '@packages/contracts';
 import type { RegisterFormData, RegisterFormErrors, PasswordStrength } from '../../models';
+import { ROUTES } from '../../constants';
 
 export const useRegisterViewModel = () => {
   const { register, isLoading, error: authError } = useAuth();
+  const navigate = useNavigate();
   
   const [formData, setFormData] = useState<RegisterFormData>({
     name: '',
@@ -92,13 +95,20 @@ export const useRegisterViewModel = () => {
           },
         };
         
-        await register(registerRequest);
+        const result = await register(registerRequest);
+        
+        // Navigate to dashboard if registration was successful and returned token
+        if (result.shouldNavigate) {
+          navigate(ROUTES.DASHBOARD, { replace: true });
+        }
+        // If shouldNavigate is false, user was created but needs to login manually
+        // Could show success message and redirect to login
       } catch (error) {
         // Auth error is handled by the AuthProvider
         console.error('Registration error:', error);
       }
     }
-  }, [formData, validateForm, register]);
+  }, [formData, validateForm, register, navigate]);
 
   const clearErrors = useCallback(() => {
     setFormErrors({});

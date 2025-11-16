@@ -164,7 +164,6 @@ export const RegisterScreen: React.FC = () => {
                 size="default"
                 disabled={!canSubmit}
                 loading={isLoading}
-                onPress={() => {}} // handleSubmit is managed by form
                 className="w-full"
               >
                 {isLoading ? 'Creando cuenta...' : 'Crear cuenta'}
