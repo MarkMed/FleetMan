@@ -6,7 +6,7 @@
  * Hereda de la clase base User.
  */
 
-import { User, UserType, CreateUserProps, UserProfile } from '../user/user.entity';
+import { User, UserType, CreateUserProps, UserProfile, UserEntityData } from '../user/user.entity';
 import { Result, ok, err, DomainError } from '../../errors';
 
 // =============================================================================
@@ -62,6 +62,33 @@ export class ProviderUser extends User {
   // ==========================================================================
   // Factory method - Implementación polimórfica
   // ==========================================================================
+
+  /**
+   * Reconstruye ProviderUser desde datos persistidos (para repository)
+   * @param data - Datos de la entidad desde base de datos
+   * @returns Result con ProviderUser reconstruido
+   */
+  public static fromEntityData(data: any): Result<ProviderUser, DomainError> {
+    // Usar el método de reconstrucción de la clase base
+    const userPropsResult = User.reconstructUserProps(data);
+    if (!userPropsResult.success) {
+      return err(userPropsResult.error);
+    }
+
+    // Construir props específicas del proveedor (con defaults seguros)
+    const providerProps: ProviderUserProps = {
+      specialties: data.specialties || [],
+      specs: data.specs || {
+        isVerified: false,
+        experienceYears: 0,
+        completedJobs: 0,
+        rating: 0,
+        serviceRadius: data.serviceRadius || undefined
+      }
+    };
+
+    return ok(new ProviderUser(userPropsResult.data, providerProps));
+  }
 
   static create(createProps: CreateProviderUserProps): Result<ProviderUser, DomainError> {
     // Validaciones específicas de ProviderUser

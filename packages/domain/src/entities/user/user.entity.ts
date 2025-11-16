@@ -42,6 +42,17 @@ interface UserProps {
 }
 
 /**
+ * Datos para reconstruir una entidad User desde persistencia
+ * Representa los datos raw que vienen de la base de datos
+ */
+export type UserEntityData = Omit<UserProps, 'id' | 'email' | 'createdAt' | 'updatedAt'> & {
+  id: string;              // Raw string desde MongoDB
+  email: string;           // Raw string desde MongoDB
+  createdAt: Date | string; // Puede venir como string desde JSON
+  updatedAt: Date | string; // Puede venir como string desde JSON
+};
+
+/**
  * Entidad base abstracta User
  * Representa la identidad y autenticación base para todos los usuarios del sistema
  * 
@@ -119,6 +130,50 @@ export abstract class User {
     };
 
     return ok(props);
+  }
+
+  /**
+   * Reconstruye UserProps desde datos persistidos (para repository)
+   * No realiza validaciones de negocio, solo conversión de tipos
+   */
+  protected static reconstructUserProps(data: UserEntityData): Result<UserProps, DomainError> {
+    try {
+      // Reconstruir UserId desde string
+      const userIdResult = UserId.create(data.id);
+      if (!userIdResult.success) {
+        return err(userIdResult.error);
+      }
+
+      // Reconstruir Email desde string
+      const emailResult = Email.create(data.email);
+      if (!emailResult.success) {
+        return err(emailResult.error);
+      }
+
+      // Convertir fechas desde strings si es necesario
+      const createdAt = typeof data.createdAt === 'string' 
+        ? new Date(data.createdAt) 
+        : data.createdAt;
+      const updatedAt = typeof data.updatedAt === 'string' 
+        ? new Date(data.updatedAt) 
+        : data.updatedAt;
+
+      const props: UserProps = {
+        id: userIdResult.data,
+        email: emailResult.data,
+        passwordHash: data.passwordHash,
+        profile: { ...data.profile },
+        type: data.type,
+        isActive: data.isActive,
+        createdAt,
+        updatedAt,
+      };
+
+      return ok(props);
+    } catch (error) {
+      return err(DomainError.create('ENTITY_RECONSTRUCTION_ERROR', 
+        `Failed to reconstruct User entity: ${error instanceof Error ? error.message : 'Unknown error'}`));
+    }
   }
 
   /**
@@ -276,8 +331,14 @@ export abstract class User {
       return false;
     }
 
-    // Las reglas específicas de autorización se implementarán en las clases derivadas
-    return true;
+    switch (action) {
+      case 'login':
+        return this.props.isActive;
+      case 'api_access':
+        return this.props.isActive;
+      default:
+        return true;
+    }
   }
 
   /**
@@ -297,6 +358,38 @@ export abstract class User {
    */
   public getFullName(): string {
     return this.getDisplayName();
+  }
+
+  /**
+   * Obtiene el hash de password para verificación de autenticación
+   * Solo debe ser usado por servicios de autenticación
+   */
+  public getPasswordHash(): string {
+    return this.props.passwordHash;
+  }
+
+  /**
+   * Convierte la entidad a datos públicos seguros (sin passwordHash)
+   * Para respuestas de API y serialización
+   */
+  public toPublicData(): {
+    id: string;
+    email: string;
+    profile: UserProfile;
+    type: UserType;
+    isActive: boolean;
+    createdAt: string;
+    updatedAt: string;
+  } {
+    return {
+      id: this.props.id.getValue(),
+      email: this.props.email.getValue(),
+      profile: { ...this.props.profile },
+      type: this.props.type,
+      isActive: this.props.isActive,
+      createdAt: this.props.createdAt.toISOString(),
+      updatedAt: this.props.updatedAt.toISOString(),
+    };
   }
 
   /**

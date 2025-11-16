@@ -1,5 +1,5 @@
 import { Result, ok, err, DomainError } from '../../errors';
-import { User, UserType, UserProfile, CreateUserProps } from '../user/user.entity';
+import { User, UserType, UserProfile, CreateUserProps, UserEntityData } from '../user/user.entity';
 import { MachineId } from '../../value-objects/machine-id.vo';
 
 /**
@@ -55,6 +55,28 @@ export class ClientUser extends User {
   private constructor(userProps: any, clientProps: ClientUserProps) {
     super(userProps);
     this.clientProps = clientProps;
+  }
+
+  /**
+   * Reconstruye ClientUser desde datos persistidos (para repository)
+   * @param data - Datos de la entidad desde base de datos
+   * @returns Result con ClientUser reconstruido
+   */
+  public static fromEntityData(data: any): Result<ClientUser, DomainError> {
+    // Usar el método de reconstrucción de la clase base
+    const userPropsResult = User.reconstructUserProps(data);
+    if (!userPropsResult.success) {
+      return err(userPropsResult.error);
+    }
+
+    // Construir props específicas del cliente (con defaults seguros)
+    const clientProps: ClientUserProps = {
+      ownedMachineIds: [],
+      subscriptionLevel: data.subscriptionLevel || SubscriptionLevel.BASIC,
+      companyInfo: data.companyInfo || undefined,
+    };
+
+    return ok(new ClientUser(userPropsResult.data, clientProps));
   }
 
   /**

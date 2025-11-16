@@ -5,7 +5,9 @@ import {
   Result,
   DomainError,
   ok,
-  err
+  err,
+  ClientUser,
+  ProviderUser
 } from '@packages/domain';
 import { 
   UserModel, 
@@ -38,14 +40,17 @@ export class UserRepository implements IUserRepository {
    */
   async findByEmail(email: string): Promise<Result<User, DomainError>> {
     try {
-      const userDoc = await UserModel.findOne({ email: email.toLowerCase() });
+      // Incluir passwordHash explícitamente para autenticación (campo tiene select: false)
+      const userDoc = await UserModel.findOne({ email: email.toLowerCase() })
+                                     .select('+passwordHash');
       
       if (!userDoc) {
         return err(DomainError.notFound(`User with email ${email} not found`));
       }
 
-      // TODO: Implement proper document to entity conversion
-      return err(DomainError.create('INCOMPLETE_IMPLEMENTATION', 'UserRepository.findByEmail needs complete implementation'));
+      // Convertir documento MongoDB → entidad de dominio
+      const userEntity = await this.documentToEntity(userDoc);
+      return ok(userEntity);
     } catch (error: any) {
       return err(DomainError.create('PERSISTENCE_ERROR', `Error finding user by email: ${error.message}`));
     }
@@ -234,6 +239,40 @@ export class UserRepository implements IUserRepository {
         limit: options.limit,
         totalPages: 0
       };
+    }
+  }
+
+  /**
+   * Convierte un documento MongoDB en una entidad de dominio
+   * @private
+   */
+  private async documentToEntity(doc: IUserDocument): Promise<User> {
+    const entityData = {
+      id: doc.id,
+      email: doc.email,
+      passwordHash: doc.passwordHash,
+      profile: doc.profile,
+      type: doc.type,
+      isActive: doc.isActive,
+      createdAt: doc.createdAt,
+      updatedAt: doc.updatedAt
+    };
+
+    // Usar factory methods específicos según el tipo de usuario
+    if (doc.type === 'CLIENT') {
+      const result = ClientUser.fromEntityData(entityData);
+      if (!result.success) {
+        throw new Error(`Failed to reconstruct ClientUser: ${result.error.message}`);
+      }
+      return result.data;
+    } else if (doc.type === 'PROVIDER') {
+      const result = ProviderUser.fromEntityData(entityData);
+      if (!result.success) {
+        throw new Error(`Failed to reconstruct ProviderUser: ${result.error.message}`);
+      }
+      return result.data;
+    } else {
+      throw new Error(`Unknown user type: ${doc.type}`);
     }
   }
 }
