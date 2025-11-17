@@ -165,7 +165,6 @@ gantt
   20.3 Sprint Planning dominguero (1.3hs)      :t203, 2025-11-16, 1d
   21.2 Tutorías (guía con tutor asignado) (1hs) :t212, 2025-11-16, 1d
   3.1 Alta de máquina + ReactHookForms + Wizard Component (16hs) :t31, after t203, 4d
-  12.4a Setup navegación básica + React Router (4hs) :t124a, after t31, 1d
   16.3 Taller Deploy - AWS (3hs)               :t163, 2025-11-18, 1d
   16.4 Taller Deploy - AWS (3hs)               :t164, 2025-11-20, 1d
 
