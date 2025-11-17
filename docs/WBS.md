@@ -197,12 +197,14 @@ Guards/claims por rol en API y UI.
 
 3. **Maquinaria** (RF-005, RF-006)
 
-	- 3.1 **Alta de máquina** (RF-005).
-Frontend: Formulario multi-step con datos de máquina, selección/búsqueda de 
-distribuidor, validaciones y confirmación. Backend: Endpoint POST /machines,
-controller con validaciones, asociación con usuario/distribuidor, respuestas 
-estructuradas.
-		- Horas estimadas: **10**hs
+	- 3.1 **Alta de máquina (RF-005) + ReactHookForms + Wizard Component**.
+Frontend: Implementación de ReactHookForms como sistema de formularios estándar + 
+Wizard Component reutilizable multi-step + aplicación en registro de máquina con 
+datos de máquina, selección/búsqueda de distribuidor, validaciones tiempo real y 
+confirmación. Establece patterns escalables para todos los formularios futuros. 
+Backend: Endpoint POST /machines, controller con validaciones Zod, asociación con 
+usuario/distribuidor, respuestas estructuradas.
+		- Horas estimadas: **16**hs
 		- Margen: ±**2.0**hs (P80)
 		- Incertidumbre: **Media**
 		- Dependencias: 2.2, 1.2, 0.10 (FS)

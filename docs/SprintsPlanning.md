@@ -200,7 +200,7 @@ xychart-beta
 
 ### **Sprint #5**: dom 16 nov → sáb 22 nov 2025
 
-**Objetivo:** 🏭 Navegación + Inicio Máquinas - Pulir navigation y empezar registro de máquinas.
+**Objetivo:** 🎯 Mejoras en Formularios y registro de máquina - ReactHookForms + Wizard Component + Alta máquinas.
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
@@ -208,22 +208,22 @@ xychart-beta
 | Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | |
-| Desarrollo | 3.1 Alta de máquina (RF-005) | 5 | 10 | |
+| Desarrollo | 3.1 Alta de máquina (RF-005) + ReactHookForms + Wizard Component | 5 | 16 | |
 | Desarrollo | 12.4a Setup navegación básica + React Router | 6 | 4 | |
 | Capacitación | 16.3 Taller Deploy - AWS (mar 18 Nov) | 7 | 3 | |
 | Capacitación | 16.4 Taller Deploy - AWS (jue 20 Nov) | 8 | 3 | |
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales |
 |:---:|:----------:|
-| **23.7**hs | **0**hs |
+| **29.7**hs | **0**hs |
 
-Buffer reservado: **11.3**hs
+Buffer reservado: **5.3**hs
 Total con buffer: **35**hs
 
 Distribución por categoría:
 | Gestión | Desarrollo | QA | Capacitación | Documentación |
 |:-------:|:----------:|:--:|:------------:|:-------------:|
-| **3.7**hs | **14**hs | **0**hs | **6**hs | **0**hs |
+| **3.7**hs | **20**hs | **0**hs | **6**hs | **0**hs |
 
 ### **Sprint #6**: dom 23 nov → sáb 29 nov 2025
 

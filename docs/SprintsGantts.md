@@ -163,15 +163,15 @@ gantt
   20.1 Reporte Académico (0.9hs)               :t201, 2025-11-16, 1d
   20.2 Demo/UAT con cliente (1.5hs)            :t202, 2025-11-16, 1d
   20.3 Sprint Planning dominguero (1.3hs)      :t203, 2025-11-16, 1d
-  14.1 Hashing, rate-limit, CORS (6hs)         :t141, after t203, 2d
+  21.2 Tutorías (guía con tutor asignado) (1hs) :t212, 2025-11-16, 1d
+  3.1 Alta de máquina + ReactHookForms + Wizard Component (16hs) :t31, after t203, 4d
+  12.4a Setup navegación básica + React Router (4hs) :t124a, after t31, 1d
   16.3 Taller Deploy - AWS (3hs)               :t163, 2025-11-18, 1d
-  2.2 Login de usuario (RF-002) (8hs)          :t22, after t141, 2d
   16.4 Taller Deploy - AWS (3hs)               :t164, 2025-11-20, 1d
-  2.3 Logout (RF-003) (4hs)                    :t23, after t22, 1d
-  2.5 AutZ por rol (admin/técnico/distribuidor) (7hs) :t25, after t23, 2d
 
   section Hitos
   Cierre Sprint 5                              :milestone, s5, 2025-11-22, 1d
+  Infraestructura Formularios Completada       :milestone, forms, 2025-11-22, 1d
 ```
 
 ---
