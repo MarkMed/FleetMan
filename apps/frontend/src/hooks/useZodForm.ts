@@ -1,9 +1,9 @@
 import { useForm, UseFormProps, FieldValues, Path } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ZodSchema } from 'zod';
+import { ZodSchema, ZodType, ZodTypeDef } from 'zod';
 
 interface UseZodFormProps<T extends FieldValues> extends UseFormProps<T> {
-  schema: ZodSchema<T>;
+  schema: ZodType<T, ZodTypeDef, any>;
 }
 
 export const useZodForm = <T extends FieldValues>({

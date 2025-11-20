@@ -4,6 +4,7 @@ import { useRegisterViewModel } from '../../viewModels/auth';
 import { InputField, Button, Card, CardContent } from '../../components/ui';
 import { Mail, Lock, User } from 'lucide-react';
 
+// TODO: Mejorar a RHF + Wizard para experiencia multi-step (Sprint futuro)
 export const RegisterScreen: React.FC = () => {
   const {
     formData,

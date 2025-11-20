@@ -4,6 +4,7 @@ import { useLoginViewModel } from '../../viewModels/auth';
 import { InputField, Button, Checkbox, Card, CardHeader, CardContent, CardTitle, CardDescription } from '../../components/ui';
 import { Mail, Lock } from 'lucide-react';
 
+// TODO: Mejorar a RHF para validación más robusta y UX (Sprint futuro)
 export const LoginScreen: React.FC = () => {
   const {
     formData,
