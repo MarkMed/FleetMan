@@ -117,7 +117,7 @@ export function useButtonTimer({
             }
           }
         },
-        isButtonDisabled: () => isRunning && !isSecondPhase,
+        isButtonDisabled: () => (isRunning && !isSecondPhase) || (!resetOnAction && hasExecuted),
         // getCurrentPhase?() { return isSecondPhase ? 'second' : 'first'; }
       };
     } else if (startOnRender) {
@@ -136,6 +136,7 @@ export function useButtonTimer({
                 setHasExecuted(false);
                 setRemainingTime(duration);
                 setIsRunning(false);
+                startTimer(); // Reinicia el ciclo automáticamente
               }, 0);
             }
           }
@@ -144,7 +145,7 @@ export function useButtonTimer({
           if (hasExecuted) return;
           setIsAwaitingConfirmation(true);
         },
-        isButtonDisabled: () => isRunning,
+        isButtonDisabled: () => isRunning || (!resetOnAction && hasExecuted),
         // getCurrentPhase?() { return 'auto'; }
       };
     } else {
@@ -171,7 +172,7 @@ export function useButtonTimer({
             }, 0);
           }
         },
-        isButtonDisabled: () => false,
+        isButtonDisabled: () => (!resetOnAction && hasExecuted),
         // canCancel?() { return isRunning; }
       };
     }
