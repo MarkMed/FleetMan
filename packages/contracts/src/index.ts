@@ -10,6 +10,9 @@ export * from "./user.contract";
 // Machine contracts
 export * from "./machine.contract";
 
+// Machine Registration contracts
+export * from "./machine-registration.contract";
+
 // Machine Type contracts
 export * from "./machine-type.contract";
 
