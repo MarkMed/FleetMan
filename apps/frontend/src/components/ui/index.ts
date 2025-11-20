@@ -12,6 +12,8 @@ export {
   ModalClose,
 } from './Modal';
 export { InputField } from './InputField';
+export { Select } from './Select';
+export { Textarea } from './Textarea';
 export { Checkbox } from './Checkbox';
 export { 
   TextBlock, 
