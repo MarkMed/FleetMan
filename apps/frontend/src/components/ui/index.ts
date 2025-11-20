@@ -1,5 +1,7 @@
 // Export all UI components
 export { Button, buttonVariants } from './Button';
+export { TimerButton } from './TimerButton';
+export { CircularProgress } from './CircularProgress';
 export { 
   Modal,
   ModalRoot,

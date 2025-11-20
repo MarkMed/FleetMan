@@ -1,6 +1,7 @@
 import React from 'react';
 import { useAuth } from '../../store/AuthProvider';
 import { useNavigate } from 'react-router-dom';
+import { TimerButtonExamples } from '../../EJEMPLOS/TimerButtonExamples';
 
 export const DashboardScreen: React.FC = () => {
   const { user, logout } = useAuth();
@@ -222,6 +223,10 @@ export const DashboardScreen: React.FC = () => {
               <p className="text-yellow-800">No hay información de usuario disponible</p>
             </div>
           )}
+        </div>
+
+        <div className='mt-8 bg-white rounded-lg shadow p-6'>
+          <TimerButtonExamples />
         </div>
       </div>
     </div>

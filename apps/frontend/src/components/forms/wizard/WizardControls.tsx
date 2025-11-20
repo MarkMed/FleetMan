@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from '../../ui/Button';
+import { Button, TimerButton } from '../../ui';
 import { cn } from '../../../utils/cn';
 
 interface WizardControlsProps {
@@ -42,7 +42,7 @@ export const WizardControls: React.FC<WizardControlsProps> = ({
   onCancel,
   previousLabel = 'Anterior',
   nextLabel = 'Siguiente',
-  submitLabel = 'Completar',
+  submitLabel = 'Enviar',
   cancelLabel = 'Cancelar',
   className,
 }) => {
@@ -76,15 +76,16 @@ export const WizardControls: React.FC<WizardControlsProps> = ({
       {/* Right side - Next/Submit button */}
       <div>
         {isLastStep ? (
-          <Button
-            variant="filled"
-            onPress={onSubmit}
+          <TimerButton
+            startOnRender={false}
+            duration={5}
+            onAction={onSubmit}
+            label={submitLabel}
+            timerLabel={(remaining: number) => `${remaining}`}
             disabled={!isValid || isSubmitting}
-            loading={isSubmitting}
+            variant="filled"
             className="px-8 py-2 bg-indigo-600 hover:bg-indigo-700 text-white"
-          >
-            {submitLabel}
-          </Button>
+          />
         ) : (
           <Button
             variant="filled"
