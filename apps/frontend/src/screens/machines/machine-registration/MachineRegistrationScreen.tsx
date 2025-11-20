@@ -1,0 +1,133 @@
+import React from 'react';
+import { FormProvider } from 'react-hook-form';
+import { Wizard } from '../../../components/forms/wizard';
+import { useMachineRegistrationViewModel } from '../../../viewModels/machines/MachineRegistrationViewModel';
+import { MachineRegistrationData } from '@packages/contracts';
+import { 
+  Modal, 
+  ModalContent, 
+  ModalHeader, 
+  ModalTitle, 
+  ModalDescription, 
+  ModalFooter 
+} from '../../../components/ui/Modal';
+import { Button } from '../../../components/ui/Button';
+
+/**
+ * Pantalla principal para el registro de máquinas usando wizard multi-step + React Hook Form
+ * 
+ * FEATURES IMPLEMENTADAS:
+ * ✅ React Hook Form con validación Zod
+ * ✅ FormProvider para wizard multi-step
+ * ✅ Wizard 2-step simplificado (eliminado LocationInfoStep)
+ * ✅ Validaciones por step usando Zod schemas
+ * ✅ Componentes reutilizables con Controller pattern
+ * ✅ TypeScript completo
+ * ✅ DRY - Single source of truth
+ * ✅ Cumplimiento de RF-005 - sin scope creep
+ * ✅ MVVM Pattern - Logic moved to ViewModel
+ * ✅ Modal de éxito con redirección
+ * ✅ Sincronización perfecta wizard <-> RHF
+ * 
+ * CAMBIOS SPRINT 5:
+ * - Eliminado paso 3 (LocationInfoStep) por violación de alcance
+ * - Simplificado TechnicalSpecsStep con solo campos requeridos
+ * - Movido currentLocation e isActive a technicalSpecs
+ * - Wizard ahora es 2 pasos + confirmación
+ * - Movida toda la lógica al ViewModel (MVVM pattern)
+ * - Agregado modal de éxito
+ */
+export function MachineRegistrationScreen() {
+  // ViewModel maneja toda la lógica
+  const viewModel = useMachineRegistrationViewModel();
+  const {
+    form,
+    wizardSteps,
+    forceUpdate,
+    isLoading,
+    showSuccessModal,
+    handleWizardSubmit,
+    handleSuccessModalClose,
+    handleCancel,
+  } = viewModel;
+
+  return (
+    <div className="max-w-4xl mx-auto p-6">
+      {/* Header */}
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900">
+          Registrar Nueva Máquina
+        </h1>
+        <p className="mt-2 text-sm text-gray-600">
+          Completa la información en los siguientes pasos para registrar una nueva máquina en el sistema.
+        </p>
+      </div>
+
+      {/* RHF Error Display */}
+      {form.formState.errors.root && (
+        <div className="mb-6 bg-red-50 border border-red-200 rounded-md p-4">
+          <div className="flex">
+            <div className="flex-shrink-0">
+              <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <div className="ml-3">
+              <h3 className="text-sm font-medium text-red-800">
+                Error en el registro
+              </h3>
+              <div className="mt-2 text-sm text-red-700">
+                {form.formState.errors.root.message}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* FormProvider wraps the entire wizard for RHF context */}
+      <FormProvider {...form}>
+        <Wizard<MachineRegistrationData>
+          steps={wizardSteps}
+          initialData={form.getValues()}
+          onSubmit={handleWizardSubmit}
+          onStepChange={() => {
+            // Force wizard to re-read form values from RHF
+            forceUpdate();
+          }}
+          isSubmitting={isLoading}
+          onCancel={handleCancel}
+          className="bg-white shadow-lg rounded-lg"
+          showProgress
+        />
+      </FormProvider>
+
+      {/* Success Modal */}
+      <Modal open={showSuccessModal} onOpenChange={handleSuccessModalClose}>
+        <ModalContent className="sm:max-w-md">
+          <ModalHeader>
+            <div className="flex items-center space-x-2">
+              <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <ModalTitle>¡Máquina registrada exitosamente!</ModalTitle>
+            </div>
+            <ModalDescription>
+              La máquina ha sido registrada correctamente en el sistema. 
+              Ahora puedes gestionarla desde el dashboard.
+            </ModalDescription>
+          </ModalHeader>
+          <ModalFooter>
+            <Button
+              onPress={handleSuccessModalClose}
+              className="w-full"
+            >
+              Ir al Dashboard
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </div>
+  );
+}
