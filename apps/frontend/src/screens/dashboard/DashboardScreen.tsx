@@ -1,8 +1,10 @@
 import React from 'react';
 import { useAuth } from '../../store/AuthProvider';
+import { useNavigate } from 'react-router-dom';
 
 export const DashboardScreen: React.FC = () => {
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
 
   const handleLogout = async () => {
     try {
@@ -35,7 +37,10 @@ export const DashboardScreen: React.FC = () => {
 
         {/* Statistics Grid */}
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-8">
-          <div className="bg-white rounded-lg shadow p-6">
+          <div 
+            onClick={() => navigate('/machines')}
+            className="bg-white rounded-lg shadow p-6 cursor-pointer hover:shadow-lg transition-shadow"
+          >
             <div className="flex items-center">
               <div className="p-2 rounded-md bg-blue-100">
                 <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -112,11 +117,14 @@ export const DashboardScreen: React.FC = () => {
                   <p className="text-sm text-gray-600">Chequeo Rápido</p>
                 </button>
                 
-                <button className="p-4 text-center rounded-lg border-2 border-dashed border-gray-300 hover:border-indigo-500 hover:bg-indigo-50 transition-colors">
-                  <svg className="w-6 h-6 text-gray-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <button 
+                  onClick={() => navigate('/machines/new')}
+                  className="p-4 text-center rounded-lg border-2 border-dashed border-indigo-300 hover:border-indigo-500 hover:bg-indigo-50 transition-all transform hover:scale-105 bg-indigo-25"
+                >
+                  <svg className="w-6 h-6 text-indigo-500 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                   </svg>
-                  <p className="text-sm text-gray-600">Nueva Máquina</p>
+                  <p className="text-sm text-indigo-600 font-medium">Nueva Máquina</p>
                 </button>
                 
                 <button className="p-4 text-center rounded-lg border-2 border-dashed border-gray-300 hover:border-indigo-500 hover:bg-indigo-50 transition-colors">
