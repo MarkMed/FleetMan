@@ -181,7 +181,7 @@ describe('Machine creation', () => {
     const result = Machine.create({
       serialNumber: '', // ← Invalid
       brand: 'Cat',
-      model: 'D6T',
+      modelName: 'D6T',
       // ...
     });
     

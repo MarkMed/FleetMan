@@ -19,7 +19,7 @@ export const MachineBasicInfoSchema = z.object({
   // Campos requeridos del dominio
   serialNumber: BaseCreateMachineRequestSchema.shape.serialNumber,
   brand: BaseCreateMachineRequestSchema.shape.brand,
-  model: BaseCreateMachineRequestSchema.shape.model,
+  modelName: BaseCreateMachineRequestSchema.shape.modelName,
   machineTypeId: BaseCreateMachineRequestSchema.shape.machineTypeId,
   
   // Campos adicionales para el wizard UI
@@ -89,7 +89,7 @@ export const CreateMachineFromWizardResponseSchema = z.object({
   id: z.string().uuid(),
   serialNumber: z.string(),
   brand: z.string(),
-  model: z.string(),
+  modelName: z.string(),
   status: z.enum(['ACTIVE', 'MAINTENANCE', 'OUT_OF_SERVICE', 'RETIRED']),
   createdAt: z.string(),
   updatedAt: z.string(),
@@ -135,7 +135,7 @@ export const defaultMachineRegistrationData: Partial<MachineRegistrationData> = 
   basicInfo: {
     serialNumber: '',
     brand: '',
-    model: '',
+    modelName: '',
     machineTypeId: '',
     name: '',
     description: '',

@@ -6,11 +6,11 @@
 // Export concrete repository implementations
 export * from "./repositories";
 
+// Export models for scripts and utilities (seeds, migrations, etc.)
+export * from "./models";
+
 // TODO: Export mappers when implemented  
 // export * from "./mappers";
-
-// Models are internal to the package and not exported
-// They are used only by repositories and mappers within this package
 
 /**
  * Initializes the persistence layer

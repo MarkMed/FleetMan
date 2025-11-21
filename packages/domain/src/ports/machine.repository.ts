@@ -77,9 +77,9 @@ export interface IMachineRepository {
       machineTypeId?: string;
       status?: string;
       brand?: string;
-      searchTerm?: string; // Busca en serialNumber, brand, model, nickname
+      searchTerm?: string; // Busca en serialNumber, brand, modelName, nickname
     };
-    sortBy?: 'serialNumber' | 'brand' | 'model' | 'createdAt' | 'status';
+    sortBy?: 'serialNumber' | 'brand' | 'modelName' | 'createdAt' | 'status';
     sortOrder?: 'asc' | 'desc';
   }): Promise<{
     items: Machine[];

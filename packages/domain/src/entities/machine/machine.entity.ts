@@ -47,7 +47,7 @@ export interface MachineLocation {
 export interface CreateMachineProps {
   serialNumber: string;
   brand: string;
-  model: string;
+  modelName: string;
   machineTypeId: string; // Se recibe como string y se valida internamente
   ownerId: string; // UserId string
   createdById: string; // UserId string
@@ -64,7 +64,7 @@ interface MachineProps {
   id: MachineId;
   serialNumber: SerialNumber;
   brand: string;
-  model: string;
+  modelName: string;
   machineTypeId: MachineTypeId;
   nickname?: string;
   status: MachineStatus; // Ahora usa la clase MachineStatus
@@ -94,7 +94,7 @@ export class Machine {
       id: this.props.id.getValue(),
       serialNumber: this.props.serialNumber.getValue(),
       brand: this.props.brand,
-      model: this.props.model,
+      modelName: this.props.modelName,
       nickname: this.props.nickname,
       machineTypeId: this.props.machineTypeId.getValue(),
       ownerId: this.props.ownerId.getValue(),
@@ -194,7 +194,7 @@ export class Machine {
       id: MachineId.generate(),
       serialNumber: serialNumberResult.data,
       brand: createProps.brand.trim(),
-      model: createProps.model.trim(),
+      modelName: createProps.modelName.trim(),
       machineTypeId: machineTypeIdResult.data,
       nickname: createProps.nickname?.trim(),
       status: initialStatus,
@@ -217,15 +217,15 @@ export class Machine {
       return err(DomainError.validation('Brand is required'));
     }
 
-    if (!props.model || props.model.trim().length === 0) {
-      return err(DomainError.validation('Model is required'));
+    if (!props.modelName || props.modelName.trim().length === 0) {
+      return err(DomainError.validation('Model name is required'));
     }
 
     if (props.brand.length > 50) {
       return err(DomainError.validation('Brand name is too long'));
     }
 
-    if (props.model.length > 50) {
+    if (props.modelName.length > 50) {
       return err(DomainError.validation('Model name is too long'));
     }
 
@@ -299,8 +299,8 @@ export class Machine {
     return this.props.brand;
   }
 
-  get model(): string {
-    return this.props.model;
+  get modelName(): string {
+    return this.props.modelName;
   }
 
   get machineTypeId(): MachineTypeId {
@@ -475,17 +475,17 @@ export class Machine {
    */
   public updateMachineProps(updates: {
     brand?: string;
-    model?: string;
+    modelName?: string;
     nickname?: string;
   }): Result<void, DomainError> {
     // Validar y limpiar inputs antes de aplicar
     const cleanedBrand = updates.brand?.trim();
-    const cleanedModel = updates.model?.trim();
+    const cleanedModelName = updates.modelName?.trim();
     const cleanedNickname = updates.nickname?.trim();
 
     // Determinar valores finales (usar actuales si no se proporcionan nuevos)
     const finalBrand = cleanedBrand !== undefined ? cleanedBrand : this.props.brand;
-    const finalModel = cleanedModel !== undefined ? cleanedModel : this.props.model;
+    const finalModelName = cleanedModelName !== undefined ? cleanedModelName : this.props.modelName;
     const finalNickname = cleanedNickname !== undefined ? cleanedNickname : this.props.nickname;
 
     // Validar las propiedades finales
@@ -493,15 +493,15 @@ export class Machine {
       return err(DomainError.validation('Brand is required'));
     }
 
-    if (finalModel.length === 0) {
-      return err(DomainError.validation('Model is required'));
+    if (finalModelName.length === 0) {
+      return err(DomainError.validation('Model name is required'));
     }
 
     if (finalBrand.length > 50) {
       return err(DomainError.validation('Brand name is too long'));
     }
 
-    if (finalModel.length > 50) {
+    if (finalModelName.length > 50) {
       return err(DomainError.validation('Model name is too long'));
     }
 
@@ -511,7 +511,7 @@ export class Machine {
 
     // Aplicar cambios
     this.props.brand = finalBrand;
-    this.props.model = finalModel;
+    this.props.modelName = finalModelName;
     this.props.nickname = finalNickname || undefined;
     this.props.updatedAt = new Date();
 
@@ -547,14 +547,14 @@ export class Machine {
    * Obtiene el nombre de display de la máquina
    */
   public getDisplayName(): string {
-    return this.props.nickname || `${this.props.brand} ${this.props.model}`;
+    return this.props.nickname || `${this.props.brand} ${this.props.modelName}`;
   }
 
   /**
    * Obtiene identificación única para la máquina (marca + modelo + serial)
    */
   public getUniqueIdentifier(): string {
-    return `${this.props.brand}-${this.props.model}-${this.props.serialNumber.getValue()}`;
+    return `${this.props.brand}-${this.props.modelName}-${this.props.serialNumber.getValue()}`;
   }
 
   /**

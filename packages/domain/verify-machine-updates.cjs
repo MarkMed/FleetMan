@@ -7,7 +7,7 @@ console.log('🔧 Test 1: Crear máquina y actualizar propiedades básicas');
 const machineResult = Machine.create({
   serialNumber: 'TEST123',
   brand: 'Caterpillar',
-  model: 'D6T',
+  modelName: 'D6T',
   machineTypeId: 'mtype_excavator_001',
   ownerId: 'user_owner_123',
   createdById: 'user_creator_456',
@@ -23,14 +23,14 @@ const machine = machineResult.data;
 console.log('✅ Máquina creada:');
 console.log(`   Display: ${machine.getDisplayName()}`);
 console.log(`   Brand: ${machine.brand}`);
-console.log(`   Model: ${machine.model}`);
+console.log(`   ModelName: ${machine.modelName}`);
 console.log(`   Nickname: ${machine.nickname}`);
 
 // Test 2: Actualizar propiedades básicas
 console.log('\n🎨 Test 2: Actualizar propiedades básicas');
 const updateResult = machine.updateMachineProps({
   brand: 'John Deere',
-  model: '850K',
+  modelName: '850K',
   nickname: 'JD Crawler'
 });
 
@@ -40,7 +40,7 @@ if (!updateResult.success) {
   console.log('✅ Actualización exitosa:');
   console.log(`   Display: ${machine.getDisplayName()}`);
   console.log(`   Brand: ${machine.brand}`);
-  console.log(`   Model: ${machine.model}`);
+  console.log(`   ModelName: ${machine.modelName}`);
   console.log(`   Nickname: ${machine.nickname}`);
 }
 
@@ -56,7 +56,7 @@ if (!partialUpdateResult.success) {
   console.log('✅ Actualización parcial exitosa:');
   console.log(`   Display: ${machine.getDisplayName()}`);
   console.log(`   Brand: ${machine.brand} (sin cambio)`);
-  console.log(`   Model: ${machine.model} (sin cambio)`);
+  console.log(`   ModelName: ${machine.modelName} (sin cambio)`);
   console.log(`   Nickname: ${machine.nickname} (actualizado)`);
 }
 
@@ -86,7 +86,7 @@ console.log('\n🎯 Test 5: Estado inicial configurable');
 const machineWithInitialStatusResult = Machine.create({
   serialNumber: 'MAINT001',
   brand: 'Volvo',
-  model: 'EC480D',
+  modelName: 'EC480D',
   machineTypeId: 'mtype_excavator_002',
   ownerId: 'user_owner_789',
   createdById: 'user_creator_101',

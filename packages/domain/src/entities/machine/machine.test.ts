@@ -16,7 +16,7 @@ console.log('🧪 Test 1: Creación básica');
 const basicProps: CreateMachineProps = {
   serialNumber: 'CAT-320D-ABC123XYZ',
   brand: 'Caterpillar',
-  model: '320D',
+  modelName: '320D',
   machineTypeId: 'mtype_excavator_001',
   ownerId: 'user_client_12345',
   createdById: 'user_admin_67890',
@@ -44,7 +44,7 @@ console.log('\n🧪 Test 2: Estado inicial personalizado');
 const maintenanceProps: CreateMachineProps = {
   serialNumber: 'VOL-EC480-MNT001',
   brand: 'Volvo',
-  model: 'EC480D',
+  modelName: 'EC480D',
   machineTypeId: 'mtype_excavator_002',
   ownerId: 'user_client_456',
   createdById: 'user_admin_789',
@@ -88,7 +88,7 @@ const location: MachineLocation = {
 const fullProps: CreateMachineProps = {
   serialNumber: 'LIE-R9800-FULL001',
   brand: 'Liebherr',
-  model: 'R9800',
+  modelName: 'R9800',
   machineTypeId: 'mtype_excavator_heavy_001',
   ownerId: 'user_client_789',
   createdById: 'user_admin_123',
@@ -118,7 +118,7 @@ console.log('\n🧪 Test 4: Validaciones');
 const invalidSerial = Machine.create({
   serialNumber: 'AB', // muy corto
   brand: 'Test',
-  model: 'Test',
+  modelName: 'Test',
   machineTypeId: 'mtype_test_001',
   ownerId: 'user_test_123',
   createdById: 'user_test_456'
@@ -129,7 +129,7 @@ console.log('  Serial inválido:', invalidSerial.success ? '❌ Debería fallar'
 const invalidBrand = Machine.create({
   serialNumber: 'TEST-BRAND-001',
   brand: '',
-  model: 'TestModel',
+  modelName: 'TestModel',
   machineTypeId: 'mtype_test_001',
   ownerId: 'user_test_123',
   createdById: 'user_test_456'
@@ -140,7 +140,7 @@ console.log('  Brand vacío:', invalidBrand.success ? '❌ Debería fallar' : '�
 const invalidStatus = Machine.create({
   serialNumber: 'TEST-STATUS-001',
   brand: 'TestBrand',
-  model: 'TestModel',
+  modelName: 'TestModel',
   machineTypeId: 'mtype_test_001',
   ownerId: 'user_test_123',
   createdById: 'user_test_456',
@@ -208,7 +208,7 @@ if (basicResult.success) {
   // Actualizar brand y model
   const updateBrandModel = machine.updateMachineProps({
     brand: 'Nueva Marca',
-    model: 'Nuevo Modelo'
+    modelName: 'Nuevo Modelo'
   });
   console.log('  Actualizar brand/model:', updateBrandModel.success ? '✅ Exitoso' : '❌ ' + updateBrandModel.error.message);
   

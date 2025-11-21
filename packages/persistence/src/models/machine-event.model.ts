@@ -25,30 +25,26 @@ const machineEventSchema = new Schema<IMachineEventDocument>({
   machineId: {
     type: String,
     required: true,
-    ref: 'Machine',
-    index: true
+    ref: 'Machine'
   },
   
   createdBy: {
     type: String,
     required: true,
-    ref: 'User',
-    index: true
+    ref: 'User'
   },
   
   typeId: {
     type: String,
     required: true,
-    ref: 'MachineEventType',
-    index: true
+    ref: 'MachineEventType'
   },
   
   title: {
     type: String,
     required: true,
     trim: true,
-    maxlength: 200,
-    index: true
+    maxlength: 200
   },
   
   description: {
@@ -73,8 +69,7 @@ const machineEventSchema = new Schema<IMachineEventDocument>({
   isSystemGenerated: {
     type: Boolean,
     required: true,
-    default: false,
-    index: true
+    default: false
   }
 }, {
   timestamps: true, // Adds createdAt and updatedAt

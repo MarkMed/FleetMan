@@ -6,10 +6,10 @@ import { SortOrderSchema, PaginationSchema, BasePaginatedResponseSchema } from '
 // =============================================================================
 
 // Re-exportamos los types exactos del dominio para reutilización
-export { CreateMachineEventTypeProps } from '../../domain/src/entities/machine-event-type/machine-event-type.entity';
+export { CreateMachineEventTypeProps } from '@packages/domain';
 
 // Import local para uso en schemas
-import { CreateMachineEventTypeProps } from '../../domain/src/entities/machine-event-type/machine-event-type.entity';
+import type { CreateMachineEventTypeProps } from '@packages/domain';
 
 // =============================================================================
 // Schemas Zod basados en types IMPORTADOS del dominio (DRY REAL)

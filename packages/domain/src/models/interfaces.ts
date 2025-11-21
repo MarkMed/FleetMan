@@ -53,7 +53,7 @@ export interface IProviderUser extends IUser {
 export interface IMachine extends IBaseEntity {
   readonly serialNumber: string;
   readonly brand: string;
-  readonly model: string;
+  readonly modelName: string;
   readonly nickname?: string;
   readonly machineTypeId: string;
   readonly ownerId: string;
@@ -87,29 +87,13 @@ export interface IMachine extends IBaseEntity {
 }
 
 /**
- * Interface pública para MachineType
+ * Interface pública mínima para MachineType
+ * DRY/SSOT: Usar en dominio, contract y persistencia
  */
-export interface IMachineType extends IBaseEntity {
-  readonly code: string;
-  readonly displayName: string;
-  readonly description?: string;
-  readonly category: string;
-  readonly isActive: boolean;
-  readonly metadata?: {
-    readonly color?: string;
-    readonly icon?: string;
-    readonly imageUrl?: string;
-    readonly tags?: readonly string[];
-    readonly sortOrder?: number;
-    readonly requiresLicense?: boolean;
-    readonly minimumOperatorLevel?: string;
-    readonly defaultMaintenanceInterval?: number;
-    readonly defaultSpecs?: {
-      readonly enginePowerRange?: { readonly min: number; readonly max: number };
-      readonly capacityRange?: { readonly min: number; readonly max: number };
-      readonly recommendedFuelType?: 'DIESEL' | 'GASOLINE' | 'ELECTRIC' | 'HYBRID';
-    };
-  };
+export interface IMachineType {
+  readonly id: string;
+  readonly name: string;
+  readonly languages: string[];
 }
 
 /**

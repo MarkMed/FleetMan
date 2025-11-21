@@ -169,7 +169,7 @@ export class MachineRepository implements IMachineRepository {
       brand?: string;
       searchTerm?: string;
     };
-    sortBy?: 'serialNumber' | 'brand' | 'model' | 'createdAt' | 'status';
+    sortBy?: 'serialNumber' | 'brand' | 'modelName' | 'createdAt' | 'status';
     sortOrder?: 'asc' | 'desc';
   }): Promise<{
     items: Machine[];
@@ -206,7 +206,7 @@ export class MachineRepository implements IMachineRepository {
         query.$or = [
           { serialNumber: { $regex: options.filter.searchTerm, $options: 'i' } },
           { brand: { $regex: options.filter.searchTerm, $options: 'i' } },
-          { model: { $regex: options.filter.searchTerm, $options: 'i' } },
+          { modelName: { $regex: options.filter.searchTerm, $options: 'i' } },
           { nickname: { $regex: options.filter.searchTerm, $options: 'i' } }
         ];
       }

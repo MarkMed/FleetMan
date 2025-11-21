@@ -26,46 +26,40 @@ const machineEventTypeSchema = new Schema<IMachineEventTypeDocument>({
     type: String,
     required: true,
     trim: true,
-    maxlength: 100,
-    index: true
+    maxlength: 100
   },
   
   normalizedName: {
     type: String,
     required: true,
-    trim: true,
-    lowercase: true,
     unique: true,
-    index: true
+    trim: true,
+    lowercase: true
   },
   
   systemGenerated: {
     type: Boolean,
     required: true,
-    default: false,
-    index: true
+    default: false
   },
   
   createdBy: {
     type: String,
     ref: 'User',
-    sparse: true,
-    index: true
+    sparse: true
   },
   
   timesUsed: {
     type: Number,
     required: true,
     default: 0,
-    min: 0,
-    index: true
+    min: 0
   },
   
   isActive: {
     type: Boolean,
     required: true,
-    default: true,
-    index: true
+    default: true
   }
 }, {
   timestamps: true, // Adds createdAt and updatedAt
@@ -88,7 +82,6 @@ machineEventTypeSchema.set('toJSON', {
 });
 
 // Indexes for performance
-machineEventTypeSchema.index({ normalizedName: 1 }, { unique: true });
 machineEventTypeSchema.index({ systemGenerated: 1, isActive: 1 });
 machineEventTypeSchema.index({ createdBy: 1, isActive: 1 });
 machineEventTypeSchema.index({ timesUsed: -1, isActive: 1 }); // Most used types first

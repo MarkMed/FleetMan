@@ -11,17 +11,17 @@ export {
   MachineLocation, 
   CreateMachineProps,
   FuelType
-} from '../../domain/src/entities/machine/machine.entity';
-export { MachineStatusCode } from '../../domain/src/entities/machine/machineStatus';
+} from '@packages/domain';
+export type { MachineStatusCode } from '@packages/domain';
 
 // Import local para uso en schemas
-import { 
+import type { 
   MachineSpecs, 
   MachineLocation, 
   CreateMachineProps,
-  FuelType
-} from '../../domain/src/entities/machine/machine.entity';
-import { MachineStatusCode } from '../../domain/src/entities/machine/machineStatus';
+  FuelType,
+  MachineStatusCode
+} from '@packages/domain';
 
 // =============================================================================
 // Schemas Zod basados en types IMPORTADOS del dominio (DRY REAL)
@@ -87,9 +87,9 @@ export const CreateMachineRequestSchema = z.object({
   brand: z.string()
     .min(1, 'Brand is required')
     .max(100, 'Brand cannot exceed 100 characters'),
-  model: z.string()
-    .min(1, 'Model is required')
-    .max(100, 'Model cannot exceed 100 characters'),
+  modelName: z.string()
+    .min(1, 'Model name is required')
+    .max(100, 'Model name cannot exceed 100 characters'),
   machineTypeId: z.string().min(1, 'Machine type ID is required'),
   ownerId: z.string().min(1, 'Owner ID is required'),
   createdById: z.string().min(1, 'Creator ID is required'),
@@ -108,7 +108,7 @@ export const CreateMachineResponseSchema = z.object({
   id: z.string(),
   serialNumber: z.string(),
   brand: z.string(),
-  model: z.string(),
+  modelName: z.string(),
   machineTypeId: z.string(),
   ownerId: z.string(),
   createdById: z.string(),
@@ -150,8 +150,8 @@ export const ListMachinesRequestSchema = PaginationSchema.extend({
   machineTypeId: z.string().optional(),
   status: MachineStatusCodeSchema.optional(),
   brand: z.string().optional(),
-  search: z.string().optional(), // Buscar por serialNumber, brand, model, nickname
-  sortBy: z.enum(['serialNumber', 'brand', 'model', 'createdAt', 'updatedAt']).default('createdAt'),
+  search: z.string().optional(), // Buscar por serialNumber, brand, modelName, nickname
+  sortBy: z.enum(['serialNumber', 'brand', 'modelName', 'createdAt', 'updatedAt']).default('createdAt'),
   sortOrder: SortOrderSchema.default('desc')
 });
 

@@ -1,94 +1,54 @@
-import { Result } from '../errors';
 import { MachineType } from '../entities/machine-type';
-import { MachineTypeId } from '../value-objects/machine-type-id.vo';
-import { DomainError } from '../errors';
 
 /**
  * Puerto (interface) para persistencia de MachineType
- * Será implementado en packages/persistence
- * 
- * Sigue el patrón Repository para separar el dominio de la persistencia
+ * API simple y minimalista para tipos de máquina multilenguaje
  */
 export interface IMachineTypeRepository {
   /**
    * Busca un tipo de máquina por su ID
    */
-  findById(id: MachineTypeId): Promise<Result<MachineType, DomainError>>;
+  findById(id: string): Promise<MachineType | null>;
 
   /**
-   * Busca un tipo de máquina por su código único
+   * Busca un tipo de máquina por nombre (case-insensitive)
    */
-  findByCode(code: string): Promise<Result<MachineType, DomainError>>;
+  findByName(name: string): Promise<MachineType | null>;
 
   /**
-   * Obtiene todos los tipos de máquina activos
-   * Ordenados por sortOrder y luego por displayName
-   */
-  findAllActive(): Promise<MachineType[]>;
-
-  /**
-   * Obtiene todos los tipos de máquina (activos e inactivos)
-   * Para administración
+   * Obtiene todos los tipos de máquina
    */
   findAll(): Promise<MachineType[]>;
 
   /**
-   * Busca tipos de máquina por categoría
+   * Busca tipos de máquina que tengan un idioma específico
    */
-  findByCategory(category: string): Promise<MachineType[]>;
+  findByLanguage(language: string): Promise<MachineType[]>;
 
   /**
-   * Busca tipos de máquina por tags en metadata
+   * Guarda un tipo de máquina de forma inteligente:
+   * - Si existe un registro con ese nombre (case-insensitive), agrega el idioma si no está presente
+   * - Si no existe, crea un nuevo registro con el nombre y el idioma dado
+   * 
+   * @param name Nombre del tipo de máquina
+   * @param language Código ISO 639-1 del idioma (ej: 'es', 'en')
+   * @returns El MachineType guardado/actualizado
    */
-  findByTags(tags: string[]): Promise<MachineType[]>;
+  save(name: string, language: string): Promise<MachineType>;
 
   /**
-   * Verifica si existe un código específico
-   * Útil para validar unicidad antes de crear
+   * Actualiza el nombre de un tipo de máquina
    */
-  codeExists(code: string): Promise<boolean>;
-
-  /**
-   * Verifica si existe un código específico excluyendo un ID
-   * Útil para validar unicidad al actualizar
-   */
-  codeExistsExcluding(code: string, excludeId: MachineTypeId): Promise<boolean>;
-
-  /**
-   * Guarda un tipo de máquina (crear o actualizar)
-   */
-  save(machineType: MachineType): Promise<Result<void, DomainError>>;
+  updateName(id: string, newName: string): Promise<MachineType | null>;
 
   /**
    * Elimina físicamente un tipo de máquina
    * CUIDADO: Solo usar si no hay máquinas asociadas
    */
-  delete(id: MachineTypeId): Promise<Result<void, DomainError>>;
+  delete(id: string): Promise<boolean>;
 
   /**
    * Cuenta cuántas máquinas usan este tipo
-   * Para validar si se puede eliminar
    */
-  countMachinesUsingType(id: MachineTypeId): Promise<number>;
-
-  /**
-   * Búsqueda paginada con filtros
-   */
-  findPaginated(options: {
-    page: number;
-    limit: number;
-    filter?: {
-      category?: string;
-      isActive?: boolean;
-      searchTerm?: string; // Busca en displayName y description
-    };
-    sortBy?: 'displayName' | 'category' | 'createdAt' | 'sortOrder';
-    sortOrder?: 'asc' | 'desc';
-  }): Promise<{
-    items: MachineType[];
-    total: number;
-    page: number;
-    limit: number;
-    totalPages: number;
-  }>;
+  countMachinesUsingType(id: string): Promise<number>;
 }

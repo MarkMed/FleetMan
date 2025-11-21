@@ -53,8 +53,7 @@ const userSchema = new Schema<IUserDocument>({
     required: true,
     unique: true,
     trim: true,
-    lowercase: true,
-    index: true
+    lowercase: true
   },
   
   passwordHash: {
@@ -82,14 +81,12 @@ const userSchema = new Schema<IUserDocument>({
   type: {
     type: String,
     enum: ['CLIENT', 'PROVIDER'],
-    required: true,
-    index: true
+    required: true
   },
   
   isActive: {
     type: Boolean,
-    default: true,
-    index: true
+    default: true
   }
 }, {
   timestamps: true, // Adds createdAt and updatedAt
@@ -113,7 +110,6 @@ userSchema.set('toJSON', {
 });
 
 // Indexes for performance
-userSchema.index({ email: 1 });
 userSchema.index({ type: 1, isActive: 1 });
 
 // =============================================================================
@@ -124,13 +120,11 @@ const clientUserSchema = new Schema<IClientUserDocument>({
   subscriptionLevel: {
     type: String,
     enum: ['FREE', 'BASIC', 'PREMIUM'],
-    default: 'FREE',
-    index: true
+    default: 'FREE'
   },
   
   subscriptionExpiry: {
-    type: Date,
-    index: true
+    type: Date
   }
 });
 
@@ -141,19 +135,16 @@ const clientUserSchema = new Schema<IClientUserDocument>({
 const providerUserSchema = new Schema<IProviderUserDocument>({
   serviceAreas: {
     type: [String],
-    default: [],
-    index: true
+    default: []
   },
   
   isVerified: {
     type: Boolean,
-    default: false,
-    index: true
+    default: false
   },
   
   verificationDate: {
-    type: Date,
-    index: true
+    type: Date
   }
 });
 

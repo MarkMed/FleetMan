@@ -11,18 +11,12 @@ import { type IMachine, type MachineStatusCode, type FuelType } from '@packages/
 
 /**
  * Machine Document interface extending domain IMachine
- * Uses intersection with Mongoose Document methods while preserving domain typing
- * Removes 'id' from domain interface and adds Mongoose-specific properties
+ * Excluimos 'id' (usamos _id virtual) y 'model' (conflicto con Document.model de Mongoose)
  */
-export interface IMachineDocument extends Omit<IMachine, 'id'> {
+export interface IMachineDocument extends Omit<IMachine, 'id' | 'model'>, Document {
   _id: Types.ObjectId;
   id: string; // Virtual getter from _id
-  
-  // Mongoose document methods (manually added to avoid conflicts)
-  save(): Promise<this>;
-  isModified(path?: string): boolean;
-  set(path: string, value: any): void;
-  toObject(): any;
+  modelName: string; // Re-declaramos explícitamente para evitar conflicto con Document.model
 }
 
 // =============================================================================
@@ -38,22 +32,19 @@ const machineSchema = new Schema<IMachineDocument>({
     required: true,
     unique: true,
     trim: true,
-    uppercase: true,
-    index: true
+    uppercase: true
   },
   
   brand: {
     type: String,
     required: true,
-    trim: true,
-    index: true
+    trim: true
   },
   
-  model: {
+  modelName: {
     type: String,
     required: true,
-    trim: true,
-    index: true
+    trim: true
   },
   
   nickname: {
@@ -65,35 +56,30 @@ const machineSchema = new Schema<IMachineDocument>({
   machineTypeId: {
     type: String,
     required: true,
-    ref: 'MachineType',
-    index: true
+    ref: 'MachineType'
   },
   
   ownerId: {
     type: String,
     required: true,
-    ref: 'User',
-    index: true
+    ref: 'User'
   },
   
   createdById: {
     type: String,
     required: true,
-    ref: 'User',
-    index: true
+    ref: 'User'
   },
   
   assignedProviderId: {
     type: String,
     ref: 'User',
-    sparse: true,
-    index: true
+    sparse: true
   },
   
   providerAssignedAt: {
     type: Date,
-    sparse: true,
-    index: true
+    sparse: true
   },
   
   status: {
@@ -101,8 +87,7 @@ const machineSchema = new Schema<IMachineDocument>({
       type: String,
       enum: ['ACTIVE', 'MAINTENANCE', 'OUT_OF_SERVICE', 'RETIRED'],
       required: true,
-      default: 'ACTIVE',
-      index: true
+      default: 'ACTIVE'
     },
     displayName: {
       type: String,
@@ -119,8 +104,7 @@ const machineSchema = new Schema<IMachineDocument>({
     },
     isOperational: {
       type: Boolean,
-      required: true,
-      index: true
+      required: true
     }
   },
   
@@ -138,15 +122,13 @@ const machineSchema = new Schema<IMachineDocument>({
     fuelType: {
       type: String,
       enum: ['DIESEL', 'GASOLINE', 'ELECTRIC', 'HYBRID'],
-      sparse: true,
-      index: true
+      sparse: true
     },
     year: {
       type: Number,
       min: 1900,
       max: new Date().getFullYear() + 2,
-      sparse: true,
-      index: true
+      sparse: true
     },
     weight: {
       type: Number,
@@ -156,8 +138,7 @@ const machineSchema = new Schema<IMachineDocument>({
     operatingHours: {
       type: Number,
       min: 0,
-      default: 0,
-      index: true
+      default: 0
     }
   },
   
@@ -188,8 +169,7 @@ const machineSchema = new Schema<IMachineDocument>({
     },
     lastUpdated: {
       type: Date,
-      default: Date.now,
-      index: true
+      default: Date.now
     }
   }
 }, {
@@ -216,8 +196,7 @@ machineSchema.set('toJSON', {
 machineSchema.index({ ownerId: 1, 'status.code': 1 });
 machineSchema.index({ assignedProviderId: 1, 'status.isOperational': 1 });
 machineSchema.index({ machineTypeId: 1, 'status.code': 1 });
-machineSchema.index({ serialNumber: 1 }, { unique: true });
-machineSchema.index({ brand: 1, model: 1 });
+machineSchema.index({ brand: 1, modelName: 1 });
 
 // GeoSpatial index for location-based queries
 machineSchema.index({ 'location.coordinates': '2dsphere' });
@@ -226,7 +205,7 @@ machineSchema.index({ 'location.coordinates': '2dsphere' });
 machineSchema.index({
   serialNumber: 'text',
   brand: 'text',
-  model: 'text',
+  modelName: 'text',
   nickname: 'text',
   'location.siteName': 'text',
   'location.address': 'text'
