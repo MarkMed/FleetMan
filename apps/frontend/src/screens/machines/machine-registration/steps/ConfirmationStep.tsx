@@ -81,7 +81,7 @@ export function ConfirmationStep() {
             </div>
             <div>
               <dt className="text-sm font-medium text-muted-foreground">Modelo</dt>
-              <dd className="text-sm text-foreground">{displayValue(basicInfo?.model)}</dd>
+              <dd className="text-sm text-foreground">{displayValue(basicInfo?.modelName)}</dd>
             </div>
             <div className="md:col-span-2">
               <dt className="text-sm font-medium text-muted-foreground">Número de serie</dt>
