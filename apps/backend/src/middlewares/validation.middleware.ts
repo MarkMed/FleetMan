@@ -60,6 +60,65 @@ export const validateBody = (schema: ZodSchema) => createValidator(schema, 'body
 export const validateQuery = (schema: ZodSchema) => createValidator(schema, 'query');
 export const validateParams = (schema: ZodSchema) => createValidator(schema, 'params');
 
+/**
+ * Validador flexible que acepta múltiples fuentes de datos
+ * Útil cuando necesitas validar body, query y params en un solo middleware
+ */
+export const validateRequest = (schemas: {
+  body?: ZodSchema;
+  query?: ZodSchema;
+  params?: ZodSchema;
+}) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    try {
+      // Validar body si existe schema
+      if (schemas.body) {
+        req.body = schemas.body.parse(req.body);
+      }
+      
+      // Validar query si existe schema
+      if (schemas.query) {
+        req.query = schemas.query.parse(req.query);
+      }
+      
+      // Validar params si existe schema
+      if (schemas.params) {
+        req.params = schemas.params.parse(req.params);
+      }
+      
+      logger.debug({ path: req.path, method: req.method }, 'Validation successful');
+      next();
+      
+    } catch (error) {
+      if (error instanceof ZodError) {
+        const errorMessages = error.errors.map(err => ({
+          field: err.path.join('.'),
+          message: err.message,
+          code: err.code
+        }));
+        
+        logger.warn({ 
+          errors: errorMessages,
+          path: req.path,
+          method: req.method
+        }, 'Validation error');
+        
+        return res.status(400).json({
+          success: false,
+          message: 'Validation failed',
+          errors: errorMessages
+        });
+      }
+      
+      logger.error({ error }, 'Unexpected validation error');
+      return res.status(500).json({
+        success: false,
+        message: 'Internal validation error'
+      });
+    }
+  };
+};
+
 // Imports de schemas desde contracts
 import { LoginRequest, RegisterRequest } from '@packages/contracts';
 

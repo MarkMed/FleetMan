@@ -2,6 +2,7 @@ import { Router } from 'express';
 import authRoutes from './auth.routes';
 import machinesRoutes from './machines.routes';
 import usersRoutes from './users.routes';
+import machineTypeRoutes from './machine-type.routes';
 
 /**
  * Router principal de la API v1
@@ -14,6 +15,9 @@ router.use('/auth', authRoutes);
 
 // Rutas de máquinas
 router.use('/machines', machinesRoutes);
+
+// Rutas de tipos de máquina
+router.use('/machine-types', machineTypeRoutes);
 
 // Rutas de usuarios
 router.use('/users', usersRoutes);
