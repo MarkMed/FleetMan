@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+
 :root {
   /* Color palette - Fleet Management */
   --color-primary: 220 90% 56%;
@@ -21,6 +22,12 @@
   --color-card-foreground: 220 15% 9%;
   --color-popover: 0 0% 100%;
   --color-popover-foreground: 220 15% 9%;
+  /* Overlay, link, disabled (para futuras extensiones) */
+  --color-overlay: 220 15% 0% / 0.5;
+  --color-link: 220 90% 56%;
+  --color-link-hover: 220 90% 40%;
+  --color-disabled: 220 15% 91%;
+  --color-disabled-foreground: 220 15% 63%;
 
   /* Status colors */
   --color-destructive: 0 84% 60%;
@@ -60,6 +67,14 @@
   --color-secondary-foreground: 220 15% 98%;
   --color-accent: 220 15% 15%;
   --color-accent-foreground: 220 15% 98%;
+  --color-overlay: 220 15% 0% / 0.7;
+  --color-link: 220 90% 80%;
+  --color-link-hover: 220 90% 95%;
+  --color-disabled: 220 15% 15%;
+  --color-disabled-foreground: 220 15% 40%;
+}
+html, body, [class*='bg-'], [class*='text-'] {
+  transition: background-color 0.3s, color 0.3s;
 }
 
 * {

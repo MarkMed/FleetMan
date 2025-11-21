@@ -59,26 +59,26 @@ export function Wizard<T = any>({
   return (
     <div className={cn('w-full max-w-4xl mx-auto', className)}>
       <Card className="shadow-lg">
-        {/* Header del wizard */}
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold text-gray-900">
+        {/* Header del wizard: solo título grande y mini descripción del paso actual */}
+        <CardHeader className="text-left pb-0">
+          <CardTitle className="text-2xl font-bold text-foreground">
             {currentStepConfig.title}
           </CardTitle>
           {currentStepConfig.description && (
-            <CardDescription className="text-gray-600 mt-2">
+            <CardDescription className="text-muted-foreground mt-2">
               {currentStepConfig.description}
             </CardDescription>
           )}
         </CardHeader>
 
         <CardContent className="px-6 pb-6">
-          {/* Progress indicator */}
+          {/* Progress indicator: solo visual, sin nombres de pasos */}
           {showProgress && (
             <WizardProgress
               totalSteps={steps.length}
               currentStep={currentStep}
               visitedSteps={visitedSteps}
-              stepTitles={stepTitles}
+              // stepTitles eliminado para evitar duplicidad visual
               allowStepClick={true}
               onStepClick={goToStep}
               className="mb-8"

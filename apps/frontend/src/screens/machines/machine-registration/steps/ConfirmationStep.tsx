@@ -49,8 +49,8 @@ export function ConfirmationStep() {
   return (
     <div className="space-y-6">
       <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Confirma la información</h2>
-        <p className="text-gray-600">
+        <h2 className="text-2xl font-bold text-foreground mb-2">Confirma la información</h2>
+        <p className="text-muted-foreground">
           Revisa todos los datos antes de registrar la máquina en el sistema
         </p>
       </div>
@@ -59,8 +59,8 @@ export function ConfirmationStep() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-              <span className="text-blue-600 font-semibold">1</span>
+            <div className="w-8 h-8 bg-info/10 rounded-full flex items-center justify-center">
+              <span className="text-info font-semibold">1</span>
             </div>
             <span>Información Básica</span>
           </CardTitle>
@@ -68,29 +68,29 @@ export function ConfirmationStep() {
         <CardContent className="space-y-3">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <dt className="text-sm font-medium text-gray-600">Nombre</dt>
-              <dd className="text-sm text-gray-900">{displayValue(basicInfo?.name)}</dd>
+              <dt className="text-sm font-medium text-muted-foreground">Nombre</dt>
+              <dd className="text-sm text-foreground">{displayValue(basicInfo?.name)}</dd>
             </div>
             <div>
-              <dt className="text-sm font-medium text-gray-600">Tipo de máquina</dt>
-              <dd className="text-sm text-gray-900">{displayValue(basicInfo?.machineTypeId, 'No seleccionado')}</dd>
+              <dt className="text-sm font-medium text-muted-foreground">Tipo de máquina</dt>
+              <dd className="text-sm text-foreground">{displayValue(basicInfo?.machineTypeId, 'No seleccionado')}</dd>
             </div>
             <div>
-              <dt className="text-sm font-medium text-gray-600">Marca</dt>
-              <dd className="text-sm text-gray-900">{displayValue(basicInfo?.brand)}</dd>
+              <dt className="text-sm font-medium text-muted-foreground">Marca</dt>
+              <dd className="text-sm text-foreground">{displayValue(basicInfo?.brand)}</dd>
             </div>
             <div>
-              <dt className="text-sm font-medium text-gray-600">Modelo</dt>
-              <dd className="text-sm text-gray-900">{displayValue(basicInfo?.model)}</dd>
+              <dt className="text-sm font-medium text-muted-foreground">Modelo</dt>
+              <dd className="text-sm text-foreground">{displayValue(basicInfo?.model)}</dd>
             </div>
             <div className="md:col-span-2">
-              <dt className="text-sm font-medium text-gray-600">Número de serie</dt>
-              <dd className="text-sm text-gray-900 font-mono">{displayValue(basicInfo?.serialNumber)}</dd>
+              <dt className="text-sm font-medium text-muted-foreground">Número de serie</dt>
+              <dd className="text-sm text-foreground font-mono">{displayValue(basicInfo?.serialNumber)}</dd>
             </div>
             {basicInfo?.description && (
               <div className="md:col-span-2">
-                <dt className="text-sm font-medium text-gray-600">Descripción</dt>
-                <dd className="text-sm text-gray-900">{basicInfo.description}</dd>
+                <dt className="text-sm font-medium text-muted-foreground">Descripción</dt>
+                <dd className="text-sm text-foreground">{basicInfo.description}</dd>
               </div>
             )}
           </div>
@@ -101,8 +101,8 @@ export function ConfirmationStep() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-              <span className="text-green-600 font-semibold">2</span>
+            <div className="w-8 h-8 bg-success/10 rounded-full flex items-center justify-center">
+              <span className="text-success font-semibold">2</span>
             </div>
             <span>Especificaciones Técnicas</span>
           </CardTitle>
@@ -110,19 +110,19 @@ export function ConfirmationStep() {
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <dt className="text-sm font-medium text-gray-600">Año</dt>
-              <dd className="text-sm text-gray-900">{displayValue(technicalSpecs?.year)}</dd>
+              <dt className="text-sm font-medium text-muted-foreground">Año</dt>
+              <dd className="text-sm text-foreground">{displayValue(technicalSpecs?.year)}</dd>
             </div>
             {technicalSpecs?.operatingHours && (
               <div>
-                <dt className="text-sm font-medium text-gray-600">Horas de operación</dt>
-                <dd className="text-sm text-gray-900">{technicalSpecs.operatingHours}</dd>
+                <dt className="text-sm font-medium text-muted-foreground">Horas de operación</dt>
+                <dd className="text-sm text-foreground">{technicalSpecs.operatingHours}</dd>
               </div>
             )}
             {technicalSpecs?.fuelType && (
               <div>
-                <dt className="text-sm font-medium text-gray-600">Tipo de combustible</dt>
-                <dd className="text-sm text-gray-900">
+                <dt className="text-sm font-medium text-muted-foreground">Tipo de combustible</dt>
+                <dd className="text-sm text-foreground">
                   {fuelTypeLabels[technicalSpecs.fuelType as keyof typeof fuelTypeLabels] || technicalSpecs.fuelType}
                 </dd>
               </div>
@@ -132,16 +132,16 @@ export function ConfirmationStep() {
           {/* Accesorios */}
           {technicalSpecs?.attachments && technicalSpecs.attachments.length > 0 && (
             <div>
-              <dt className="text-sm font-medium text-gray-600">Accesorios</dt>
-              <dd className="text-sm text-gray-900">{displayArray(technicalSpecs.attachments)}</dd>
+              <dt className="text-sm font-medium text-muted-foreground">Accesorios</dt>
+              <dd className="text-sm text-foreground">{displayArray(technicalSpecs.attachments)}</dd>
             </div>
           )}
 
           {/* Características especiales */}
           {technicalSpecs?.specialFeatures && technicalSpecs.specialFeatures.length > 0 && (
             <div>
-              <dt className="text-sm font-medium text-gray-600">Características especiales</dt>
-              <dd className="text-sm text-gray-900">{displayArray(technicalSpecs.specialFeatures)}</dd>
+              <dt className="text-sm font-medium text-muted-foreground">Características especiales</dt>
+              <dd className="text-sm text-foreground">{displayArray(technicalSpecs.specialFeatures)}</dd>
             </div>
           )}
         </CardContent>
@@ -151,8 +151,8 @@ export function ConfirmationStep() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
-              <span className="text-purple-600 font-semibold">2</span>
+            <div className="w-8 h-8 bg-accent/10 rounded-full flex items-center justify-center">
+              <span className="text-accent font-semibold">2</span>
             </div>
             <span>Ubicación y Estado</span>
           </CardTitle>
@@ -161,15 +161,15 @@ export function ConfirmationStep() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {technicalSpecs?.currentLocation && (
               <div>
-                <dt className="text-sm font-medium text-gray-600">Ubicación actual</dt>
-                <dd className="text-sm text-gray-900">{technicalSpecs.currentLocation}</dd>
+                <dt className="text-sm font-medium text-muted-foreground">Ubicación actual</dt>
+                <dd className="text-sm text-foreground">{technicalSpecs.currentLocation}</dd>
               </div>
             )}
             <div>
-              <dt className="text-sm font-medium text-gray-600">Estado</dt>
-              <dd className="text-sm text-gray-900">
+              <dt className="text-sm font-medium text-muted-foreground">Estado</dt>
+              <dd className="text-sm text-foreground">
                 <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                  technicalSpecs?.isActive === false ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'
+                  technicalSpecs?.isActive === false ? 'bg-destructive/10 text-destructive' : 'bg-success/10 text-success'
                 }`}>
                   {technicalSpecs?.isActive === false ? 'Inactiva' : 'Activa'}
                 </span>
@@ -177,8 +177,8 @@ export function ConfirmationStep() {
             </div>
             {technicalSpecs?.fuelType && (
               <div>
-                <dt className="text-sm font-medium text-gray-600">Tipo de combustible</dt>
-                <dd className="text-sm text-gray-900">
+                <dt className="text-sm font-medium text-muted-foreground">Tipo de combustible</dt>
+                <dd className="text-sm text-foreground">
                   {fuelTypeLabels[technicalSpecs.fuelType as keyof typeof fuelTypeLabels] || technicalSpecs.fuelType}
                 </dd>
               </div>
@@ -189,33 +189,33 @@ export function ConfirmationStep() {
 
       {/* Errores globales */}
       {errors && Object.keys(errors).length > 0 && (
-        <div className="bg-red-50 border border-red-200 rounded-md p-4">
-          <h4 className="text-red-800 font-medium mb-2">
+        <div className="bg-destructive/10 border border-destructive/20 rounded-md p-4">
+          <h4 className="text-destructive font-medium mb-2">
             Se encontraron errores en la información:
           </h4>
           <ul className="list-disc list-inside space-y-1">
             {Object.entries(errors).map(([field, error]) => (
-              <li key={field} className="text-red-700 text-sm">
+              <li key={field} className="text-destructive text-sm">
                 {field}: {error?.message || 'Error de validación'}
               </li>
             ))}
           </ul>
-          <p className="text-red-700 text-sm mt-2">
+          <p className="text-destructive text-sm mt-2">
             Por favor, regresa a los pasos anteriores para corregir estos errores.
           </p>
         </div>
       )}
 
       {/* Mensaje final */}
-      <div className="bg-blue-50 p-4 rounded-md">
+      <div className="bg-info/10 p-4 rounded-md">
         <div className="flex">
           <div className="flex-shrink-0">
-            <svg className="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+            <svg className="h-5 w-5 text-info" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
             </svg>
           </div>
           <div className="ml-3">
-            <p className="text-sm text-blue-700">
+            <p className="text-sm text-info">
               Al hacer clic en "Registrar Máquina", se creará un nuevo registro en el sistema.
               Esta información podrá ser editada posteriormente desde la gestión de máquinas.
             </p>

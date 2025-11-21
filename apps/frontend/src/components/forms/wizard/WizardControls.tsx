@@ -47,7 +47,7 @@ export const WizardControls: React.FC<WizardControlsProps> = ({
   className,
 }) => {
   return (
-    <div className={cn('flex items-center justify-between pt-6 border-t border-gray-200', className)}>
+    <div className={cn('flex items-center justify-between pt-6 border-t border-border', className)}>
       {/* Left side - Previous/Cancel button */}
       <div className="flex items-center space-x-4">
         {!isFirstStep && (
@@ -60,13 +60,12 @@ export const WizardControls: React.FC<WizardControlsProps> = ({
             {previousLabel}
           </Button>
         )}
-        
         {onCancel && (
           <Button
             variant="ghost"
             onPress={onCancel}
             disabled={isSubmitting}
-            className="text-gray-500 hover:text-gray-700"
+            className="text-muted-foreground hover:text-foreground"
           >
             {cancelLabel}
           </Button>
@@ -84,14 +83,14 @@ export const WizardControls: React.FC<WizardControlsProps> = ({
             timerLabel={(remaining: number) => `${remaining}`}
             disabled={!isValid || isSubmitting}
             variant="filled"
-            className="px-8 py-2 bg-indigo-600 hover:bg-indigo-700 text-white"
+            className="px-8 py-2"
           />
         ) : (
           <Button
             variant="filled"
             onPress={onNext}
             disabled={!isValid || isSubmitting}
-            className="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white"
+            className="px-6 py-2"
           >
             {nextLabel}
           </Button>

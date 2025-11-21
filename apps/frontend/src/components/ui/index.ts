@@ -1,3 +1,4 @@
+export { Skeleton } from './Skeleton';
 // Export all UI components
 export { Button, buttonVariants } from './Button';
 export { TimerButton } from './TimerButton';

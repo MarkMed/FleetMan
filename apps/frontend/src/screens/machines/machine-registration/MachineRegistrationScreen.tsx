@@ -12,6 +12,7 @@ import {
   ModalFooter 
 } from '../../../components/ui/Modal';
 import { Button } from '../../../components/ui/Button';
+import { TextBlock } from '@components/ui';
 
 /**
  * Pantalla principal para el registro de máquinas usando wizard multi-step + React Hook Form
@@ -55,12 +56,12 @@ export function MachineRegistrationScreen() {
     <div className="max-w-4xl mx-auto p-6">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">
+        <TextBlock as='h1' size='headline'>
           Registrar Nueva Máquina
-        </h1>
-        <p className="mt-2 text-sm text-gray-600">
+        </TextBlock>
+        <TextBlock as='p' size='medium' className="mt-2 text-gray-600">
           Completa la información en los siguientes pasos para registrar una nueva máquina en el sistema.
-        </p>
+        </TextBlock>
       </div>
 
       {/* RHF Error Display */}

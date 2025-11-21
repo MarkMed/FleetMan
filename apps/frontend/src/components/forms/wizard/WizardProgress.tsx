@@ -39,25 +39,18 @@ export const WizardProgress: React.FC<WizardProgressProps> = ({
   const getStepClasses = (stepIndex: number) => {
     const status = getStepStatus(stepIndex);
     const isClickable = allowStepClick && visitedSteps.has(stepIndex);
-    
+    // Theme-driven color mapping
     return cn(
-      // Base classes
       'flex items-center justify-center w-8 h-8 rounded-full border-2 text-sm font-medium transition-all duration-200',
-      
-      // Status-based styling
       {
         // Current step
-        'bg-indigo-600 border-indigo-600 text-white shadow-md': status === 'current',
-        
+        'bg-primary border-primary text-primary-foreground shadow-md': status === 'current',
         // Completed step
-        'bg-green-500 border-green-500 text-white': status === 'completed',
-        
+        'bg-success border-success text-success-foreground': status === 'completed',
         // Visited step (but not current)
-        'bg-indigo-100 border-indigo-300 text-indigo-600': status === 'visited',
-        
+        'bg-accent border-accent text-accent-foreground': status === 'visited',
         // Pending step
-        'bg-gray-100 border-gray-300 text-gray-500': status === 'pending',
-        
+        'bg-muted border-muted text-muted-foreground': status === 'pending',
         // Clickable
         'cursor-pointer hover:scale-105 hover:shadow-md': isClickable,
         'cursor-default': !isClickable,
@@ -67,12 +60,11 @@ export const WizardProgress: React.FC<WizardProgressProps> = ({
 
   const getConnectorClasses = (stepIndex: number) => {
     const isCompleted = visitedSteps.has(stepIndex) && stepIndex < currentStep;
-    
     return cn(
       'flex-1 h-1 mx-2 rounded transition-all duration-300',
       {
-        'bg-green-500': isCompleted,
-        'bg-gray-200': !isCompleted,
+        'bg-success': isCompleted,
+        'bg-muted': !isCompleted,
       }
     );
   };
@@ -85,7 +77,7 @@ export const WizardProgress: React.FC<WizardProgressProps> = ({
 
   return (
     <div className={cn('w-full py-4', className)}>
-      {/* Progress Bar */}
+      {/* Progress Bar: solo indicadores visuales, sin nombres de pasos */}
       <div className="flex items-center justify-between mb-4">
         {steps.map((stepIndex) => (
           <React.Fragment key={stepIndex}>
@@ -120,33 +112,15 @@ export const WizardProgress: React.FC<WizardProgressProps> = ({
         ))}
       </div>
 
-      {/* Step Titles */}
-      {stepTitles.length > 0 && (
-        <div className="flex justify-between">
-          {stepTitles.map((title, index) => (
-            <div
-              key={index}
-              className={cn(
-                'text-sm text-center flex-1 px-1',
-                {
-                  'text-indigo-600 font-medium': index === currentStep,
-                  'text-green-600 font-medium': getStepStatus(index) === 'completed',
-                  'text-gray-600': index !== currentStep && getStepStatus(index) !== 'completed',
-                }
-              )}
-            >
-              {title}
-            </div>
-          ))}
-        </div>
-      )}
+      {/* Eliminado: nombres de los pasos para evitar ruido visual y problemas de alineación. */}
+      {/* Si se requiere mostrar nombres de pasos en el futuro, considerar un diseño responsive tipo tooltip o modal. */}
 
       {/* Progress Text */}
-      <div className="text-center mt-2">
-        <span className="text-sm text-gray-500">
+      {/* <div className="text-center mt-2">
+        <span className="text-sm text-muted-foreground">
           Paso {currentStep + 1} de {totalSteps}
         </span>
-      </div>
+      </div> */}
     </div>
   );
 };
