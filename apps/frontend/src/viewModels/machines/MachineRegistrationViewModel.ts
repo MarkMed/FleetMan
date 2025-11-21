@@ -91,7 +91,7 @@ export function useMachineRegistrationViewModel(): MachineRegistrationViewModel 
         const basicInfo = formValues.basicInfo;
         const hasRequiredValues = basicInfo?.serialNumber?.trim() && 
                                   basicInfo?.brand?.trim() && 
-                                  basicInfo?.model?.trim() && 
+                                  basicInfo?.modelName?.trim() && 
                                   basicInfo?.machineTypeId?.trim() && 
                                   basicInfo?.name?.trim();
         
