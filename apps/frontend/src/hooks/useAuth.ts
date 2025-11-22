@@ -1,8 +1,9 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { authService } from '@services/api/authService';
 import { useAuthStore } from '@store/slices/authSlice';
-import { QUERY_KEYS } from '@constants';
-import type { LoginFormData, RegisterFormData } from '@models';
+import { QUERY_KEYS } from '../constants';
+import type { LoginFormData, RegisterFormData } from '../models/forms/AuthForms';
+import { mapRegisterFormToRequest } from '../utils/mappers';
 
 // Login mutation
 export const useLogin = () => {
@@ -24,7 +25,8 @@ export const useRegister = () => {
   
   return useMutation({
     mutationFn: async (userData: RegisterFormData) => {
-      return await register(userData);
+      const adaptedData = mapRegisterFormToRequest(userData);
+      return await register(adaptedData);
     },
   });
 };

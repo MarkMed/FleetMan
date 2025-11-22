@@ -4,6 +4,7 @@ import { useAuth } from '../../store/AuthProvider';
 import type { RegisterRequest } from '@packages/contracts';
 import { UserType } from '@packages/contracts';
 import type { RegisterFormData, RegisterFormErrors, PasswordStrength } from '../../models';
+import { mapRegisterFormToRequest } from '../../utils/mappers';
 import { ROUTES } from '../../constants';
 
 export const useRegisterViewModel = () => {
@@ -86,15 +87,7 @@ export const useRegisterViewModel = () => {
 
     if (Object.keys(errors).length === 0) {
       try {
-        const registerRequest: RegisterRequest = {
-          email: formData.email,
-          password: formData.password,
-          type: UserType.CLIENT, // Default to CLIENT type in MVP
-          profile: {
-            companyName: formData.name, // Map name to companyName since users represent companies
-          },
-        };
-        
+        const registerRequest: RegisterRequest = mapRegisterFormToRequest(formData);
         const result = await register(registerRequest);
         
         // Navigate to dashboard if registration was successful and returned token

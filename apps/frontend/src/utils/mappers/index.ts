@@ -1,0 +1,1 @@
+export { mapRegisterFormToRequest } from './authMapper';
