@@ -44,7 +44,7 @@ export const MachinesScreen: React.FC = () => {
         <div className="mb-4 rounded-lg border border-destructive/30 bg-destructive/10 p-4">
           <p className="text-sm text-destructive font-medium">No pudimos cargar las máquinas.</p>
           {errorMessage && <p className="text-xs text-destructive/80">{errorMessage}</p>}
-          <Button variant="ghost" size="small" className="mt-2" onPress={() => refetch()}>
+          <Button variant="ghost" size="sm" className="mt-2" onPress={() => refetch()}>
             Reintentar
           </Button>
         </div>
@@ -127,7 +127,7 @@ export const MachinesScreen: React.FC = () => {
                   <StatusPill status={machine.status} />
                 </div>
                 <div className="text-right">
-                  <Button variant="ghost" size="small" onPress={() => navigate(`/machines/${machine.id}`)}>
+                  <Button variant="ghost" size="sm" onPress={() => navigate(`/machines/${machine.id}`)}>
                     Ver
                   </Button>
                 </div>
