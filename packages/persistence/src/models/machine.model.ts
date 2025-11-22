@@ -14,7 +14,8 @@ import { type IMachine, type MachineStatusCode, type FuelType } from '@packages/
  * Excluimos 'id' (usamos _id virtual) y 'model' (conflicto con Document.model de Mongoose)
  */
 export interface IMachineDocument extends Omit<IMachine, 'id' | 'model'>, Document {
-  _id: Types.ObjectId;
+  // Use string _id because domain entities use string IDs like `machine_xxx`
+  _id: string;
   id: string; // Virtual getter from _id
   modelName: string; // Re-declaramos explícitamente para evitar conflicto con Document.model
 }
@@ -27,6 +28,11 @@ export interface IMachineDocument extends Omit<IMachine, 'id' | 'model'>, Docume
  * Machine Schema implementing IMachine interface
  */
 const machineSchema = new Schema<IMachineDocument>({
+  // Explicit string _id to support domain-generated string identifiers
+  _id: {
+    type: String,
+    required: true
+  },
   serialNumber: {
     type: String,
     required: true,
@@ -179,7 +185,8 @@ const machineSchema = new Schema<IMachineDocument>({
 
 // Virtual for id
 machineSchema.virtual('id').get(function(this: IMachineDocument) {
-  return this._id.toHexString();
+  // _id is stored as string in this schema
+  return this._id;
 });
 
 // Ensure virtual fields are serialized

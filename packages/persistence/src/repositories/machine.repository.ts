@@ -13,6 +13,7 @@ import {
   MachineModel, 
   type IMachineDocument
 } from '../models';
+import { MachineMapper } from '../mappers';
 
 export class MachineRepository implements IMachineRepository {
 
@@ -27,8 +28,12 @@ export class MachineRepository implements IMachineRepository {
         return err(DomainError.notFound(`Machine with ID ${id.getValue()} not found`));
       }
 
-      // TODO: Implement proper document to entity conversion
-      return err(DomainError.create('INCOMPLETE_IMPLEMENTATION', 'MachineRepository.findById needs complete implementation'));
+      const machine = MachineMapper.toEntity(machineDoc);
+      if (!machine) {
+        return err(DomainError.create('MAPPING_ERROR', 'Failed to convert document to entity'));
+      }
+
+      return ok(machine);
     } catch (error: any) {
       return err(DomainError.create('PERSISTENCE_ERROR', `Error finding machine by ID: ${error.message}`));
     }
@@ -45,8 +50,12 @@ export class MachineRepository implements IMachineRepository {
         return err(DomainError.notFound(`Machine with serial number ${serialNumber} not found`));
       }
 
-      // TODO: Implement proper document to entity conversion
-      return err(DomainError.create('INCOMPLETE_IMPLEMENTATION', 'MachineRepository.findBySerialNumber needs complete implementation'));
+      const machine = MachineMapper.toEntity(machineDoc);
+      if (!machine) {
+        return err(DomainError.create('MAPPING_ERROR', 'Failed to convert document to entity'));
+      }
+
+      return ok(machine);
     } catch (error: any) {
       return err(DomainError.create('PERSISTENCE_ERROR', `Error finding machine by serial number: ${error.message}`));
     }
@@ -85,45 +94,65 @@ export class MachineRepository implements IMachineRepository {
    * Busca máquinas por propietario
    */
   async findByOwnerId(ownerId: UserId): Promise<Machine[]> {
-    // TODO: Implement when document to entity conversion is ready
-    console.warn('MachineRepository.findByOwnerId not fully implemented');
-    return [];
+    try {
+      const docs = await MachineModel.find({ ownerId: ownerId.getValue() }).sort({ createdAt: -1 });
+      return MachineMapper.toEntityArray(docs);
+    } catch (error) {
+      console.error('Error finding machines by owner ID:', error);
+      return [];
+    }
   }
 
   /**
    * Busca máquinas asignadas a un proveedor
    */
   async findByAssignedProviderId(providerId: UserId): Promise<Machine[]> {
-    // TODO: Implement when document to entity conversion is ready
-    console.warn('MachineRepository.findByAssignedProviderId not fully implemented');
-    return [];
+    try {
+      const docs = await MachineModel.find({ assignedProviderId: providerId.getValue() }).sort({ createdAt: -1 });
+      return MachineMapper.toEntityArray(docs);
+    } catch (error) {
+      console.error('Error finding machines by assigned provider ID:', error);
+      return [];
+    }
   }
 
   /**
    * Busca máquinas por tipo
    */
   async findByMachineTypeId(typeId: MachineTypeId): Promise<Machine[]> {
-    // TODO: Implement when document to entity conversion is ready
-    console.warn('MachineRepository.findByMachineTypeId not fully implemented');
-    return [];
+    try {
+      const docs = await MachineModel.find({ machineTypeId: typeId.getValue() }).sort({ createdAt: -1 });
+      return MachineMapper.toEntityArray(docs);
+    } catch (error) {
+      console.error('Error finding machines by machine type ID:', error);
+      return [];
+    }
   }
 
   /**
    * Busca máquinas por estado
    */
   async findByStatus(statusCode: 'ACTIVE' | 'MAINTENANCE' | 'OUT_OF_SERVICE' | 'RETIRED'): Promise<Machine[]> {
-    // TODO: Implement when document to entity conversion is ready
-    console.warn('MachineRepository.findByStatus not fully implemented');
-    return [];
+    try {
+      const docs = await MachineModel.find({ 'status.code': statusCode }).sort({ createdAt: -1 });
+      return MachineMapper.toEntityArray(docs);
+    } catch (error) {
+      console.error('Error finding machines by status:', error);
+      return [];
+    }
   }
 
   /**
    * Obtiene todas las máquinas activas
    */
   async findAllActive(): Promise<Machine[]> {
-    // TODO: Implement when document to entity conversion is ready
-    console.warn('MachineRepository.findAllActive not fully implemented');
-    return [];
+    try {
+      const docs = await MachineModel.find({ 'status.code': 'ACTIVE' }).sort({ createdAt: -1 });
+      return MachineMapper.toEntityArray(docs);
+    } catch (error) {
+      console.error('Error finding all active machines:', error);
+      return [];
+    }
   }
 
   /**
@@ -131,9 +160,26 @@ export class MachineRepository implements IMachineRepository {
    */
   async save(machine: Machine): Promise<Result<void, DomainError>> {
     try {
-      // TODO: Implement entity to document conversion and save logic
-      return err(DomainError.create('INCOMPLETE_IMPLEMENTATION', 'MachineRepository.save needs complete implementation'));
+      const docData = MachineMapper.toDocument(machine);
+      const machineId = machine.id.getValue();
+
+      // Verificar si existe
+      const existing = await MachineModel.findById(machineId);
+
+      if (existing) {
+        // Actualizar existente
+        await MachineModel.findByIdAndUpdate(machineId, docData, { new: true });
+      } else {
+        // Crear nuevo
+        await MachineModel.create({ _id: machineId, ...docData });
+      }
+
+      return ok(undefined);
     } catch (error: any) {
+      // Manejar errores de duplicación de serial number
+      if (error.code === 11000) {
+        return err(DomainError.create('DUPLICATE_KEY', 'Serial number already exists'));
+      }
       return err(DomainError.create('PERSISTENCE_ERROR', `Error saving machine: ${error.message}`));
     }
   }
@@ -214,9 +260,30 @@ export class MachineRepository implements IMachineRepository {
       // Get total count
       const total = await MachineModel.countDocuments(query);
 
-      // TODO: Return empty results until document to entity conversion is implemented
+      // Build sort options
+      const sortField = options.sortBy || 'createdAt';
+      const sortDirection = options.sortOrder === 'asc' ? 1 : -1;
+      const sort: any = {};
+      
+      if (sortField === 'status') {
+        sort['status.code'] = sortDirection;
+      } else {
+        sort[sortField] = sortDirection;
+      }
+
+      // Execute paginated query
+      const skip = (options.page - 1) * options.limit;
+      const docs = await MachineModel
+        .find(query)
+        .sort(sort)
+        .skip(skip)
+        .limit(options.limit);
+
+      // Convert to entities
+      const items = MachineMapper.toEntityArray(docs);
+
       return {
-        items: [],
+        items,
         total,
         page: options.page,
         limit: options.limit,
