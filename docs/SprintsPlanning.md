@@ -1,4 +1,4 @@
-# Planes de Sprints
+﻿# Planes de Sprints
 
 ### **Sprint #0**: dom 12 oct → sáb 18 oct 2025
 
@@ -204,25 +204,38 @@ xychart-beta
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
-| Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | |
-| Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | |
-| Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
-| Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | |
-| Desarrollo | 3.1 Alta de máquina (RF-005) + ReactHookForms + Wizard Component | 5 | 16 | |
-| Capacitación | 16.3 Taller Deploy - AWS (mar 18 Nov) | 6 | 3 | |
-| Capacitación | 16.4 Taller Deploy - AWS (jue 20 Nov) | 7 | 3 | |
+| Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | 6.6 |
+| Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | 0.9 |
+| Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | 1.2 |
+| Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | 0.5 |
+| Desarrollo | 3.1 Alta de máquina (RF-005) + ReactHookForms + Wizard Component | 5 | 16 | 18.3 |
+| Capacitación | 16.3 Taller Deploy - AWS (mar 18 Nov) | 6 | 3 | 2.5 |
+| Capacitación | 16.4 Taller Deploy - AWS (jue 20 Nov) | 7 | 3 | 1.4 |
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales |
 |:---:|:----------:|
-| **25.7**hs | **0**hs |
+| **26.7**hs | **31.4**hs |
 
-Buffer reservado: **9.3**hs
+Buffer reservado: **8.3**hs
 Total con buffer: **35**hs
 
 Distribución por categoría:
 | Gestión | Desarrollo | QA | Capacitación | Documentación |
 |:-------:|:----------:|:--:|:------------:|:-------------:|
 | **3.7**hs | **16**hs | **0**hs | **6**hs | **0**hs |
+
+```mermaid
+xychart-beta
+    title "Sprint #5: Horas Estimadas #40;azul#41; vs Reales #40;verde#41;"
+    x-axis "Tareas" ["20.1", "20.2", "20.3", "21.2", "3.1", "16.3", "16.4", "TOTAL"]
+    y-axis "Horas" 0 --> 35
+	
+	%% Green line
+    line [0.9, 1.5, 1.3, 1, 16, 3, 3, 26.7]
+
+	%% Black line
+    line [6.6, 0.9, 1.2, 0.5, 18.3, 2.5, 1.4, 31.4]
+```
 
 ### **Sprint #6**: dom 23 nov → sáb 29 nov 2025
 
