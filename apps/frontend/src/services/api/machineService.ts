@@ -1,4 +1,4 @@
-import { apiClient, handleApiResponse } from './apiClient';
+﻿import { apiClient, handleApiResponse } from './apiClient';
 import { API_ENDPOINTS } from '../../constants';
 import { getSessionToken } from '../../store/slices/authSlice';
 import type { 
@@ -31,9 +31,19 @@ interface EventFilters {
   searchTerm?: string;
 }
 
+export interface MachinesListResult {
+  machines: Machine[];
+  pagination?: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
+}
+
 export class MachineService {
   // Get all machines with optional filters
-  async getMachines(filters?: MachineFilters): Promise<ListMachinesResponse> {
+  async getMachines(filters?: MachineFilters): Promise<MachinesListResult> {
     const params: Record<string, string> = {};
     
     if (filters) {
@@ -57,11 +67,21 @@ export class MachineService {
       }
     }
 
-    const response = await apiClient.get<ListMachinesResponse>(
+    const response = await apiClient.get<{ success: boolean; message?: string; data: ListMachinesResponse }>(
       API_ENDPOINTS.MACHINES,
       params
     );
-    return handleApiResponse(response);
+    const processed = handleApiResponse(response);
+    const payload: ListMachinesResponse = (processed as any).data ?? (processed as any);
+    return {
+      machines: payload.machines ?? [],
+      pagination: payload.total !== undefined ? {
+        total: payload.total,
+        page: payload.page,
+        limit: payload.limit,
+        totalPages: payload.totalPages,
+      } : undefined,
+    };
   }
 
   // Get machine by ID
@@ -159,9 +179,9 @@ export class MachineService {
       console.warn('machineService: getSessionToken failed', e);
       headers = undefined;
     }
-    console.log('🌐 machineService: getMachineTypes using headers:', headers);
+    console.log('🛰️ machineService: getMachineTypes using headers:', headers);
     const response = await apiClient.get(API_ENDPOINTS.MACHINE_TYPES, params, headers);
-    console.log('🔗 Raw API response for machine types:', response);
+    console.log('🧭 Raw API response for machine types:', response);
     const data = handleApiResponse(response).data;
     console.log('✅ Processed machine types data:', data);
     return data;

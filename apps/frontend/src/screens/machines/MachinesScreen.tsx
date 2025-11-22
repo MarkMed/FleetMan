@@ -1,9 +1,24 @@
 ﻿import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Heading1, BodyText, Button } from "@components/ui";
+import { Heading1, BodyText, Button, Card, CardContent, CardHeader, CardTitle } from "@components/ui";
+import { useMachinesViewModel } from "../../viewModels/machines";
+
+const statusVariants: Record<string, string> = {
+  ACTIVE: "bg-success/10 text-success",
+  MAINTENANCE: "bg-warning/10 text-warning",
+  OUT_OF_SERVICE: "bg-destructive/10 text-destructive",
+  RETIRED: "bg-muted text-muted-foreground",
+};
+
+const StatusPill = ({ status }: { status: string }) => (
+  <span className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${statusVariants[status] ?? "bg-muted text-muted-foreground"}`}>
+    {status}
+  </span>
+);
 
 export const MachinesScreen: React.FC = () => {
   const navigate = useNavigate();
+  const { machines, isLoading, isError, errorMessage, refetch } = useMachinesViewModel();
 
   return (
     <div className="space-y-8">
@@ -25,104 +40,100 @@ export const MachinesScreen: React.FC = () => {
         </Button>
       </div>
 
-      <div className="flex gap-4 mb-6">
-        <input 
-          type="text" 
-          placeholder="Buscar máquinas..." 
-          className="flex-1 px-3 py-2 border border-border rounded-lg bg-background text-foreground"
-        />
-        <select className="px-3 py-2 border border-border rounded-lg bg-background text-foreground">
-          <option>Todos los tipos</option>
-          <option>Excavadora</option>
-          <option>Bulldozer</option>
-          <option>Grúa</option>
-        </select>
-        <select className="px-3 py-2 border border-border rounded-lg bg-background text-foreground">
-          <option>Todos los estados</option>
-          <option>Activa</option>
-          <option>En Mantenimiento</option>
-          <option>Fuera de Servicio</option>
-        </select>
+      {isError && (
+        <div className="mb-4 rounded-lg border border-destructive/30 bg-destructive/10 p-4">
+          <p className="text-sm text-destructive font-medium">No pudimos cargar las máquinas.</p>
+          {errorMessage && <p className="text-xs text-destructive/80">{errorMessage}</p>}
+          <Button variant="ghost" size="small" className="mt-2" onPress={() => refetch()}>
+            Reintentar
+          </Button>
+        </div>
+      )}
+
+      {/* Cards for mobile */}
+      <div className="space-y-4 md:hidden">
+        {isLoading && (
+          <Card>
+            <CardContent className="py-6 space-y-3">
+              <div className="h-4 bg-muted rounded w-1/2" />
+              <div className="h-4 bg-muted rounded w-1/3" />
+              <div className="h-4 bg-muted rounded w-3/4" />
+            </CardContent>
+          </Card>
+        )}
+        {!isLoading && machines.length === 0 && (
+          <Card>
+            <CardContent className="py-6">
+              <p className="text-sm text-muted-foreground">No hay máquinas registradas todavía.</p>
+            </CardContent>
+          </Card>
+        )}
+        {machines.map((machine) => (
+          <Card key={machine.id} className="border border-border">
+            <CardHeader className="pb-2">
+              <CardTitle className="flex items-center justify-between text-base">
+                <span>{machine.brand} {machine.modelName}</span>
+                <StatusPill status={machine.status} />
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2 text-sm">
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Nº Serie</span>
+                <span className="font-mono text-foreground">{machine.serialNumber}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Tipo</span>
+                <span className="text-foreground">{machine.machineTypeId}</span>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
       </div>
 
-      <div className="rounded-lg border border-border bg-card">
+      {/* Table for desktop */}
+      <div className="hidden md:block rounded-lg border border-border bg-card">
         <div className="p-6">
-          <div className="grid grid-cols-7 gap-4 text-sm font-medium text-muted-foreground border-b border-border pb-3">
-            <div>ID</div>
-            <div>Nombre</div>
+          <div className="grid grid-cols-6 gap-4 text-sm font-medium text-muted-foreground border-b border-border pb-3">
+            <div>Marca</div>
+            <div>Modelo</div>
+            <div>Nº Serie</div>
             <div>Tipo</div>
             <div>Estado</div>
-            <div>Ubicación</div>
-            <div>Último Chequeo</div>
-            <div>Acciones</div>
+            <div className="text-right">Acciones</div>
           </div>
-          
           <div className="divide-y divide-border">
-            {/* Machine Row Example */}
-            <div className="grid grid-cols-7 gap-4 py-4 text-sm">
-              <div className="font-medium text-foreground">#001</div>
-              <div className="text-foreground">Excavadora Principal</div>
-              <div className="text-foreground">Excavadora</div>
-              <div>
-                <span className="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium bg-success/10 text-success">
-                  Activa
-                </span>
+            {isLoading && (
+              <div className="grid grid-cols-6 gap-4 py-4 text-sm">
+                <div className="h-4 bg-muted rounded" />
+                <div className="h-4 bg-muted rounded" />
+                <div className="h-4 bg-muted rounded" />
+                <div className="h-4 bg-muted rounded" />
+                <div className="h-4 bg-muted rounded" />
+                <div className="h-4 bg-muted rounded" />
               </div>
-              <div className="text-foreground">Sector A</div>
-              <div className="text-muted-foreground">Hace 2 días</div>
-              <div className="flex gap-2">
-                <button className="text-primary hover:text-primary/80 text-xs">Ver</button>
-                <button className="text-primary hover:text-primary/80 text-xs">Editar</button>
-                <button className="text-primary hover:text-primary/80 text-xs">Chequeo</button>
+            )}
+            {!isLoading && machines.length === 0 && (
+              <div className="py-6 text-sm text-muted-foreground text-center">
+                No hay máquinas registradas todavía.
               </div>
-            </div>
-
-            <div className="grid grid-cols-7 gap-4 py-4 text-sm">
-              <div className="font-medium text-foreground">#002</div>
-              <div className="text-foreground">Bulldozer B-12</div>
-              <div className="text-foreground">Bulldozer</div>
-              <div>
-                <span className="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium bg-warning/10 text-warning">
-                  Mantenimiento
-                </span>
+            )}
+            {!isLoading && machines.map((machine) => (
+              <div key={machine.id} className="grid grid-cols-6 gap-4 py-4 text-sm items-center">
+                <div className="text-foreground">{machine.brand}</div>
+                <div className="text-foreground">{machine.modelName}</div>
+                <div className="text-foreground font-mono">{machine.serialNumber}</div>
+                <div className="text-foreground">{machine.machineTypeId}</div>
+                <div>
+                  <StatusPill status={machine.status} />
+                </div>
+                <div className="text-right">
+                  <Button variant="ghost" size="small" onPress={() => navigate(`/machines/${machine.id}`)}>
+                    Ver
+                  </Button>
+                </div>
               </div>
-              <div className="text-foreground">Taller</div>
-              <div className="text-muted-foreground">Hace 1 semana</div>
-              <div className="flex gap-2">
-                <button className="text-primary hover:text-primary/80 text-xs">Ver</button>
-                <button className="text-primary hover:text-primary/80 text-xs">Editar</button>
-                <button className="text-muted-foreground text-xs" disabled>Chequeo</button>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-7 gap-4 py-4 text-sm">
-              <div className="font-medium text-foreground">#003</div>
-              <div className="text-foreground">Grúa Torre GT-5</div>
-              <div className="text-foreground">Grúa</div>
-              <div>
-                <span className="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium bg-success/10 text-success">
-                  Activa
-                </span>
-              </div>
-              <div className="text-foreground">Sector C</div>
-              <div className="text-muted-foreground">Hace 1 día</div>
-              <div className="flex gap-2">
-                <button className="text-primary hover:text-primary/80 text-xs">Ver</button>
-                <button className="text-primary hover:text-primary/80 text-xs">Editar</button>
-                <button className="text-primary hover:text-primary/80 text-xs">Chequeo</button>
-              </div>
-            </div>
+            ))}
           </div>
-        </div>
-      </div>
-
-      <div className="flex justify-between items-center text-sm text-muted-foreground">
-        <span>Mostrando 3 de 12 máquinas</span>
-        <div className="flex gap-2">
-          <button className="px-3 py-1 border border-border rounded hover:bg-muted">Anterior</button>
-          <button className="px-3 py-1 bg-primary text-primary-foreground rounded">1</button>
-          <button className="px-3 py-1 border border-border rounded hover:bg-muted">2</button>
-          <button className="px-3 py-1 border border-border rounded hover:bg-muted">Siguiente</button>
         </div>
       </div>
     </div>
