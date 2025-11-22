@@ -86,8 +86,11 @@ export class MachineService {
 
   // Get machine by ID
   async getMachine(id: string): Promise<Machine> {
-    const response = await apiClient.get<Machine>(API_ENDPOINTS.MACHINE(id));
-    return handleApiResponse(response);
+    const response = await apiClient.get<{ success: boolean; message?: string; data: Machine }>(
+      API_ENDPOINTS.MACHINE(id)
+    );
+    const processed = handleApiResponse(response);
+    return (processed as any).data ?? (processed as any);
   }
 
   // Create new machine
