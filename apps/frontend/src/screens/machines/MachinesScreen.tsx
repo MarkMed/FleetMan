@@ -1,7 +1,10 @@
-import React from 'react';
-import { Heading1, BodyText, Button } from '@components/ui';
+﻿import React from "react";
+import { useNavigate } from "react-router-dom";
+import { Heading1, BodyText, Button } from "@components/ui";
 
 export const MachinesScreen: React.FC = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="space-y-8">
       <div className="flex justify-between items-center">
@@ -13,7 +16,11 @@ export const MachinesScreen: React.FC = () => {
             Administra tu inventario de máquinas y su información
           </BodyText>
         </div>
-        <Button variant="filled" size="default">
+        <Button
+          variant="filled"
+          size="default"
+          onPress={() => navigate("/machines/new")}
+        >
           + Nueva Máquina
         </Button>
       </div>
