@@ -68,7 +68,7 @@ export const MachineDetailsScreen: React.FC = () => {
         <div className="rounded-lg border border-destructive/20 bg-destructive/10 p-4">
           <BodyText className="text-destructive font-medium">No pudimos cargar la máquina.</BodyText>
           {errorMessage && <BodyText size="small" className="text-destructive/80">{errorMessage}</BodyText>}
-          <Button variant="ghost" size="small" className="mt-2" onPress={() => refetch()}>
+          <Button variant="ghost" size="sm" className="mt-2" onPress={() => refetch()}>
             Reintentar
           </Button>
         </div>
