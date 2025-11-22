@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react';
+﻿import React, { useEffect } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { Card, CardContent, CardHeader, CardTitle } from '../../../../components/ui';
 import { MachineRegistrationData } from '@packages/contracts';
+import { useMachineTypes } from '@hooks';
 
 /**
  * Step 3: Confirmación y resumen de la información - RHF Implementation
@@ -17,6 +18,10 @@ export function ConfirmationStep() {
   // Watch all form values for real-time updates
   const data = useWatch({ control });
   const { basicInfo, technicalSpecs } = data;
+  const { data: machineTypes } = useMachineTypes();
+  const selectedMachineTypeName = machineTypes?.find(
+    (type) => type.id === basicInfo?.machineTypeId
+  )?.name;
   
   // Debug: también loggear los valores del form
   useEffect(() => {
@@ -73,7 +78,11 @@ export function ConfirmationStep() {
             </div>
             <div>
               <dt className="text-sm font-medium text-muted-foreground">Tipo de máquina</dt>
-              <dd className="text-sm text-foreground">{displayValue(basicInfo?.machineTypeId, 'No seleccionado')}</dd>
+              <dd className="text-sm text-foreground">
+                {selectedMachineTypeName
+                  ? selectedMachineTypeName
+                  : displayValue(basicInfo?.machineTypeId, 'No seleccionado')}
+              </dd>
             </div>
             <div>
               <dt className="text-sm font-medium text-muted-foreground">Marca</dt>
