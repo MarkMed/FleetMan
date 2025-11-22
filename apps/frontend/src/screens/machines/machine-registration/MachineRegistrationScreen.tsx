@@ -1,42 +1,13 @@
-import React from 'react';
-import { FormProvider } from 'react-hook-form';
-import { Wizard } from '../../../components/forms/wizard';
-import { useMachineRegistrationViewModel } from '../../../viewModels/machines/MachineRegistrationViewModel';
-import { MachineRegistrationData } from '@packages/contracts';
-import { 
-  Modal, 
-  ModalContent, 
-  ModalHeader, 
-  ModalTitle, 
-  ModalDescription, 
-  ModalFooter 
-} from '../../../components/ui/Modal';
-import { Button } from '../../../components/ui/Button';
-import { TextBlock, Skeleton } from '@components/ui';
+﻿import React from "react";
+import { FormProvider } from "react-hook-form";
+import { Wizard } from "../../../components/forms/wizard";
+import { useMachineRegistrationViewModel } from "../../../viewModels/machines/MachineRegistrationViewModel";
+import { MachineRegistrationData } from "@packages/contracts";
+import { Button } from "../../../components/ui/Button";
+import { TextBlock, Skeleton } from "@components/ui";
 
 /**
  * Pantalla principal para el registro de máquinas usando wizard multi-step + React Hook Form
- * 
- * FEATURES IMPLEMENTADAS:
- * ✅ React Hook Form con validación Zod
- * ✅ FormProvider para wizard multi-step
- * ✅ Wizard 2-step simplificado (eliminado LocationInfoStep)
- * ✅ Validaciones por step usando Zod schemas
- * ✅ Componentes reutilizables con Controller pattern
- * ✅ TypeScript completo
- * ✅ DRY - Single source of truth
- * ✅ Cumplimiento de RF-005 - sin scope creep
- * ✅ MVVM Pattern - Logic moved to ViewModel
- * ✅ Modal de éxito con redirección
- * ✅ Sincronización perfecta wizard <-> RHF
- * 
- * CAMBIOS SPRINT 5:
- * - Eliminado paso 3 (LocationInfoStep) por violación de alcance
- * - Simplificado TechnicalSpecsStep con solo campos requeridos
- * - Movido currentLocation e isActive a technicalSpecs
- * - Wizard ahora es 2 pasos + confirmación
- * - Movida toda la lógica al ViewModel (MVVM pattern)
- * - Agregado modal de éxito
  */
 export function MachineRegistrationScreen() {
   // ViewModel maneja toda la lógica
@@ -46,10 +17,7 @@ export function MachineRegistrationScreen() {
     wizardSteps,
     forceUpdate,
     isLoading,
-    showSuccessModal,
-    serverMessage,
     handleWizardSubmit,
-    handleSuccessModalClose,
     handleCancel,
     // Machine types provided by the ViewModel
     machineTypeList,
@@ -62,10 +30,10 @@ export function MachineRegistrationScreen() {
     <div className="max-w-4xl mx-auto p-6">
       {/* Header */}
       <div className="mb-8">
-        <TextBlock as='h1' size='headline'>
+        <TextBlock as="h1" size="headline">
           Registrar Nueva Máquina
         </TextBlock>
-        <TextBlock as='p' size='medium' className="mt-2 text-gray-600">
+        <TextBlock as="p" size="medium" className="mt-2 text-gray-600">
           Completa la información en los siguientes pasos para registrar una nueva máquina en el sistema.
         </TextBlock>
       </div>
@@ -143,33 +111,6 @@ export function MachineRegistrationScreen() {
           />
         </FormProvider>
       )}
-
-      {/* Success Modal */}
-      <Modal open={showSuccessModal} onOpenChange={handleSuccessModalClose}>
-        <ModalContent className="sm:max-w-md">
-          <ModalHeader>
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-              </div>
-              <ModalTitle>¡Máquina registrada exitosamente!</ModalTitle>
-            </div>
-            <ModalDescription>
-              {serverMessage || 'La máquina ha sido registrada correctamente en el sistema. Ahora puedes gestionarla desde el dashboard.'}
-            </ModalDescription>
-          </ModalHeader>
-          <ModalFooter>
-            <Button
-              onPress={handleSuccessModalClose}
-              className="w-full"
-            >
-              Ir al Dashboard
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
     </div>
   );
 }

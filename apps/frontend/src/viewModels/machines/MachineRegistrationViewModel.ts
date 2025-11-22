@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useReducer } from 'react';
+﻿import { useState, useCallback, useEffect, useReducer } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import {
   MachineRegistrationData,
@@ -16,6 +16,8 @@ import { BasicInfoStep, TechnicalSpecsStep, ConfirmationStep } from '../../scree
 import { useZodForm } from '../../hooks/useZodForm';
 import { useMachineTypes } from '../../hooks';
 import type { MachineTypeResponse } from '@packages/contracts';
+import { toast } from '@components/ui';
+import { useNavigate } from 'react-router-dom';
 
 // TODO: Importar desde @useCases cuando esté implementado
 // import { CreateMachineUseCase } from '@useCases/machines';
@@ -31,12 +33,9 @@ export interface MachineRegistrationViewModel {
   // UI State
   isLoading: boolean;
   error: string | null;
-  showSuccessModal: boolean;
-  serverMessage: string | null;
   
   // Actions
-  handleWizardSubmit: (wizardData: MachineRegistrationData) => Promise<void>;
-  handleSuccessModalClose: () => void;
+  handleWizardSubmit: (_wizardData: MachineRegistrationData) => Promise<void>;
   handleCancel: () => void;
   reset: () => void;
   // Machine types data (for selects)
@@ -48,20 +47,19 @@ export interface MachineRegistrationViewModel {
 
 /**
  * ViewModel para el registro de máquinas siguiendo patrón MVVM
- * 
+ *
  * RESPONSABILIDADES:
  * - Gestionar estado del wizard multi-step con RHF integration
  * - Validar datos por step usando schemas de contracts
  * - Orquestar use cases de creación de máquina
- * - Manejar UI state (modals, loading, errors)
+ * - Manejar UI state (loading, errors)
  * - Transformar datos entre UI format y domain format
- * 
+ *
  * FEATURES IMPLEMENTADAS:
- * ✅ React Hook Form con validación Zod
- * ✅ Wizard configuration con steps y validaciones
- * ✅ Modal de éxito con redirección
- * ✅ Manejo de errores granular
- * ✅ Sincronización perfecta wizard <-> RHF
+ * • React Hook Form con validación Zod
+ * • Wizard configuration con steps y validaciones
+ * • Manejo de errores granular
+ * • Sincronización perfecta wizard <-> RHF
  */
 export function useMachineRegistrationViewModel(): MachineRegistrationViewModel {
   // React Hook Form con Zod validation
@@ -70,12 +68,11 @@ export function useMachineRegistrationViewModel(): MachineRegistrationViewModel 
     defaultValues: defaultMachineRegistrationData,
     mode: 'onChange', // Validate on change for better UX
   });
+  const navigate = useNavigate();
 
   // UI State
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [serverMessage, setServerMessage] = useState<string | null>(null);
 
   // Force re-render when form state changes to make validation reactive
   const [, forceUpdateReducer] = useReducer(x => x + 1, 0);
@@ -149,14 +146,15 @@ export function useMachineRegistrationViewModel(): MachineRegistrationViewModel 
   /**
    * Handle wizard submit - main business logic
    */
-  const handleWizardSubmit = useCallback(async (wizardData: MachineRegistrationData): Promise<void> => {
+  const handleWizardSubmit = useCallback(async (_wizardData: MachineRegistrationData): Promise<void> => {
     setIsLoading(true);
     setError(null);
-    setServerMessage(null);
     
     try {
       // Use form.getValues() as single source of truth
       const currentFormData = form.getValues();
+      const machineName = currentFormData.basicInfo?.name?.trim() 
+        || `${currentFormData.basicInfo?.brand} ${currentFormData.basicInfo?.modelName}`.trim();
       
       // Trigger validation
       const isValid = await form.trigger();
@@ -164,11 +162,11 @@ export function useMachineRegistrationViewModel(): MachineRegistrationViewModel 
         throw new Error('Los datos no son válidos');
       }
 
-      console.log('📤 Submitting machine registration:', currentFormData);
+      console.log('✔️ Submitting machine registration:', currentFormData);
       
       // Map wizard data to API request format
       const payload = mapWizardDataToDomain(currentFormData);
-      console.log('📦 Mapped payload:', payload);
+      console.log('✔️ Mapped payload:', payload);
       
       // Get token from auth store
       const token = getSessionToken();
@@ -181,19 +179,18 @@ export function useMachineRegistrationViewModel(): MachineRegistrationViewModel 
         Authorization: `Bearer ${token}`,
       };
       
-      console.log('🔐 Sending request with Authorization header');
+      console.log('ℹ️ Sending request with Authorization header');
       
       // Call API to create machine
       const response = await machineService.createMachine(payload, headers);
-      const responseData = response.data;
+      console.log('✅ Machine registered successfully:', response.data);
       
-      console.log('✅ Machine registered successfully:', responseData);
-      
-      // Set success message from server response
-      setServerMessage(
-        `Máquina "${responseData.brand} ${responseData.modelName}" registrada exitosamente con ID: ${responseData.id}`
-      );
-      setShowSuccessModal(true);
+      toast.success({
+        title: 'Máquina registrada',
+        description: `La máquina "${machineName}" fue registrada exitosamente.`,
+      });
+      form.reset(defaultMachineRegistrationData);
+      navigate('/machines');
       
     } catch (error) {
       console.error('❌ Error registering machine:', error);
@@ -207,23 +204,7 @@ export function useMachineRegistrationViewModel(): MachineRegistrationViewModel 
     } finally {
       setIsLoading(false);
     }
-  }, [form]);
-
-  /**
-   * Handle success modal close with navigation
-   */
-  const handleSuccessModalClose = useCallback(() => {
-    setShowSuccessModal(false);
-    
-    // Reset form and state
-    form.reset(defaultMachineRegistrationData);
-    setError(null);
-    setServerMessage(null);
-    
-    // TODO: Navigate to dashboard when router is available
-    // navigate('/dashboard/machines');
-    console.log('Navigation to dashboard would happen here');
-  }, [form]);
+  }, [form, navigate]);
 
   /**
    * Handle cancel action
@@ -240,7 +221,6 @@ export function useMachineRegistrationViewModel(): MachineRegistrationViewModel 
     form.reset(defaultMachineRegistrationData);
     setError(null);
     setIsLoading(false);
-    setShowSuccessModal(false);
   }, [form]);
 
   return {
@@ -254,8 +234,6 @@ export function useMachineRegistrationViewModel(): MachineRegistrationViewModel 
     // UI State
     isLoading,
     error,
-    showSuccessModal,
-    serverMessage,
     // Machine types from hook
     machineTypeList,
     machineTypesLoading,
@@ -264,7 +242,6 @@ export function useMachineRegistrationViewModel(): MachineRegistrationViewModel 
     
     // Actions
     handleWizardSubmit,
-    handleSuccessModalClose,
     handleCancel,
     reset,
   };
