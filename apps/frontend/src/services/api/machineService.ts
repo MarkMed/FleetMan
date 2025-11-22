@@ -5,6 +5,11 @@ import type {
   CreateMachineRequest as MachineFormData,
   ListMachinesResponse
 } from '@packages/contracts';
+import type {
+  CreateMachineEventRequest,
+  CreateMachineEventResponse,
+  ListMachineEventsResponse
+} from '@packages/contracts';
 
 // Temporary basic types for MVP
 interface MachineFilters {
@@ -85,6 +90,38 @@ export class MachineService {
   async deleteMachine(id: string): Promise<void> {
     const response = await apiClient.delete(API_ENDPOINTS.MACHINE(id));
     handleApiResponse(response);
+  }
+
+  // Get machine events
+  async getMachineEvents(machineId: string): Promise<ListMachineEventsResponse> {
+    const response = await apiClient.get<ListMachineEventsResponse>(API_ENDPOINTS.MACHINE_EVENTS(machineId));
+    return handleApiResponse(response);
+  }
+
+  // Create machine event
+  async createMachineEvent(machineId: string, eventData: CreateMachineEventRequest): Promise<CreateMachineEventResponse> {
+    const payload = { ...eventData, machineId };
+    const response = await apiClient.post<CreateMachineEventResponse>(API_ENDPOINTS.MACHINE_EVENTS(machineId), payload);
+    return handleApiResponse(response);
+  }
+
+  // Get machine reminders
+  async getMachineReminders(machineId: string): Promise<any> {
+    const response = await apiClient.get(API_ENDPOINTS.MACHINE_REMINDERS(machineId));
+    return handleApiResponse(response);
+  }
+
+  // Create machine reminder
+  async createMachineReminder(machineId: string, reminderData: any): Promise<any> {
+    const payload = { ...reminderData, machineId };
+    const response = await apiClient.post(API_ENDPOINTS.MACHINE_REMINDERS(machineId), payload);
+    return handleApiResponse(response);
+  }
+
+  // Update machine operating hours convenience method
+  async updateMachineHours(id: string, hours: number): Promise<Machine> {
+    // Reuse updateMachine to update the specs.operatingHours
+    return this.updateMachine(id, { specs: { operatingHours: hours } } as any);
   }
 
   // Get machine statistics (for dashboard)

@@ -1,13 +1,18 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { machineService } from '@services/api/machineService';
 import { QUERY_KEYS } from '@constants';
-import type { 
-  Machine, 
-  MachineFormData, 
-  MachineFilters, 
-  EventFormData,
-  MaintenanceReminderFormData 
-} from '@models';
+import type { CreateMachineResponse as Machine, CreateMachineRequest as MachineFormData } from '@packages/contracts';
+import type { CreateMachineEventRequest as EventFormData } from '@packages/contracts';
+
+// Local filter type used by the hooks (frontend-specific)
+interface MachineFilters {
+  status?: string[];
+  brand?: string[];
+  location?: string[];
+  ownerId?: string;
+  managedById?: string;
+  searchTerm?: string;
+}
 
 // Get machines with filters
 export const useMachines = (filters?: MachineFilters) => {
@@ -109,7 +114,8 @@ export const useCreateMachineReminder = (machineId: string) => {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: (reminderData: MaintenanceReminderFormData) => 
+    // MaintenanceReminderFormData is currently not in contracts; accept `any` until contract exists
+    mutationFn: (reminderData: any) => 
       machineService.createMachineReminder(machineId, reminderData),
     onSuccess: () => {
       queryClient.invalidateQueries({ 

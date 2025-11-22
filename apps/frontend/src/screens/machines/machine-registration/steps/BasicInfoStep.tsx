@@ -77,16 +77,16 @@ export function BasicInfoStep() {
         {/* Modelo */}
         <Controller
           control={control}
-          name="basicInfo.model"
+          name="basicInfo.modelName"
           render={({ field: { onChange, onBlur, value } }) => (
             <InputField
               label="Modelo"
               required
-              value={value || ''}
+              value={String(value ?? '')}
               onChangeText={onChange}
               onBlur={onBlur}
               placeholder="Ej: 320D"
-              error={errors.basicInfo?.model?.message}
+              error={errors.basicInfo?.modelName?.message}
             />
           )}
         />

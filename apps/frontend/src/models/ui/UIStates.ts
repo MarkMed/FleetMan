@@ -95,3 +95,10 @@ export interface SidebarState {
   activeSection?: string;
   hoveredItem?: string;
 }
+
+// UIState used by the UI store slice
+export interface UIState {
+  sidebarCollapsed: boolean;
+  theme: 'light' | 'dark' | 'system';
+  language: 'es' | 'en';
+}

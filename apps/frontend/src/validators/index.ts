@@ -89,31 +89,27 @@ export const maintenanceReminderSchema = z.object({
   type: z.enum(['time', 'hours', 'both'], {
     errorMap: () => ({ message: 'Selecciona un tipo de recordatorio' }),
   }),
-  intervalDays: z
-    .number()
-    .optional()
-    .refine((val, ctx) => {
-      const type = ctx.parent.type;
-      if ((type === 'time' || type === 'both') && (!val || val <= 0)) {
-        return false;
-      }
-      return true;
-    }, {
-      message: 'Los días de intervalo son requeridos',
-    }),
-  intervalHours: z
-    .number()
-    .optional()
-    .refine((val, ctx) => {
-      const type = ctx.parent.type;
-      if ((type === 'hours' || type === 'both') && (!val || val <= 0)) {
-        return false;
-      }
-      return true;
-    }, {
-      message: 'Las horas de intervalo son requeridas',
-    }),
-});
+  intervalDays: z.number().optional(),
+  intervalHours: z.number().optional()
+})
+  .superRefine((data, ctx) => {
+    const { type, intervalDays, intervalHours } = data;
+    if ((type === 'time' || type === 'both') && (!intervalDays || intervalDays <= 0)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Los días de intervalo son requeridos cuando el tipo incluye tiempo',
+        path: ['intervalDays']
+      });
+    }
+    if ((type === 'hours' || type === 'both') && (!intervalHours || intervalHours <= 0)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Las horas de intervalo son requeridas cuando el tipo incluye horas',
+        path: ['intervalHours']
+      });
+    }
+  });
+  
 
 // Event schema
 export const eventSchema = z.object({
