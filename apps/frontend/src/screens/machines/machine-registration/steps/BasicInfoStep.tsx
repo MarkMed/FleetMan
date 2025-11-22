@@ -18,7 +18,8 @@ export function BasicInfoStep() {
 
   console.log('🌐 BasicInfoStep: machineTypeList:', machineTypeList);
   const machineTypes = Array.isArray(machineTypeList)
-    ? machineTypeList.map((mt: any) => ({ value: mt.id, label: mt.name }))
+    // ? machineTypeList.map((mt: any) => ({ value: mt.id, label: mt.name }))
+    ? machineTypeList.map((mt: any) => ({ value: mt.name, label: mt.name }))
     : [];
   console.log('🌐 BasicInfoStep: machineTypes for Select:', machineTypes);
 
