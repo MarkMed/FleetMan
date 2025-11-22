@@ -268,7 +268,19 @@ export const useAuthStore = create<AuthStore>()(
           
           // Set hydrated first to prevent race conditions
           state?.setHydrated(true);
-          
+
+          // If token exists, ensure apiClient has the Authorization header immediately
+          // so any components mounting right after hydration will include the JWT.
+          if (state?.token) {
+            try {
+              console.log('🔒 Setting auth token on apiClient during rehydrate');
+              // authService is imported at top of this file and will set the header
+              authService.setAuthToken(state.token as string);
+            } catch (e) {
+              console.warn('Failed to set auth token on rehydrate:', e);
+            }
+          }
+
           // If we have a token but no user, schedule loadUser for next tick
           // This prevents blocking the hydration process
           if (state?.token && !state?.user) {
@@ -284,3 +296,28 @@ export const useAuthStore = create<AuthStore>()(
     }
   )
 );
+
+// Exported helper: obtiene el token de sesión de forma síncrona.
+// Intenta primero leer el estado del store y, si no está disponible,
+// hace fallback a localStorage usando la clave definida en config.
+export function getSessionToken(): string | null {
+  try {
+    if ((useAuthStore as any)?.getState) {
+      const state = (useAuthStore as any).getState();
+      if (state?.token) return state.token as string;
+    }
+  } catch (e) {
+    // ignore and fallback to localStorage
+  }
+
+  try {
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      const persisted = localStorage.getItem(config.STORAGE_KEYS.AUTH_TOKEN);
+      return persisted;
+    }
+  } catch (e) {
+    // localStorage may be unavailable
+  }
+
+  return null;
+}

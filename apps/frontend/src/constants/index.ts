@@ -39,6 +39,8 @@ export const API_ENDPOINTS = {
   // Machines
   MACHINES: '/machines',
   MACHINE: (id: string) => `/machines/${id}`,
+  MACHINE_TYPES: '/machine-types',
+  MACHINE_TYPE: (id: string) => `/machine-types/${id}`,
   MACHINE_EVENTS: (id: string) => `/machines/${id}/events`,
   
   // Maintenance
@@ -155,6 +157,7 @@ export const QUERY_KEYS = {
   
   // Machines
   MACHINES: ['machines'],
+  MACHINE_TYPES: ['machine-types'],
   MACHINE: (id: string) => ['machines', id],
   MACHINE_EVENTS: (id: string) => ['machines', id, 'events'],
   

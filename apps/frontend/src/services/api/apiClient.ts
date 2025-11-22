@@ -31,6 +31,7 @@ class ApiClient {
 
   // Set authorization token
   setAuthToken(token: string | null) {
+    console.log("🔐 Setting auth token in apiClient:", token ? token : "null");
     if (token) {
       this.defaultHeaders["Authorization"] = `Bearer ${token}`;
     } else {
@@ -76,7 +77,7 @@ class ApiClient {
   // Generic request method
   async request<T = any>(
     endpoint: string,
-    config: RequestConfig = {}
+    requestConfig: RequestConfig = {}
   ): Promise<ApiResponse<T>> {
     const {
       method = "GET",
@@ -84,10 +85,34 @@ class ApiClient {
       body,
       params,
       timeout = TIMEOUT,
-    } = config;
+    } = requestConfig;
 
     const url = this.buildUrl(endpoint, params);
     const requestHeaders = { ...this.defaultHeaders, ...headers };
+
+    // Defensive fallback: if Authorization header is missing, try reading persisted token
+    // directly from localStorage. This avoids circular imports with the auth store
+    // and guarantees that early requests get the JWT if it was persisted.
+    try {
+      const hasAuthHeader = Object.keys(requestHeaders).some(
+        (k) => k.toLowerCase() === 'authorization'
+      );
+      if (!hasAuthHeader && typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+        const persisted = localStorage.getItem(config.STORAGE_KEYS.AUTH_TOKEN);
+        if (persisted) {
+          requestHeaders['Authorization'] = `Bearer ${persisted}`;
+          try {
+            // keep defaultHeaders in sync for subsequent requests
+            this.setAuthToken(persisted);
+          } catch (e) {
+            console.warn('apiClient: failed to set default auth token', e);
+          }
+        }
+      }
+    } catch (e) {
+      // Non-fatal: if localStorage access is blocked, continue without Authorization
+      console.warn('apiClient: error while applying persisted auth token fallback', e);
+    }
 
     // Create AbortController for timeout
     const controller = new AbortController();

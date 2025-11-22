@@ -1,10 +1,12 @@
 import { apiClient, handleApiResponse } from './apiClient';
 import { API_ENDPOINTS } from '../../constants';
+import { getSessionToken } from '../../store/slices/authSlice';
 import type { 
   CreateMachineResponse as Machine,
   CreateMachineRequest as MachineFormData,
   ListMachinesResponse
 } from '@packages/contracts';
+import type { MachineTypeResponse } from '@packages/contracts';
 import type {
   CreateMachineEventRequest,
   CreateMachineEventResponse,
@@ -134,6 +136,31 @@ export class MachineService {
   }> {
     const response = await apiClient.get(`${API_ENDPOINTS.MACHINES}/stats`);
     return handleApiResponse(response);
+  }
+
+  // Get machine types (for dropdowns etc.)
+  async getMachineTypes(language?: string): Promise<MachineTypeResponse[]> {
+    const params: Record<string, string> = {};
+    if (language) params.language = language;
+
+    // Read token synchronously from store helper and pass it explicitly as headers
+    let headers: Record<string, string> | undefined = undefined;
+    try {
+      const token = getSessionToken();
+      if (token) {
+        headers = { Authorization: `Bearer ${token}` };
+      }
+    } catch (e) {
+      // Non-fatal: proceed without headers if helper fails
+      console.warn('machineService: getSessionToken failed', e);
+      headers = undefined;
+    }
+    console.log('🌐 machineService: getMachineTypes using headers:', headers);
+    const response = await apiClient.get(API_ENDPOINTS.MACHINE_TYPES, params, headers);
+    console.log('🔗 Raw API response for machine types:', response);
+    const data = handleApiResponse(response).data;
+    console.log('✅ Processed machine types data:', data);
+    return data;
   }
 }
 

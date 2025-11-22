@@ -1,7 +1,8 @@
 import React from 'react';
 import { useFormContext, Controller } from 'react-hook-form';
-import { InputField, Select, Textarea } from '../../../../components/ui';
+import { InputField, Select, Textarea, Skeleton } from '../../../../components/ui';
 import { MachineRegistrationData } from '@packages/contracts';
+import { useMachineTypes } from '@hooks';
 
 /**
  * Step 1: Información básica de la máquina - RHF Implementation
@@ -13,12 +14,13 @@ export function BasicInfoStep() {
   } = useFormContext<MachineRegistrationData>();
 
   // Mock data para machine types (en producción vendría del ViewModel/API)
-  const machineTypes = [
-    { value: '1', label: 'Excavadora' },
-    { value: '2', label: 'Bulldozer' },
-    { value: '3', label: 'Grúa' },
-    { value: '4', label: 'Cargadora' },
-  ];
+  const { data: machineTypeList, isLoading, isError } = useMachineTypes();
+
+  console.log('🌐 BasicInfoStep: machineTypeList:', machineTypeList);
+  const machineTypes = Array.isArray(machineTypeList)
+    ? machineTypeList.map((mt: any) => ({ value: mt.id, label: mt.name }))
+    : [];
+  console.log('🌐 BasicInfoStep: machineTypes for Select:', machineTypes);
 
   return (
     <div className="space-y-6">
@@ -45,15 +47,19 @@ export function BasicInfoStep() {
           control={control}
           name="basicInfo.machineTypeId"
           render={({ field: { onChange, value } }) => (
-            <Select
-              label="Tipo de máquina"
-              required
-              value={value || ''}
-              onValueChange={onChange}
-              options={machineTypes}
-              placeholder="Selecciona un tipo"
-              error={errors.basicInfo?.machineTypeId?.message}
-            />
+            isLoading ? (
+              <Skeleton className="h-10 w-full" />
+            ) : (
+              <Select
+                label="Tipo de máquina"
+                required
+                value={value || ''}
+                onValueChange={onChange}
+                options={machineTypes}
+                placeholder={isError ? 'Error al cargar tipos' : 'Selecciona un tipo'}
+                error={errors.basicInfo?.machineTypeId?.message}
+              />
+            )
           )}
         />
 

@@ -9,6 +9,8 @@ import {
 import { WizardStep } from '../../components/forms/wizard';
 import { BasicInfoStep, TechnicalSpecsStep, ConfirmationStep } from '../../screens/machines/machine-registration/steps';
 import { useZodForm } from '../../hooks/useZodForm';
+import { useMachineTypes } from '../../hooks';
+import type { MachineTypeResponse } from '@packages/contracts';
 
 // TODO: Importar desde @useCases cuando esté implementado
 // import { CreateMachineUseCase } from '@useCases/machines';
@@ -31,6 +33,11 @@ export interface MachineRegistrationViewModel {
   handleSuccessModalClose: () => void;
   handleCancel: () => void;
   reset: () => void;
+  // Machine types data (for selects)
+  machineTypeList?: MachineTypeResponse[];
+  machineTypesLoading: boolean;
+  machineTypesError: boolean;
+  refetchMachineTypes: () => Promise<unknown> | void;
 }
 
 /**
@@ -123,6 +130,14 @@ export function useMachineRegistrationViewModel(): MachineRegistrationViewModel 
       isValid: () => Object.keys(form.formState.errors).length === 0, // Summary step - valid only if no errors
     },
   ];
+
+  // Fetch machine types (moved to ViewModel to keep screen presentational)
+  const {
+    data: machineTypeList,
+    isLoading: machineTypesLoading,
+    isError: machineTypesError,
+    refetch: refetchMachineTypes,
+  } = useMachineTypes();
 
   /**
    * Handle wizard submit - main business logic
@@ -217,6 +232,11 @@ export function useMachineRegistrationViewModel(): MachineRegistrationViewModel 
     isLoading,
     error,
     showSuccessModal,
+    // Machine types from hook
+    machineTypeList,
+    machineTypesLoading,
+    machineTypesError,
+    refetchMachineTypes,
     
     // Actions
     handleWizardSubmit,
