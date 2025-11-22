@@ -71,10 +71,14 @@ export class MachineService {
   }
 
   // Create new machine
-  async createMachine(machineData: MachineFormData): Promise<Machine> {
-    const response = await apiClient.post<Machine>(
+  async createMachine(
+    machineData: MachineFormData,
+    headers?: Record<string, string>
+  ): Promise<{success: boolean, message: string, data: Machine}> {
+    const response = await apiClient.post<{success: boolean, message: string, data: Machine}>(
       API_ENDPOINTS.MACHINES,
-      machineData
+      machineData,
+      headers
     );
     return handleApiResponse(response);
   }

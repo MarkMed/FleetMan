@@ -76,7 +76,8 @@ export const WizardControls: React.FC<WizardControlsProps> = ({
       <div>
         {isLastStep ? (
           <TimerButton
-            startOnRender={false}
+            doubleConfirmation={true}
+            resetOnAction={true}
             duration={5}
             onAction={onSubmit}
             label={submitLabel}

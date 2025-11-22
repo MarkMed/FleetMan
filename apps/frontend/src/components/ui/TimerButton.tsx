@@ -42,6 +42,8 @@ export interface TimerButtonProps extends Omit<ButtonProps, 'onPress' | 'disable
  *    - Primera fase: Timer automático (botón deshabilitado)
  *    - Segunda fase: Usuario confirma → timer cancelable
  *    - Si no se cancela → ejecuta acción automáticamente
+ * 4. resetOnAction=true: Reseteo automático
+ *   - Tras ejecutar la acción, el botón vuelve a su estado inicial
  * 
  * EJEMPLOS:
  * ```tsx

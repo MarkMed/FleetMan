@@ -5,7 +5,12 @@ import {
   MachineRegistrationSchema,
   defaultMachineRegistrationData,
   validateMachineStep,
+  CreateMachineRequest,
+  CreateMachineResponse,
 } from '@packages/contracts';
+import { machineService } from '../../services/api/machineService';
+import { getSessionToken } from '../../store/slices/authSlice';
+import { useAuthStore } from '../../store/slices/authSlice';
 import { WizardStep } from '../../components/forms/wizard';
 import { BasicInfoStep, TechnicalSpecsStep, ConfirmationStep } from '../../screens/machines/machine-registration/steps';
 import { useZodForm } from '../../hooks/useZodForm';
@@ -27,6 +32,7 @@ export interface MachineRegistrationViewModel {
   isLoading: boolean;
   error: string | null;
   showSuccessModal: boolean;
+  serverMessage: string | null;
   
   // Actions
   handleWizardSubmit: (wizardData: MachineRegistrationData) => Promise<void>;
@@ -69,6 +75,7 @@ export function useMachineRegistrationViewModel(): MachineRegistrationViewModel 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [serverMessage, setServerMessage] = useState<string | null>(null);
 
   // Force re-render when form state changes to make validation reactive
   const [, forceUpdateReducer] = useReducer(x => x + 1, 0);
@@ -145,9 +152,10 @@ export function useMachineRegistrationViewModel(): MachineRegistrationViewModel 
   const handleWizardSubmit = useCallback(async (wizardData: MachineRegistrationData): Promise<void> => {
     setIsLoading(true);
     setError(null);
+    setServerMessage(null);
     
     try {
-      // 🔥 FIX: Usar form.getValues() como fuente única de verdad
+      // Use form.getValues() as single source of truth
       const currentFormData = form.getValues();
       
       // Trigger validation
@@ -156,28 +164,42 @@ export function useMachineRegistrationViewModel(): MachineRegistrationViewModel 
         throw new Error('Los datos no son válidos');
       }
 
-      // Log para debugging
-      console.log('Submitting machine registration:', currentFormData);
+      console.log('📤 Submitting machine registration:', currentFormData);
       
-      // Simular llamada API
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Map wizard data to API request format
+      const payload = mapWizardDataToDomain(currentFormData);
+      console.log('📦 Mapped payload:', payload);
       
-      // Simular éxito/error aleatorio para testing
-      const shouldSucceed = Math.random() > 0.2; // 80% success rate
-      
-      if (!shouldSucceed) {
-        throw new Error('Error del servidor al registrar la máquina');
+      // Get token from auth store
+      const token = getSessionToken();
+      if (!token) {
+        throw new Error('No se encontró token de autenticación. Por favor, inicia sesión nuevamente.');
       }
-
-      // ✅ SUCCESS: Mostrar modal en lugar de console.log
-      console.log('Machine registered successfully:', currentFormData);
+      
+      // Build headers with Authorization
+      const headers = {
+        Authorization: `Bearer ${token}`,
+      };
+      
+      console.log('🔐 Sending request with Authorization header');
+      
+      // Call API to create machine
+      const response = await machineService.createMachine(payload, headers);
+      const responseData = response.data;
+      
+      console.log('✅ Machine registered successfully:', responseData);
+      
+      // Set success message from server response
+      setServerMessage(
+        `Máquina "${responseData.brand} ${responseData.modelName}" registrada exitosamente con ID: ${responseData.id}`
+      );
       setShowSuccessModal(true);
       
     } catch (error) {
-      console.error('Error registering machine:', error);
+      console.error('❌ Error registering machine:', error);
       
       // Set error both in ViewModel and RHF
-      const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+      const errorMessage = error instanceof Error ? error.message : 'Error desconocido al registrar la máquina';
       setError(errorMessage);
       form.setError('root', { message: errorMessage });
       
@@ -193,9 +215,10 @@ export function useMachineRegistrationViewModel(): MachineRegistrationViewModel 
   const handleSuccessModalClose = useCallback(() => {
     setShowSuccessModal(false);
     
-    // Reset form
+    // Reset form and state
     form.reset(defaultMachineRegistrationData);
     setError(null);
+    setServerMessage(null);
     
     // TODO: Navigate to dashboard when router is available
     // navigate('/dashboard/machines');
@@ -232,6 +255,7 @@ export function useMachineRegistrationViewModel(): MachineRegistrationViewModel 
     isLoading,
     error,
     showSuccessModal,
+    serverMessage,
     // Machine types from hook
     machineTypeList,
     machineTypesLoading,
@@ -246,24 +270,44 @@ export function useMachineRegistrationViewModel(): MachineRegistrationViewModel 
   };
 }
 
-// TODO: Implementar mapper functions
 /**
  * Mapea los datos del wizard UI a formato del dominio
  * 
  * @param wizardData - Datos del wizard
  * @returns Datos en formato CreateMachineRequest
  */
-// export function mapWizardDataToDomain(wizardData: MachineRegistrationData): CreateMachineRequest {
-//   return {
-//     serialNumber: wizardData.basicInfo.serialNumber,
-//     brand: wizardData.basicInfo.brand,
-//     model: wizardData.basicInfo.model,
-//     machineTypeId: wizardData.basicInfo.machineTypeId,
-//     ownerId: wizardData.basicInfo.ownerId || 'current-user-id', // TODO: Get from auth context
-//     createdById: wizardData.basicInfo.createdById || 'current-user-id',
-//     specs: wizardData.technicalSpecs,
-//     location: mapLocationData(wizardData.locationInfo),
-//     nickname: wizardData.basicInfo.nickname,
-//     initialStatus: wizardData.locationInfo.isActive ? 'ACTIVE' : 'MAINTENANCE',
-//   };
-// }
+function mapWizardDataToDomain(wizardData: MachineRegistrationData): CreateMachineRequest {
+  // Get current user ID from auth store
+  const currentUserId = useAuthStore.getState().user?.id;
+  
+  if (!currentUserId) {
+    throw new Error('No se pudo obtener el ID del usuario autenticado');
+  }
+  
+  return {
+    serialNumber: wizardData.basicInfo.serialNumber,
+    brand: wizardData.basicInfo.brand,
+    modelName: wizardData.basicInfo.modelName,
+    machineTypeId: wizardData.basicInfo.machineTypeId,
+    ownerId: wizardData.basicInfo.ownerId || currentUserId,
+    createdById: wizardData.basicInfo.createdById || currentUserId,
+    specs: {
+      year: wizardData.technicalSpecs.year,
+      operatingHours: wizardData.technicalSpecs.operatingHours,
+      fuelType: wizardData.technicalSpecs.fuelType as any, // Type conversion for fuel type
+      // TODO: Map additional specs fields when backend supports them
+      // attachments: wizardData.technicalSpecs.attachments,
+      // specialFeatures: wizardData.technicalSpecs.specialFeatures,
+    },
+    // TODO: Implement location mapping when backend supports full location object
+    // location: wizardData.technicalSpecs.currentLocation ? {
+    //   siteName: wizardData.technicalSpecs.currentLocation,
+    //   lastUpdated: new Date().toISOString(),
+    // } : undefined,
+    nickname: wizardData.basicInfo.nickname,
+    initialStatus: wizardData.technicalSpecs.isActive ? 'ACTIVE' : 'MAINTENANCE',
+  };
+}
+
+// TODO: Implementar mapper inverso para edición
+// function mapDomainToWizardData(machine: CreateMachineResponse): MachineRegistrationData { ... }

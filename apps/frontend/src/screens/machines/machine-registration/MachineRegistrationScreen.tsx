@@ -47,6 +47,7 @@ export function MachineRegistrationScreen() {
     forceUpdate,
     isLoading,
     showSuccessModal,
+    serverMessage,
     handleWizardSubmit,
     handleSuccessModalClose,
     handleCancel,
@@ -156,8 +157,7 @@ export function MachineRegistrationScreen() {
               <ModalTitle>¡Máquina registrada exitosamente!</ModalTitle>
             </div>
             <ModalDescription>
-              La máquina ha sido registrada correctamente en el sistema. 
-              Ahora puedes gestionarla desde el dashboard.
+              {serverMessage || 'La máquina ha sido registrada correctamente en el sistema. Ahora puedes gestionarla desde el dashboard.'}
             </ModalDescription>
           </ModalHeader>
           <ModalFooter>
