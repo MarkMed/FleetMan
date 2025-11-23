@@ -112,7 +112,10 @@ export function GlobalModal() {
    * Get the appropriate strategy for the current modal variant
    */
   const getVariantStrategy = () => {
-    return modalVariantStrategyFactory.getStrategy(config.feedbackVariant || config.variant);
+    const variant = config.variant !== "default" ? config.variant : (config.feedbackVariant !== undefined ? config.feedbackVariant : 'info');
+    const strategyResult = modalVariantStrategyFactory.getStrategy(variant);
+    console.log('Using modal strategy for variant:', config, strategyResult);
+    return strategyResult;
   };
 
   /**
@@ -192,7 +195,7 @@ export function GlobalModal() {
         showCloseButton={config.showCloseButton}
       >
         {/* Header Section */}
-        {(config.title || config.description) && (
+        {(config.title) && (
           <ModalHeader>
             {config.title && (
               <ModalTitle className={cn(

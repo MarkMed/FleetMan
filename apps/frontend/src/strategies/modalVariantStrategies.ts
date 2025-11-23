@@ -48,7 +48,7 @@ export interface ModalVariantStrategy {
  */
 class DefaultModalStrategy implements ModalVariantStrategy {
   getBorderClasses(): string {
-    return 'border-l-4 border-l-gray-400 border-t-gray-400/40 border-r-gray-400/40 border-b-gray-400/40';
+    return 'border-l-2 border-l-gray-400 border-t-gray-400/40 border-r-gray-400/40 border-b-gray-400/40';
   }
 
   getBackgroundAccent(): string {
@@ -73,7 +73,7 @@ class DefaultModalStrategy implements ModalVariantStrategy {
  */
 class InfoModalStrategy implements ModalVariantStrategy {
   getBorderClasses(): string {
-    return 'border-l-4 border-l-blue-500 border-t-blue-500/40 border-r-blue-500/40 border-b-blue-500/40';
+    return 'border-l-2 border-l-blue-500 border-t-blue-500/40 border-r-blue-500/40 border-b-blue-500/40';
   }
 
   getBackgroundAccent(): string {
@@ -98,7 +98,7 @@ class InfoModalStrategy implements ModalVariantStrategy {
  */
 class WarningModalStrategy implements ModalVariantStrategy {
   getBorderClasses(): string {
-    return 'border-l-4 border-l-yellow-500 border-t-yellow-500/40 border-r-yellow-500/40 border-b-yellow-500/40';
+    return 'border-l-2 border-l-yellow-500 border-t-yellow-500/40 border-r-yellow-500/40 border-b-yellow-500/40';
   }
 
   getBackgroundAccent(): string {
@@ -123,7 +123,7 @@ class WarningModalStrategy implements ModalVariantStrategy {
  */
 class DangerModalStrategy implements ModalVariantStrategy {
   getBorderClasses(): string {
-    return 'border-l-4 border-l-red-500 border-t-red-500/40 border-r-red-500/40 border-b-red-500/40';
+    return 'border-l-2 border-l-red-500 border-t-red-500/40 border-r-red-500/40 border-b-red-500/40';
   }
 
   getBackgroundAccent(): string {
@@ -148,7 +148,7 @@ class DangerModalStrategy implements ModalVariantStrategy {
  */
 class SuccessModalStrategy implements ModalVariantStrategy {
   getBorderClasses(): string {
-    return 'border-l-4 border-l-green-500 border-t-green-500/40 border-r-green-500/40 border-b-green-500/40';
+    return 'border-l-2 border-l-green-500 border-t-green-500/40 border-r-green-500/40 border-b-green-500/40';
   }
 
   getBackgroundAccent(): string {
@@ -173,7 +173,7 @@ class SuccessModalStrategy implements ModalVariantStrategy {
  */
 class ConfirmationModalStrategy implements ModalVariantStrategy {
   getBorderClasses(): string {
-    return 'border-l-4 border-l-blue-600 border-t-blue-600/40 border-r-blue-600/40 border-b-blue-600/40';
+    return 'border-l-2 border-l-blue-600 border-t-blue-600/40 border-r-blue-600/40 border-b-blue-600/40';
   }
 
   getBackgroundAccent(): string {
@@ -266,7 +266,7 @@ export const modalVariantStrategyFactory = new ModalVariantStrategyFactory();
  * // Creating a custom modal variant strategy
  * class CustomModalStrategy implements ModalVariantStrategy {
  *   getBorderClasses(): string {
- *     return 'border-l-4 border-l-purple-500 border-t-purple-500/40 border-r-purple-500/40 border-b-purple-500/40';
+ *     return 'border-l-2 border-l-purple-500 border-t-purple-500/40 border-r-purple-500/40 border-b-purple-500/40';
  *   }
  * 
  *   getBackgroundAccent(): string {

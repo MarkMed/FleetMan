@@ -44,7 +44,7 @@ export const ExamplesScreen: React.FC = () => {
       showCancel: true,
       confirmText: 'Continuar',
       cancelText: 'Cancelar',
-      variant: 'info',
+      variant: 'success', // "success", "warning", "danger", "info", "default"
       showColoredBorder: true,
     });
 

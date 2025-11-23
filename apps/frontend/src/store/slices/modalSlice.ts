@@ -179,7 +179,7 @@ const defaultConfig: ModalConfig = {
   variant: 'default',
   showCloseButton: true,
   dismissible: true,
-  size: 'md',
+  size: 'lg',
   showConfirm: true,
   showCancel: false,
   loading: false,
@@ -230,6 +230,7 @@ export const useModalStore = create<ModalStore>((set, get) => ({
 
   // Actions
   showModal: (config: ModalConfig) => {
+    console.log('Showing modal with config:', config);
     set({
       isOpen: true,
       config: { ...defaultConfig, ...config },
@@ -276,6 +277,7 @@ export const useModalStore = create<ModalStore>((set, get) => ({
         showCancel: showCancel,
         dismissible,
         showCloseButton: dismissible,
+        showColoredBorder: true,
         onConfirm,
       },
       resolver: undefined,
