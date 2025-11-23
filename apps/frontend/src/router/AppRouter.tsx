@@ -13,6 +13,7 @@ import { DashboardScreen } from '../screens/dashboard/DashboardScreen';
 import { MachinesScreen } from '../screens/machines/MachinesScreen';
 import { MachineDetailsScreen } from '../screens/machines/MachineDetailsScreen';
 import { NewMachineScreen } from '../screens/machines/NewMachineScreen';
+import { ExamplesScreen } from '../screens/ExamplesScreen';
 
 // Route components
 import { ProtectedRoute } from '../router/ProtectedRoute';
@@ -54,6 +55,9 @@ export const AppRouter: React.FC = () => {
           <Route path="machines" element={<MachinesScreen />} />
           <Route path="machines/new" element={<NewMachineScreen />} />
           <Route path="machines/:id" element={<MachineDetailsScreen />} />
+
+          {/* Examples */}
+          <Route path="ejemplos" element={<ExamplesScreen />} />
           
           {/* Additional protected routes can be added here */}
         </Route>

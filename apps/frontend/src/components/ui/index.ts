@@ -3,6 +3,7 @@ export { Skeleton } from './Skeleton';
 export { Button, buttonVariants } from './Button';
 export { TimerButton } from './TimerButton';
 export { CircularProgress } from './CircularProgress';
+export { Spinner } from './Spinner';
 export { 
   Modal,
   ModalRoot,

@@ -62,6 +62,28 @@ class ModalHelper {
   }
 
   /**
+   * Show a loading modal (feedback-loading)
+   */
+  showLoading(message?: string): void {
+    this.getStore().showLoadingModal(message);
+  }
+
+  /**
+   * Show a simple feedback modal (feedback-message)
+   */
+  showFeedback(config: {
+    variant?: Exclude<ModalVariant, 'default' | 'confirmation'>;
+    title?: string;
+    description?: string;
+    actionLabel?: string;
+    dismissible?: boolean;
+    showCancel?: boolean;
+    onConfirm?: () => void | Promise<void>;
+  }): void {
+    this.getStore().showFeedbackModal(config);
+  }
+
+  /**
    * Show a custom modal with full configuration control
    * 
    * @param config - Complete modal configuration

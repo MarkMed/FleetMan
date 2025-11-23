@@ -8,10 +8,22 @@ import * as React from 'react';
 export type ModalVariant = 'default' | 'confirmation' | 'info' | 'warning' | 'danger' | 'success';
 
 /**
+ * Modal modes:
+ * - default: comportamiento tradicional (content libre)
+ * - feedback-loading: loader bloqueante con mensaje
+ * - feedback-message: feedback simple con botón OK
+ */
+export type ModalMode = 'default' | 'feedback-loading' | 'feedback-message';
+
+/**
  * Modal Configuration Interface
  * Defines all possible modal properties and callbacks
  */
 export interface ModalConfig {
+  /**
+   * Modal mode (default/feedback)
+   */
+  mode?: ModalMode;
   /**
    * Modal title displayed in the header
    */
@@ -49,6 +61,10 @@ export interface ModalConfig {
    * @default false (keeps current default appearance)
    */
   showColoredBorder?: boolean;
+  /**
+   * Feedback variant (para feedback-mode). Reusa los mismos estilos de variant.
+   */
+  feedbackVariant?: Exclude<ModalVariant, 'default' | 'confirmation'>;
   /**
    * Callback fired when confirm/primary button is clicked
    */
@@ -116,6 +132,22 @@ interface ModalActions {
    */
   showModal: (config: ModalConfig) => void;
   /**
+   * Show a loading modal (feedback-loading)
+   */
+  showLoadingModal: (message?: string) => void;
+  /**
+   * Show a simple feedback modal (feedback-message)
+   */
+  showFeedbackModal: (config: {
+    variant?: Exclude<ModalVariant, 'default' | 'confirmation'>;
+    title?: string;
+    description?: string;
+    actionLabel?: string;
+    dismissible?: boolean;
+    showCancel?: boolean;
+    onConfirm?: () => void | Promise<void>;
+  }) => void;
+  /**
    * Hide/close the current modal
    */
   hideModal: () => void;
@@ -143,16 +175,18 @@ export type ModalStore = ModalState & ModalActions;
  * Default modal configuration
  */
 const defaultConfig: ModalConfig = {
+  mode: 'default',
   variant: 'default',
   showCloseButton: true,
   dismissible: true,
   size: 'md',
   showConfirm: true,
-  showCancel: true,
+  showCancel: false,
   loading: false,
   showColoredBorder: false,
   confirmText: 'Confirmar',
   cancelText: 'Cancelar',
+  feedbackVariant: 'info',
 };
 
 /**
@@ -200,6 +234,51 @@ export const useModalStore = create<ModalStore>((set, get) => ({
       isOpen: true,
       config: { ...defaultConfig, ...config },
       resolver: undefined, // Clear any previous resolver
+    });
+  },
+
+  showLoadingModal: (message?: string) => {
+    set({
+      isOpen: true,
+      config: {
+        ...defaultConfig,
+        mode: 'feedback-loading',
+        feedbackVariant: 'info',
+        description: message ?? 'Procesando...',
+        dismissible: false,
+        showCloseButton: false,
+        showConfirm: false,
+        showCancel: false,
+      },
+      resolver: undefined,
+    });
+  },
+
+  showFeedbackModal: ({
+    variant = 'info',
+    title,
+    description,
+    actionLabel = 'Aceptar',
+    dismissible = true,
+    showCancel = false,
+    onConfirm,
+  }) => {
+    set({
+      isOpen: true,
+      config: {
+        ...defaultConfig,
+        mode: 'feedback-message',
+        feedbackVariant: variant,
+        title,
+        description,
+        confirmText: actionLabel,
+        showConfirm: true,
+        showCancel: showCancel,
+        dismissible,
+        showCloseButton: dismissible,
+        onConfirm,
+      },
+      resolver: undefined,
     });
   },
 

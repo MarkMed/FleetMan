@@ -1,8 +1,6 @@
 import React from "react";
 import { useAuth } from "../../store/AuthProvider";
 import { useNavigate } from "react-router-dom";
-import { TimerButtonExamples } from "../../EJEMPLOS/TimerButtonExamples";
-import { Skeleton } from "@components/ui";
 
 export const DashboardScreen: React.FC = () => {
   const { user, logout } = useAuth();
@@ -342,16 +340,6 @@ export const DashboardScreen: React.FC = () => {
           )}
         </div>
 
-        <div className="mt-8 bg-card rounded-lg shadow p-6">
-          <TimerButtonExamples />
-        </div>
-        <div className="flex gap-4">
-          <Skeleton className="h-10 w-10 rounded-full" />
-          <div className="flex-1 space-y-2">
-            <Skeleton className="h-4 w-1/2" />
-            <Skeleton className="h-4 w-1/3" />
-          </div>
-        </div>
       </div>
     </div>
   );

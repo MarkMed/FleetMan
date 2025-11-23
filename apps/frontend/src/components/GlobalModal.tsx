@@ -8,8 +8,9 @@ import {
   ModalTitle,
   ModalDescription,
   ModalFooter,
-  Button
+  Button,
 } from '@components/ui';
+import { Spinner } from '@components/ui';
 import { cn } from '@utils/cn';
 
 /**
@@ -111,7 +112,7 @@ export function GlobalModal() {
    * Get the appropriate strategy for the current modal variant
    */
   const getVariantStrategy = () => {
-    return modalVariantStrategyFactory.getStrategy(config.variant);
+    return modalVariantStrategyFactory.getStrategy(config.feedbackVariant || config.variant);
   };
 
   /**
@@ -173,6 +174,9 @@ export function GlobalModal() {
     return getVariantStrategy().getTitleColorClasses();
   };
 
+  const isFeedbackLoading = config.mode === 'feedback-loading';
+  const isFeedbackMessage = config.mode === 'feedback-message';
+
   return (
     <Modal
       open={isOpen}
@@ -206,15 +210,23 @@ export function GlobalModal() {
           </ModalHeader>
         )}
 
+        {/* Feedback Loading */}
+        {isFeedbackLoading && (
+          <div className="px-6 py-8 flex flex-col items-center gap-4 text-center">
+            <Spinner />
+            {config.description && <ModalDescription>{config.description}</ModalDescription>}
+          </div>
+        )}
+
         {/* Content Section */}
-        {config.content && (
+        {!isFeedbackLoading && config.content && (
           <div className="px-6 py-4">
             {config.content}
           </div>
         )}
 
         {/* Footer Section - Only show if there are buttons to display */}
-        {(config.showConfirm || config.showCancel) && (
+        {(config.showConfirm || config.showCancel) && !isFeedbackLoading && (
           <ModalFooter>
             <div className="flex gap-3 w-full sm:w-auto">
               {/* Cancel Button */}
