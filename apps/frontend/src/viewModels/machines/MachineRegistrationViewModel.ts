@@ -18,6 +18,7 @@ import { useMachineTypes } from '../../hooks';
 import type { MachineTypeResponse } from '@packages/contracts';
 import { toast } from '@components/ui';
 import { useNavigate } from 'react-router-dom';
+import { modal } from '@helpers/modal';
 
 // TODO: Importar desde @useCases cuando esté implementado
 // import { CreateMachineUseCase } from '@useCases/machines';
@@ -184,14 +185,16 @@ export function useMachineRegistrationViewModel(): MachineRegistrationViewModel 
       // Call API to create machine
       const response = await machineService.createMachine(payload, headers);
       console.log('✅ Machine registered successfully:', response.data);
-      
       toast.success({
         title: 'Máquina registrada',
         description: `La máquina "${machineName}" fue registrada exitosamente.`,
       });
-      form.reset(defaultMachineRegistrationData);
-      navigate('/machines');
-      
+      modal.showLoading("Procesando y redireccionando...");
+      setTimeout(() => {
+        modal.hide();
+        form.reset(defaultMachineRegistrationData);
+        navigate('/machines');
+      }, 2000);      
     } catch (error) {
       console.error('❌ Error registering machine:', error);
       
