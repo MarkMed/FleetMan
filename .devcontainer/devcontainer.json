@@ -1,0 +1,63 @@
+{
+  "name": "FleetMan Development",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:1-20-bullseye",
+  
+  // Features to add to the dev container
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "20"
+    },
+    "ghcr.io/devcontainers/features/git:1": {}
+  },
+
+  // Configure tool-specific properties
+  "customizations": {
+    "vscode": {
+      // Set *default* container specific settings.json values on container create
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+          "source.fixAll.eslint": "explicit"
+        }
+      },
+      
+      // Add the IDs of extensions you want installed when the container is created
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "bradlc.vscode-tailwindcss",
+        "usernamehw.errorlens",
+        "ms-vscode.vscode-typescript-next",
+        "GitHub.copilot"
+      ]
+    }
+  },
+
+  // Forward ports for the frontend and backend
+  "forwardPorts": [3000, 5000],
+  
+  // Port attributes for better UX
+  "portsAttributes": {
+    "3000": {
+      "label": "Frontend (Vite)",
+      "onAutoForward": "openBrowser",
+      "protocol": "http"
+    },
+    "5000": {
+      "label": "Backend API",
+      "onAutoForward": "notify",
+      "protocol": "http"
+    }
+  },
+
+  // Use 'postCreateCommand' to run commands after the container is created
+  "postCreateCommand": "corepack enable && corepack prepare pnpm@9.0.0 --activate && pnpm install",
+
+  // Use 'postAttachCommand' to run commands when the container is attached
+  "postAttachCommand": "echo 'Bienvenido a FleetMan! Para iniciar el frontend, ejecuta: cd apps/frontend && pnpm dev'",
+
+  // Comment out to connect as root instead
+  "remoteUser": "node"
+}
