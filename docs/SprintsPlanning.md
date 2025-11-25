@@ -241,9 +241,9 @@ Distribución por categoría:
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
-| Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | |
-| Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | |
-| Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
+| Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | 5.8 |
+| Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | 0.9 |
+| Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | 0.9 |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | |
 | Desarrollo | 16.8 Build & deploy demo (front estático + API) | 5 | 8 | |
 | Desarrollo | 3.2 Listado + detalle | 6 | 9 | |
