@@ -79,7 +79,7 @@ Distribución por categoría:
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
-| Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | 1.8 |
+| Documentación | 20.1 Reporte Académico (dominical) | 1 | 0.9 | 1.8 |
 | Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | 1 |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | 0.6 |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | 0 |
@@ -112,7 +112,7 @@ xychart-beta
 Distribución por categoría:
 | Gestión | Desarrollo | QA | Capacitación | Documentación |
 |:-------:|:----------:|:--:|:------------:|:-------------:|
-| **3.4**hs | **23.82**hs | **1.5**hs | **3**hs | **0**hs |
+| **2.5**hs | **23.82**hs | **1.5**hs | **3**hs | **0.9**hs |
 
 **Riesgos:** El design system puede requerir iteraciones con feedback del cliente.
 
@@ -122,7 +122,7 @@ Distribución por categoría:
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
-| Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | 6.8 |
+| Documentación | 20.1 Reporte Académico (dominical) | 1 | 0.9 | 6.8 |
 | Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | 1.1 |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | 1.9 |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | 0.9 |
@@ -154,7 +154,7 @@ xychart-beta
 Distribución por categoría:
 | Gestión | Desarrollo | QA | Capacitación | Documentación |
 |:-------:|:----------:|:--:|:------------:|:-------------:|
-| **9.8**hs | **16.0**hs | **0**hs | **3.9**hs | **0**hs |
+| **8.9**hs | **16.0**hs | **0**hs | **3.9**hs | **0.9**hs |
 
 ### **Sprint #4**: dom 9 nov → sáb 15 nov 2025
 
@@ -162,7 +162,7 @@ Distribución por categoría:
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
-| Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | 7.1 |
+| Documentación | 20.1 Reporte Académico (dominical) | 1 | 0.9 | 7.1 |
 | Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | 1.6 |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | 4.1 |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | 0.88 |
@@ -195,7 +195,7 @@ xychart-beta
 Distribución por categoría:
 | Gestión | Desarrollo | QA | Capacitación | Documentación |
 |:-------:|:----------:|:--:|:------------:|:-------------:|
-| **12.8**hs | **22.9**hs | **0**hs | **3.78**hs | **0**hs |
+| **11.9**hs | **22.9**hs | **0**hs | **3.78**hs | **0.9**hs |
 
 ### **Sprint #5**: dom 16 nov → sáb 22 nov 2025
 
@@ -203,7 +203,7 @@ Distribución por categoría:
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
-| Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | 6.6 |
+| Documentación | 20.1 Reporte Académico (dominical) | 1 | 0.9 | 6.6 |
 | Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | 0.9 |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | 1.2 |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | 0.5 |
@@ -233,47 +233,57 @@ xychart-beta
 Distribución por categoría:
 | Gestión | Desarrollo | QA | Capacitación | Documentación |
 |:-------:|:----------:|:--:|:------------:|:-------------:|
-| **3.7**hs | **23.8**hs | **0**hs | **6**hs | **0**hs |
+| **2.8**hs | **23.8**hs | **0**hs | **6**hs | **0.9**hs |
 
 ### **Sprint #6**: dom 23 nov → sáb 29 nov 2025
 
-**Objetivo:** 🚀 Deploy Azure + Máquinas Completas - Focus disponibilizar la solución al cliente y pulir pantallas de máquinas.
+**Objetivo:** 🚀 Deploy Azure + PWA + i18n + Theme + Settings — Disponibilizar demo deployada y pulir UX con internacionalización y tema.
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
-| Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | 5.8 |
+| Documentación | 20.1 Reporte Académico (dominical) | 1 | 5 | 5.8 |
 | Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | 0.9 |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | 0.9 |
-| Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | |
+| Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | 0.75 |
 | Desarrollo | 16.8 Build & deploy demo (front estático + API) | 5 | 8 | |
-| Desarrollo | 3.2 Listado + detalle | 6 | 9 | |
-| Desarrollo | 1.2 Esquemas DB (Mongoose + índices clave) | 7 | 5 | |
-| Desarrollo | 1.4 Semillas demo (dataset mínimo) | 8 | 4 | |
+| Desarrollo | 16.11 Azure Deploy - Config práctica (Azure App Service) | 6 | 6 | |
+| Desarrollo | 0.5 PWA base (manifest + SW básico) | 7 | 6 | |
+| Desarrollo | 0.15 i18n - Implementación mínima (strings + en/es) | 8 | 2 | |
+| Desarrollo | 12.5 Theme toggle (UI + persistencia) | 9 | 2 | |
+| Desarrollo | 12.6 Settings screen (pantalla de ajustes: tema + idioma + prefs) | 10 | 4 | |
+| Desarrollo | 3.2 Listado + detalle | 11 | 9 | |
+| Desarrollo | 1.2 Esquemas DB (Mongoose + índices clave) | 12 | 5 | |
+| Desarrollo | 1.4 Semillas demo (dataset mínimo) | 13 | 4 | |
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales |
 |:---:|:----------:|
-| **29.7**hs | **0**hs |
+| **55.8**hs | **7.6**hs |
 
-Buffer reservado: **5.3**hs
+Buffer reservado: **-20.8**hs
 Total con buffer: **35**hs
 
 ```mermaid
 xychart-beta
     title "Sprint #6: Horas Estimadas #40;azul#41; vs Reales #40;verde#41;"
-    x-axis "Tareas" ["20.1", "20.2", "20.3", "21.2", "16.8", "3.2", "1.2", "1.4", "TOTAL"]
-    y-axis "Horas" 0 --> 30
-	
-	%% Green line
-    line [0.9, 1.5, 1.3, 1, 8, 9, 5, 4, 29.7]
+    x-axis "Tareas" ["20.1", "20.2", "20.3", "21.2", "16.8", "16.11", "0.5", "0.15", "12.5", "12.6", "3.2", "1.2", "1.4", "TOTAL"]
+    y-axis "Horas" 0 --> 60
+    
+    %% Green line (estimadas)
+    line [5, 1.5, 1.3, 1, 8, 6, 6, 2, 2, 4, 9, 5, 4, 55.8]
 
-	%% Black line
-    line [0, 0, 0, 0, 0, 0, 0, 0, 0]
+    %% Black line (reales)
+    line [5.8, 0.9, 0.9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7.6]
 ```
 
 Distribución por categoría:
-| Gestión | Desarrollo | QA | Capacitación | Documentación |
+| Documentación | Desarrollo | QA | Capacitación | Gestión |
 |:-------:|:----------:|:--:|:------------:|:-------------:|
-| **3.7**hs | **26**hs | **0**hs | **1**hs | **0**hs |
+| **5**hs | **46**hs | **0**hs | **1**hs | **3.7**hs |
+
+**⚠️ Nota crítica:** Este sprint tiene un **buffer negativo de -20.8hs**, superando ampliamente las 35hs objetivo. Se recomienda:
+- **Opción A (Deploy First):** Priorizar 16.8, 16.11, 0.5 PWA, 0.15 i18n, 12.5 Theme, 12.6 Settings (~29.7hs) y mover 3.2, 1.2, 1.4 al Sprint #7.
+- **Opción B (Máquinas + Deploy):** Mantener 3.2, 1.2, 1.4 y diferir PWA/i18n/theme/settings a sprints posteriores.
+- **Contexto taller Azure:** El jueves 27 nov hay taller de deploy universitario — ideal para aprovechar en la tarea 16.11.
 
 ### **Sprint #7**: dom 30 nov → sáb 6 dic 2025
 
@@ -281,7 +291,7 @@ Distribución por categoría:
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
-| Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | |
+| Documentación | 20.1 Reporte Académico (dominical) | 1 | 5 | |
 | Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | |
@@ -292,15 +302,15 @@ Distribución por categoría:
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales |
 |:---:|:----------:|
-| **30.7**hs | **0**hs |
+| **34.8**hs | **0**hs |
 
-Buffer reservado: **4.3**hs
+Buffer reservado: **0.2**hs
 Total con buffer: **35**hs
 
 Distribución por categoría:
-| Gestión | Desarrollo | QA | Capacitación | Documentación |
+| Documentación | Desarrollo | QA | Capacitación | Gestión |
 |:-------:|:----------:|:--:|:------------:|:-------------:|
-| **3.7**hs | **23**hs | **0**hs | **4**hs | **0**hs |
+| **5**hs | **23**hs | **0**hs | **4**hs | **2.8**hs |
 
 ### **Sprint #8**: dom 7 dic → sáb 13 dic 2025
 
@@ -308,7 +318,7 @@ Distribución por categoría:
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
-| Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | |
+| Documentación | 20.1 Reporte Académico (dominical) | 1 | 5 | |
 | Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | |
@@ -318,15 +328,15 @@ Distribución por categoría:
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales |
 |:---:|:----------:|
-| **33.7**hs | **0**hs |
+| **37.8**hs | **0**hs |
 
-Buffer reservado: **1.3**hs
+Buffer reservado: **-2.8**hs
 Total con buffer: **35**hs
 
 Distribución por categoría:
-| Gestión | Desarrollo | QA | Capacitación | Documentación |
+| Documentación | Desarrollo | QA | Capacitación | Gestión |
 |:-------:|:----------:|:--:|:------------:|:-------------:|
-| **3.7**hs | **29**hs | **0**hs | **1**hs | **0**hs |
+| **5**hs | **29**hs | **0**hs | **1**hs | **2.8**hs |
 
 ### **Sprint #9**: dom 14 dic → sáb 20 dic 2025
 
@@ -334,7 +344,7 @@ Distribución por categoría:
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
-| Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | |
+| Documentación | 20.1 Reporte Académico (dominical) | 1 | 5 | |
 | Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | |
@@ -344,15 +354,15 @@ Distribución por categoría:
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales |
 |:---:|:----------:|
-| **31.7**hs | **0**hs |
+| **35.8**hs | **0**hs |
 
-Buffer reservado: **3.3**hs
+Buffer reservado: **-0.8**hs
 Total con buffer: **35**hs
 
 Distribución por categoría:
-| Gestión | Desarrollo | QA | Capacitación | Documentación |
+| Documentación | Desarrollo | QA | Capacitación | Gestión |
 |:-------:|:----------:|:--:|:------------:|:-------------:|
-| **3.7**hs | **27**hs | **0**hs | **1**hs | **0**hs |
+| **5**hs | **27**hs | **0**hs | **1**hs | **2.8**hs |
 
 **Riesgos:** Integración entre notificaciones y eventos puede ser compleja.
 
@@ -362,7 +372,7 @@ Distribución por categoría:
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
-| Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | |
+| Documentación | 20.1 Reporte Académico (dominical) | 1 | 5 | |
 | Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | |
@@ -374,15 +384,15 @@ Distribución por categoría:
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales |
 |:---:|:----------:|
-| **34.7**hs | **0**hs |
+| **38.8**hs | **0**hs |
 
-Buffer reservado: **0.3**hs
+Buffer reservado: **-3.8**hs
 Total con buffer: **35**hs
 
 Distribución por categoría:
-| Gestión | Desarrollo | QA | Capacitación | Documentación |
+| Documentación | Desarrollo | QA | Capacitación | Gestión |
 |:-------:|:----------:|:--:|:------------:|:-------------:|
-| **3.7**hs | **30**hs | **0**hs | **1**hs | **0**hs |
+| **5**hs | **30**hs | **0**hs | **1**hs | **2.8**hs |
 
 **Riesgos:** Sprint denso con múltiples integraciones críticas. Período navideño puede afectar productividad.
 
@@ -392,7 +402,7 @@ Distribución por categoría:
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
-| Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | |
+| Documentación | 20.1 Reporte Académico (dominical) | 1 | 5 | |
 | Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | |
@@ -402,15 +412,15 @@ Distribución por categoría:
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales |
 |:---:|:----------:|
-| **29.7**hs | **0**hs |
+| **33.8**hs | **0**hs |
 
-Buffer reservado: **5.3**hs
+Buffer reservado: **1.2**hs
 Total con buffer: **35**hs
 
 Distribución por categoría:
-| Gestión | Desarrollo | QA | Capacitación | Documentación |
+| Documentación | Desarrollo | QA | Capacitación | Gestión |
 |:-------:|:----------:|:--:|:------------:|:-------------:|
-| **3.7**hs | **25**hs | **0**hs | **1**hs | **0**hs |
+| **5**hs | **25**hs | **0**hs | **1**hs | **2.8**hs |
 
 **Riesgos:** Período de fiestas navideñas puede impactar disponibilidad.
 
@@ -420,7 +430,7 @@ Distribución por categoría:
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
-| Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | |
+| Documentación | 20.1 Reporte Académico (dominical) | 1 | 5 | |
 | Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | |
@@ -431,15 +441,15 @@ Distribución por categoría:
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales |
 |:---:|:----------:|
-| **28.7**hs | **0**hs |
+| **32.8**hs | **0**hs |
 
-Buffer reservado: **6.3**hs
+Buffer reservado: **2.2**hs
 Total con buffer: **35**hs
 
 Distribución por categoría:
-| Gestión | Desarrollo | QA | Capacitación | Documentación |
+| Documentación | Desarrollo | QA | Capacitación | Gestión |
 |:-------:|:----------:|:--:|:------------:|:-------------:|
-| **3.7**hs | **3**hs | **21**hs | **1**hs | **0**hs |
+| **5**hs | **3**hs | **21**hs | **1**hs | **2.8**hs |
 
 ### **Sprint #13**: dom 11 ene → sáb 17 ene 2026
 
@@ -447,7 +457,7 @@ Distribución por categoría:
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
-| Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | |
+| Documentación | 20.1 Reporte Académico (dominical) | 1 | 5 | |
 | Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | |
@@ -457,15 +467,15 @@ Distribución por categoría:
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales |
 |:---:|:----------:|
-| **28.7**hs | **0**hs |
+| **32.8**hs | **0**hs |
 
-Buffer reservado: **6.3**hs
+Buffer reservado: **2.2**hs
 Total con buffer: **35**hs
 
 Distribución por categoría:
-| Gestión | Desarrollo | QA | Capacitación | Documentación |
+| Documentación | Desarrollo | QA | Capacitación | Gestión |
 |:-------:|:----------:|:--:|:------------:|:-------------:|
-| **3.7**hs | **8**hs | **10**hs | **1**hs | **6**hs |
+| **5**hs | **8**hs | **10**hs | **1**hs | **2.8**hs |
 
 ### **Sprint #14**: dom 18 ene → sáb 24 ene 2026
 
@@ -473,7 +483,7 @@ Distribución por categoría:
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
-| Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | |
+| Documentación | 20.1 Reporte Académico (dominical) | 1 | 5 | |
 | Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | |
@@ -485,15 +495,15 @@ Distribución por categoría:
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales |
 |:---:|:----------:|
-| **34.7**hs | **0**hs |
+| **38.8**hs | **0**hs |
 
-Buffer reservado: **0.3**hs
+Buffer reservado: **-3.8**hs
 Total con buffer: **35**hs
 
 Distribución por categoría:
-| Gestión | Desarrollo | QA | Capacitación | Documentación |
+| Documentación | Desarrollo | QA | Capacitación | Gestión |
 |:-------:|:----------:|:--:|:------------:|:-------------:|
-| **5.7**hs | **13**hs | **14**hs | **1**hs | **0**hs |
+| **5**hs | **13**hs | **14**hs | **1**hs | **2.8**hs |
 
 **Riesgos:** Sprint muy denso con poco buffer disponible.
 
@@ -503,7 +513,7 @@ Distribución por categoría:
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
-| Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | |
+| Documentación | 20.1 Reporte Académico (dominical) | 1 | 5 | |
 | Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | |
@@ -514,15 +524,15 @@ Distribución por categoría:
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales |
 |:---:|:----------:|
-| **28.7**hs | **0**hs |
+| **32.8**hs | **0**hs |
 
-Buffer reservado: **6.3**hs
+Buffer reservado: **2.2**hs
 Total con buffer: **35**hs
 
 Distribución por categoría:
-| Gestión | Desarrollo | QA | Capacitación | Documentación |
+| Documentación | Desarrollo | QA | Capacitación | Gestión |
 |:-------:|:----------:|:--:|:------------:|:-------------:|
-| **5.7**hs | **6**hs | **16**hs | **1**hs | **0**hs |
+| **5**hs | **6**hs | **16**hs | **1**hs | **2.8**hs |
 
 ### **Sprint #16**: dom 1 feb → sáb 7 feb 2026
 
@@ -530,7 +540,7 @@ Distribución por categoría:
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
-| Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | |
+| Documentación | 20.1 Reporte Académico (dominical) | 1 | 5 | |
 | Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | |
@@ -541,15 +551,15 @@ Distribución por categoría:
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales |
 |:---:|:----------:|
-| **28.7**hs | **0**hs |
+| **32.8**hs | **0**hs |
 
-Buffer reservado: **6.3**hs
+Buffer reservado: **2.2**hs
 Total con buffer: **35**hs
 
 Distribución por categoría:
-| Gestión | Desarrollo | QA | Capacitación | Documentación |
+| Documentación | Desarrollo | QA | Capacitación | Gestión |
 |:-------:|:----------:|:--:|:------------:|:-------------:|
-| **3.7**hs | **18**hs | **0**hs | **1**hs | **6**hs |
+| **5**hs | **18**hs | **0**hs | **1**hs | **2.8**hs |
 
 **Nota:** Este sprint incluye principalmente funcionalidades NiceToHave y puede ajustarse según el estado del proyecto.
 
@@ -559,7 +569,7 @@ Distribución por categoría:
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
-| Gestión | 20.1 Reporte Académico (dominical) | 1 | 0.9 | |
+| Documentación | 20.1 Reporte Académico (dominical) | 1 | 5 | |
 | Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | |
@@ -567,15 +577,15 @@ Distribución por categoría:
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales |
 |:---:|:----------:|
-| **14.7**hs | **0**hs |
+| **18.8**hs | **0**hs |
 
-Buffer reservado: **20.3**hs
+Buffer reservado: **16.2**hs
 Total con buffer: **35**hs
 
 Distribución por categoría:
-| Gestión | Desarrollo | QA | Capacitación | Documentación |
+| Documentación | Desarrollo | QA | Capacitación | Gestión |
 |:-------:|:----------:|:--:|:------------:|:-------------:|
-| **13.7**hs | **0**hs | **0**hs | **1**hs | **0**hs |
+| **5**hs | **0**hs | **0**hs | **1**hs | **12.8**hs |
 
 **Nota:** Sprint de cierre con amplio buffer para refinamientos finales y preparación de entrega académica.
 

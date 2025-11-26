@@ -106,11 +106,19 @@ Instalación y configuración de dependencias core del frontend: React, Vite, Sh
 		- Spike: **No**
 
 	- 0.14 **Archivos Frontend Básicos**.
-Creación de estructura inicial del frontend: componentes base, páginas iniciales, configuración de routing, viewModels básicos, configuración de i18n, setup de TanStack Query, y estructura de carpetas para el desarrollo del frontend.
+	Creación de estructura inicial del frontend: componentes base, páginas iniciales, configuración de routing, viewModels básicos, configuración de i18n, setup de TanStack Query, y estructura de carpetas para el desarrollo del frontend.
 		- Horas estimadas: **6**hs
 		- Margen: ±**1.0**hs (P80)
 		- Incertidumbre: **Baja**
 		- Dependencias: 0.13 (FS)
+		- Spike: **No**
+
+	- 0.15 **i18n - Implementación mínima** (strings + en/es).
+	Implementación básica de i18n en frontend: configuración de i18next con recursos para Español e Inglés, hook/componente de selección de idioma, persistencia en localStorage, y aplicación en 2-3 pantallas principales como prueba de concepto.
+		- Horas estimadas: **2**hs
+		- Margen: ±**0.4**hs (P80)
+		- Incertidumbre: **Baja**
+		- Dependencias: 0.7, 0.14 (FS)
 		- Spike: **No**
 
 1. **Dominio & Datos**
@@ -460,11 +468,27 @@ Frontend: Configuración básica de React Router con definición de rutas princi
 		- Spike: **No**
 
 	- 12.4b **Navegación avanzada + UX**.
-Frontend: Extensión del routing con lazy loading de rutas, breadcrumbs, guards de navegación por rol, navegación programática con hooks personalizados, layouts anidados, y utilidades para transiciones. Mejoras de UX y patrones escalables para desarrollo posterior.
+	Frontend: Extensión del routing con lazy loading de rutas, breadcrumbs, guards de navegación por rol, navegación programática con hooks personalizados, layouts anidados, y utilidades para transiciones. Mejoras de UX y patrones escalables para desarrollo posterior.
 		- Horas estimadas: **4**hs
 		- Margen: ±**0.8**hs (P80)
 		- Incertidumbre: **Media**
 		- Dependencias: 12.4a, 2.5 (FS)
+		- Spike: **No**
+
+	- 12.5 **Theme toggle** (UI + persistencia).
+	Implementación del selector de tema claro/oscuro: configuración de Tailwind dark mode, variables CSS para theming, hook `useTheme` para gestión de estado, persistencia en localStorage, toggle UI en header/navbar, y pruebas en componentes principales.
+		- Horas estimadas: **2**hs
+		- Margen: ±**0.4**hs (P80)
+		- Incertidumbre: **Baja**
+		- Dependencias: 0.9, 0.14 (FS)
+		- Spike: **No**
+
+	- 12.6 **Settings screen** (pantalla de ajustes: tema + idioma + prefs).
+	Pantalla de configuración de la app: ruta `/settings`, UI para gestión de preferencias (tema claro/oscuro, idioma español/inglés, otras configuraciones básicas), integración con hooks de tema e i18n, botones para guardar/restaurar defaults, y pruebas de navegación y persistencia.
+		- Horas estimadas: **4**hs
+		- Margen: ±**0.8**hs (P80)
+		- Incertidumbre: **Media**
+		- Dependencias: 12.4a, 12.5, 0.15 (FS)
 		- Spike: **No**
 
 13. **Calidad & Pruebas** (alineado a SQA)
@@ -660,11 +684,19 @@ Carga inicial del dataset de demo.
 		- Spike: **No**
 
 	- 16.10 **Script "reset demo"** [NiceToHave].
-Script idempotente de reinicialización.
+	Script idempotente de reinicialización.
 		- Horas estimadas: **4**hs
 		- Margen: ±**0.7**hs (P80)
 		- Incertidumbre: **Baja**
 		- Dependencias: 16.9 (FS)
+		- Spike: **No**
+
+	- 16.11 **Azure Deploy - Config práctica** (Azure App Service).
+	Configuración práctica de deploy en Azure App Service: creación de recursos (App Service + MongoDB Atlas o Cosmos), configuración de variables de entorno, conexión con repositorio GitHub para CI/CD básico, configuración de dominios y SSL, y pruebas de deploy del frontend + backend. Aprovecha el taller universitario del 27 nov.
+		- Horas estimadas: **6**hs
+		- Margen: ±**1.2**hs (P80)
+		- Incertidumbre: **Media**
+		- Dependencias: 16.5, 16.6, 16.8 (FS)
 		- Spike: **No**
 
 17. **Documentación & Capacitación**
