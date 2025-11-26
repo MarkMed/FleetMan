@@ -134,6 +134,7 @@ Entidades, relaciones e invariantes del dominio.
 	- 1.2 **Esquemas DB** (Mongoose + índices clave).
 Schemas Mongoose y 2–3 índices críticos del MVP.
 		- Horas estimadas: **5**hs
+		- Nota: **Enfoque incremental / just-in-time** — implementar y ajustar los esquemas por partes según las necesidades del sprint, evitando grandes tareas monolíticas y permitiendo iteraciones rápidas.
 		- Margen: ±**1.0**hs (P80)
 		- Incertidumbre: **Baja**
 		- Dependencias: 1.1 (FS)
@@ -150,6 +151,7 @@ DTOs de entrada/salida y validaciones Zod en shared/.
 	- 1.4 **Semillas demo** (dataset mínimo).
 Datos de ejemplo para dev, pruebas y demo.
 		- Horas estimadas: **4**hs
+		- Nota: **Semillas incrementales** — añadir datos mínimos necesarios por feature; evitar crear datasets completos que requieran retrabajo al cambiar esquemas.
 		- Margen: ±**0.7**hs (P80)
 		- Incertidumbre: **Baja**
 		- Dependencias: 1.2 (FS)
@@ -692,9 +694,9 @@ Carga inicial del dataset de demo.
 		- Spike: **No**
 
 	- 16.11 **Azure Deploy - Config práctica** (Azure App Service).
-	Configuración práctica de deploy en Azure App Service: creación de recursos (App Service + MongoDB Atlas o Cosmos), configuración de variables de entorno, conexión con repositorio GitHub para CI/CD básico, configuración de dominios y SSL, y pruebas de deploy del frontend + backend. Aprovecha el taller universitario del 27 nov.
-		- Horas estimadas: **6**hs
-		- Margen: ±**1.2**hs (P80)
+		Configuración práctica de deploy en Azure App Service: creación de recursos (App Service + MongoDB Atlas o Cosmos), configuración de variables de entorno, conexión con repositorio GitHub para CI/CD básico, configuración de dominios y SSL, y pruebas de deploy del frontend + backend. Aprovecha el taller universitario del 27 nov.
+		- Horas estimadas: **9**hs
+		- Margen: ±**1.8**hs (P80)
 		- Incertidumbre: **Media**
 		- Dependencias: 16.5, 16.6, 16.8 (FS)
 		- Spike: **No**

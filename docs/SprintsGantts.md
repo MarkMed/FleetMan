@@ -185,21 +185,18 @@ gantt
   axisFormat  %d
 
   %% Asumimos 5 h/día. Horas estimadas incluidas en el nombre.
-  %% ⚠️ Sprint sobrecargado (51.7hs vs 35hs objetivo). Priorizar deploy + UX core.
+  %% ⚠️ Sprint ligeramente sobrecargado (39.8hs vs 35hs objetivo).
 
-  20.1 Reporte Académico (0.9hs)               :t201, 2025-11-23, 0.18d
+  20.1 Reporte Académico (5hs)                 :t201, 2025-11-23, 1d
   20.2 Demo/UAT con cliente (1.5hs)            :t202, 2025-11-23, 0.3d
   20.3 Sprint Planning dominguero (1.3hs)      :t203, 2025-11-23, 0.26d
   21.2 Tutorías (guía con tutor asignado) (1hs) :t212, after t203, 0.2d
   16.8 Build & deploy demo (8hs)               :t168, after t212, 1.6d
-  16.11 Azure Deploy - Config práctica (6hs)   :t1611, after t168, 1.2d
+  16.11 Azure Deploy - Config práctica (9hs)   :t1611, after t168, 1.8d
   0.5 PWA base (manifest + SW) (6hs)           :t05, after t1611, 1.2d
   0.15 i18n - Implementación mínima (2hs)      :t015, after t05, 0.4d
   12.5 Theme toggle (2hs)                      :t125, after t015, 0.4d
   12.6 Settings screen (4hs)                   :t126, after t125, 0.8d
-  3.2 Listado + detalle (9hs)                  :t32, after t126, 1.8d
-  1.2 Esquemas DB (5hs)                        :t12, after t32, 1d
-  1.4 Semillas demo (4hs)                      :t14, after t12, 0.8d
 
   section Hitos
   Taller Azure Deploy (Jue 27)                 :milestone, taller, 2025-11-27, 0d
@@ -207,9 +204,10 @@ gantt
 ```
 
 **Notas del Sprint #6:**
-- **Sobrecarga:** Sprint planificado con 51.7hs vs 35hs objetivo (buffer -16.7hs)
+**Notas del Sprint #6:**
+- **Estado:** Sprint planificado con **39.8hs** estimadas vs 35hs objetivo (buffer -4.8hs)
 - **Taller clave:** Jueves 27 nov — Taller universitario de Azure Deploy, sincronizar tarea 16.11 con este evento
-- **Priorización recomendada:** Focus en deploy + PWA + i18n + theme + settings (~29.7hs), considerar mover 3.2/1.2/1.4 a Sprint #7
+- **Recomendación:** Priorizar deploy + PWA + i18n + theme + settings; mantener 1.2/1.4 como tareas just-in-time o mover trabajo adicional a Sprint #7 si se necesita más capacidad
 - **Milestone crítico:** Dejar app deployada y accesible para validación con cliente
 
 ---
