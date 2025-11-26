@@ -185,27 +185,27 @@ gantt
   axisFormat  %d
 
   %% Asumimos 5 h/día. Horas estimadas incluidas en el nombre.
-  %% ⚠️ Sprint ligeramente sobrecargado (39.8hs vs 35hs objetivo).
+  %% ⚠️ Sprint ligeramente sobrecargado (40.8hs vs 35hs objetivo).
 
   20.1 Reporte Académico (5hs)                 :t201, 2025-11-23, 1d
-  20.2 Demo/UAT con cliente (1.5hs)            :t202, 2025-11-23, 0.3d
-  20.3 Sprint Planning dominguero (1.3hs)      :t203, 2025-11-23, 0.26d
-  21.2 Tutorías (guía con tutor asignado) (1hs) :t212, after t203, 0.2d
-  16.8 Build & deploy demo (8hs)               :t168, after t212, 1.6d
-  16.11 Azure Deploy - Config práctica (9hs)   :t1611, after t168, 1.8d
-  0.5 PWA base (manifest + SW) (6hs)           :t05, after t1611, 1.2d
-  0.15 i18n - Implementación mínima (2hs)      :t015, after t05, 0.4d
-  12.5 Theme toggle (2hs)                      :t125, after t015, 0.4d
-  12.6 Settings screen (4hs)                   :t126, after t125, 0.8d
+  20.2 Demo/UAT con cliente (1.5hs)            :t202, 2025-11-23, 1d
+  20.3 Sprint Planning dominguero (1.3hs)      :t203, 2025-11-23, 1d
+  21.2 Tutorías (guía con tutor asignado) (1hs) :t212, 2025-11-24, 1d
+  16.11 Azure Deploy - Config práctica (9hs)   :t1611, 2025-11-24, 2d
+  0.5 PWA base (manifest + SW) (6hs)           :t05, after t1611, 1d
+  16.7 Taller Deploy - Deploy en Práctica (3hs) :t167, 2025-11-27, 1d
+  0.15 i18n - Implementación mínima (2hs)      :t015, after t05, 1d
+  16.8 Build & deploy demo (8hs)               :t168, 2025-11-27, 2d
+  12.5 Theme toggle (2hs)                      :t125, after t015, 1d
+  12.6 Settings screen (2hs +1h buffer)        :t126, after t125, 1d
 
   section Hitos
   Taller Azure Deploy (Jue 27)                 :milestone, taller, 2025-11-27, 0d
   Cierre Sprint 6                              :milestone, s6, 2025-11-29, 1d
 ```
 
-**Notas del Sprint #6:**
-**Notas del Sprint #6:**
-- **Estado:** Sprint planificado con **39.8hs** estimadas vs 35hs objetivo (buffer -4.8hs)
+- **Notas del Sprint #6:**
+- **Estado:** Sprint planificado con **40.8hs** estimadas vs 35hs objetivo (buffer -5.8hs)
 - **Taller clave:** Jueves 27 nov — Taller universitario de Azure Deploy, sincronizar tarea 16.11 con este evento
 - **Recomendación:** Priorizar deploy + PWA + i18n + theme + settings; mantener 1.2/1.4 como tareas just-in-time o mover trabajo adicional a Sprint #7 si se necesita más capacidad
 - **Milestone crítico:** Dejar app deployada y accesible para validación con cliente

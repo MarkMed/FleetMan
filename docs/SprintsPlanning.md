@@ -249,38 +249,39 @@ Distribución por categoría:
 | Desarrollo | 0.5 PWA base (manifest + SW básico) | 6 | 6 | |
 | Desarrollo | 0.15 i18n - Implementación mínima (strings + en/es) | 7 | 2 | |
 | Desarrollo | 12.5 Theme toggle (UI + persistencia) | 8 | 2 | |
-| Desarrollo | 12.6 Settings screen (pantalla de ajustes: tema + idioma + prefs) | 9 | 4 | |
+| Desarrollo | 12.6 Settings screen (pantalla de ajustes: tema + idioma + prefs) | 9 | 2 | |
 | Desarrollo | 16.8 Build & deploy demo (front estático + API) | 10 | 8 | |
+| Capacitación | 16.7 Taller Deploy - Deploy en Práctica (miérc 27 Nov) | 11 | 3 | |
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales |
 |:---:|:----------:|
-| **39.8**hs | **7.6**hs |
+| **40.8**hs | **7.6**hs |
 
-Buffer reservado: **-4.8**hs
+Buffer reservado: **-5.8**hs
 Total con buffer: **35**hs
 
 ```mermaid
 xychart-beta
-    title "Sprint #6: Horas Estimadas #40;azul#41; vs Reales #40;verde#41;"
-    x-axis "Tareas" ["20.1", "20.2", "20.3", "21.2", "16.8", "16.11", "0.5", "0.15", "12.5", "12.6", "TOTAL"]
+    title "Sprint #6: Horas Estimadas #40.8;azul#41; vs Reales #40;verde#41;"
+    x-axis "Tareas" ["20.1", "20.2", "20.3", "21.2", "16.11", "0.5", "0.15", "12.5", "12.6", "16.8", "16.7", "TOTAL"]
     y-axis "Horas" 0 --> 40
     
     %% Green line (estimadas)
-    line [5, 1.5, 1.3, 1, 8, 9, 6, 2, 2, 4, 39.8]
+    line [5, 1.5, 1.3, 1, 9, 6, 2, 2, 2, 8, 3, 40.8]
 
     %% Black line (reales)
-    line [5.8, 0.9, 0.9, 0.75, 0, 0, 0, 0, 0, 0, 7.6]
+    line [5.8, 0.9, 2.9, 0.75, 0, 0, 0, 0, 0, 0, 0, 7.6]
 ```
 
 Distribución por categoría:
 | Documentación | Desarrollo | QA | Capacitación | Gestión |
 |:-------:|:----------:|:--:|:------------:|:-------------:|
-| **5**hs | **31**hs | **0**hs | **1**hs | **2.8**hs |
+| **5**hs | **29**hs | **0**hs | **4**hs | **2.8**hs |
 
 - **Opción A (Deploy First):** Priorizar 16.8, 16.11, 0.5 PWA, 0.15 i18n, 12.5 Theme, 12.6 Settings (~31hs) y mantener 1.2/1.4 como tareas just-in-time o mover tareas adicionales a Sprint #7.
 - **Opción B (Máquinas + Deploy):** Si se decide mantener trabajo en máquinas, considerar mover parte del deploy a una mini-iteración posterior.
 - **Contexto taller Azure:** El jueves 27 nov hay taller de deploy universitario — sincronizar 16.11 con este evento.
-**Nota:** Este sprint queda con **39.8hs** estimadas (buffer -4.8hs). Recomendaciones:
+- **Nota:** Este sprint queda con **40.8hs** estimadas (buffer -5.8hs). Recomendaciones:
 - **Opción A (Deploy First):** Priorizar 16.8, 16.11, 0.5 PWA, 0.15 i18n, 12.5 Theme, 12.6 Settings (~32hs) y mantener 1.2/1.4 como tareas just-in-time o mover tareas adicionales a Sprint #7.
 - **Opción B (Máquinas + Deploy):** Si se decide mantener trabajo en máquinas, considerar mover parte del deploy a una mini-iteración posterior.
 - **Contexto taller Azure:** El jueves 27 nov hay taller de deploy universitario — sincronizar 16.11 con este evento.
