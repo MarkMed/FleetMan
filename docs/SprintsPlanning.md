@@ -15,9 +15,9 @@
 | Gestión | 18.1 Scope freeze (MoSCoW) | 7 | 2 | 0.5 |
 | Desarrollo | 0.3 Convención ramas & releases (main/dev/feature, Conventional Commits) | 8 | 3 | 0.9 |
 
-| Total Horas Estimadas (sin buffer) | Total Horas Reales |
-|:---:|:----------:|
-| **No est.** hs | **16**hs |
+| Total Horas Estimadas (sin buffer) | Total Horas Reales | Consumo |
+|:---:|:----------:|:-------:|
+| **No est.** hs | **16**hs | **N/A** |
 
 Buffer reservado: **No est.** hs
 Total con buffer: **No est.** hs
@@ -44,9 +44,9 @@ Distribución por categoría:
 | Desarrollo | 0.1 Repos & monorepo (front React+Vite, back Node/TS, shared/DTO/Zod) | 5 | 8 | 1.7 |
 | Desarrollo | 0.8 Setup VSCode remoto (GitHub Codespaces/Gitpod) | 6 | 4 | 0.86 |
 
-| Total Horas Estimadas (sin buffer) | Total Horas Reales |
-|:---:|:----------:|
-| **16**hs | **22.86**hs |
+| Total Horas Estimadas (sin buffer) | Total Horas Reales | Consumo |
+|:---:|:----------:|:-------:|
+| **16**hs | **22.86**hs | **142.9%** |
 
 Buffer reservado: **16**hs
 Total con buffer: **32**hs
@@ -89,9 +89,9 @@ Distribución por categoría:
 | QA | 13.1 Estrategia & DoD QA | 8 | 5 | 1.5 |
 | Capacitación | 16.1 Taller Deploy - Conceptos Generales (miérc 30 Oct) | 9 | 3 | 3 |
 
-| Total Horas Estimadas (sin buffer) | Total Horas Reales |
-|:---:|:----------:|
-| **34.7**hs | **31.72**hs |
+| Total Horas Estimadas (sin buffer) | Total Horas Reales | Consumo |
+|:---:|:----------:|:-------:|
+| **34.7**hs | **31.72**hs | **91.4%** |
 
 Buffer reservado: **0.3**hs
 Total con buffer: **35**hs
@@ -131,9 +131,9 @@ Distribución por categoría:
 | Desarrollo | 1.3 DTOs + Zod (contratos compartidos) - continuación | 7 | 6 | 8.3 |
 | Capacitación | 16.2 Taller Deploy - Conceptos Generales (miérc 6 Nov) | 8 | 3 | 3 |
 
-| Total Horas Estimadas (sin buffer) | Total Horas Reales |
-|:---:|:----------:|
-| **29.7**hs | **29.7**hs |
+| Total Horas Estimadas (sin buffer) | Total Horas Reales | Consumo |
+|:---:|:----------:|:-------:|
+| **29.7**hs | **29.7**hs | **100.0%** |
 
 Buffer reservado: **5.3**hs
 Total con buffer: **35**hs
@@ -173,9 +173,9 @@ Distribución por categoría:
 | Capacitación | 16.5 Taller Deploy - Azure (mar 11 Nov) | 9 | 3 |0|
 | Capacitación | 16.6 Taller Deploy - Azure (jue 13 Nov) | 10 | 3 | 2.9 |
 
-| Total Horas Estimadas (sin buffer) | Total Horas Reales |
-|:---:|:----------:|
-| **39.7**hs | **39.48**hs |
+| Total Horas Estimadas (sin buffer) | Total Horas Reales | Consumo |
+|:---:|:----------:|:-------:|
+| **39.7**hs | **39.48**hs | **99.4%** |
 
 Buffer reservado: **-4.7**hs
 Total con buffer: **35**hs
@@ -211,9 +211,9 @@ Distribución por categoría:
 | Capacitación | 16.3 Taller Deploy - AWS (mar 18 Nov) | 6 | 3 | 2.5 |
 | Capacitación | 16.4 Taller Deploy - AWS (jue 20 Nov) | 7 | 3 | 1.4 |
 
-| Total Horas Estimadas (sin buffer) | Total Horas Reales |
-|:---:|:----------:|
-| **26.7**hs | **36.9**hs |
+| Total Horas Estimadas (sin buffer) | Total Horas Reales | Consumo |
+|:---:|:----------:|:-------:|
+| **26.7**hs | **36.9**hs | **138.2%** |
 
 Buffer reservado: **8.3**hs
 Total con buffer: **35**hs
@@ -253,9 +253,9 @@ Distribución por categoría:
 | Desarrollo | 16.8 Build & deploy demo (front estático + API) | 10 | 8 | |
 | Capacitación | 16.7 Taller Deploy - Deploy en Práctica (miérc 27 Nov) | 11 | 3 | |
 
-| Total Horas Estimadas (sin buffer) | Total Horas Reales |
-|:---:|:----------:|
-| **40.8**hs | **7.6**hs |
+| Total Horas Estimadas (sin buffer) | Total Horas Reales | Consumo |
+|:---:|:----------:|:-------:|
+| **40.8**hs | **7.6**hs | **18.6%** |
 
 Buffer reservado: **-5.8**hs
 Total con buffer: **35**hs
@@ -304,9 +304,9 @@ Distribución por categoría:
 | Desarrollo | 6.1 Plantilla checklist (RF-011) | 7 | 5 | |
 | Capacitación | 16.7 Taller Deploy - Deploy en Práctica (miérc 4 Dic) | 8 | 3 | |
 
-| Total Horas Estimadas (sin buffer) | Total Horas Reales |
-|:---:|:----------:|
-| **34.8**hs | **0**hs |
+| Total Horas Estimadas (sin buffer) | Total Horas Reales | Consumo |
+|:---:|:----------:|:-------:|
+| **34.8**hs | **0**hs | **0.0%** |
 
 Buffer reservado: **0.2**hs
 Total con buffer: **35**hs
@@ -330,9 +330,9 @@ Distribución por categoría:
 | Desarrollo | 5.2 Generación + persistencia de alertas | 6 | 7 | |
 | Desarrollo | 6.2 UI de ejecución (RF-011) | 7 | 12 | |
 
-| Total Horas Estimadas (sin buffer) | Total Horas Reales |
-|:---:|:----------:|
-| **37.8**hs | **0**hs |
+| Total Horas Estimadas (sin buffer) | Total Horas Reales | Consumo |
+|:---:|:----------:|:-------:|
+| **37.8**hs | **0**hs | **0.0%** |
 
 Buffer reservado: **-2.8**hs
 Total con buffer: **35**hs
@@ -356,9 +356,9 @@ Distribución por categoría:
 | Desarrollo | 8.1 Modelo + bandeja | 6 | 12 | |
 | Desarrollo | 4.2 Registrar evento (RF-008) - Parte 1 | 7 | 10 | |
 
-| Total Horas Estimadas (sin buffer) | Total Horas Reales |
-|:---:|:----------:|
-| **35.8**hs | **0**hs |
+| Total Horas Estimadas (sin buffer) | Total Horas Reales | Consumo |
+|:---:|:----------:|:-------:|
+| **35.8**hs | **0**hs | **0.0%** |
 
 Buffer reservado: **-0.8**hs
 Total con buffer: **35**hs
@@ -386,9 +386,9 @@ Distribución por categoría:
 | Desarrollo | 6.4 Aviso QuickCheck no aprobado (RF-017) | 8 | 6 | |
 | Desarrollo | 3.3 Edición con historial (RF-006) | 9 | 8 | |
 
-| Total Horas Estimadas (sin buffer) | Total Horas Reales |
-|:---:|:----------:|
-| **38.8**hs | **0**hs |
+| Total Horas Estimadas (sin buffer) | Total Horas Reales | Consumo |
+|:---:|:----------:|:-------:|
+| **38.8**hs | **0**hs | **0.0%** |
 
 Buffer reservado: **-3.8**hs
 Total con buffer: **35**hs
@@ -414,9 +414,9 @@ Distribución por categoría:
 | Desarrollo | 9.1 Datos de contacto por distribuidor | 6 | 5 | |
 | Desarrollo | 9.2 Acciones de contacto (tel:, mailto:, wa.me) | 7 | 5 | |
 
-| Total Horas Estimadas (sin buffer) | Total Horas Reales |
-|:---:|:----------:|
-| **33.8**hs | **0**hs |
+| Total Horas Estimadas (sin buffer) | Total Horas Reales | Consumo |
+|:---:|:----------:|:-------:|
+| **33.8**hs | **0**hs | **0.0%** |
 
 Buffer reservado: **1.2**hs
 Total con buffer: **35**hs
@@ -443,9 +443,9 @@ Distribución por categoría:
 | Desarrollo | 16.2 Semillas demo (usar 1.4) | 7 | 3 | |
 | QA | 12.3 Pruebas visuales móviles/desktop | 8 | 5 | |
 
-| Total Horas Estimadas (sin buffer) | Total Horas Reales |
-|:---:|:----------:|
-| **32.8**hs | **0**hs |
+| Total Horas Estimadas (sin buffer) | Total Horas Reales | Consumo |
+|:---:|:----------:|:-------:|
+| **32.8**hs | **0**hs | **0.0%** |
 
 Buffer reservado: **2.2**hs
 Total con buffer: **35**hs
@@ -469,9 +469,9 @@ Distribución por categoría:
 | Desarrollo | 16.1 Build & deploy demo (front estático + API) | 6 | 8 | |
 | Documentación | 17.2 API docs (OpenAPI simple) | 7 | 6 | |
 
-| Total Horas Estimadas (sin buffer) | Total Horas Reales |
-|:---:|:----------:|
-| **32.8**hs | **0**hs |
+| Total Horas Estimadas (sin buffer) | Total Horas Reales | Consumo |
+|:---:|:----------:|:-------:|
+| **32.8**hs | **0**hs | **0.0%** |
 
 Buffer reservado: **2.2**hs
 Total con buffer: **35**hs
@@ -497,9 +497,9 @@ Distribución por categoría:
 | Desarrollo | 18.3 Feature toggles | 8 | 5 | |
 | Desarrollo | 2.4 Recuperación de contraseña (RF-004) [NiceToHave] | 9 | 8 | |
 
-| Total Horas Estimadas (sin buffer) | Total Horas Reales |
-|:---:|:----------:|
-| **38.8**hs | **0**hs |
+| Total Horas Estimadas (sin buffer) | Total Horas Reales | Consumo |
+|:---:|:----------:|:-------:|
+| **38.8**hs | **0**hs | **0.0%** |
 
 Buffer reservado: **-3.8**hs
 Total con buffer: **35**hs
@@ -526,9 +526,9 @@ Distribución por categoría:
 | Desarrollo | 11.1 Ayuda inline mínima / "cómo usar esta página" [NiceToHave] | 7 | 6 | |
 | Gestión | 19.1 Consolidación y tracking del backlog Post-MVP | 8 | 2 | |
 
-| Total Horas Estimadas (sin buffer) | Total Horas Reales |
-|:---:|:----------:|
-| **32.8**hs | **0**hs |
+| Total Horas Estimadas (sin buffer) | Total Horas Reales | Consumo |
+|:---:|:----------:|:-------:|
+| **32.8**hs | **0**hs | **0.0%** |
 
 Buffer reservado: **2.2**hs
 Total con buffer: **35**hs
@@ -579,9 +579,9 @@ Distribución por categoría:
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | |
 | Gestión | 21.21 Buffer de entrega final | 5 | 10 | |
 
-| Total Horas Estimadas (sin buffer) | Total Horas Reales |
-|:---:|:----------:|
-| **18.8**hs | **0**hs |
+| Total Horas Estimadas (sin buffer) | Total Horas Reales | Consumo |
+|:---:|:----------:|:-------:|
+| **18.8**hs | **0**hs | **0.0%** |
 
 Buffer reservado: **16.2**hs
 Total con buffer: **35**hs
