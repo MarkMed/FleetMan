@@ -14,8 +14,8 @@
     }
   },
   "scripts": {
-    "build": "tsup src/index.ts --dts --format esm,cjs",
-    "dev": "tsup src/index.ts --watch --dts --format esm,cjs",
+    "build": "tsup src/index.ts --dts --format esm,cjs --tsconfig tsconfig.build.json",
+    "dev": "tsup src/index.ts --watch --dts --format esm,cjs --tsconfig tsconfig.build.json",
     "lint": "eslint .",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
