@@ -12,7 +12,7 @@ export const ExamplesScreen: React.FC = () => {
         description: "La máquina se ha registrado correctamente.",
         dismissText: "Continuar",
       });
-      console.log("Cerrando modal de éxito automáticamente");
+      console.log("Cerrando modal de éxito automáticamente.");
       setTimeout(() => {
         modal.hide();
       }, 2000);
