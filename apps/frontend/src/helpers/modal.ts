@@ -36,7 +36,7 @@ interface ConfirmationModalConfig extends Omit<ModalConfig, 'variant'> {
  * 
  * // Show info modal
  * modal.info({
- *   title: 'Success',
+ *   title: 'Success.',
  *   description: 'Operation completed successfully'
  * });
  * 
