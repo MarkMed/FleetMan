@@ -13,11 +13,13 @@ import { type IMachine, type MachineStatusCode, type FuelType } from '@packages/
  * Machine Document interface extending domain IMachine
  * Excluimos 'id' (usamos _id virtual) y 'model' (conflicto con Document.model de Mongoose)
  */
-export interface IMachineDocument extends Omit<IMachine, 'id' | 'model'>, Document {
-  // Use string _id because domain entities use string IDs like `machine_xxx`
+// Use a lightweight document type compatible with domain string IDs.
+// We avoid forcing the Mongoose `Document` _id type (ObjectId) here because
+// the domain produces string IDs like `machine_xxx` and we persist them as strings.
+export interface IMachineDocument extends Omit<IMachine, 'id' | 'model'> {
   _id: string;
   id: string; // Virtual getter from _id
-  modelName: string; // Re-declaramos explícitamente para evitar conflicto con Document.model
+  modelName: string;
 }
 
 // =============================================================================
@@ -28,7 +30,7 @@ export interface IMachineDocument extends Omit<IMachine, 'id' | 'model'>, Docume
  * Machine Schema implementing IMachine interface
  */
 const machineSchema = new Schema<IMachineDocument>({
-  // Explicit string _id to support domain-generated string identifiers
+  // Persist domain string IDs as the document _id (type: String)
   _id: {
     type: String,
     required: true
@@ -184,9 +186,9 @@ const machineSchema = new Schema<IMachineDocument>({
 });
 
 // Virtual for id
-machineSchema.virtual('id').get(function(this: IMachineDocument) {
-  // _id is stored as string in this schema
-  return this._id;
+machineSchema.virtual('id').get(function(this: any) {
+  // Return the string _id for domain compatibility
+  return String(this._id);
 });
 
 // Ensure virtual fields are serialized
@@ -223,8 +225,8 @@ machineSchema.index({
 // =============================================================================
 
 // Pre-save middleware to update location.lastUpdated when coordinates change
-machineSchema.pre('save', function(this: IMachineDocument, next: any) {
-  if (this.isModified('location.coordinates')) {
+machineSchema.pre('save', function(this: any, next: any) {
+  if (this.isModified && this.isModified('location.coordinates')) {
     // Use $set to update nested properties without readonly conflicts
     this.set('location.lastUpdated', new Date());
   }
