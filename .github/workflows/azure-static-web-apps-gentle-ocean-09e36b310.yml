@@ -47,6 +47,11 @@ jobs:
             echo "pnpm-lock.yaml NOT found — running 'pnpm install --no-frozen-lockfile'"
             pnpm install --no-frozen-lockfile
           fi
+      
+      - name: Build workspace packages
+        run: |
+          # construye todos los paquetes y apps que tengan script "build"
+          pnpm -r build
 
       - name: Build frontend (pnpm)
         run: pnpm --filter @app/frontend build
