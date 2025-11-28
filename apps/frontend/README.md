@@ -52,7 +52,7 @@ src/
 ├── useCases/       # Business logic and use cases
 ├── utils/          # Utility functions
 ├── validators/     # Validation schemas (Zod) (deprecated, use models from ./packages/models)
-└── viewModels/     # Complex view models and hooks
+└── viewModels/     # Set the view models, hooks, and logic
 ```
 
 ## 🚀 Getting Started
