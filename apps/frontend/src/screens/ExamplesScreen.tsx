@@ -9,7 +9,7 @@ export const ExamplesScreen: React.FC = () => {
     setTimeout(() => {
       modal.success({
         title: "¡Éxito!",
-        description: "La máquina se ha registrado correctamente.",
+        description: "La máquina se ha registrado correctamente",
         dismissText: "Continuar",
       });
       // console.log("Cerrando modal de éxito automáticamente.");
