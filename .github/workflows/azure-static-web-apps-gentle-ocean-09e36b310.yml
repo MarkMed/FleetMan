@@ -65,6 +65,9 @@ jobs:
           action: upload
           app_location: "apps/frontend"
           output_location: "apps/frontend/dist"
+          api_location: ""           # <- fuerza vacío para no buscar API inexistente
+          data_api_location: ""      # <- evita búsqueda de 'swa-db-connections'
+          config_file_location: ""   # <- evita lectura de config adicional
 
       - name: Show npm logs on failure (debug)
         if: failure()
