@@ -38,7 +38,15 @@ jobs:
           corepack prepare pnpm@9 --activate
 
       - name: Install dependencies (pnpm)
-        run: pnpm install --frozen-lockfile
+        run: |
+          echo "Checking for pnpm-lock.yaml in repository root"
+          if [ -f pnpm-lock.yaml ]; then
+            echo "pnpm-lock.yaml found — running 'pnpm install --frozen-lockfile'"
+            pnpm install --frozen-lockfile
+          else
+            echo "pnpm-lock.yaml NOT found — running 'pnpm install --no-frozen-lockfile'"
+            pnpm install --no-frozen-lockfile
+          fi
 
       - name: Build frontend (pnpm)
         run: pnpm --filter @app/frontend build
