@@ -51,7 +51,7 @@ src/
 ├── theme/          # Theme configuration and styles
 ├── useCases/       # Business logic and use cases
 ├── utils/          # Utility functions
-├── validators/     # Validation schemas (Zod) (deprecated, use models from packages/models)
+├── validators/     # Validation schemas (Zod) (deprecated, use models from ./packages/models)
 └── viewModels/     # Complex view models and hooks
 ```
 
