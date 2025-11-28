@@ -3,6 +3,8 @@ import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 import path from 'path';
 
+const isCi = !!process.env.GITHUB_ACTIONS || !!process.env.CI
+
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
@@ -70,7 +72,9 @@ export default defineConfig({
             type: 'image/png'
           }
         ]
-      }
+      },
+      // Desactivar PWA en CI para evitar fallos de workbox durante el build en Actions
+      disable: isCi,
     })
   ],
   resolve: {
