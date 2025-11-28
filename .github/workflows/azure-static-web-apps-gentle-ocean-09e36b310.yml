@@ -63,11 +63,13 @@ jobs:
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_GENTLE_OCEAN_09E36B310 }}
           action: upload
-          app_location: "apps/frontend"
-          output_location: "apps/frontend/dist"
+          app_location: "./apps/frontend"
           api_location: ""           # <- fuerza vacío para no buscar API inexistente
+          output_location: "./apps/frontend/dist"
           data_api_location: ""      # <- evita búsqueda de 'swa-db-connections'
-          config_file_location: ""   # <- evita lectura de config adicional
+          config_file_location: ""   # <- evita lectura de config adicionaloutput_location: "./apps/frontend/dist" # Built app content directory - optional
+          github_id_token: ${{ steps.idtoken.outputs.result }}
+          ###### End of Repository/Build Configurations ######
 
       - name: Show npm logs on failure (debug)
         if: failure()
