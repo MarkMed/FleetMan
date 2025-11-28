@@ -1,5 +1,5 @@
 import React from "react";
-import { TimerButtonExamples } from "../EJEMPLOS/TimerButtonExamples";
+import { TimerButtonExamples } from "./TimerButtonExamples";
 import { Button, Skeleton } from "@components/ui";
 import { modal } from "@helpers/modal";
 
