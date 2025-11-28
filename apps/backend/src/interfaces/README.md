@@ -45,7 +45,7 @@ export class MaintenanceSchedulerJob {
 
 ### ❌ **Lo que NO debe ir aquí:**
 ```typescript
-// ❌ Esto va en /controllers (por ejem)
+// ❌ Esto va en /controllers (por ejemplo)
 export class AuthController {
   @post('/login')
   async login(req: Request, res: Response) {
