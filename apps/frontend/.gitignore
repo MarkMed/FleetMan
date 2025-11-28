@@ -2,6 +2,7 @@
 node_modules/
 dist/
 build/
+src/EJEMPLOS
 
 # Environment variables
 .env.local
