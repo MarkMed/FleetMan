@@ -58,16 +58,14 @@ jobs:
         env:
           NODE_ENV: production
 
+      - name: Prepare deployable bundle (pnpm deploy)
+        run: |
+          rm -rf backend-deploy
+          pnpm deploy --filter @app/backend --prod backend-deploy
+
       - name: Create deployment archive
         run: |
-          zip -r -y backend-app.zip \
-            apps/backend \
-            packages \
-            node_modules \
-            package.json \
-            pnpm-lock.yaml \
-            pnpm-workspace.yaml \
-            configs
+          zip -r backend-app.zip backend-deploy
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
