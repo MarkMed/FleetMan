@@ -22,11 +22,12 @@ app.use(helmet({
 }));
 
 // CORS configuration
-app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:3000'], // Vite dev server and backup
-  credentials: true,
-  optionsSuccessStatus: 200,
-}));
+// app.use(cors({
+//   origin: ['http://localhost:5173', 'http://localhost:3000'], // Vite dev server and backup
+//   credentials: true,
+//   optionsSuccessStatus: 200,
+// }));
+app.use(cors()); // Permitir todas las fuentes por ahora
 
 // Rate limiting
 const limiter = rateLimit({
