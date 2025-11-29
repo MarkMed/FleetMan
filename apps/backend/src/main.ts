@@ -27,7 +27,7 @@ app.use(helmet({
 //   credentials: true,
 //   optionsSuccessStatus: 200,
 // }));
-app.use(cors()); // Permitir todas las fuentes por ahora
+app.use(cors()); // Permitir todas las fuentes por ahora.
 
 // Rate limiting
 const limiter = rateLimit({
