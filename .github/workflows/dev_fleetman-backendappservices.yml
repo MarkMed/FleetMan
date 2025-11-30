@@ -58,18 +58,14 @@ jobs:
         env:
           NODE_ENV: production
 
-      - name: Prepare deployable bundle (without node_modules)
+      - name: Prepare deployable bundle
         run: |
-          rm -rf backend-release
-          mkdir -p backend-release/apps backend-release/packages backend-release/configs
-          rsync -a --exclude 'node_modules' apps/backend/ backend-release/apps/backend/
-          rsync -a --exclude 'node_modules' packages/ backend-release/packages/
-          rsync -a configs/ backend-release/configs/
-          cp package.json pnpm-lock.yaml pnpm-workspace.yaml backend-release/
+          rm -rf backend-deploy
+          pnpm deploy --filter @app/backend --prod backend-deploy
 
       - name: Create deployment archive
         run: |
-          zip -r backend-app.zip backend-release
+          zip -r backend-app.zip backend-deploy
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
