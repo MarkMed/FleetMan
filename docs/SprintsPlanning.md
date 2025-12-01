@@ -245,17 +245,17 @@ Distribución por categoría:
 | Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | 0.9 |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | 2.9 |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | 0.75 |
-| Desarrollo | 16.11 Azure Deploy - Config práctica (Azure App Service) | 5 | 9 | |
+| Desarrollo | 16.11 Azure Deploy - Config práctica (Azure App Service) | 5 | 9 | 19.7 |
 | Desarrollo | 0.5 PWA base (manifest + SW básico) | 6 | 6 | |
 | Desarrollo | 0.15 i18n - Implementación mínima (strings + en/es) | 7 | 2 | |
 | Desarrollo | 12.5 Theme toggle (UI + persistencia) | 8 | 2 | |
 | Desarrollo | 12.6 Settings screen (pantalla de ajustes: tema + idioma + prefs) | 9 | 2 | |
-| Desarrollo | 16.8 Build & deploy demo (front estático + API) | 10 | 8 | |
-| Capacitación | 16.7 Taller Deploy - Deploy en Práctica (miérc 27 Nov) | 11 | 3 | |
+| Desarrollo | 16.8 Build & deploy demo (front estático + API) | 10 | 8 | 9.2 |
+| Capacitación | 16.7 Taller Deploy - Deploy en Práctica (miérc 27 Nov) | 11 | 3 | 3.1 |
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales | Consumo |
 |:---:|:----------:|:-------:|
-| **40.8**hs | **7.6**hs | **18.6%** |
+| **40.8**hs | **42.35**hs | **103.8%** |
 
 Buffer reservado: **-5.8**hs
 Total con buffer: **35**hs
@@ -270,7 +270,7 @@ xychart-beta
     line [5, 1.5, 1.3, 1, 9, 6, 2, 2, 2, 8, 3, 40.8]
 
     %% Black line (reales)
-    line [5.8, 0.9, 2.9, 0.75, 0, 0, 0, 0, 0, 0, 0, 7.6]
+    line [5.8, 0.9, 2.9, 0.75, 19.7, 0, 0, 0, 0, 9.2, 3.1, 42.35]
 ```
 
 Distribución por categoría:
