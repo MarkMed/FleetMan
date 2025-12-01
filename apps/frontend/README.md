@@ -61,7 +61,30 @@ src/
 - Node.js 18+
 - pnpm (recommended) or npm
 
-### Installation
+### Development in GitHub Codespaces
+
+Si estás trabajando en GitHub Codespaces:
+
+1. **El Codespace configurará todo automáticamente** gracias a la configuración en `.devcontainer/`
+2. **Para iniciar el servidor de desarrollo:**
+   ```bash
+   cd apps/frontend
+   pnpm dev
+   ```
+3. **Para visualizar la aplicación:**
+   - Verás una notificación automática para abrir en el navegador
+   - También puedes usar la pestaña **"PORTS"** en la parte inferior de VSCode
+   - Haz clic derecho en el puerto **3000** y selecciona:
+     - **"Open in Browser"** - Abre en una nueva pestaña del navegador
+     - **"Preview in Editor"** - Abre en un tab dentro de VSCode (recomendado)
+   - O usa el comando `Ctrl+Shift+P` → "Ports: Focus on Ports View"
+
+4. **Características especiales en Codespaces:**
+   - El puerto 3000 (frontend) se abrirá automáticamente en el navegador
+   - El puerto 5000 (backend) enviará una notificación cuando esté listo
+   - Hot reload funciona perfectamente en Codespaces
+
+### Installation (Local Development)
 ```bash
 # Install dependencies
 pnpm install

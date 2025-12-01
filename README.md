@@ -26,16 +26,92 @@ GITHUB_TOKEN=tu_token_aqui
 
 ⚠️ **IMPORTANTE**: Nunca subas tu archivo `.env` al repositorio. Ya está incluido en `.gitignore`.
 
-## Instalación
+## 🚀 Inicio Rápido
+
+### Opción 1: GitHub Codespaces (Recomendado)
+
+La forma más rápida de empezar a desarrollar es usando GitHub Codespaces.
+
+📖 **[Ver guía completa de Codespaces](./docs/CODESPACES.md)** - Guía detallada con troubleshooting y tips.
+
+**Resumen rápido:**
+
+1. **Crear un Codespace:**
+   - Haz clic en el botón "Code" en GitHub
+   - Selecciona la pestaña "Codespaces"
+   - Haz clic en "Create codespace on main"
+
+2. **Acceder al Frontend:**
+   - El Codespace instalará automáticamente las dependencias
+   - Ejecuta el comando: `cd apps/frontend && pnpm dev`
+   - Cuando el servidor esté listo, verás una notificación para abrir el navegador
+   - También puedes hacer clic en el puerto 3000 en la pestaña "PORTS" de VSCode
+   - O presiona `Ctrl+Shift+P` y busca "Ports: Focus on Ports View"
+
+3. **Visualizar en VSCode:**
+   - VSCode mostrará una notificación para "Abrir en el navegador" automáticamente
+   - También puedes ver los puertos en la pestaña "PORTS" (parte inferior de VSCode)
+   - Haz clic derecho en el puerto 3000 y selecciona "Open in Browser" o "Preview in Editor"
+
+### Opción 2: Instalación Local
 
 ```bash
-# Instrucciones de instalación vendrán aquí
+# Instalar dependencias
+pnpm install
+
+# Configurar variables de entorno
+cp .env.example .env
+
+# Iniciar el servidor de desarrollo del frontend
+cd apps/frontend
+pnpm dev
+
+# El frontend estará disponible en http://localhost:3000
 ```
 
 ## Uso
 
+### Desarrollo del Frontend
+
 ```bash
-# Instrucciones de uso vendrán aquí
+# Desde la raíz del proyecto
+cd apps/frontend
+
+# Servidor de desarrollo
+pnpm dev
+
+# Compilar para producción
+pnpm build
+
+# Vista previa de la compilación
+pnpm preview
+
+# Verificación de tipos
+pnpm typecheck
+
+# Linting
+pnpm lint
+```
+
+### Desarrollo del Backend
+
+```bash
+# Desde la raíz del proyecto
+cd apps/backend
+
+# Servidor de desarrollo
+pnpm dev
+
+# El backend estará disponible en http://localhost:5000
+```
+
+### Desarrollo Completo (Frontend + Backend)
+
+```bash
+# Desde la raíz del proyecto
+pnpm dev
+
+# Esto iniciará tanto el frontend como el backend en paralelo
 ```
 
 ## Contribuir
