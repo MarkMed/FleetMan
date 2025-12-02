@@ -262,7 +262,7 @@ Total con buffer: **35**hs
 
 ```mermaid
 xychart-beta
-    title "Sprint #6: Horas Estimadas #40.8;azul#41; vs Reales #40;verde#41;"
+    title "Sprint #6: Horas Estimadas  #40;azul#41; vs Reales #40;verde#41;"
     x-axis "Tareas" ["20.1", "20.2", "20.3", "21.2", "16.11", "0.5", "0.15", "12.5", "12.6", "16.8", "16.7", "TOTAL"]
     y-axis "Horas" 0 --> 40
     
