@@ -1,7 +1,6 @@
 {
   "name": "@app/backend",
   "private": true,
-  "type": "module",
   "scripts": {
     "dev": "tsx watch src/main.ts",
     "dev:debug": "tsx watch --inspect src/main.ts",

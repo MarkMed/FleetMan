@@ -216,23 +216,29 @@ gantt
 
 ```mermaid
 gantt
-  title Sprint 7 (2025-11-30 → 2025-12-06)
+  title Sprint 7 (2025-11-30 → 2025-12-06) - QuickCheck por Capas
   dateFormat  YYYY-MM-DD
   axisFormat  %d
 
   %% Asumimos 5 h/día. Horas estimadas incluidas en el nombre.
 
-  20.1 Reporte Académico (0.9hs)               :t201, 2025-11-30, 1d
-  20.2 Demo/UAT con cliente (1.5hs)            :t202, 2025-11-30, 1d
-  20.3 Sprint Planning dominguero (1.3hs)      :t203, 2025-11-30, 1d
-  3.2 Listado + detalle (9hs)                  :t32, after t203, 2d
-  4.1 Crear recordatorios (RF-007) (9hs)       :t41, after t32, 2d
-  6.1 Plantilla checklist (RF-011) (5hs)       :t61, after t41, 1d
-  16.7 Taller Deploy - Deploy en Práctica (3hs) :t167, 2025-12-04, 1d
+  20.1 Reporte Académico (5hs)                  :t201, 2025-11-30, 1d
+  20.2 Demo/UAT con cliente (1.5hs)             :t202, 2025-11-30, 1d
+  20.3 Sprint Planning dominguero (1.3hs)       :t203, 2025-11-30, 1d
+  21.2 Tutorías (1hs)                           :t212, 2025-12-01, 1d
+  6.1 Domain + Persistence (4.5hs)              :t61, 2025-12-02, 1d
+  6.3 Application Layer Backend (6.5hs)         :t63, after t61, 2d
+  16.11 Azure Deploy - continuación (5hs)       :t1611, 2025-12-04, 1d
+  16.7 Taller Deploy Práctica (3hs)             :t167, 2025-12-04, 1d
+  6.2a UI Creación QuickCheck (5hs)             :t62a, after t63, 1d
+  6.2b UI Ejecución QuickCheck (7.5hs)          :t62b, after t63, 2d
+  6.4 API Integration Frontend (3.5hs)          :t64, 2025-12-06, 1d
 
   section Hitos
-  Cierre Sprint 7                              :milestone, s7, 2025-12-06, 1d
+  Cierre Sprint 7                               :milestone, s7, 2025-12-06, 1d
+  QuickCheck MVP Funcional                      :milestone, qc, 2025-12-06, 1d
 ```
+
 
 ---
 

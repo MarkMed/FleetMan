@@ -1,0 +1,114 @@
+name: Deploy to Azure Container Apps
+
+on:
+  push:
+    branches:
+      - dev
+    paths:
+      - 'apps/backend/**'
+      - 'packages/**'
+      - 'Dockerfile'
+      - '.github/workflows/azure-container-deploy.yml'
+
+  workflow_dispatch: # Permite ejecución manual desde GitHub UI
+
+env:
+  REGISTRY_NAME: fleetmanregistry
+  IMAGE_NAME: fleetman-backend
+  CONTAINER_APP_NAME: fleetman-backend
+  RESOURCE_GROUP: fleetman-rg
+  CONTAINER_APP_ENV: fleetman-env
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📦 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔐 Login to Azure
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: 🏗️ Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: 🔑 Login to Azure Container Registry
+        run: |
+          az acr login --name ${{ env.REGISTRY_NAME }}
+
+      - name: 🐳 Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: |
+            ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}
+            ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:latest
+          cache-from: type=registry,ref=${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:buildcache
+          cache-to: type=registry,ref=${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:buildcache,mode=max
+          build-args: |
+            NODE_ENV=production
+
+      - name: 🚀 Deploy to Azure Container Apps
+        run: |
+          echo "Deploying image with SHA: ${{ github.sha }}"
+          
+          az containerapp update \
+            --name ${{ env.CONTAINER_APP_NAME }} \
+            --resource-group ${{ env.RESOURCE_GROUP }} \
+            --image ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          
+          echo "✅ Deployment completed successfully!"
+
+      - name: 📊 Get Container App URL
+        id: get-url
+        run: |
+          APP_URL=$(az containerapp show \
+            --name ${{ env.CONTAINER_APP_NAME }} \
+            --resource-group ${{ env.RESOURCE_GROUP }} \
+            --query properties.configuration.ingress.fqdn \
+            -o tsv)
+          
+          echo "url=https://$APP_URL" >> $GITHUB_OUTPUT
+          echo "🌐 Container App URL: https://$APP_URL"
+
+      - name: 🏥 Health Check
+        run: |
+          sleep 30 # Esperar a que el contenedor inicie
+          
+          HEALTH_URL="${{ steps.get-url.outputs.url }}/health"
+          echo "Checking health at: $HEALTH_URL"
+          
+          response=$(curl -s -o /dev/null -w "%{http_code}" $HEALTH_URL)
+          
+          if [ $response -eq 200 ]; then
+            echo "✅ Health check passed! Status: $response"
+          else
+            echo "❌ Health check failed! Status: $response"
+            exit 1
+          fi
+
+      - name: 📝 Show deployment logs
+        if: always()
+        run: |
+          echo "📋 Recent logs from Container App:"
+          az containerapp logs show \
+            --name ${{ env.CONTAINER_APP_NAME }} \
+            --resource-group ${{ env.RESOURCE_GROUP }} \
+            --tail 50 \
+            --follow false || true
+
+      - name: 📢 Deployment Summary
+        if: success()
+        run: |
+          echo "## ✅ Deployment Successful! 🎉" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Image:** \`${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Container App:** \`${{ env.CONTAINER_APP_NAME }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **URL:** [https://${{ steps.get-url.outputs.url }}](${{ steps.get-url.outputs.url }})" >> $GITHUB_STEP_SUMMARY
+          echo "- **Health Check:** [/health](${{ steps.get-url.outputs.url }}/health)" >> $GITHUB_STEP_SUMMARY
+          echo "- **API Docs:** [/api-docs](${{ steps.get-url.outputs.url }}/api-docs)" >> $GITHUB_STEP_SUMMARY

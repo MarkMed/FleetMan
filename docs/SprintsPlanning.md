@@ -245,17 +245,17 @@ Distribución por categoría:
 | Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | 0.9 |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | 2.9 |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | 0.75 |
-| Desarrollo | 16.11 Azure Deploy - Config práctica (Azure App Service) | 5 | 9 | |
+| Desarrollo | 16.11 Azure Deploy - Config práctica (Azure App Service) | 5 | 9 | 19.7 |
 | Desarrollo | 0.5 PWA base (manifest + SW básico) | 6 | 6 | |
 | Desarrollo | 0.15 i18n - Implementación mínima (strings + en/es) | 7 | 2 | |
 | Desarrollo | 12.5 Theme toggle (UI + persistencia) | 8 | 2 | |
 | Desarrollo | 12.6 Settings screen (pantalla de ajustes: tema + idioma + prefs) | 9 | 2 | |
-| Desarrollo | 16.8 Build & deploy demo (front estático + API) | 10 | 8 | |
-| Capacitación | 16.7 Taller Deploy - Deploy en Práctica (miérc 27 Nov) | 11 | 3 | |
+| Desarrollo | 16.8 Build & deploy demo (front estático + API) | 10 | 8 | 9.2 |
+| Capacitación | 16.7 Taller Deploy - Deploy en Práctica (miérc 27 Nov) | 11 | 3 | 3.1 |
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales | Consumo |
 |:---:|:----------:|:-------:|
-| **40.8**hs | **7.6**hs | **18.6%** |
+| **40.8**hs | **42.35**hs | **103.8%** |
 
 Buffer reservado: **-5.8**hs
 Total con buffer: **35**hs
@@ -270,7 +270,7 @@ xychart-beta
     line [5, 1.5, 1.3, 1, 9, 6, 2, 2, 2, 8, 3, 40.8]
 
     %% Black line (reales)
-    line [5.8, 0.9, 2.9, 0.75, 0, 0, 0, 0, 0, 0, 0, 7.6]
+    line [5.8, 0.9, 2.9, 0.75, 19.7, 0, 0, 0, 0, 9.2, 3.1, 42.35]
 ```
 
 Distribución por categoría:
@@ -291,30 +291,77 @@ Distribución por categoría:
 
 ### **Sprint #7**: dom 30 nov → sáb 6 dic 2025
 
-**Objetivo:** 📋 Full QuickCheck - Sistema completo de inspecciones rápidas end-to-end.
+**Objetivo:** 📋 QuickCheck MVP + Azure Deploy - Sistema completo de inspecciones rápidas por capas (Domain → Application → UI → Integration).
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
-| Documentación | 20.1 Reporte Académico (dominical) | 1 | 5 | |
-| Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | |
-| Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
-| Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | |
-| Desarrollo | 3.2 Listado + detalle | 5 | 9 | |
-| Desarrollo | 4.1 Crear recordatorios (RF-007) | 6 | 9 | |
-| Desarrollo | 6.1 Plantilla checklist (RF-011) | 7 | 5 | |
-| Capacitación | 16.7 Taller Deploy - Deploy en Práctica (miérc 4 Dic) | 8 | 3 | |
+| Documentación | 20.1 Reporte Académico (dominical) | 1 | 5 | 5.7 |
+| Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | 0 |
+| Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | 1.2 |
+| Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | 0.75 |
+| Desarrollo | 16.11 Azure Deploy - Config práctica (continuación) | 5 | 5 | |
+| Desarrollo | 6.1 Domain + Persistence (RF-011) | 6 | 4.5 | |
+| Desarrollo | 6.3 Application Layer Backend (RF-011) | 7 | 6.5 | |
+| Desarrollo | 6.2a UI Creación de QuickCheck (RF-011) | 8 | 5 | |
+| Desarrollo | 6.2b UI Ejecución de QuickCheck (RF-011) | 9 | 7.5 | |
+| Desarrollo | 6.4 API Integration Frontend (RF-011) | 10 | 3.5 | |
+| Capacitación | 16.7 Taller Deploy - Deploy en Práctica (jue 4 Dic) | 11 | 3 | |
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales | Consumo |
 |:---:|:----------:|:-------:|
-| **34.8**hs | **0**hs | **0.0%** |
+| **43.5**hs | **7.65**hs | **17.6%** |
 
-Buffer reservado: **0.2**hs
+Buffer reservado: **-8.5**hs ⚠️
 Total con buffer: **35**hs
+
+```mermaid
+xychart-beta
+    title "Sprint #7: Horas Estimadas (azul) vs Reales (verde)"
+    x-axis "Tareas" ["20.1", "20.2", "20.3", "21.2", "16.11", "6.1", "6.3", "6.2a", "6.2b", "6.4", "16.7", "TOTAL"]
+    y-axis "Horas" 0 --> 45
+    
+    %% Green line (estimadas)
+    line [5, 1.5, 1.3, 1, 5, 4.5, 6.5, 5, 7.5, 3.5, 3, 43.5]
+
+    %% Black line (reales)
+    line [5.7, 0, 1.2, 0.75, 0, 0, 0, 0, 0, 0, 0, 7.65]
+```
 
 Distribución por categoría:
 | Documentación | Desarrollo | QA | Capacitación | Gestión |
 |:-------:|:----------:|:--:|:------------:|:-------------:|
-| **5**hs | **23**hs | **0**hs | **4**hs | **2.8**hs |
+| **5**hs | **32.5**hs | **0**hs | **4**hs | **2.8**hs |
+
+**Estrategia de Implementación por Capas:**
+1. **Capa Base (6.1):** Domain models + Persistence schemas + Contracts → Backend operativo para recibir datos
+2. **Capa Application (6.3):** Use cases + Controllers + Routes → API REST funcional
+3. **Capa Presentación (6.2a + 6.2b):** 
+   - 6.2a: UI para crear templates (ToDo-like para items)
+   - 6.2b: UI para ejecutar checklist (toggles ✅/❌ + scoring)
+4. **Capa Integración (6.4):** Services + TanStack Query → Conectar front↔back
+
+**Orden de Ejecución Propuesto:**
+- **Miércoles 4 Dic:** 16.11 Azure Deploy (5hs) + 16.7 Taller (3hs)
+- **Jueves 5 Dic:** 6.1 Domain+Persistence (4.5hs) + 6.3 Application inicio (2hs)
+- **Viernes 6 Dic:** 6.3 Application fin (4.5hs) + 6.2a UI Creación inicio (3hs)
+- **Sábado 7 Dic:** 6.2a fin (2hs) + 6.2b UI Ejecución (7.5hs) + 6.4 Integration (3.5hs) + Demo
+
+**Simplificaciones Técnicas:**
+- Templates con items tipo string simple (no Value Objects complejos)
+- Persistencia directa sin eventos de dominio complejos
+- UI básica sin validaciones exhaustivas
+- Scoring simple: COUNT(FAIL) > 0 ? "FAIL" : "OK"
+
+**Tareas movidas a Sprint #8:**
+- 3.2 Listado + detalle de máquinas (9hs)
+- 4.1 Crear recordatorios (9hs)
+- 6.5 Aviso QuickCheck no aprobado (6hs - Should Have)
+
+**Riesgos Críticos:**
+- ⚠️ **Sprint muy sobrecargado** (43.5hs vs 35hs, buffer -8.5hs)
+- ⚠️ **Requiere trabajo sábado** para completar 6.2b + 6.4 + Demo
+- ⚠️ **Posible descope**: Si tiempo aprieta, mover 6.2a (CRUD templates) a Sprint #8 y usar template hardcoded
+- ⚠️ **Dependencias**: Orden estricto de capas (no paralelizable)
 
 ### **Sprint #8**: dom 7 dic → sáb 13 dic 2025
 

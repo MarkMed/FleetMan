@@ -298,37 +298,59 @@ Emisión hacia la bandeja central de 8.x.
 
 6. **QuickCheck** (RF-011, RF-017)
 
-	- 6.1 **Plantilla checklist** (RF-011).
-Estructura de ítems, estados y notas.
+	- 6.1 **Domain + Persistence** (RF-011).
+Capa de Dominio y Persistencia: Definir entidades QuickCheckTemplate y QuickCheckItem con Value Objects y reglas de negocio. Crear interfaces de repositorios (IQuickCheckTemplateRepository). Implementar schemas Mongoose (QuickCheckTemplateSchema, QuickCheckItemSchema) con índices. Crear contratos Zod compartidos (CreateQuickCheckTemplateDTO, QuickCheckItemDTO) para validación isomórfica. Mappers entre Domain ↔ Persistence.
+		- Horas estimadas: **4.5**hs
+		- Margen: ±**1.0**hs (P80)
+		- Incertidumbre: **Baja-Media**
+		- Dependencias: 1.1, 1.2, 1.3 (FS)
+		- Spike: **No**
+		- PERT: Optimista 3hs, Probable 4hs, Pesimista 6hs
+
+	- 6.2a **UI Creación de QuickCheck** (RF-011).
+Capa de Presentación - Creación: Screen CreateQuickCheckScreen con formulario para nombrar template. Componente QuickCheckItemEditor (similar a ToDo app) para agregar/eliminar items dinámicamente. ViewModel useQuickCheckTemplate para gestionar estado local del template y su lista de items. Validaciones en tiempo real. Preparar objeto para envío: {name, items: ["Frenos", "Luces", ...]}.
 		- Horas estimadas: **5**hs
 		- Margen: ±**1.0**hs (P80)
-		- Incertidumbre: **Baja**
-		- Dependencias: 1.1 (FS)
-		- Spike: **No**
-
-	- 6.2 **UI de ejecución** (RF-011).
-Flujo mobile-first, validaciones y envío.
-		- Horas estimadas: **12**hs
-		- Margen: ±**2.5**hs (P80)
 		- Incertidumbre: **Media**
-		- Dependencias: 6.1, 3.1, 0.10 (FS)
+		- Dependencias: 6.3, 0.14 (FS)
 		- Spike: **No**
+		- PERT: Optimista 3hs, Probable 5hs, Pesimista 7hs
 
-	- 6.3 **Persistencia en historial** (RF-011).
-Guarda resultados y vincula a máquina.
-		- Horas estimadas: **5**hs
+	- 6.2b **UI Ejecución de QuickCheck** (RF-011).
+Capa de Presentación - Ejecución: Screen ExecuteQuickCheckScreen con selección de máquina y template. Componente QuickCheckExecutionForm renderizando items con toggles ✅/❌. TextArea para observaciones. ViewModel useQuickCheckExecution para gestionar estado de ejecución y resultado (OK/FAIL). Calcular scoring básico. Preparar objeto resultado para envío: {templateId, machineId, results: [{itemId, status: "OK"/"FAIL"}], observations, overallResult}.
+		- Horas estimadas: **7.5**hs
+		- Margen: ±**1.5**hs (P80)
+		- Incertidumbre: **Media**
+		- Dependencias: 6.3, 3.1, 0.14 (FS)
+		- Spike: **No**
+		- PERT: Optimista 5hs, Probable 7hs, Pesimista 10hs
+
+	- 6.3 **Application Layer Backend** (RF-011).
+Capa de Aplicación: Implementar Use Cases (CreateQuickCheckTemplateUseCase, GetTemplatesUseCase, UpdateTemplateUseCase, ExecuteQuickCheckUseCase). Controllers y Routes REST (POST/GET/PUT /api/quickcheck/templates, POST /api/machines/:id/quickcheck/execute). Validación de DTOs con Zod. Orquestación de repositorios. Lógica de negocio para scoring de resultados. Manejo de errores estructurado. Integración con DI container (tsyringe).
+		- Horas estimadas: **6.5**hs
+		- Margen: ±**1.5**hs (P80)
+		- Incertidumbre: **Media**
+		- Dependencias: 6.1 (FS)
+		- Spike: **No**
+		- PERT: Optimista 4hs, Probable 6hs, Pesimista 9hs
+
+	- 6.4 **API Integration Frontend** (RF-011).
+Capa de Integración Frontend: Crear/actualizar services (quickCheckService.ts, templateService.ts). Implementar métodos para CRUD de templates y ejecución de QuickCheck. Integración con TanStack Query (queries y mutations). Manejo de estados de loading/error/success. Invalidación de cache apropiada. Type-safe API calls usando contratos compartidos. Conectar ViewModels con API services.
+		- Horas estimadas: **3.5**hs
 		- Margen: ±**1.0**hs (P80)
 		- Incertidumbre: **Baja**
-		- Dependencias: 6.2 (FS)
+		- Dependencias: 6.3, 6.2a, 6.2b (FS)
 		- Spike: **No**
+		- PERT: Optimista 2hs, Probable 3hs, Pesimista 5hs
 
-	- 6.4 **Aviso QuickCheck no aprobado** (RF-017) [Conditional-Must].
-Genera notificación y registra fallos.
+	- 6.5 **Aviso QuickCheck no aprobado** (RF-017) [Should-Have].
+Notificación de fallos: Genera notificación en centro de notificaciones cuando QuickCheck resulta FAIL. Registra fallo en historial de máquina. Hook en ExecuteQuickCheckUseCase para detectar resultado no aprobado. Integración con sistema de notificaciones (8.1). Email/SMS opcional si tiempo permite.
 		- Horas estimadas: **6**hs
 		- Margen: ±**1.0**hs (P80)
-		- Incertidumbre: **Baja**
-		- Dependencias: 6.3, 8.1 (FS)
+		- Incertidumbre: **Baja-Media**
+		- Dependencias: 6.3, 6.4, 8.1 (FS)
 		- Spike: **No**
+		- PERT: Optimista 4hs, Probable 6hs, Pesimista 8hs
 
 7. **Repuestos** (RF-012..RF-014) [NiceToHave]
 
