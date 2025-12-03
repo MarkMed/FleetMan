@@ -278,17 +278,6 @@ Distribución por categoría:
 |:-------:|:----------:|:--:|:------------:|:-------------:|
 | **5**hs | **29**hs | **0**hs | **4**hs | **2.8**hs |
 
-- **Opción A (Deploy First):** Priorizar 16.8, 16.11, 0.5 PWA, 0.15 i18n, 12.5 Theme, 12.6 Settings (~31hs) y mantener 1.2/1.4 como tareas just-in-time o mover tareas adicionales a Sprint #7.
-- **Opción B (Máquinas + Deploy):** Si se decide mantener trabajo en máquinas, considerar mover parte del deploy a una mini-iteración posterior.
-- **Contexto taller Azure:** El jueves 27 nov hay taller de deploy universitario — sincronizar 16.11 con este evento.
-- **Nota:** Este sprint queda con **40.8hs** estimadas (buffer -5.8hs). Recomendaciones:
-- **Opción A (Deploy First):** Priorizar 16.8, 16.11, 0.5 PWA, 0.15 i18n, 12.5 Theme, 12.6 Settings (~32hs) y mantener 1.2/1.4 como tareas just-in-time o mover tareas adicionales a Sprint #7.
-- **Opción B (Máquinas + Deploy):** Si se decide mantener trabajo en máquinas, considerar mover parte del deploy a una mini-iteración posterior.
-- **Contexto taller Azure:** El jueves 27 nov hay taller de deploy universitario — sincronizar 16.11 con este evento.
-- **Opción A (Deploy First):** Priorizar 16.8, 16.11, 0.5 PWA, 0.15 i18n, 12.5 Theme, 12.6 Settings (~31hs) y mantener 1.2/1.4 como tareas just-in-time o mover tareas adicionales a Sprint #7.
-- **Opción B (Máquinas + Deploy):** Si se decide mantener trabajo en máquinas, considerar mover parte del deploy a una mini-iteración posterior.
-- **Contexto taller Azure:** El jueves 27 nov hay taller de deploy universitario — sincronizar 16.11 con este evento.
-
 ### **Sprint #7**: dom 30 nov → sáb 6 dic 2025
 
 **Objetivo:** 📋 QuickCheck MVP + Azure Deploy - Sistema completo de inspecciones rápidas por capas (Domain → Application → UI → Integration).
