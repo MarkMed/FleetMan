@@ -21,7 +21,7 @@ const getStorageKey = (machineId: string) => `quickcheck_${machineId}`;
  * - Gestionar estados de UI (mode)
  * - CRUD de items del checklist
  * - Track de evaluaciones por item
- * - C\u00e1lculo autom\u00e1tico de stats y resultado
+ * - Cálculo automático de stats y resultado
  * - Persistencia en localStorage
  * - Control de modal
  */
@@ -200,8 +200,8 @@ export function useQuickCheckViewModel() {
 
     setMode('EXECUTING');
     toast.success({
-      title: 'Ejecuci\u00f3n iniciada',
-      description: 'Eval\u00faa cada item del QuickCheck',
+      title: 'Ejecución iniciada',
+      description: 'Evalúa cada item del QuickCheck',
     });
   }, [canStartExecution]);
 
@@ -215,7 +215,7 @@ export function useQuickCheckViewModel() {
     setMode('EDITING');
 
     toast.info({
-      title: 'Ejecuci\u00f3n cancelada',
+      title: 'Ejecución cancelada',
       description: 'Las evaluaciones fueron descartadas',
     });
   }, [items]);
@@ -223,7 +223,7 @@ export function useQuickCheckViewModel() {
   const submitQuickCheck = useCallback(async () => {
     if (!canSubmit) {
       toast.error({
-        title: 'Evaluaci\u00f3n incompleta',
+        title: 'Evaluación incompleta',
         description: 'Debes evaluar todos los items antes de finalizar',
       });
       return;
@@ -255,7 +255,7 @@ export function useQuickCheckViewModel() {
       await new Promise(resolve => setTimeout(resolve, 1000));
 
       toast.success({
-        title: '\u00a1QuickCheck completado!',
+        title: '¡QuickCheck completado!',
         description: `Resultado: ${overallResult}`,
       });
 
