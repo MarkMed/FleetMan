@@ -302,8 +302,8 @@ Distribución por categoría:
 | Desarrollo | 16.11 Azure Deploy - Config práctica (continuación) | 5 | 5 | |
 | Desarrollo | 6.1 Domain + Persistence (RF-011) | 6 | 4.5 | |
 | Desarrollo | 6.3 Application Layer Backend (RF-011) | 7 | 6.5 | |
-| Desarrollo | 6.2a UI Creación de QuickCheck (RF-011) | 8 | 5 | |
-| Desarrollo | 6.2b UI Ejecución de QuickCheck (RF-011) | 9 | 7.5 | |
+| Desarrollo | 6.2a UI Creación de QuickCheck (RF-011) | 8 | 5 | 1.4 |
+| Desarrollo | 6.2b UI Ejecución de QuickCheck (RF-011) | 9 | 7.5 | 2.5 |
 | Desarrollo | 6.4 API Integration Frontend (RF-011) | 10 | 3.5 | |
 | Capacitación | 16.7 Taller Deploy - Deploy en Práctica (jue 4 Dic) | 11 | 3 | |
 
