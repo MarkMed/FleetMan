@@ -13,7 +13,7 @@ import { DashboardScreen } from '../screens/dashboard/DashboardScreen';
 import { MachinesScreen } from '../screens/machines/MachinesScreen';
 import { MachineDetailsScreen } from '../screens/machines/MachineDetailsScreen';
 import { NewMachineScreen } from '../screens/machines/NewMachineScreen';
-import { QuickCheckScreen } from '../screens/quickcheck/QuickcheckScreen';
+import { QuickCheckScreen } from '../screens/quickcheck/QuickCheckScreen';
 import { ExamplesScreen } from '../screens/ExamplesScreen';
 
 // Route components
