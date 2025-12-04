@@ -1,233 +1,250 @@
 import React from 'react';
-import { Heading1, Heading2, BodyText, Button, Card } from '@components/ui';
+import { useParams, Link } from 'react-router-dom';
+import { Button, Card } from '@components/ui';
+import { useModalStore } from '@store/slices/modalSlice';
+import { useQuickCheckViewModel } from '../../viewModels/machines/useQuickCheckViewModel';
+import {
+  QuickCheckEmptyState,
+  QuickCheckItemModal,
+  QuickCheckItemCard,
+  QuickCheckSummary,
+} from '@components/quickcheck';
+import type { QuickCheckItem } from '@models/QuickCheck';
 
 export const QuickCheckScreen: React.FC = () => {
+  const { id: machineId } = useParams<{ id: string }>();
+  const { showModal, hideModal } = useModalStore();
+
+  const vm = useQuickCheckViewModel();
+
+  // Handle modal open/close
+  const handleOpenModal = (mode: 'create' | 'edit', itemId?: string) => {
+    vm.openModal(mode, itemId);
+    
+    showModal({
+      title: '', // Modal component handles title
+      content: (
+        <QuickCheckItemModal
+          mode={mode}
+          initialData={mode === 'edit' && itemId ? vm.editingItem : undefined}
+          onSubmit={(data) => {
+            if (mode === 'create') {
+              vm.addItem(data);
+            } else if (itemId) {
+              vm.editItem(itemId, data);
+            }
+            hideModal();
+          }}
+          onCancel={() => {
+            vm.closeModal();
+            hideModal();
+          }}
+        />
+      ),
+      showCloseButton: true,
+      dismissible: true,
+      size: 'md',
+      showConfirm: false,
+      showCancel: false,
+    });
+  };
+
+  // Handle delete with confirmation
+  const handleDeleteItem = async (itemId: string) => {
+    const item = vm.items.find(i => i.id === itemId);
+    if (!item) return;
+
+    // Use a ref to track if component is still mounted
+    let isMounted = true;
+
+    try {
+      const confirmed = await useModalStore.getState().showConfirmation({
+        title: 'Eliminar item',
+        description: `¿Estás seguro de que deseas eliminar "${item.name}"? Esta acción no se puede deshacer.`,
+        confirmText: 'Eliminar',
+        cancelText: 'Cancelar',
+      });
+
+      if (isMounted && confirmed) {
+        vm.deleteItem(itemId);
+      }
+    } finally {
+      isMounted = false;
+    }
+  };
+
   return (
-    <div className="space-y-8">
+    <div className="container mx-auto px-4 py-6 space-y-6">
+      {/* Header */}
       <div>
-        <Heading1 size="headline" className="tracking-tight text-foreground">
-          Chequeo Rápido (Quickcheck)
-        </Heading1>
-        <BodyText className="text-muted-foreground">
-          Realiza inspecciones rápidas y registra el estado de las máquinas
-        </BodyText>
+        <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
+          <Link to="/machines" className="hover:text-foreground">Máquinas</Link>
+          <span>/</span>
+          <Link to={`/machines/${machineId}`} className="hover:text-foreground">Detalle</Link>
+          <span>/</span>
+          <span className="text-foreground">QuickCheck</span>
+        </div>
+        <h1 className="text-3xl font-bold text-foreground">
+          QuickCheck de Seguridad
+        </h1>
+        <p className="text-muted-foreground mt-1">
+          {vm.mode === 'EDITING' && 'Define y administra los items de verificación'}
+          {vm.mode === 'EXECUTING' && 'Evalúa cada item del checklist'}
+          {vm.mode === 'COMPLETED' && 'Revisa el resultado de la evaluación'}
+        </p>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-3">
-        <div className="lg:col-span-2 space-y-6">
-          <Card>
-            <div className="p-6">
-              <Heading2 size="large" weight="bold" className="mb-4">Nuevo Chequeo</Heading2>
-            
-              <form className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">
-                    Seleccionar Máquina
-                  </label>
-                  <select className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary">
-                    <option value="">Selecciona una máquina...</option>
-                    <option value="001">Excavadora Principal (#001)</option>
-                    <option value="002">Bulldozer B-12 (#002)</option>
-                    <option value="003">Grúa Torre GT-5 (#003)</option>
-                  </select>
-                </div>
+      <Card className="p-6">
+        {/* EDITING MODE - Sin items */}
+        {vm.mode === 'EDITING' && vm.items.length === 0 && (
+          <QuickCheckEmptyState onAddFirstItem={() => handleOpenModal('create')} />
+        )}
 
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">
-                    Estado General
-                  </label>
-                  <div className="grid grid-cols-3 gap-2">
-                    <button type="button" className="p-3 border border-success bg-success/10 text-success rounded-lg hover:bg-success/20 transition-colors">
-                      ✓ Excelente
-                    </button>
-                    <button type="button" className="p-3 border border-warning bg-warning/10 text-warning rounded-lg hover:bg-warning/20 transition-colors">
-                      ⚠ Atención
-                    </button>
-                    <button type="button" className="p-3 border border-destructive bg-destructive/10 text-destructive rounded-lg hover:bg-destructive/20 transition-colors">
-                      ✗ Crítico
-                    </button>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">
-                      Nivel de Combustible
-                    </label>
-                    <select className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary">
-                      <option>Lleno (80-100%)</option>
-                      <option>Medio (40-79%)</option>
-                      <option>Bajo (20-39%)</option>
-                      <option>Crítico (0-19%)</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">
-                      Horas de Operación
-                    </label>
-                    <input 
-                      type="number" 
-                      placeholder="0" 
-                      className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">
-                    Checklist de Seguridad
-                  </label>
-                  <div className="space-y-2">
-                    <label className="flex items-center">
-                      <input type="checkbox" className="mr-2 accent-primary" />
-                      <BodyText size="small">Luces y señales funcionando</BodyText>
-                    </label>
-                    <label className="flex items-center">
-                      <input type="checkbox" className="mr-2 accent-primary" />
-                      <BodyText size="small">Frenos en buen estado</BodyText>
-                    </label>
-                    <label className="flex items-center">
-                      <input type="checkbox" className="mr-2 accent-primary" />
-                      <BodyText size="small">Niveles de fluidos correctos</BodyText>
-                    </label>
-                    <label className="flex items-center">
-                      <input type="checkbox" className="mr-2 accent-primary" />
-                      <BodyText size="small">Estructuras sin daños visibles</BodyText>
-                    </label>
-                    <label className="flex items-center">
-                      <input type="checkbox" className="mr-2 accent-primary" />
-                      <BodyText size="small">Equipos de seguridad presentes</BodyText>
-                    </label>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">
-                    Observaciones
-                  </label>
-                  <textarea 
-                    rows={4}
-                    placeholder="Describe cualquier problema o observación importante..."
-                    className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground resize-none focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
-                  />
-                </div>
-
-                <div className="flex gap-3">
-                  <Button variant="filled" size="default" className="flex-1">
-                    Completar Chequeo
-                  </Button>
-                  <Button variant="outline" size="default">
-                    Cancelar
-                  </Button>
-                </div>
-              </form>
-            </div>
-          </Card>
-        </div>
-
-        <div className="space-y-6">
-          <Card>
-            <div className="p-6">
-              <Heading2 size="large" weight="bold" className="mb-4">Chequeos Recientes</Heading2>
-            
-              <div className="space-y-3">
-                <div className="p-3 border border-border rounded-lg">
-                  <div className="flex items-center justify-between mb-1">
-                    <BodyText weight="medium">Excavadora #001</BodyText>
-                    <span className="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium bg-success/10 text-success">
-                      Excelente
-                    </span>
-                  </div>
-                  <BodyText size="small" className="text-muted-foreground">Por: Juan Pérez - Hace 2 horas</BodyText>
-                </div>
-
-                <div className="p-3 border border-border rounded-lg">
-                  <div className="flex items-center justify-between mb-1">
-                    <BodyText weight="medium">Grúa #003</BodyText>
-                    <span className="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium bg-warning/10 text-warning">
-                      Atención
-                    </span>
-                  </div>
-                  <BodyText size="small" className="text-muted-foreground">Por: María García - Hace 1 día</BodyText>
-                </div>
-
-                <div className="p-3 border border-border rounded-lg">
-                  <div className="flex items-center justify-between mb-1">
-                    <BodyText weight="medium">Bulldozer #002</BodyText>
-                    <span className="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium bg-destructive/10 text-destructive">
-                      Crítico
-                    </span>
-                  </div>
-                  <BodyText size="small" className="text-muted-foreground">Por: Carlos López - Hace 2 días</BodyText>
-                </div>
+        {/* EDITING MODE - Con items */}
+        {vm.mode === 'EDITING' && vm.items.length > 0 && (
+          <div className="space-y-6">
+            {/* Header with add button */}
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-xl font-semibold text-foreground">
+                  Items de verificación ({vm.items.length})
+                </h2>
+                <p className="text-sm text-muted-foreground">
+                  Gestiona los items que se verificarán en cada QuickCheck
+                </p>
               </div>
+              <Button 
+                variant="outline" 
+                size="default"
+                onPress={() => handleOpenModal('create')}
+                className="gap-2"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
+                Agregar item
+              </Button>
             </div>
-          </Card>
 
-          <Card>
-            <div className="p-6">
-              <Heading2 size="large" weight="bold" className="mb-4">Estadísticas</Heading2>
-            
-              <div className="space-y-3">
-                <div className="flex justify-between items-center">
-                  <BodyText size="small" className="text-muted-foreground">Chequeos hoy</BodyText>
-                  <BodyText weight="bold">3</BodyText>
-                </div>
-                <div className="flex justify-between items-center">
-                  <BodyText size="small" className="text-muted-foreground">Esta semana</BodyText>
-                  <BodyText weight="bold">15</BodyText>
-                </div>
-                <div className="flex justify-between items-center">
-                  <BodyText size="small" className="text-muted-foreground">Promedio diario</BodyText>
-                  <BodyText weight="bold">2.1</BodyText>
-                </div>
-              </div>
-
-              <div className="mt-4 pt-4 border-t border-border">
-                <BodyText size="small" weight="medium" className="mb-2">Estado General</BodyText>
-                <div className="space-y-2">
-                  <div className="flex justify-between text-xs">
-                    <BodyText size="small" className="text-success">Excelente</BodyText>
-                    <BodyText size="small">60%</BodyText>
-                  </div>
-                  <div className="flex justify-between text-xs">
-                    <BodyText size="small" className="text-warning">Atención</BodyText>
-                    <BodyText size="small">30%</BodyText>
-                  </div>
-                  <div className="flex justify-between text-xs">
-                    <BodyText size="small" className="text-destructive">Crítico</BodyText>
-                    <BodyText size="small">10%</BodyText>
-                  </div>
-                </div>
-              </div>
+            {/* Items list */}
+            <div className="space-y-3">
+              {vm.items.map((item, index) => (
+                <QuickCheckItemCard
+                  key={item.id}
+                  item={item}
+                  index={index}
+                  mode="EDITING"
+                  onEdit={() => handleOpenModal('edit', item.id)}
+                  onDelete={() => handleDeleteItem( item.id)}
+                />
+              ))}
             </div>
-          </Card>
 
-          <Card>
-            <div className="p-6">
-              <Heading2 size="large" weight="bold" className="mb-4">Acciones Rápidas</Heading2>
-            
-              <div className="space-y-2">
-                <button className="w-full p-3 text-left border border-border rounded-lg hover:bg-muted transition-colors">
-                  <BodyText weight="medium">Generar Reporte</BodyText>
-                  <BodyText size="small" className="text-muted-foreground">Exportar chequeos del día</BodyText>
-                </button>
-              
-                <button className="w-full p-3 text-left border border-border rounded-lg hover:bg-muted transition-colors">
-                  <BodyText weight="medium">Programar Chequeos</BodyText>
-                  <BodyText size="small" className="text-muted-foreground">Configurar recordatorios</BodyText>
-                </button>
-              
-                <button className="w-full p-3 text-left border border-border rounded-lg hover:bg-muted transition-colors">
-                  <BodyText weight="medium">Ver Historial</BodyText>
-                  <BodyText size="small" className="text-muted-foreground">Todos los chequeos</BodyText>
-                </button>
-              </div>
+            {/* Start execution button */}
+            <div className="flex justify-end pt-4 border-t">
+              <Button
+                variant="filled"
+                size="lg"
+                onPress={vm.startExecution}
+                disabled={!vm.canStartExecution}
+                className="gap-2"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+                Iniciar Prevención
+              </Button>
             </div>
-          </Card>
-        </div>
-      </div>
+          </div>
+        )}
+
+        {/* EXECUTING MODE */}
+        {vm.mode === 'EXECUTING' && (
+          <div className="space-y-6">
+            {/* Header */}
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
+                  <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                  </svg>
+                  Ejecutando QuickCheck
+                </h2>
+                <p className="text-sm text-muted-foreground">
+                  Evalúa cada item como Aprobado, Desaprobado u Omitido
+                </p>
+              </div>
+              <Button
+                variant="outline"
+                size="default"
+                onPress={vm.cancelExecution}
+              >
+                Cancelar
+              </Button>
+            </div>
+
+            {/* Summary */}
+            <QuickCheckSummary stats={vm.stats} overallResult={vm.overallResult} />
+
+            {/* Items evaluation */}
+            <div className="space-y-3">
+              {vm.items.map((item, index) => (
+                <QuickCheckItemCard
+                  key={item.id}
+                  item={item}
+                  index={index}
+                  mode="EXECUTING"
+                  status={vm.evaluations[item.id]}
+                  onStatusChange={(status) => vm.setEvaluation(item.id, status)}
+                />
+              ))}
+            </div>
+
+            {/* Submit button */}
+            <div className="flex justify-end gap-3 pt-4 border-t">
+              <Button
+                variant="outline"
+                size="lg"
+                onPress={vm.cancelExecution}
+                disabled={vm.isLoading}
+              >
+                Descartar
+              </Button>
+              <Button
+                variant="filled"
+                size="lg"
+                onPress={vm.submitQuickCheck}
+                disabled={!vm.canSubmit || vm.isLoading}
+                className="gap-2"
+              >
+                {vm.isLoading ? (
+                  <>
+                    <svg className="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                    </svg>
+                    Enviando...
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Finalizar y Enviar
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {/* Error state */}
+        {vm.error && (
+          <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 dark:bg-red-950/20 dark:border-red-800">
+            {vm.error}
+          </div>
+        )}
+      </Card>
     </div>
   );
 };

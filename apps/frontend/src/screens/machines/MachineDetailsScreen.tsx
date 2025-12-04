@@ -1,5 +1,5 @@
 ﻿import React, { useMemo } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { Heading1, Heading2, BodyText, Button, Card } from "@components/ui";
 import { useMachineDetailsViewModel } from "../../viewModels/machines";
 
@@ -27,6 +27,7 @@ const InfoItem = ({ label, value }: { label: string; value?: React.ReactNode }) 
 
 export const MachineDetailsScreen: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const { machine, isLoading, isError, errorMessage, refetch } = useMachineDetailsViewModel(id);
 
   const specs = machine?.specs;
@@ -58,7 +59,11 @@ export const MachineDetailsScreen: React.FC = () => {
           <Button variant="outline" size="default" disabled>
             Editar Máquina
           </Button>
-          <Button variant="filled" size="default" disabled>
+          <Button 
+            variant="filled" 
+            size="default" 
+            onPress={() => navigate(`/machines/${id}/quickcheck`)}
+          >
             Realizar Quickcheck
           </Button>
         </div>
