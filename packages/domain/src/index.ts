@@ -33,11 +33,15 @@ export {
   IMachineEventType,
   INotification,
   IMaintenanceReminder,
-  IQuickCheck,
-  IQuickCheckItem,
+  IQuickCheckTemplate, // OLD - not used in MVP
+  IQuickCheckItemTemplate, // OLD - not used in MVP
   IInternalMessage,
   IRepuesto,
-  IBaseEntity
+  IBaseEntity,
+  IQuickCheckRecord, // NEW - embedded in Machine
+  IQuickCheckItem, // NEW - embedded item in QuickCheckRecord
+  QuickCheckItemResult,
+  QuickCheckResult
 } from "./models/interfaces";
 
 export {

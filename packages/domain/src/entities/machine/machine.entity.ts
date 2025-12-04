@@ -122,6 +122,7 @@ export class Machine {
         coordinates: this.props.location.coordinates,
         lastUpdated: this.props.location.lastUpdated
       } : undefined,
+      quickChecks: [], // Populated by repository layer when hydrating from DB
       createdAt: this.props.createdAt,
       updatedAt: this.props.updatedAt
     };

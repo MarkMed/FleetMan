@@ -7,13 +7,15 @@ import {
   Result,
   DomainError,
   ok,
-  err
+  err,
+  type IQuickCheckRecord
 } from '@packages/domain';
 import { 
   MachineModel, 
   type IMachineDocument
 } from '../models';
 import { MachineMapper } from '../mappers';
+import { type CreateQuickCheckRecord, type QuickCheckHistoryFilters } from '@packages/contracts';
 
 export class MachineRepository implements IMachineRepository {
 
@@ -298,6 +300,156 @@ export class MachineRepository implements IMachineRepository {
         limit: options.limit,
         totalPages: 0
       };
+    }
+  }
+
+  // =============================================================================
+  // QUICKCHECK METHODS
+  // =============================================================================
+
+  /**
+   * Agrega un nuevo registro de QuickCheck a una máquina
+   * @param machineId - ID de la máquina
+   * @param record - Registro del QuickCheck a agregar
+   * @returns Result con el registro agregado o error
+   */
+  async addQuickCheckRecord(
+    machineId: MachineId, 
+    record: CreateQuickCheckRecord
+  ): Promise<Result<IQuickCheckRecord, DomainError>> {
+    try {
+      // Validar que la máquina existe
+      const machineDoc = await MachineModel.findById(machineId.getValue());
+      
+      if (!machineDoc) {
+        return err(DomainError.notFound(`Machine with ID ${machineId.getValue()} not found`));
+      }
+
+      // Crear el registro con fecha actual
+      const quickCheckRecord: IQuickCheckRecord = {
+        ...record,
+        date: new Date()
+      };
+
+      // Usar $push para agregar al array (max 100 registros por máquina)
+      const updated = await MachineModel.findByIdAndUpdate(
+        machineId.getValue(),
+        { 
+          $push: { 
+            quickChecks: {
+              $each: [quickCheckRecord],
+              $position: 0, // Agregar al inicio (más reciente primero)
+              $slice: 100 // Mantener solo los últimos 100 registros
+            }
+          }
+        },
+        { new: true, runValidators: true }
+      );
+
+      if (!updated) {
+        return err(DomainError.create('PERSISTENCE_ERROR', 'Failed to add QuickCheck record'));
+      }
+
+      // Retornar el registro agregado (el primero del array)
+      const addedRecord = updated.quickChecks?.[0];
+      if (!addedRecord) {
+        return err(DomainError.create('PERSISTENCE_ERROR', 'QuickCheck record not found after insertion'));
+      }
+
+      return ok(addedRecord as IQuickCheckRecord);
+    } catch (error: any) {
+      return err(DomainError.create('PERSISTENCE_ERROR', `Error adding QuickCheck record: ${error.message}`));
+    }
+  }
+
+  /**
+   * Obtiene el historial de QuickChecks de una máquina
+   * @param machineId - ID de la máquina
+   * @param filters - Filtros opcionales para el historial
+   * @returns Array de registros QuickCheck
+   */
+  async getQuickCheckHistory(
+    machineId: MachineId,
+    filters?: QuickCheckHistoryFilters
+  ): Promise<Result<IQuickCheckRecord[], DomainError>> {
+    try {
+      const machineDoc = await MachineModel.findById(machineId.getValue());
+      
+      if (!machineDoc) {
+        return err(DomainError.notFound(`Machine with ID ${machineId.getValue()} not found`));
+      }
+
+      let records = machineDoc.quickChecks || [];
+
+      // Aplicar filtros
+      if (filters) {
+        if (filters.result) {
+          records = records.filter(r => r.result === filters.result);
+        }
+
+        if (filters.dateFrom) {
+          records = records.filter(r => new Date(r.date) >= filters.dateFrom!);
+        }
+
+        if (filters.dateTo) {
+          records = records.filter(r => new Date(r.date) <= filters.dateTo!);
+        }
+
+        if (filters.executedById) {
+          records = records.filter(r => r.executedById === filters.executedById);
+        }
+
+        // Aplicar paginación
+        const skip = filters.skip || 0;
+        const limit = filters.limit || 20;
+        records = records.slice(skip, skip + limit);
+      }
+
+      return ok(records as IQuickCheckRecord[]);
+    } catch (error: any) {
+      return err(DomainError.create('PERSISTENCE_ERROR', `Error getting QuickCheck history: ${error.message}`));
+    }
+  }
+
+  /**
+   * Obtiene el último QuickCheck de una máquina
+   * @param machineId - ID de la máquina
+   * @returns Último registro QuickCheck o undefined
+   */
+  async getLatestQuickCheck(machineId: MachineId): Promise<Result<IQuickCheckRecord | undefined, DomainError>> {
+    try {
+      const machineDoc = await MachineModel.findById(machineId.getValue());
+      
+      if (!machineDoc) {
+        return err(DomainError.notFound(`Machine with ID ${machineId.getValue()} not found`));
+      }
+
+      const latest = machineDoc.quickChecks?.[0]; // Ya están ordenados por fecha (más reciente primero)
+      
+      return ok(latest as IQuickCheckRecord | undefined);
+    } catch (error: any) {
+      return err(DomainError.create('PERSISTENCE_ERROR', `Error getting latest QuickCheck: ${error.message}`));
+    }
+  }
+
+  /**
+   * Cuenta cuántos QuickChecks no aprobados tiene una máquina
+   * @param machineId - ID de la máquina
+   * @returns Cantidad de QuickChecks disapproved
+   */
+  async countDisapprovedQuickChecks(machineId: MachineId): Promise<Result<number, DomainError>> {
+    try {
+      const result = await MachineModel.aggregate([
+        { $match: { _id: machineId.getValue() } },
+        { $unwind: '$quickChecks' },
+        { $match: { 'quickChecks.result': 'disapproved' } },
+        { $count: 'total' }
+      ]);
+
+      const count = result[0]?.total || 0;
+      return ok(count);
+    } catch (error: any) {
+      return err(DomainError.create('PERSISTENCE_ERROR', `Error counting disapproved QuickChecks: ${error.message}`));
     }
   }
 }

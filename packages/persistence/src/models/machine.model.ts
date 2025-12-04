@@ -1,9 +1,12 @@
 import { Schema, model, Document, type Types } from 'mongoose';
-import { type IMachine, type MachineStatusCode, type FuelType } from '@packages/domain';
-
-// =============================================================================
-// MACHINE DOCUMENT INTERFACE
-// =============================================================================
+import { 
+  type IMachine, 
+  type MachineStatusCode, 
+  type FuelType,
+  type IQuickCheckRecord,
+  type QuickCheckItemResult,
+  type QuickCheckResult
+} from '@packages/domain';
 
 // =============================================================================
 // MACHINE DOCUMENT INTERFACE
@@ -179,7 +182,46 @@ const machineSchema = new Schema<IMachineDocument>({
       type: Date,
       default: Date.now
     }
-  }
+  },
+
+  // QuickCheck records embedded as subdocuments
+  quickChecks: [{
+    result: {
+      type: String,
+      enum: ['approved', 'disapproved', 'notInitiated'],
+      required: true
+    },
+    date: {
+      type: Date,
+      required: true,
+      default: Date.now
+    },
+    executedById: {
+      type: String,
+      required: true,
+      ref: 'User'
+    },
+    quickCheckItems: [{
+      name: {
+        type: String,
+        required: true,
+        maxlength: 100
+      },
+      description: {
+        type: String,
+        maxlength: 500
+      },
+      result: {
+        type: String,
+        enum: ['approved', 'disapproved', 'omitted'],
+        required: true
+      }
+    }],
+    observations: {
+      type: String,
+      maxlength: 1000
+    }
+  }]
 }, {
   timestamps: true, // Adds createdAt and updatedAt
   collection: 'machines'
