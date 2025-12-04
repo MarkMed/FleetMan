@@ -85,7 +85,7 @@ export function useQuickCheckViewModel() {
  // ===== CRUD Operations =====
   const addItem = useCallback((data: QuickCheckItemInput) => {
     const newItem: QuickCheckItem = {
-      id: `item-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      id: `item-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`,
       name: data.name,
       description: data.description,
     };

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { Button, Card } from '@components/ui';
 import { useModalStore } from '@store/slices/modalSlice';
 import { useQuickCheckViewModel } from '../../viewModels/machines/useQuickCheckViewModel';
@@ -51,18 +51,25 @@ export const QuickCheckScreen: React.FC = () => {
 
   // Handle delete with confirmation
   const handleDeleteItem = async (itemId: string) => {
-    const item = vm.items.find((i: QuickCheckItem) => i.id === itemId);
+    const item = vm.items.find(i => i.id === itemId);
     if (!item) return;
 
-    const confirmed = await useModalStore.getState().showConfirmation({
-      title: 'Eliminar item',
-      description: `¿Estás seguro de que deseas eliminar "${item.name}"? Esta acción no se puede deshacer.`,
-      confirmText: 'Eliminar',
-      cancelText: 'Cancelar',
-    });
+    // Use a ref to track if component is still mounted
+    let isMounted = true;
 
-    if (confirmed) {
-      vm.deleteItem(itemId);
+    try {
+      const confirmed = await useModalStore.getState().showConfirmation({
+        title: 'Eliminar item',
+        description: `¿Estás seguro de que deseas eliminar "${item.name}"? Esta acción no se puede deshacer.`,
+        confirmText: 'Eliminar',
+        cancelText: 'Cancelar',
+      });
+
+      if (isMounted && confirmed) {
+        vm.deleteItem(itemId);
+      }
+    } finally {
+      isMounted = false;
     }
   };
 
@@ -71,9 +78,9 @@ export const QuickCheckScreen: React.FC = () => {
       {/* Header */}
       <div>
         <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
-          <a href="/machines" className="hover:text-foreground">Máquinas</a>
+          <Link to="/machines" className="hover:text-foreground">Máquinas</Link>
           <span>/</span>
-          <a href={`/machines/${machineId}`} className="hover:text-foreground">Detalle</a>
+          <Link to={`/machines/${machineId}`} className="hover:text-foreground">Detalle</Link>
           <span>/</span>
           <span className="text-foreground">QuickCheck</span>
         </div>
@@ -121,14 +128,14 @@ export const QuickCheckScreen: React.FC = () => {
 
             {/* Items list */}
             <div className="space-y-3">
-              {vm.items.map((item: QuickCheckItem, index: number) => (
+              {vm.items.map((item, index) => (
                 <QuickCheckItemCard
                   key={item.id}
                   item={item}
                   index={index}
                   mode="EDITING"
                   onEdit={() => handleOpenModal('edit', item.id)}
-                  onDelete={() => handleDeleteItem(item.id)}
+                  onDelete={() => handleDeleteItem( item.id)}
                 />
               ))}
             </div>
@@ -181,7 +188,7 @@ export const QuickCheckScreen: React.FC = () => {
 
             {/* Items evaluation */}
             <div className="space-y-3">
-              {vm.items.map((item: QuickCheckItem, index: number) => (
+              {vm.items.map((item, index) => (
                 <QuickCheckItemCard
                   key={item.id}
                   item={item}
