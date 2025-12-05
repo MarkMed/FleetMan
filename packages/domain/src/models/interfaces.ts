@@ -49,8 +49,10 @@ export interface IProviderUser extends IUser {
 
 /**
  * QuickCheck Item Result - Resultado individual de un item
+ * SSOT: Constante para evitar duplicación en schemas Zod
  */
-export type QuickCheckItemResult = 'approved' | 'disapproved' | 'omitted';
+export const QUICK_CHECK_ITEM_RESULTS = ['approved', 'disapproved', 'omitted'] as const;
+export type QuickCheckItemResult = typeof QUICK_CHECK_ITEM_RESULTS[number];
 
 /**
  * QuickCheck Item - Item individual con su resultado
@@ -63,8 +65,10 @@ export interface IQuickCheckItem {
 
 /**
  * QuickCheck Result - Resultado general del chequeo
+ * SSOT: Constante para evitar duplicación en schemas Zod
  */
-export type QuickCheckResult = 'approved' | 'disapproved' | 'notInitiated';
+export const QUICK_CHECK_RESULTS = ['approved', 'disapproved', 'notInitiated'] as const;
+export type QuickCheckResult = typeof QUICK_CHECK_RESULTS[number];
 
 /**
  * QuickCheck Record - Registro completo de un QuickCheck ejecutado

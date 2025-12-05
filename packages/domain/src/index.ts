@@ -41,7 +41,9 @@ export {
   IQuickCheckRecord, // NEW - embedded in Machine
   IQuickCheckItem, // NEW - embedded item in QuickCheckRecord
   QuickCheckItemResult,
-  QuickCheckResult
+  QuickCheckResult,
+  QUICK_CHECK_ITEM_RESULTS, // SSOT constant for validation
+  QUICK_CHECK_RESULTS // SSOT constant for validation
 } from "./models/interfaces";
 
 export {

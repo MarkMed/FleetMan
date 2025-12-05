@@ -1,4 +1,10 @@
 import { z } from 'zod';
+import { 
+  QUICK_CHECK_ITEM_RESULTS, 
+  QUICK_CHECK_RESULTS,
+  type QuickCheckItemResult as DomainQuickCheckItemResult,
+  type QuickCheckResult as DomainQuickCheckResult
+} from '@packages/domain';
 
 // =============================================================================
 // QUICKCHECK TYPES & SCHEMAS
@@ -6,9 +12,9 @@ import { z } from 'zod';
 
 /**
  * Resultado individual de un item del QuickCheck
+ * SSOT: Usa constante desde domain para evitar duplicación
  */
-export const QuickCheckItemResultSchema = z.enum(['approved', 'disapproved', 'omitted']);
-export type QuickCheckItemResult = z.infer<typeof QuickCheckItemResultSchema>;
+export const QuickCheckItemResultSchema = z.enum(QUICK_CHECK_ITEM_RESULTS) satisfies z.ZodType<DomainQuickCheckItemResult>;
 
 /**
  * Item individual del QuickCheck con su resultado
@@ -27,9 +33,9 @@ export type QuickCheckItem = z.infer<typeof QuickCheckItemSchema>;
 
 /**
  * Resultado general del QuickCheck
+ * SSOT: Usa constante desde domain para evitar duplicación
  */
-export const QuickCheckResultSchema = z.enum(['approved', 'disapproved', 'notInitiated']);
-export type QuickCheckResult = z.infer<typeof QuickCheckResultSchema>;
+export const QuickCheckResultSchema = z.enum(QUICK_CHECK_RESULTS) satisfies z.ZodType<DomainQuickCheckResult>;
 
 /**
  * Registro completo de un QuickCheck ejecutado
@@ -69,3 +75,65 @@ export const QuickCheckHistoryFiltersSchema = z.object({
 });
 
 export type QuickCheckHistoryFilters = z.infer<typeof QuickCheckHistoryFiltersSchema>;
+
+// =============================================================================
+// REQUEST/RESPONSE SCHEMAS (para API REST)
+// =============================================================================
+
+/**
+ * Request para agregar QuickCheck a una máquina
+ * Combina path param (machineId) con body (record)
+ */
+export const AddQuickCheckRequestSchema = z.object({
+  machineId: z.string().min(1, 'Machine ID is required'),
+  record: CreateQuickCheckRecordSchema
+});
+
+export type AddQuickCheckRequest = z.infer<typeof AddQuickCheckRequestSchema>;
+
+/**
+ * Response exitoso al agregar QuickCheck
+ */
+export const AddQuickCheckResponseSchema = z.object({
+  success: z.boolean(),
+  message: z.string(),
+  data: z.object({
+    machineId: z.string(),
+    quickCheckAdded: QuickCheckRecordSchema,
+    totalQuickChecks: z.number()
+  })
+});
+
+export type AddQuickCheckResponse = z.infer<typeof AddQuickCheckResponseSchema>;
+
+/**
+ * Response de historial de QuickChecks
+ */
+export const GetQuickCheckHistoryResponseSchema = z.object({
+  machineId: z.string(),
+  quickChecks: z.array(QuickCheckRecordSchema),
+  total: z.number(),
+  filters: QuickCheckHistoryFiltersSchema.optional()
+});
+
+export type GetQuickCheckHistoryResponse = z.infer<typeof GetQuickCheckHistoryResponseSchema>;
+
+// =============================================================================
+// ESTADÍSTICAS Y MÉTRICAS (para dashboard - POST-MVP)
+// =============================================================================
+
+/**
+ * TODO POST-MVP: Response con estadísticas de QuickCheck por máquina
+ * Útil para dashboard de calidad y alertas tempranas
+ */
+// export const QuickCheckStatsSchema = z.object({
+//   machineId: z.string(),
+//   totalQuickChecks: z.number(),
+//   approvedCount: z.number(),
+//   disapprovedCount: z.number(),
+//   approvalRate: z.number().min(0).max(100), // Porcentaje 0-100
+//   lastQuickCheck: QuickCheckRecordSchema.optional(),
+//   daysSinceLastInspection: z.number().optional()
+// });
+//
+// export type QuickCheckStats = z.infer<typeof QuickCheckStatsSchema>;
