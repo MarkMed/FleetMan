@@ -11,8 +11,7 @@ import {
 } from './machineStatus';
 import { 
   IMachine, 
-  IQuickCheckRecord,
-  QuickCheckResult 
+  IQuickCheckRecord
 } from '../../models/interfaces';
 
 /**
@@ -483,6 +482,7 @@ export class Machine {
    * - Máquina no debe estar RETIRED
    * - Al menos un item en el checklist
    * - Consistencia entre resultado general y resultados de items
+   * - 'notInitiated' solo cuando todos los items están 'omitted'
    * 
    * @param record - Registro de QuickCheck a agregar
    * @returns Result<void> exitoso o DomainError con validación
@@ -501,6 +501,7 @@ export class Machine {
     // Validación 3: Consistencia de resultados
     const allApproved = record.quickCheckItems.every(item => item.result === 'approved');
     const anyDisapproved = record.quickCheckItems.some(item => item.result === 'disapproved');
+    const allOmitted = record.quickCheckItems.every(item => item.result === 'omitted');
 
     // Si todos los items están aprobados, el resultado general debe ser 'approved'
     if (allApproved && record.result !== 'approved') {
@@ -510,6 +511,12 @@ export class Machine {
     // Si al menos un item está desaprobado, el resultado general NO puede ser 'approved'
     if (anyDisapproved && record.result === 'approved') {
       return err(DomainError.validation('Result cannot be approved when items are disapproved'));
+    }
+
+    // Validación 4: 'notInitiated' solo cuando todos los items están 'omitted'
+    // Esto representa una inspección que no fue completada/iniciada apropiadamente
+    if (record.result === 'notInitiated' && !allOmitted) {
+      return err(DomainError.validation("Result 'notInitiated' is only allowed when all items are 'omitted'"));
     }
 
     // Validación 4: Límite de historial (soft limit - advisory)
