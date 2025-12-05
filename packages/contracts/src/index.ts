@@ -21,3 +21,6 @@ export * from "./machine-event-type.contract";
 
 // Machine Event contracts
 export * from "./machine-event.contract";
+
+// QuickCheck contracts
+export * from "./quickcheck.contract";

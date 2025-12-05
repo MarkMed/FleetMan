@@ -23,7 +23,8 @@
   },
   "dependencies": {
     "mongoose": "^8.19.2",
-    "@packages/domain": "workspace:*"
+    "@packages/domain": "workspace:*",
+    "@packages/contracts": "workspace:*"
   },
   "devDependencies": {
     "tsup": "^8.0.0",

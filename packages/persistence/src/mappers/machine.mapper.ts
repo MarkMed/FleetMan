@@ -6,7 +6,8 @@ import {
   MachineTypeId,
   MachineStatusRegistry,
   type MachineSpecs,
-  type MachineLocation
+  type MachineLocation,
+  type IQuickCheckRecord
 } from '@packages/domain';
 import { type IMachineDocument } from '../models';
 
@@ -94,6 +95,21 @@ export class MachineMapper {
       machineAny.props.createdAt = doc.createdAt;
       machineAny.props.updatedAt = doc.updatedAt;
 
+      // Mapear quickChecks desde documento
+      const quickChecks: IQuickCheckRecord[] = (doc.quickChecks || []).map(qc => ({
+        result: qc.result,
+        date: qc.date,
+        executedById: qc.executedById,
+        quickCheckItems: qc.quickCheckItems.map(item => ({
+          name: item.name,
+          description: item.description,
+          result: item.result
+        })),
+        observations: qc.observations
+      }));
+      
+      machineAny.props.quickChecks = quickChecks;
+
       return machine;
 
     } catch (error) {
@@ -141,6 +157,17 @@ export class MachineMapper {
         coordinates: publicInterface.location.coordinates,
         lastUpdated: publicInterface.location.lastUpdated
       } : undefined,
+      quickChecks: publicInterface.quickChecks?.map(qc => ({
+        result: qc.result,
+        date: qc.date,
+        executedById: qc.executedById,
+        quickCheckItems: qc.quickCheckItems.map(item => ({
+          name: item.name,
+          description: item.description,
+          result: item.result
+        })),
+        observations: qc.observations
+      })),
       createdAt: publicInterface.createdAt,
       updatedAt: publicInterface.updatedAt
     };

@@ -9,7 +9,10 @@ import {
   MachineStatuses,
   MachineStatusCode 
 } from './machineStatus';
-import { IMachine } from '../../models/interfaces';
+import { 
+  IMachine, 
+  IQuickCheckRecord
+} from '../../models/interfaces';
 
 /**
  * Tipos de combustible para máquinas
@@ -74,6 +77,7 @@ interface MachineProps {
   providerAssignedAt?: Date;
   specs?: MachineSpecs;
   location?: MachineLocation;
+  quickChecks: IQuickCheckRecord[]; // Historial de inspecciones (mutable)
   createdAt: Date;
   updatedAt: Date;
 }
@@ -122,6 +126,7 @@ export class Machine {
         coordinates: this.props.location.coordinates,
         lastUpdated: this.props.location.lastUpdated
       } : undefined,
+      quickChecks: this.props.quickChecks, // Real quickcheck history
       createdAt: this.props.createdAt,
       updatedAt: this.props.updatedAt
     };
@@ -202,6 +207,7 @@ export class Machine {
       createdById: creatorIdResult.data,
       specs: createProps.specs,
       location: createProps.location,
+      quickChecks: [], // Initialize empty history
       createdAt: now,
       updatedAt: now,
     };
@@ -469,6 +475,105 @@ export class Machine {
 
     return ok(undefined);
   }
+
+  /**
+   * Agrega un registro de QuickCheck al historial de la máquina
+   * Aplica validaciones de negocio críticas:
+   * - Máquina no debe estar RETIRED
+   * - Al menos un item en el checklist
+   * - Consistencia entre resultado general y resultados de items
+   * - 'notInitiated' solo cuando todos los items están 'omitted'
+   * 
+   * @param record - Registro de QuickCheck a agregar
+   * @returns Result<void> exitoso o DomainError con validación
+   */
+  public addQuickCheckRecord(record: IQuickCheckRecord): Result<void, DomainError> {
+    // Validación 1: No agregar quickcheck a máquina retirada
+    if (this.props.status.code === 'RETIRED') {
+      return err(DomainError.domainRule('Cannot add QuickCheck to retired machine'));
+    }
+
+    // Validación 2: Al menos un item en el checklist
+    if (!record.quickCheckItems || record.quickCheckItems.length === 0) {
+      return err(DomainError.validation('QuickCheck must have at least one item'));
+    }
+
+    // Validación 3: Consistencia de resultados
+    const allApproved = record.quickCheckItems.every(item => item.result === 'approved');
+    const anyDisapproved = record.quickCheckItems.some(item => item.result === 'disapproved');
+    const allOmitted = record.quickCheckItems.every(item => item.result === 'omitted');
+
+    // Si todos los items están aprobados, el resultado general debe ser 'approved'
+    if (allApproved && record.result !== 'approved') {
+      return err(DomainError.validation('Result should be approved when all items are approved'));
+    }
+
+    // Si al menos un item está desaprobado, el resultado general NO puede ser 'approved'
+    if (anyDisapproved && record.result === 'approved') {
+      return err(DomainError.validation('Result cannot be approved when items are disapproved'));
+    }
+
+    // Validación 4: 'notInitiated' solo cuando todos los items están 'omitted'
+    // Esto representa una inspección que no fue completada/iniciada apropiadamente
+    if (record.result === 'notInitiated' && !allOmitted) {
+      return err(DomainError.validation("Result 'notInitiated' is only allowed when all items are 'omitted'"));
+    }
+
+    // Validación 4: Límite de historial (soft limit - advisory)
+    if (this.props.quickChecks.length >= 100) {
+      // Nota: El repositorio usa $slice para mantener solo 100 registros
+      // Esta validación es informativa, no bloqueante
+      console.warn(`Machine ${this.id.getValue()} has reached 100 QuickCheck records. Oldest will be rotated.`);
+    }
+
+    // Agregar al historial (más recientes primero)
+    this.props.quickChecks.unshift(record);
+    this.props.updatedAt = new Date();
+
+    return ok(undefined);
+  }
+
+  // =============================================================================
+  // MÉTODOS ESTRATÉGICOS FUTUROS (Comentados para post-MVP)
+  // =============================================================================
+
+  /**
+   * TODO POST-MVP: Obtener último QuickCheck
+   * Útil para mostrar estado actual de inspección en UI
+   */
+  // public getLatestQuickCheck(): IQuickCheckRecord | undefined {
+  //   return this.props.quickChecks[0];
+  // }
+
+  /**
+   * TODO POST-MVP: Contar QuickChecks no aprobados
+   * Útil para alertas y métricas de calidad
+   */
+  // public countDisapprovedQuickChecks(): number {
+  //   return this.props.quickChecks.filter(qc => qc.result === 'disapproved').length;
+  // }
+
+  /**
+   * TODO POST-MVP: Obtener tasa de aprobación
+   * Retorna porcentaje de QuickChecks aprobados (0-100)
+   */
+  // public getApprovalRate(): number {
+  //   if (this.props.quickChecks.length === 0) return 100;
+  //   const approved = this.props.quickChecks.filter(qc => qc.result === 'approved').length;
+  //   return (approved / this.props.quickChecks.length) * 100;
+  // }
+
+  /**
+   * TODO POST-MVP: Verificar si requiere inspección
+   * Basado en tiempo transcurrido desde último QuickCheck
+   */
+  // public requiresInspection(thresholdDays: number = 7): boolean {
+  //   const latest = this.getLatestQuickCheck();
+  //   if (!latest) return true; // Nunca inspeccionada
+  //   
+  //   const daysSinceInspection = (Date.now() - latest.date.getTime()) / (1000 * 60 * 60 * 24);
+  //   return daysSinceInspection >= thresholdDays;
+  // }
 
   /**
    * Actualiza las propiedades básicas de la máquina

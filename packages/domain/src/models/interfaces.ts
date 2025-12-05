@@ -48,6 +48,41 @@ export interface IProviderUser extends IUser {
 }
 
 /**
+ * QuickCheck Item Result - Resultado individual de un item
+ * SSOT: Constante para evitar duplicación en schemas Zod
+ */
+export const QUICK_CHECK_ITEM_RESULTS = ['approved', 'disapproved', 'omitted'] as const;
+export type QuickCheckItemResult = typeof QUICK_CHECK_ITEM_RESULTS[number];
+
+/**
+ * QuickCheck Item - Item individual con su resultado
+ */
+export interface IQuickCheckItem {
+  readonly name: string;
+  readonly description?: string;
+  readonly result: QuickCheckItemResult;
+}
+
+/**
+ * QuickCheck Result - Resultado general del chequeo
+ * SSOT: Constante para evitar duplicación en schemas Zod
+ */
+export const QUICK_CHECK_RESULTS = ['approved', 'disapproved', 'notInitiated'] as const;
+export type QuickCheckResult = typeof QUICK_CHECK_RESULTS[number];
+
+/**
+ * QuickCheck Record - Registro completo de un QuickCheck ejecutado
+ * Se embede dentro del array quickChecks[] de IMachine
+ */
+export interface IQuickCheckRecord {
+  readonly result: QuickCheckResult;
+  readonly date: Date;
+  readonly executedById: string;
+  readonly quickCheckItems: readonly IQuickCheckItem[];
+  readonly observations?: string;
+}
+
+/**
  * Interface pública para Machine
  */
 export interface IMachine extends IBaseEntity {
@@ -84,6 +119,7 @@ export interface IMachine extends IBaseEntity {
     };
     readonly lastUpdated: Date;
   };
+  readonly quickChecks?: readonly IQuickCheckRecord[];
 }
 
 /**
@@ -160,9 +196,11 @@ export interface IMaintenanceReminder extends IBaseEntity {
 }
 
 /**
- * Interface pública para QuickCheckItem
+ * Interface pública para QuickCheckItemTemplate (OLD - Not used in MVP)
+ * Esta era la interfaz original para templates editables de QuickCheck
+ * En MVP usamos IQuickCheckItem (embedded) para items dentro de registros
  */
-export interface IQuickCheckItem extends IBaseEntity {
+export interface IQuickCheckItemTemplate extends IBaseEntity {
   readonly quickCheckId: string;
   readonly title: string;
   readonly description?: string;
@@ -172,13 +210,15 @@ export interface IQuickCheckItem extends IBaseEntity {
 }
 
 /**
- * Interface pública para QuickCheck
+ * Interface pública para QuickCheckTemplate (OLD - Not used in MVP)
+ * Esta era la interfaz original para templates editables de QuickCheck
+ * En MVP usamos IQuickCheckRecord (embedded en Machine) para registros de ejecución
  */
-export interface IQuickCheck extends IBaseEntity {
+export interface IQuickCheckTemplate extends IBaseEntity {
   readonly machineId: string;
   readonly title: string;
   readonly description?: string;
-  readonly items: readonly IQuickCheckItem[];
+  readonly items: readonly IQuickCheckItemTemplate[];
   readonly isActive: boolean;
   readonly createdById: string;
   readonly lastExecutedAt?: Date;

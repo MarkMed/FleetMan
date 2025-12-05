@@ -97,14 +97,14 @@ USER nodejs
 
 # Variables de entorno (defaults, se sobrescriben en runtime)
 ENV NODE_ENV=production
-ENV PORT=80
+ENV PORT=3000
 
 # Health check nativo de Docker
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-  CMD node -e "require('http').get('http://localhost:80/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
+  CMD node -e "require('http').get('http://localhost:3000/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
 
 # Exponer puerto
-EXPOSE 80
+EXPOSE 3000
 
 # Working directory del backend
 WORKDIR /app/apps/backend

@@ -353,6 +353,9 @@ importers:
 
   packages/persistence:
     dependencies:
+      '@packages/contracts':
+        specifier: workspace:*
+        version: link:../contracts
       '@packages/domain':
         specifier: workspace:*
         version: link:../domain
