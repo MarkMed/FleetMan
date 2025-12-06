@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { logger } from '../config/logger.config';
 import {
   AddQuickCheckUseCase,
@@ -100,30 +100,38 @@ export class QuickCheckController {
       const userId = req.user.userId;
       
       // Query params opcionales (ya validados por Zod)
-      const filters = {
-        result: req.query.result as any,
-        dateFrom: req.query.dateFrom ? new Date(req.query.dateFrom as string) : undefined,
-        dateTo: req.query.dateTo ? new Date(req.query.dateTo as string) : undefined,
-        executedById: req.query.executedById as string,
-        limit: req.query.limit ? Number(req.query.limit) : 20,
-        skip: req.query.skip ? Number(req.query.skip) : 0
-      };
-
-      // Eliminar campos undefined para filtros limpios
-      Object.keys(filters).forEach(key => 
-        filters[key as keyof typeof filters] === undefined && delete filters[key as keyof typeof filters]
-      );
+      // Solo incluir filtros que realmente fueron proporcionados
+      const filters: any = {};
+      
+      if (req.query.result) {
+        filters.result = req.query.result;
+      }
+      if (req.query.dateFrom) {
+        filters.dateFrom = new Date(req.query.dateFrom as string);
+      }
+      if (req.query.dateTo) {
+        filters.dateTo = new Date(req.query.dateTo as string);
+      }
+      if (req.query.executedById) {
+        filters.executedById = req.query.executedById as string;
+      }
+      if (req.query.limit) {
+        filters.limit = Number(req.query.limit);
+      }
+      if (req.query.skip) {
+        filters.skip = Number(req.query.skip);
+      }
 
       logger.info({ 
         machineId,
         userId,
-        filters 
+        filters: Object.keys(filters).length > 0 ? filters : 'none'
       }, 'Fetching QuickCheck history');
 
       const result = await this.getHistoryUseCase.execute(
         machineId,
         userId,
-        Object.keys(filters).length > 0 ? filters as any : undefined
+        Object.keys(filters).length > 0 ? filters : undefined
       );
 
       res.status(200).json({

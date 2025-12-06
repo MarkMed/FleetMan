@@ -314,12 +314,12 @@ export class MachineRepository implements IMachineRepository {
    * 
    * @param machineId - ID de la máquina
    * @param record - Registro del QuickCheck a agregar
-   * @returns Result con el registro agregado o error
+   * @returns Result con el registro agregado y total de quickchecks (evita query extra)
    */
   async addQuickCheckRecord(
     machineId: MachineId, 
     record: CreateQuickCheckRecord
-  ): Promise<Result<IQuickCheckRecord, DomainError>> {
+  ): Promise<Result<{ quickCheckRecord: IQuickCheckRecord; totalQuickChecks: number }, DomainError>> {
     try {
       // 1. Cargar la entidad Machine (incluye todas las validaciones de dominio)
       const machineResult = await this.findById(machineId);
@@ -347,8 +347,11 @@ export class MachineRepository implements IMachineRepository {
         return err(saveResult.error);
       }
 
-      // 5. Retornar el registro agregado
-      return ok(quickCheckRecord);
+      // 5. Obtener total de quickchecks del estado actual (sin query extra)
+      const totalQuickChecks = machine.toPublicInterface().quickChecks?.length || 0;
+
+      // 6. Retornar el registro agregado con metadata
+      return ok({ quickCheckRecord, totalQuickChecks });
     } catch (error: any) {
       return err(DomainError.create('PERSISTENCE_ERROR', `Error adding QuickCheck record: ${error.message}`));
     }

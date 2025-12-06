@@ -83,26 +83,18 @@ export class AddQuickCheckUseCase {
         throw new Error(error.message);
       }
 
-      const quickCheckAdded = addResult.data;
-
-      // 3. Obtener máquina actualizada para contar total de quickchecks
-      const machineResult = await this.machineRepository.findById(machineIdResult.data);
-      if (!machineResult.success) {
-        throw new Error('Failed to retrieve updated machine');
-      }
-
-      const machine = machineResult.data;
-      const totalQuickChecks = machine.toPublicInterface().quickChecks?.length || 0;
+      // El repositorio ahora retorna { quickCheckRecord, totalQuickChecks }
+      const { quickCheckRecord, totalQuickChecks } = addResult.data;
 
       logger.info({ 
         machineId,
         totalQuickChecks,
-        result: quickCheckAdded.result
+        result: quickCheckRecord.result
       }, '✅ QuickCheck added successfully');
 
       return {
         machineId,
-        quickCheckAdded,
+        quickCheckAdded: quickCheckRecord,
         totalQuickChecks
       };
 
