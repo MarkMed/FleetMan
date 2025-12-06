@@ -11,6 +11,7 @@ import { setupSwagger } from './config/swagger.config';
 import { requestSanitization } from './middlewares/requestSanitization';
 import routes from './routes';
 import { connectDatabase } from './config/database.config';
+import { seedMachineTypesIfEmpty } from './scripts/seed-machine-types';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -111,7 +112,12 @@ app.get('/api', (req, res) => {
     // 1. Conectar con DB
     await connectDatabase();
     
-    // 2. Iniciar servidor HTTP
+    // 2. Seed automático - Poblar MachineTypes si DB está vacía
+    // IMPORTANTE: Solo se ejecuta si count de MachineTypes === 0
+    // En reinicios subsecuentes, detecta registros existentes y skipea
+    await seedMachineTypesIfEmpty();
+    
+    // 3. Iniciar servidor HTTP
     app.listen(PORT, () => {
       console.log(`🚀 FleetMan Backend running on port ${PORT}`);
       console.log(`🌐 API available at http://localhost:${PORT}/api`);
