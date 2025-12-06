@@ -288,17 +288,17 @@ Distribución por categoría:
 | Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | 0 |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | 1.2 |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | 0.75 |
-| Desarrollo | 16.11 Azure Deploy - Config práctica (continuación) | 5 | 5 | |
-| Desarrollo | 6.1 Domain + Persistence (RF-011) | 6 | 4.5 | |
-| Desarrollo | 6.3 Application Layer Backend (RF-011) | 7 | 6.5 | |
+| Desarrollo | 16.11 Azure Deploy - Config práctica (continuación) | 5 | 5 | 3.1 |
+| Desarrollo | 6.1 Domain + Persistence (RF-011) | 6 | 4.5 | 3.5 |
+| Desarrollo | 6.3 Application Layer Backend (RF-011) | 7 | 6.5 | 1.9 |
 | Desarrollo | 6.2a UI Creación de QuickCheck (RF-011) | 8 | 5 | 1.4 |
 | Desarrollo | 6.2b UI Ejecución de QuickCheck (RF-011) | 9 | 7.5 | 2.5 |
 | Desarrollo | 6.4 API Integration Frontend (RF-011) | 10 | 3.5 | |
-| Capacitación | 16.7 Taller Deploy - Deploy en Práctica (jue 4 Dic) | 11 | 3 | |
+| Capacitación | 16.7 Taller Deploy - Deploy en Práctica (jue 4 Dic) | 11 | 3 | 2.5 |
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales | Consumo |
 |:---:|:----------:|:-------:|
-| **43.5**hs | **7.65**hs | **17.6%** |
+| **43.5**hs | **22.55**hs | **51.8%** |
 
 Buffer reservado: **-8.5**hs ⚠️
 Total con buffer: **35**hs
@@ -313,7 +313,7 @@ xychart-beta
     line [5, 1.5, 1.3, 1, 5, 4.5, 6.5, 5, 7.5, 3.5, 3, 43.5]
 
     %% Black line (reales)
-    line [5.7, 0, 1.2, 0.75, 0, 0, 0, 0, 0, 0, 0, 7.65]
+    line [5.7, 0, 1.2, 0.75, 3.1, 3.5, 1.9, 1.4, 2.5, 0, 2.5, 22.55]
 ```
 
 Distribución por categoría:
