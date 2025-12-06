@@ -1,5 +1,5 @@
 // Domain models and contracts
-export * from '@packages/contracts';
+export * from '@contracts';
 
 // Form specific types
 export * from './forms';

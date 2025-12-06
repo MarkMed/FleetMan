@@ -2,7 +2,7 @@
 import { FormProvider } from "react-hook-form";
 import { Wizard } from "../../../components/forms/wizard";
 import { useMachineRegistrationViewModel } from "../../../viewModels/machines/MachineRegistrationViewModel";
-import { MachineRegistrationData } from "@packages/contracts";
+import { MachineRegistrationData } from "@contracts";
 import { Button } from "../../../components/ui/Button";
 import { TextBlock, Skeleton } from "@components/ui";
 

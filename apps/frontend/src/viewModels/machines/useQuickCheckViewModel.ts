@@ -2,14 +2,17 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { toast } from '@components/ui';
 import type {
-  QuickCheckItem,
+  QuickCheckItemUI,
   QuickCheckItemInput,
   QuickCheckMode,
-  EvaluationStatus,
+  QuickCheckItemResult,
+  QuickCheckResult,
   EvaluationStats,
-  OverallResult,
   QuickCheckEvaluations,
 } from '@models/QuickCheck';
+import type { CreateQuickCheckRecord } from '@contracts';
+import { quickCheckService } from '@services/api/quickCheckService';
+import { getSessionToken } from '@store/slices/authSlice';
 
 // localStorage key helper
 const getStorageKey = (machineId: string) => `quickcheck_${machineId}`;
@@ -34,8 +37,9 @@ export function useQuickCheckViewModel() {
 
   // ===== State =====
   const [mode, setMode] = useState<QuickCheckMode>('EDITING');
-  const [items, setItems] = useState<QuickCheckItem[]>([]);
+  const [items, setItems] = useState<QuickCheckItemUI[]>([]);
   const [evaluations, setEvaluations] = useState<QuickCheckEvaluations>({});
+  const [observations, setObservations] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -50,7 +54,7 @@ export function useQuickCheckViewModel() {
       try {
         const stored = localStorage.getItem(getStorageKey(machineId));
         if (stored) {
-          const parsedItems = JSON.parse(stored) as QuickCheckItem[];
+          const parsedItems = JSON.parse(stored) as QuickCheckItemUI[];
           setItems(parsedItems);
           
           // Initialize evaluations for all items
@@ -70,7 +74,7 @@ export function useQuickCheckViewModel() {
   }, [machineId]);
 
   // ===== Save items to localStorage whenever they change =====
-  const saveItems = useCallback((newItems: QuickCheckItem[]) => {
+  const saveItems = useCallback((newItems: QuickCheckItemUI[]) => {
     try {
       localStorage.setItem(getStorageKey(machineId), JSON.stringify(newItems));
     } catch (err) {
@@ -84,7 +88,7 @@ export function useQuickCheckViewModel() {
 
  // ===== CRUD Operations =====
   const addItem = useCallback((data: QuickCheckItemInput) => {
-    const newItem: QuickCheckItem = {
+    const newItem: QuickCheckItemUI = {
       id: `item-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`,
       name: data.name,
       description: data.description,
@@ -152,7 +156,7 @@ export function useQuickCheckViewModel() {
   }, [saveItems]);
 
   // ===== Evaluation Management =====
-  const setEvaluation = useCallback((itemId: string, status: Exclude<EvaluationStatus, null>) => {
+  const setEvaluation = useCallback((itemId: string, status: QuickCheckItemResult) => {
     setEvaluations(prev => ({
       ...prev,
       [itemId]: status,
@@ -166,18 +170,18 @@ export function useQuickCheckViewModel() {
 
     return {
       total,
-      aprobados: values.filter(v => v === 'APROBADO').length,
-      desaprobados: values.filter(v => v === 'DESAPROBADO').length,
-      omitidos: values.filter(v => v === 'OMITIDO').length,
+      aprobados: values.filter(v => v === 'approved').length,
+      desaprobados: values.filter(v => v === 'disapproved').length,
+      omitidos: values.filter(v => v === 'omitted').length,
       pendientes: total - values.filter(v => v !== null).length,
     };
   }, [items.length, evaluations]);
 
   // ===== Calculate Overall Result (memoized) =====
-  const overallResult: OverallResult = useMemo(() => {
-    if (stats.pendientes > 0) return 'PENDIENTE';
-    if (stats.desaprobados > 0) return 'DESAPROBADO';
-    return 'APROBADO';
+  const overallResult: QuickCheckResult = useMemo(() => {
+    if (stats.pendientes > 0) return 'notInitiated';
+    if (stats.desaprobados > 0) return 'disapproved';
+    return 'approved';
   }, [stats]);
 
   // ===== Validations =====
@@ -233,30 +237,37 @@ export function useQuickCheckViewModel() {
     setError(null);
 
     try {
-      // Prepare payload
-      const payload = {
-        machineId,
-        items: items.map(item => ({
-          itemId: item.id,
+      // Get auth token
+      const token = getSessionToken();
+      if (!token) {
+        throw new Error('No se encontró token de autenticación');
+      }
+
+      // Prepare payload using CreateQuickCheckRecord from contracts
+      const payload: CreateQuickCheckRecord = {
+        result: overallResult,
+        quickCheckItems: items.map(item => ({
           name: item.name,
           description: item.description,
-          evaluation: evaluations[item.id] as Exclude<EvaluationStatus, null>,
+          result: evaluations[item.id]!, // Already QuickCheckItemResult ('approved'|'disapproved'|'omitted')
         })),
-        overallResult,
-        timestamp: new Date().toISOString(),
+        observations: observations.trim() || undefined,
       };
 
       console.log('Submitting QuickCheck:', payload);
 
-      // TODO (6.4): Replace with actual API call
-      // await quickCheckService.submit(payload);
+      // Make API call
+      const response = await quickCheckService.addQuickCheck(
+        machineId,
+        payload,
+        { Authorization: `Bearer ${token}` }
+      );
 
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      console.log('QuickCheck submitted successfully:', response);
 
       toast.success({
         title: '¡QuickCheck completado!',
-        description: `Resultado: ${overallResult}`,
+        description: `Resultado: ${overallResult === 'approved' ? 'Aprobado' : overallResult === 'disapproved' ? 'Desaprobado' : 'No iniciado'}`,
       });
 
       // Reset state after successful submit
@@ -266,10 +277,12 @@ export function useQuickCheckViewModel() {
         resetEvaluations[item.id] = null;
       });
       setEvaluations(resetEvaluations);
+      setObservations('');
 
     } catch (err) {
       console.error('Error submitting QuickCheck:', err);
-      setError('Error al enviar el QuickCheck');
+      const errorMessage = err instanceof Error ? err.message : 'Error desconocido';
+      setError(errorMessage);
       toast.error({
         title: 'Error',
         description: 'No se pudo completar el QuickCheck. Intenta nuevamente.',
@@ -277,7 +290,7 @@ export function useQuickCheckViewModel() {
     } finally {
       setIsLoading(false);
     }
-  }, [canSubmit, machineId, items, evaluations, overallResult]);
+  }, [canSubmit, machineId, items, evaluations, observations, overallResult]);
 
   const reset = useCallback(() => {
     setMode('EDITING');
@@ -286,6 +299,7 @@ export function useQuickCheckViewModel() {
       resetEvaluations[item.id] = null;
     });
     setEvaluations(resetEvaluations);
+    setObservations('');
     setError(null);
   }, [items]);
 
@@ -324,6 +338,10 @@ export function useQuickCheckViewModel() {
     // Evaluations
     evaluations,
     setEvaluation,
+
+    // Observations
+    observations,
+    setObservations,
 
     // Summary
     stats,

@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../store/AuthProvider';
-import type { LoginRequest } from '@packages/contracts';
+import type { LoginRequest } from '@contracts';
 import type { LoginFormData, LoginFormErrors } from '../../models';
 import { ROUTES } from '../../constants';
 

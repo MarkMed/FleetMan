@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect } from 'react';
 import { useAuthStore } from './slices/authSlice';
-import type { CreateUserResponse as User, RegisterRequest } from '@packages/contracts';
+import type { CreateUserResponse as User, RegisterRequest } from '@contracts';
 
 interface AuthContextValue {
   // State

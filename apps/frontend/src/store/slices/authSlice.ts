@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { authService } from '../../services/api/authService';
 import { config } from '../../config';
-import type { CreateUserResponse as User, RegisterRequest, LoginResponse, RegisterResponse } from '@packages/contracts';
+import type { CreateUserResponse as User, RegisterRequest, LoginResponse, RegisterResponse } from '@contracts';
 
 interface AuthState {
   user: User | null;

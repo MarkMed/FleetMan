@@ -9,7 +9,6 @@ import {
   QuickCheckItemCard,
   QuickCheckSummary,
 } from '@components/quickcheck';
-import type { QuickCheckItem } from '@models/QuickCheck';
 
 export const QuickCheckScreen: React.FC = () => {
   const { id: machineId } = useParams<{ id: string }>();
@@ -198,6 +197,24 @@ export const QuickCheckScreen: React.FC = () => {
                   onStatusChange={(status) => vm.setEvaluation(item.id, status)}
                 />
               ))}
+            </div>
+
+            {/* Observations textarea */}
+            <div className="space-y-2">
+              <label htmlFor="observations" className="block text-sm font-medium text-foreground">
+                Observaciones (opcional)
+              </label>
+              <textarea
+                id="observations"
+                rows={4}
+                value={vm.observations}
+                onChange={(e) => vm.setObservations(e.target.value)}
+                placeholder="Agrega cualquier observación relevante sobre la evaluación..."
+                className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
+              />
+              <p className="text-xs text-muted-foreground">
+                {vm.observations.length} caracteres
+              </p>
             </div>
 
             {/* Submit button */}

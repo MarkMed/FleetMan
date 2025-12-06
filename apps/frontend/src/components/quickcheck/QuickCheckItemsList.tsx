@@ -1,8 +1,8 @@
 import React from 'react';
-import type { QuickCheckItem, QuickCheckMode } from '@models/QuickCheck';
+import type { QuickCheckItemUI, QuickCheckMode } from '@models/QuickCheck';
 
 interface QuickCheckItemsListProps {
-  items: QuickCheckItem[];
+  items: QuickCheckItemUI[];
   mode: QuickCheckMode;
   onEditItem?: (itemId: string) => void;
   onDeleteItem?: (itemId: string) => void;

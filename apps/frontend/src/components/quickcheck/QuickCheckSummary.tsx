@@ -1,10 +1,10 @@
 import React from 'react';
-import type { EvaluationStats, OverallResult } from '@models/QuickCheck';
+import type { EvaluationStats, QuickCheckResult } from '@models/QuickCheck';
 import { cn } from '@utils/cn';
 
 interface QuickCheckSummaryProps {
   stats: EvaluationStats;
-  overallResult: OverallResult;
+  overallResult: QuickCheckResult;
 }
 
 export const QuickCheckSummary: React.FC<QuickCheckSummaryProps> = ({
@@ -13,11 +13,11 @@ export const QuickCheckSummary: React.FC<QuickCheckSummaryProps> = ({
 }) => {
   const getResultBadgeClasses = () => {
     switch (overallResult) {
-      case 'APROBADO':
+      case 'approved':
         return 'bg-green-100 text-green-700 border-green-300 dark:bg-green-950 dark:text-green-300 dark:border-green-700';
-      case 'DESAPROBADO':
+      case 'disapproved':
         return 'bg-red-100 text-red-700 border-red-300 dark:bg-red-950 dark:text-red-300 dark:border-red-700';
-      case 'PENDIENTE':
+      case 'notInitiated':
         return 'bg-gray-100 text-gray-700 border-gray-300 dark:bg-gray-950 dark:text-gray-300 dark:border-gray-700';
       default:
         return 'bg-gray-100 text-gray-700 border-gray-300';
@@ -26,19 +26,19 @@ export const QuickCheckSummary: React.FC<QuickCheckSummaryProps> = ({
 
   const getResultIcon = () => {
     switch (overallResult) {
-      case 'APROBADO':
+      case 'approved':
         return (
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
         );
-      case 'DESAPROBADO':
+      case 'disapproved':
         return (
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
         );
-      case 'PENDIENTE':
+      case 'notInitiated':
         return (
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -62,7 +62,9 @@ export const QuickCheckSummary: React.FC<QuickCheckSummaryProps> = ({
           )}
         >
           {getResultIcon()}
-          <span>Resultado: {overallResult}</span>
+          <span>
+            Resultado: {overallResult === 'approved' ? 'Aprobado' : overallResult === 'disapproved' ? 'Desaprobado' : 'Pendiente'}
+          </span>
         </div>
       </div>
 
@@ -76,9 +78,9 @@ export const QuickCheckSummary: React.FC<QuickCheckSummaryProps> = ({
           <div
             className={cn(
               'h-full transition-all duration-300',
-              overallResult === 'APROBADO' && 'bg-green-500',
-              overallResult === 'DESAPROBADO' && 'bg-red-500',
-              overallResult === 'PENDIENTE' && 'bg-gray-400'
+              overallResult === 'approved' && 'bg-green-500',
+              overallResult === 'disapproved' && 'bg-red-500',
+              overallResult === 'notInitiated' && 'bg-gray-400'
             )}
             style={{ width: `${progress}%` }}
           />

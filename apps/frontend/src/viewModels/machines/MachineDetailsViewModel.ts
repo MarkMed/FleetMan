@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { machineService } from '../../services/api/machineService';
 import { QUERY_KEYS } from '../../constants';
-import type { CreateMachineResponse } from '@packages/contracts';
+import type { CreateMachineResponse } from '@contracts';
 
 export interface MachineDetailsViewModel {
   machine?: CreateMachineResponse;

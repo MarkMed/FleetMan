@@ -5,17 +5,17 @@ import { SortOrderSchema, PaginationSchema, BasePaginatedResponseSchema, SearchS
 // REAL DRY APPROACH: Re-export de types del dominio
 // =============================================================================
 
-// Re-exportamos los types exactos del dominio para reutilización
-export { 
+// Import local para uso en schemas
+import type { 
   MachineSpecs, 
   MachineLocation, 
   CreateMachineProps,
-  FuelType
+  FuelType,
+  MachineStatusCode
 } from '@packages/domain';
-export type { MachineStatusCode } from '@packages/domain';
 
-// Import local para uso en schemas
-import type { 
+// Re-exportamos los types exactos del dominio para reutilización
+export type { 
   MachineSpecs, 
   MachineLocation, 
   CreateMachineProps,

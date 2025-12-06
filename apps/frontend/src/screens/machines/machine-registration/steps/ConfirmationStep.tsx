@@ -1,7 +1,7 @@
 ﻿import React, { useEffect } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { Card, CardContent, CardHeader, CardTitle } from '../../../../components/ui';
-import { MachineRegistrationData } from '@packages/contracts';
+import { MachineRegistrationData } from '@contracts';
 import { useMachineTypes } from '@hooks';
 
 /**

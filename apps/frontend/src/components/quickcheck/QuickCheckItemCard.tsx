@@ -1,14 +1,14 @@
 import React from 'react';
 import { Button } from '@components/ui';
-import type { QuickCheckItem, QuickCheckMode, EvaluationStatus } from '@models/QuickCheck';
+import type { QuickCheckItemUI, QuickCheckMode, QuickCheckItemResult } from '@models/QuickCheck';
 import { cn } from '@utils/cn';
 
 interface QuickCheckItemCardProps {
-  item: QuickCheckItem;
+  item: QuickCheckItemUI;
   index: number;
   mode: QuickCheckMode;
-  status?: EvaluationStatus;
-  onStatusChange?: (status: 'APROBADO' | 'DESAPROBADO' | 'OMITIDO') => void;
+  status?: QuickCheckItemResult | null;
+  onStatusChange?: (status: QuickCheckItemResult) => void;
   onEdit?: () => void;
   onDelete?: () => void;
 }
@@ -26,11 +26,11 @@ export const QuickCheckItemCard: React.FC<QuickCheckItemCardProps> = ({
   const getBorderColor = () => {
     if (mode !== 'EXECUTING' || !status) return 'bg-slate-300 dark:bg-slate-950';
     switch (status) {
-      case 'APROBADO':
+      case 'approved':
         return 'border-green-500 bg-green-50/50 dark:bg-green-950/20';
-      case 'DESAPROBADO':
+      case 'disapproved':
         return 'border-red-500 bg-red-50/50 dark:bg-red-950/20';
-      case 'OMITIDO':
+      case 'omitted':
         return 'border-yellow-500 bg-yellow-50/50 dark:bg-yellow-950/20';
       default:
         return 'border-border bg-slate-300 dark:bg-slate-950';
@@ -62,12 +62,14 @@ export const QuickCheckItemCard: React.FC<QuickCheckItemCardProps> = ({
             <span
               className={cn(
                 'inline-flex items-center gap-1 text-xs font-medium px-2 py-1 rounded',
-                status === 'APROBADO' && 'bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300',
-                status === 'DESAPROBADO' && 'bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300',
-                status === 'OMITIDO' && 'bg-yellow-100 text-yellow-700 dark:bg-yellow-950 dark:text-yellow-300'
+                status === 'approved' && 'bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300',
+                status === 'disapproved' && 'bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300',
+                status === 'omitted' && 'bg-yellow-100 text-yellow-700 dark:bg-yellow-950 dark:text-yellow-300'
               )}
             >
-              {status}
+              {status === 'approved' && 'Aprobado'}
+              {status === 'disapproved' && 'Desaprobado'}
+              {status === 'omitted' && 'Omitido'}
             </span>
           </div>
         )}
@@ -107,12 +109,12 @@ export const QuickCheckItemCard: React.FC<QuickCheckItemCardProps> = ({
           <div className="flex flex-col gap-2 sm:flex-row">
             {/* Aprobado button */}
             <Button
-              variant={status === 'APROBADO' ? 'filled' : 'success'}
+              variant={status === 'approved' ? 'filled' : 'success'}
               size="sm"
-              onPress={() => onStatusChange('APROBADO')}
+              onPress={() => onStatusChange('approved')}
               className={cn(
                 'gap-1.5',
-                status === 'APROBADO' && 'bg-green-600 hover:bg-green-700 text-white'
+                status === 'approved' && 'bg-green-600 hover:bg-green-700 text-white'
               )}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -123,12 +125,12 @@ export const QuickCheckItemCard: React.FC<QuickCheckItemCardProps> = ({
 
             {/* Desaprobar button */}
             <Button
-              variant={status === 'DESAPROBADO' ? 'filled' : 'destructive'}
+              variant={status === 'disapproved' ? 'filled' : 'destructive'}
               size="sm"
-              onPress={() => onStatusChange('DESAPROBADO')}
+              onPress={() => onStatusChange('disapproved')}
               className={cn(
                 'gap-1.5',
-                status === 'DESAPROBADO' && 'bg-red-600 hover:bg-red-700 text-white'
+                status === 'disapproved' && 'bg-red-600 hover:bg-red-700 text-white'
               )}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -139,12 +141,12 @@ export const QuickCheckItemCard: React.FC<QuickCheckItemCardProps> = ({
 
             {/* Omitir button */}
             <Button
-              variant={status === 'OMITIDO' ? 'filled' : 'warning'}
+              variant={status === 'omitted' ? 'filled' : 'warning'}
               size="sm"
-              onPress={() => onStatusChange('OMITIDO')}
+              onPress={() => onStatusChange('omitted')}
               className={cn(
                 'gap-1.5',
-                status === 'OMITIDO' && 'bg-yellow-600 hover:bg-yellow-700 text-white'
+                status === 'omitted' && 'bg-yellow-600 hover:bg-yellow-700 text-white'
               )}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

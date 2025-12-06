@@ -7,7 +7,7 @@ import {
   validateMachineStep,
   CreateMachineRequest,
   CreateMachineResponse,
-} from '@packages/contracts';
+} from '@contracts';
 import { machineService } from '../../services/api/machineService';
 import { getSessionToken } from '../../store/slices/authSlice';
 import { useAuthStore } from '../../store/slices/authSlice';
@@ -15,7 +15,7 @@ import { WizardStep } from '../../components/forms/wizard';
 import { BasicInfoStep, TechnicalSpecsStep, ConfirmationStep } from '../../screens/machines/machine-registration/steps';
 import { useZodForm } from '../../hooks/useZodForm';
 import { useMachineTypes } from '../../hooks';
-import type { MachineTypeResponse } from '@packages/contracts';
+import type { MachineTypeResponse } from '@contracts';
 import { toast } from '@components/ui';
 import { useNavigate } from 'react-router-dom';
 import { modal } from '@helpers/modal';

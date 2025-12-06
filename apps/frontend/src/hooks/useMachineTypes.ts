@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { machineService } from '../services/api/machineService';
 import { QUERY_KEYS, STORAGE_KEYS } from '../constants';
-import type { MachineTypeResponse } from '@packages/contracts';
+import type { MachineTypeResponse } from '@contracts';
 
 /**
  * Hook to fetch machine types for selects and dropdowns.

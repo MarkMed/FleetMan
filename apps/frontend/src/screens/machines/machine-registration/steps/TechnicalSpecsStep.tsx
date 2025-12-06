@@ -1,7 +1,7 @@
 import React from 'react';
 import { useFormContext, Controller } from 'react-hook-form';
 import { InputField, Select, Textarea, Checkbox } from '../../../../components/ui';
-import { MachineRegistrationData } from '@packages/contracts';
+import { MachineRegistrationData } from '@contracts';
 
 /**
  * Step 2: Especificaciones técnicas de la máquina - RHF Implementation

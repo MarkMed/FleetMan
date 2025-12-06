@@ -5,13 +5,13 @@ import type {
   CreateMachineResponse as Machine,
   CreateMachineRequest as MachineFormData,
   ListMachinesResponse
-} from '@packages/contracts';
-import type { MachineTypeResponse } from '@packages/contracts';
+} from '@contracts';
+import type { MachineTypeResponse } from '@contracts';
 import type {
   CreateMachineEventRequest,
   CreateMachineEventResponse,
   ListMachineEventsResponse
-} from '@packages/contracts';
+} from '@contracts';
 
 // Temporary basic types for MVP
 interface MachineFilters {
