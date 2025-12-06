@@ -68,7 +68,7 @@ export const ExamplesScreen: React.FC = () => {
     <div className="space-y-8 px-6 py-8 max-w-5xl mx-auto">
       <header className="space-y-2">
         <h1 className="text-3xl font-bold text-foreground">
-          Pantalla de Ejemplos
+          Pantalla de Ejemplos v25.12.6-502am
         </h1>
         <p className="text-muted-foreground">
           Usa estos controles para probar los distintos modales y componentes
