@@ -16,7 +16,7 @@ env:
   REGISTRY_NAME: fleetmanregistry
   IMAGE_NAME: fleetman-backend
   CONTAINER_APP_NAME: fleetman-backend
-  RESOURCE_GROUP: fleetman-rg
+  RESOURCE_GROUP: rg-fleetman
   CONTAINER_APP_ENV: fleetman-env
 
 jobs:
