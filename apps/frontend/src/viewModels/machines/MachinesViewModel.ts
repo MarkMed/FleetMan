@@ -2,7 +2,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { machineService } from "../../services/api/machineService";
 import { QUERY_KEYS } from "../../constants";
-import type { CreateMachineResponse } from "@packages/contracts";
+import type { CreateMachineResponse } from "@contracts";
 import type { MachinesListResult } from "../../services/api/machineService";
 import { useAuthStore } from "../../store/slices/authSlice";
 

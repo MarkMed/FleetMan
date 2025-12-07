@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Button, Card } from '@components/ui';
 import { useModalStore } from '@store/slices/modalSlice';
 import { useQuickCheckViewModel } from '../../viewModels/machines/useQuickCheckViewModel';
@@ -9,10 +9,10 @@ import {
   QuickCheckItemCard,
   QuickCheckSummary,
 } from '@components/quickcheck';
-import type { QuickCheckItem } from '@models/QuickCheck';
 
 export const QuickCheckScreen: React.FC = () => {
   const { id: machineId } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const { showModal, hideModal } = useModalStore();
 
   const vm = useQuickCheckViewModel();
@@ -21,12 +21,35 @@ export const QuickCheckScreen: React.FC = () => {
   const handleOpenModal = (mode: 'create' | 'edit', itemId?: string) => {
     vm.openModal(mode, itemId);
     
+    /**
+     * CRITICAL FIX: React State Timing Issue - MODAL CON EDICIÓN DE DATOS
+     * 
+     * PROBLEMA:
+     * - vm.openModal() llama a setEditingItemId(itemId) internamente
+     * - React state updates son ASÍNCRONOS (no bloquean ejecución)
+     * - showModal() se ejecuta INMEDIATAMENTE después, pero el state aún no se actualizó
+     * - Por lo tanto, vm.editingItem (que depende de editingItemId) sigue siendo undefined
+     * 
+     * SOLUCIÓN:
+     * - En lugar de esperar a que React actualice vm.editingItem (via editingItemId state)
+     * - Buscamos directamente en vm.items usando el itemId que YA tenemos como parámetro
+     * - vm.items ya está disponible en memoria (no depende del state que acabamos de setear)
+     * 
+     * RESULTADO:
+     * - Modo CREATE: initialData = undefined → Form vacío ✅
+     * - Modo EDIT: initialData = item encontrado → Form pre-llenado ✅
+     * - Sin race conditions, sin timing issues
+     */
+    const initialData = mode === 'edit' && itemId 
+      ? vm.items.find(item => item.id === itemId)
+      : undefined;
+    
     showModal({
       title: '', // Modal component handles title
       content: (
         <QuickCheckItemModal
           mode={mode}
-          initialData={mode === 'edit' && itemId ? vm.editingItem : undefined}
+          initialData={initialData}
           onSubmit={(data) => {
             if (mode === 'create') {
               vm.addItem(data);
@@ -84,14 +107,29 @@ export const QuickCheckScreen: React.FC = () => {
           <span>/</span>
           <span className="text-foreground">QuickCheck</span>
         </div>
-        <h1 className="text-3xl font-bold text-foreground">
-          QuickCheck de Seguridad
-        </h1>
-        <p className="text-muted-foreground mt-1">
-          {vm.mode === 'EDITING' && 'Define y administra los items de verificación'}
-          {vm.mode === 'EXECUTING' && 'Evalúa cada item del checklist'}
-          {vm.mode === 'COMPLETED' && 'Revisa el resultado de la evaluación'}
-        </p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-foreground">
+              QuickCheck de Seguridad
+            </h1>
+            <p className="text-muted-foreground mt-1">
+              {vm.mode === 'EDITING' && 'Define y administra los items de verificación'}
+              {vm.mode === 'EXECUTING' && 'Evalúa cada item del checklist'}
+              {vm.mode === 'COMPLETED' && 'Revisa el resultado de la evaluación'}
+            </p>
+          </div>
+          <Button
+            variant="outline"
+            size="default"
+            className="gap-2"
+            onPress={() => navigate(`/machines/${machineId}/quickcheck/history`)}
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Ver Historial
+          </Button>
+        </div>
       </div>
 
       <Card className="p-6">
@@ -149,10 +187,10 @@ export const QuickCheckScreen: React.FC = () => {
                 disabled={!vm.canStartExecution}
                 className="gap-2"
               >
+                Iniciar Prevención
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
                 </svg>
-                Iniciar Prevención
               </Button>
             </div>
           </div>
@@ -198,6 +236,24 @@ export const QuickCheckScreen: React.FC = () => {
                   onStatusChange={(status) => vm.setEvaluation(item.id, status)}
                 />
               ))}
+            </div>
+
+            {/* Observations textarea */}
+            <div className="space-y-2">
+              <label htmlFor="observations" className="block text-sm font-medium text-foreground">
+                Observaciones (opcional)
+              </label>
+              <textarea
+                id="observations"
+                rows={4}
+                value={vm.observations}
+                onChange={(e) => vm.setObservations(e.target.value)}
+                placeholder="Agrega cualquier observación relevante sobre la evaluación..."
+                className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
+              />
+              <p className="text-xs text-muted-foreground">
+                {vm.observations.length} caracteres
+              </p>
             </div>
 
             {/* Submit button */}

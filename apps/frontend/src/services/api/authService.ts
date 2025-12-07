@@ -10,7 +10,7 @@ import {
   ForgotPasswordRequest,
   ResetPasswordRequest,
   CreateUserResponse
-} from '@packages/contracts';
+} from '@contracts';
 
 // Backend API wrapper types - what the backend actually returns
 interface BackendApiResponse<T> {

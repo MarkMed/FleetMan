@@ -1,8 +1,8 @@
 import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../store/AuthProvider';
-import type { RegisterRequest } from '@packages/contracts';
-import { UserType } from '@packages/contracts';
+import type { RegisterRequest } from '@contracts';
+import { UserType } from '@contracts';
 import type { RegisterFormData, RegisterFormErrors, PasswordStrength } from '../../models';
 import { mapRegisterFormToRequest } from '../../utils/mappers';
 import { ROUTES } from '../../constants';

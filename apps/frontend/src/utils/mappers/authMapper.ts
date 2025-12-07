@@ -1,5 +1,5 @@
 import type { RegisterFormData } from '../../models/forms/AuthForms';
-import { RegisterRequest, UserType } from '@packages/contracts';
+import { RegisterRequest, UserType } from '@contracts';
 
 /**
  * Map UI Register form data to the API contract RegisterRequest (SSOT).

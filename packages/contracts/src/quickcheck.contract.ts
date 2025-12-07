@@ -58,8 +58,14 @@ export type QuickCheckRecord = z.infer<typeof QuickCheckRecordSchema>;
 
 /**
  * Schema para crear un nuevo QuickCheck (request desde frontend)
+ * Omite date y executedById porque el servidor los genera automáticamente:
+ * - date: generado con Date.now()
+ * - executedById: extraído del JWT del usuario autenticado
  */
-export const CreateQuickCheckRecordSchema = QuickCheckRecordSchema.omit({ date: true });
+export const CreateQuickCheckRecordSchema = QuickCheckRecordSchema.omit({ 
+  date: true, 
+  executedById: true 
+});
 export type CreateQuickCheckRecord = z.infer<typeof CreateQuickCheckRecordSchema>;
 
 /**

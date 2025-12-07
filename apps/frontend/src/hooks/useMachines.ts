@@ -1,8 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { machineService } from '@services/api/machineService';
 import { QUERY_KEYS } from '@constants';
-import type { CreateMachineResponse as Machine, CreateMachineRequest as MachineFormData } from '@packages/contracts';
-import type { CreateMachineEventRequest as EventFormData } from '@packages/contracts';
+import type { CreateMachineResponse as Machine, CreateMachineRequest as MachineFormData } from '@contracts';
+import type { CreateMachineEventRequest as EventFormData } from '@contracts';
 
 // Local filter type used by the hooks (frontend-specific)
 interface MachineFilters {

@@ -94,7 +94,9 @@ export default defineConfig({
       '@i18n': path.resolve(__dirname, './src/i18n'),
       '@validators': path.resolve(__dirname, './src/validators'),
       '@navigation': path.resolve(__dirname, './src/navigation'),
-      '@contracts': path.resolve(__dirname, '../../packages/contracts/src')
+      '@domain': path.resolve(__dirname, '../../packages/domain/src'),
+      '@contracts': path.resolve(__dirname, '../../packages/contracts/src'),
+      '@shared': path.resolve(__dirname, '../../packages/shared/src'),
     }
   },
   server: {

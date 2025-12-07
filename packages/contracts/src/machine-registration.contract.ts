@@ -1,8 +1,6 @@
 import { z } from 'zod';
 import { 
-  CreateMachineRequestSchema as BaseCreateMachineRequestSchema, 
-  MachineSpecsSchema,
-  MachineLocationSchema 
+  CreateMachineRequestSchema as BaseCreateMachineRequestSchema,
 } from './machine.contract';
 
 // ============================

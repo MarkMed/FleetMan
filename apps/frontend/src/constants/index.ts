@@ -56,6 +56,7 @@ export const API_ENDPOINTS = {
   QUICKCHECKS: '/quickchecks',
   QUICKCHECK: (id: string) => `/quickchecks/${id}`,
   MACHINE_QUICKCHECK: (machineId: string) => `/machines/${machineId}/quickcheck`,
+  MACHINE_QUICKCHECKS: (machineId: string) => `/machines/${machineId}/quickchecks`, // For add/history
   QUICKCHECK_EXECUTE: (id: string) => `/quickchecks/${id}/execute`,
   
   // Notifications
@@ -171,6 +172,7 @@ export const QUERY_KEYS = {
   // QuickChecks
   QUICKCHECKS: ['quickchecks'],
   MACHINE_QUICKCHECK: (machineId: string) => ['machines', machineId, 'quickcheck'],
+  QUICKCHECK_HISTORY: (machineId: string) => ['machines', machineId, 'quickchecks', 'history'],
   
   // Notifications
   NOTIFICATIONS: ['notifications'],

@@ -5,11 +5,11 @@ import { SortOrderSchema, PaginationSchema, BasePaginatedResponseSchema } from '
 // REAL DRY APPROACH: Re-export de types del dominio
 // =============================================================================
 
-// Re-exportamos los types exactos del dominio para reutilización
-export { MachineEventMetadata, CreateMachineEventProps } from '@packages/domain';
-
 // Import local para uso en schemas
 import type { MachineEventMetadata, CreateMachineEventProps } from '@packages/domain';
+
+// Re-exportamos los types exactos del dominio para reutilización (type-only)
+export type { MachineEventMetadata, CreateMachineEventProps } from '@packages/domain';
 
 // =============================================================================
 // Schemas Zod basados en types IMPORTADOS del dominio (DRY REAL)
