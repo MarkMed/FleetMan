@@ -21,8 +21,25 @@ export const QuickCheckScreen: React.FC = () => {
   const handleOpenModal = (mode: 'create' | 'edit', itemId?: string) => {
     vm.openModal(mode, itemId);
     
-    // CRITICAL FIX: Find item directly from vm.items instead of vm.editingItem
-    // vm.editingItem depends on editingItemId state which hasn't updated yet (React is async)
+    /**
+     * CRITICAL FIX: React State Timing Issue - MODAL CON EDICIÓN DE DATOS
+     * 
+     * PROBLEMA:
+     * - vm.openModal() llama a setEditingItemId(itemId) internamente
+     * - React state updates son ASÍNCRONOS (no bloquean ejecución)
+     * - showModal() se ejecuta INMEDIATAMENTE después, pero el state aún no se actualizó
+     * - Por lo tanto, vm.editingItem (que depende de editingItemId) sigue siendo undefined
+     * 
+     * SOLUCIÓN:
+     * - En lugar de esperar a que React actualice vm.editingItem (via editingItemId state)
+     * - Buscamos directamente en vm.items usando el itemId que YA tenemos como parámetro
+     * - vm.items ya está disponible en memoria (no depende del state que acabamos de setear)
+     * 
+     * RESULTADO:
+     * - Modo CREATE: initialData = undefined → Form vacío ✅
+     * - Modo EDIT: initialData = item encontrado → Form pre-llenado ✅
+     * - Sin race conditions, sin timing issues
+     */
     const initialData = mode === 'edit' && itemId 
       ? vm.items.find(item => item.id === itemId)
       : undefined;
