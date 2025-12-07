@@ -14,6 +14,7 @@ import { MachinesScreen } from '../screens/machines/MachinesScreen';
 import { MachineDetailsScreen } from '../screens/machines/MachineDetailsScreen';
 import { NewMachineScreen } from '../screens/machines/NewMachineScreen';
 import { QuickCheckScreen } from '../screens/quickcheck/QuickCheckScreen';
+import { QuickCheckHistoryScreen } from '../screens/quickcheck/QuickCheckHistoryScreen';
 import { ExamplesScreen } from '../screens/ExamplesScreen';
 
 // Route components
@@ -57,6 +58,7 @@ export const AppRouter: React.FC = () => {
           <Route path="machines/new" element={<NewMachineScreen />} />
           <Route path="machines/:id" element={<MachineDetailsScreen />} />
           <Route path="machines/:id/quickcheck" element={<QuickCheckScreen />} />
+          <Route path="machines/:id/quickcheck/history" element={<QuickCheckHistoryScreen />} />
 
           {/* Examples */}
           <Route path="ejemplos" element={<ExamplesScreen />} />

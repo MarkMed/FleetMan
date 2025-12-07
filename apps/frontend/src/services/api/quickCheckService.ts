@@ -1,4 +1,4 @@
-import { apiClient, handleApiResponse } from './apiClient';
+import { apiClient, handleBackendApiResponse } from './apiClient';
 import { API_ENDPOINTS } from '../../constants';
 import type { 
   CreateQuickCheckRecord,
@@ -28,12 +28,12 @@ export class QuickCheckService {
     record: CreateQuickCheckRecord,
     headers?: Record<string, string>
   ): Promise<AddQuickCheckResponse> {
-    const response = await apiClient.post<AddQuickCheckResponse>(
+    const response = await apiClient.post<{ success: boolean; message: string; data: AddQuickCheckResponse }>(
       API_ENDPOINTS.MACHINE_QUICKCHECKS(machineId),
       record,
       headers
     );
-    return handleApiResponse(response);
+    return handleBackendApiResponse(response);
   }
 
   /**
@@ -49,12 +49,12 @@ export class QuickCheckService {
     filters?: QuickCheckHistoryFilters,
     headers?: Record<string, string>
   ): Promise<GetQuickCheckHistoryResponse> {
-    const response = await apiClient.get<GetQuickCheckHistoryResponse>(
+    const response = await apiClient.get<{ success: boolean; message: string; data: GetQuickCheckHistoryResponse }>(
       API_ENDPOINTS.MACHINE_QUICKCHECKS(machineId),
       filters as any, // Query params
       headers
     );
-    return handleApiResponse(response);
+    return handleBackendApiResponse(response);
   }
 }
 

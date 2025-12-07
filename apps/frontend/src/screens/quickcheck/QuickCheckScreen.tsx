@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Button, Card } from '@components/ui';
 import { useModalStore } from '@store/slices/modalSlice';
 import { useQuickCheckViewModel } from '../../viewModels/machines/useQuickCheckViewModel';
@@ -12,6 +12,7 @@ import {
 
 export const QuickCheckScreen: React.FC = () => {
   const { id: machineId } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const { showModal, hideModal } = useModalStore();
 
   const vm = useQuickCheckViewModel();
@@ -83,14 +84,29 @@ export const QuickCheckScreen: React.FC = () => {
           <span>/</span>
           <span className="text-foreground">QuickCheck</span>
         </div>
-        <h1 className="text-3xl font-bold text-foreground">
-          QuickCheck de Seguridad
-        </h1>
-        <p className="text-muted-foreground mt-1">
-          {vm.mode === 'EDITING' && 'Define y administra los items de verificación'}
-          {vm.mode === 'EXECUTING' && 'Evalúa cada item del checklist'}
-          {vm.mode === 'COMPLETED' && 'Revisa el resultado de la evaluación'}
-        </p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-foreground">
+              QuickCheck de Seguridad
+            </h1>
+            <p className="text-muted-foreground mt-1">
+              {vm.mode === 'EDITING' && 'Define y administra los items de verificación'}
+              {vm.mode === 'EXECUTING' && 'Evalúa cada item del checklist'}
+              {vm.mode === 'COMPLETED' && 'Revisa el resultado de la evaluación'}
+            </p>
+          </div>
+          <Button
+            variant="outline"
+            size="default"
+            className="gap-2"
+            onPress={() => navigate(`/machines/${machineId}/quickcheck/history`)}
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Ver Historial
+          </Button>
+        </div>
       </div>
 
       <Card className="p-6">
