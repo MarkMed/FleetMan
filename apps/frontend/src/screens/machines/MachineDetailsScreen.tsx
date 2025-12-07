@@ -64,7 +64,7 @@ export const MachineDetailsScreen: React.FC = () => {
             size="default" 
             onPress={() => navigate(`/machines/${id}/quickcheck`)}
           >
-            Realizar Quickcheck
+            Quickcheck
           </Button>
         </div>
       </div>

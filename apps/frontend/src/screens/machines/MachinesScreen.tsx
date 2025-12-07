@@ -68,8 +68,14 @@ export const MachinesScreen: React.FC = () => {
             </CardContent>
           </Card>
         )}
-        {machines.map((machine) => (
-          <Card key={machine.id} className="border border-border">
+        {machines.map((machine, index) => (
+          <Card 
+            key={machine.id} 
+            className="border border-border"
+            style={{
+              animation: `fadeSlideIn 0.4s ease-out ${index * 0.16}s both`,
+            }}
+          >
             <CardHeader className="pb-2">
               <CardTitle className="flex items-center justify-between text-base">
                 <span>{machine.brand} {machine.modelName}</span>
@@ -117,8 +123,14 @@ export const MachinesScreen: React.FC = () => {
                 No hay máquinas registradas todavía.
               </div>
             )}
-            {!isLoading && machines.map((machine) => (
-              <div key={machine.id} className="grid grid-cols-6 gap-4 py-4 text-sm items-center">
+            {!isLoading && machines.map((machine, index) => (
+              <div 
+                key={machine.id} 
+                className="grid grid-cols-6 gap-4 py-4 text-sm items-center"
+                style={{
+                  animation: `fadeSlideIn 0.4s ease-out ${index * 0.16}s both`,
+                }}
+              >
                 <div className="text-foreground">{machine.brand}</div>
                 <div className="text-foreground">{machine.modelName}</div>
                 <div className="text-foreground font-mono">{machine.serialNumber}</div>

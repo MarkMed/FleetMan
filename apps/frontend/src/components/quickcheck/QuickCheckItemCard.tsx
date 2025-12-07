@@ -43,6 +43,9 @@ export const QuickCheckItemCard: React.FC<QuickCheckItemCardProps> = ({
         'flex items-start gap-3 p-4 border rounded-lg transition-all',
         getBorderColor()
       )}
+      style={{
+        animation: `fadeSlideIn 0.4s ease-out ${index * 0.16}s both`,
+      }}
     >
       {/* Item number badge */}
       <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
