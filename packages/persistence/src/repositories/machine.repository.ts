@@ -318,7 +318,7 @@ export class MachineRepository implements IMachineRepository {
    */
   async addQuickCheckRecord(
     machineId: MachineId, 
-    record: CreateQuickCheckRecord
+    record: CreateQuickCheckRecord & { executedById: string }
   ): Promise<Result<{ quickCheckRecord: IQuickCheckRecord; totalQuickChecks: number }, DomainError>> {
     try {
       // 1. Cargar la entidad Machine (incluye todas las validaciones de dominio)
@@ -329,7 +329,8 @@ export class MachineRepository implements IMachineRepository {
 
       const machine = machineResult.data;
 
-      // 2. Crear el registro con fecha actual
+      // 2. El record ya viene con executedById desde el use case (línea 62 de add-quickcheck.use-case.ts)
+      // Solo agregamos la fecha del servidor
       const quickCheckRecord: IQuickCheckRecord = {
         ...record,
         date: new Date()
