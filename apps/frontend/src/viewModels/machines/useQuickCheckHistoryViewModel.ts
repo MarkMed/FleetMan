@@ -32,6 +32,7 @@ export function useQuickCheckHistoryViewModel() {
     },
     enabled: !!machineId,
   });
+  console.log("data fetch", data);
 
   // ===== Computed values =====
   const records = data?.quickChecks || [];

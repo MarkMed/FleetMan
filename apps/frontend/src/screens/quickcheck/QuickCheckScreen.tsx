@@ -21,12 +21,18 @@ export const QuickCheckScreen: React.FC = () => {
   const handleOpenModal = (mode: 'create' | 'edit', itemId?: string) => {
     vm.openModal(mode, itemId);
     
+    // CRITICAL FIX: Find item directly from vm.items instead of vm.editingItem
+    // vm.editingItem depends on editingItemId state which hasn't updated yet (React is async)
+    const initialData = mode === 'edit' && itemId 
+      ? vm.items.find(item => item.id === itemId)
+      : undefined;
+    
     showModal({
       title: '', // Modal component handles title
       content: (
         <QuickCheckItemModal
           mode={mode}
-          initialData={mode === 'edit' && itemId ? vm.editingItem : undefined}
+          initialData={initialData}
           onSubmit={(data) => {
             if (mode === 'create') {
               vm.addItem(data);
@@ -164,10 +170,10 @@ export const QuickCheckScreen: React.FC = () => {
                 disabled={!vm.canStartExecution}
                 className="gap-2"
               >
+                Iniciar Prevención
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
                 </svg>
-                Iniciar Prevención
               </Button>
             </div>
           </div>

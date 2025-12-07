@@ -52,6 +52,15 @@ export const QuickCheckItemModal: React.FC<QuickCheckItemModalProps> = ({
     setFocus('name');
   }, [setFocus]);
 
+  // Reset form with initialData when it changes (critical for edit mode)
+  // ALWAYS reset to prevent stale data when switching between create/edit
+  useEffect(() => {
+    reset({
+      name: initialData?.name || '',
+      description: initialData?.description || '',
+    });
+  }, [initialData, reset]);
+
   const handleFormSubmit = (data: QuickCheckItemFormData) => {
     onSubmit({
       name: data.name,
