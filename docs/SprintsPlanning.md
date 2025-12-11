@@ -358,19 +358,14 @@ Distribución por categoría:
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
-| Documentación | 20.1 Reporte Académico (dominical) | 1 | 5 | |
-| Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | |
-| Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
-| Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | |
-| **MIÉRCOLES** - UI Quick Wins |||||
-| Desarrollo | 12.8 UI Polish (animaciones + reorder inputs) | 5 | 0.75 | |
-| Desarrollo | 12.7 Navigation Drawer (Parte 1: layout + base) | 6 | 3 | |
-| **JUEVES** - Navigation + QuickCheck Tracking |||||
-| Desarrollo | 12.7 Navigation Drawer (Parte 2: responsive + state) | 7 | 4 | |
+| Documentación | 20.1 Reporte Académico (dominical) | 1 | 5 | 5.4 |
+| Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | 1.2 |
+| Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | 4.65 |
+| Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | 0 |
+| Desarrollo | 12.8 UI Polish (animaciones + reorder inputs) | 5 | 0.75 | 0.1 |
+| Desarrollo | 12.7 Navigation Drawer | 6 | 3 | 1.2 |
 | Desarrollo | 6.5 QuickCheck User Tracking | 8 | 4.2 | |
-| **VIERNES** - Machine Enhancement |||||
 | Desarrollo | 3.2a Machine Enhancement (assignedTo, usageRate, fixes) | 9 | 12 | |
-| **SÁBADO** - Azure Fix + PWA Completion |||||
 | Desarrollo | 16.12 Azure Static Web App - Fix 404 routing | 10 | 1 | |
 | Desarrollo | 0.5a PWA Manifest + Icons | 11 | 1 | |
 | Desarrollo | 0.5b Service Worker Básico (inicio) | 12 | 1.5 | |
