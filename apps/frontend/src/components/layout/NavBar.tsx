@@ -14,7 +14,7 @@ interface NavBarProps {
  * Layout:
  * - Izquierda: HamburgerButton para abrir drawer
  * - Centro/Derecha: Título customizable (default: "FleetMan")
- * - Fixed top, respons responsive
+ * - Fixed top, responsive
  * - Hidden en mobile (<768px) donde se usa MobileBottomNav
  */
 export const NavBar: React.FC<NavBarProps> = ({ 

@@ -30,7 +30,7 @@ export const MobileBottomNav: React.FC = () => {
   };
 
   const isActive = (href: string): boolean => {
-    return location.pathname === href || location.pathname.startsWith(href);
+    return location.pathname === href || location.pathname.startsWith(`${href}/`);
   };
 
   return (

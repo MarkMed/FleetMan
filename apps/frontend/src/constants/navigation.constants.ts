@@ -58,12 +58,12 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
 //     showInMobile: false, // Only in drawer
 //   },
   {
-	id: 'contacts',
-	label: 'Contactos',
-	icon: Users,
-	href: '/contacts',
-	requiresAuth: true,
-	showInMobile: false, // Only in drawer
+    id: 'contacts',
+    label: 'Contactos',
+    icon: Users,
+    href: '/contacts',
+    requiresAuth: true,
+    showInMobile: false, // Only in drawer
   },
   {
     id: 'profile',

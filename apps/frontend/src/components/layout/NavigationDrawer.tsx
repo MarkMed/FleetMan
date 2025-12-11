@@ -71,11 +71,12 @@ export const NavigationDrawer: React.FC = () => {
       {/* Overlay */}
       <div
         className={cn(
-          'fixed inset-0 z-50',
+          'fixed inset-0 z-60',
           'bg-background/80 backdrop-blur-sm',
           'animate-fade-in'
         )}
         onClick={handleOverlayClick}
+        role="presentation"
         aria-hidden="true"
       />
 
@@ -84,7 +85,7 @@ export const NavigationDrawer: React.FC = () => {
         id="navigation-drawer"
         className={cn(
           // Layout
-          'fixed top-0 left-0 bottom-0 z-50',
+          'fixed top-0 left-0 bottom-0 z-60',
           'flex flex-col',
           // Width: full on mobile, 280px on desktop
           'w-full md:w-80',

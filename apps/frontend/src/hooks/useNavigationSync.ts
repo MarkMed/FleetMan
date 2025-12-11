@@ -12,5 +12,5 @@ export const useNavigationSync = () => {
 
   useEffect(() => {
     setCurrentRoute(location.pathname);
-  }, [location.pathname, setCurrentRoute]);
+  }, [location.pathname]);
 };
