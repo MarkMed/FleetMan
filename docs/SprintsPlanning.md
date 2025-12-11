@@ -354,7 +354,7 @@ Distribución por categoría:
 
 ### **Sprint #8**: dom 7 dic → sáb 13 dic 2025
 
-**Objetivo:** ⚙️ PWA + Testing + Cronjobs - Infraestructura crítica y testing de lo implementado.
+**Objetivo:** 🎯 Machine Management Enhancement + PWA Base + QuickCheck Refinement - Mejoras críticas post-MVP QuickCheck y fundación PWA.
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
@@ -362,24 +362,53 @@ Distribución por categoría:
 | Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | |
-| Desarrollo | 5.1 Scheduler (agenda/node-cron) | 5 | 10 | |
-| Desarrollo | 5.2 Generación + persistencia de alertas | 6 | 7 | |
-| Desarrollo | 6.2 UI de ejecución (RF-011) | 7 | 12 | |
+| **MIÉRCOLES** - Quick Wins UI |||||
+| Desarrollo | 3.2c UI Polish (animaciones + reorder inputs) | 5 | 0.75 | |
+| Desarrollo | 3.2b Navigation Drawer (Parte 1: layout + base) | 6 | 3 | |
+| Desarrollo | 0.5a PWA Manifest + Icons | 7 | 1 | |
+| **JUEVES** - Machine Enhancement Day |||||
+| Desarrollo | 3.2b Navigation Drawer (Parte 2: responsive + state) | 8 | 4 | |
+| Desarrollo | 3.2a Machine Enhancement (assignedTo, usageRate, fixes) | 9 | 12 | |
+| **VIERNES** - Critical Fixes + QuickCheck Tracking |||||
+| Desarrollo | 16.12 Azure Static Web App - Fix 404 routing | 10 | 1 | |
+| Desarrollo | 6.5 QuickCheck User Tracking | 11 | 4.2 | |
+| Desarrollo | 0.5b Service Worker Básico (inicio) | 12 | 1.5 | |
+| **SÁBADO** - PWA Completion + Testing |||||
+| Desarrollo | 0.5b Service Worker Básico (final) | 13 | 1.5 | |
+| Desarrollo | 0.5c PWA Testing Multi-dispositivo | 14 | 1 | |
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales | Consumo |
 |:---:|:----------:|:-------:|
-| **37.8**hs | **0**hs | **0.0%** |
+| **37.75**hs | **0**hs | **0.0%** |
 
-Buffer reservado: **-2.8**hs
+Buffer reservado: **-2.75**hs (absorbido en machinePhotoUrl + SW + testing)
 Total con buffer: **35**hs
 
 Distribución por categoría:
 | Documentación | Desarrollo | QA | Capacitación | Gestión |
 |:-------:|:----------:|:--:|:------------:|:-------------:|
-| **5**hs | **29**hs | **0**hs | **1**hs | **2.8**hs |
+| **5**hs | **29**hs | **0**hs | **1**hs | **2.75**hs |
+
+```mermaid
+%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#e0f7fa','primaryTextColor':'#000','primaryBorderColor':'#006064','lineColor':'#00796b','secondaryColor':'#fff3e0','tertiaryColor':'#f3e5f5'}}}%%
+xychart-beta
+    title "Sprint #8: Horas Estimadas (azul) vs Reales (verde)"
+    x-axis ["20.1 Reporte", "20.2 Demo", "20.3 Planning", "21.2 Tutorías", "3.2c UI Polish", "3.2b NavDrawer P1", "0.5a Manifest", "3.2b NavDrawer P2", "3.2a Machine Enh", "16.12 Azure Fix", "6.5 QC Tracking", "0.5b SW Inicio", "0.5b SW Final", "0.5c Testing"]
+    y-axis "Horas" 0 --> 13
+    bar [5, 1.5, 1.3, 1, 0.75, 3, 1, 4, 12, 1, 4.2, 1.5, 1.5, 1]
+    bar [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+```
+
+**Notas de Sprint:**
+- **PWA Base completa:** Manifest, icons, service worker básico, testing multi-dispositivo
+- **Machine Enhancement:** Agrupa 4 mejoras en una sola pasada (assignedTo, usageRate, powerSource fix, machinePhotoUrl básico)
+- **Navigation Drawer:** Implementado en 2 partes (día 1: estructura base, día 2: responsive + integración)
+- **QuickCheck Tracking:** Metadata del responsable para auditoría y trazabilidad
+- **Azure Fix crítico:** Soluciona 404 en refresh de rutas SPA
+- **Deferred a Sprint #9:** Sistema de fotos completo Cloudinary (17hs), Scheduler + Alertas (requiere decisión arquitectónica previa)
 
 ### **Sprint #9**: dom 14 dic → sáb 20 dic 2025
-
+VER ARCHIVO MD ALERTS-VS-NOTIFICATIONS
 **Objetivo:** 🔔 Full Notificaciones - Sistema completo front y back de notificaciones.
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |

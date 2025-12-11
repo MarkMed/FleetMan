@@ -252,16 +252,41 @@ gantt
 
   %% Asumimos 5 h/día. Horas estimadas incluidas en el nombre.
 
-  20.1 Reporte Académico (0.9hs)               :t201, 2025-12-07, 1d
-  20.2 Demo/UAT con cliente (1.5hs)            :t202, 2025-12-07, 1d
-  20.3 Sprint Planning dominguero (1.3hs)      :t203, 2025-12-07, 1d
-  5.1 Scheduler (agenda/node-cron) (10hs)      :t51, after t203, 2d
-  5.2 Generación + persistencia de alertas (7hs) :t52, after t51, 2d
-  6.2 UI de ejecución (RF-011) (12hs)          :t62, after t52, 3d
+  section Domingo (Overhead)
+  20.1 Reporte Académico (5hs)                 :t201, 2025-12-07, 1d
+  20.2 Demo/UAT (1.5hs)                        :t202, 2025-12-07, 1d
+  20.3 Sprint Planning (1.3hs)                 :t203, 2025-12-07, 1d
+  21.2 Tutorías (1hs)                          :t212, 2025-12-07, 1d
+
+  section Miércoles (Quick Wins UI - 5hs)
+  3.2c UI Polish (0.75hs)                      :t32c, 2025-12-11, 1d
+  3.2b Navigation Drawer P1 (3hs)              :t32b1, after t32c, 1d
+  0.5a PWA Manifest + Icons (1hs)              :t05a, after t32b1, 1d
+
+  section Jueves (Machine Day - 7hs)
+  3.2b Navigation Drawer P2 (4hs)              :t32b2, 2025-12-12, 1d
+  3.2a Machine Enhancement (12hs)              :active, t32a, after t32b2, 3d
+
+  section Viernes (Critical Fixes - 7hs)
+  16.12 Azure Fix 404 (1hs)                    :crit, t1612, 2025-12-13, 1d
+  6.5 QuickCheck Tracking (4.2hs)              :t65, after t1612, 1d
+  0.5b Service Worker Inicio (1.5hs)           :t05b1, after t65, 1d
+
+  section Sábado (PWA Completion - 4hs)
+  0.5b Service Worker Final (1.5hs)            :t05b2, 2025-12-13, 1d
+  0.5c PWA Testing (1hs)                       :t05c, after t05b2, 1d
 
   section Hitos
   Cierre Sprint 8                              :milestone, s8, 2025-12-13, 1d
 ```
+
+**Notas de distribución:**
+- **Domingo:** Overhead académico y gestión (8.8hs)
+- **Miércoles:** Quick wins UI - animaciones, reorder inputs, navigation drawer base, PWA manifest (4.75hs)
+- **Jueves:** Machine Enhancement Day - navigation drawer responsive + machine enhancements completos (16hs - día extendido)
+- **Viernes:** Critical fixes - Azure routing, QuickCheck tracking, service worker inicio (6.7hs)
+- **Sábado:** PWA completion - service worker final + testing multi-dispositivo + buffer (2.5hs+)
+- **Total desarrollo:** ~29hs (distribución flexible según avance real)
 
 ---
 

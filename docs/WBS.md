@@ -33,12 +33,36 @@ Variables .env, targets de build y entorno de demo.
 		- Dependencias: 0.1 (FS)
 		- Spike: **No**
 
-	- 0.5 **PWA base** (manifest + SW básico).
-Manifest, iconos y SW liviano (sin offline completo).
-		- Horas estimadas: **6**hs
+	- 0.5 **PWA base** (manifest + SW básico + testing).
+Implementación completa de Progressive Web App básica. Desglosado en subtareas para mejor tracking.
+		- Horas estimadas: **5**hs (total desglosado)
 		- Margen: ±**1.0**hs (P80)
 		- Incertidumbre: **Media**
 		- Dependencias: 0.1 (FS)
+		- Spike: **No**
+
+	- 0.5a **PWA - Manifest + Icons**.
+Crear manifest.json con metadata de la app, generar íconos 192x192 y 512x512, agregar meta tags HTML para PWA (theme-color, apple-mobile-web-app-capable).
+		- Horas estimadas: **1**hs
+		- Margen: ±**0.2**hs (P80)
+		- Incertidumbre: **Baja**
+		- Dependencias: 0.5 (FS)
+		- Spike: **No**
+
+	- 0.5b **PWA - Service Worker Básico**.
+Implementar service worker con estrategia de caching básica. Cache de assets críticos (HTML, CSS, JS). Registro del SW en app. Fallback offline simple. NO incluye sync avanzado.
+		- Horas estimadas: **3**hs
+		- Margen: ±**0.5**hs (P80)
+		- Incertidumbre: **Media**
+		- Dependencias: 0.5a (FS)
+		- Spike: **No**
+
+	- 0.5c **PWA - Testing Multi-dispositivo**.
+Testing de instalación en desktop (Chrome, Edge) y mobile (Android, iOS). Verificar funcionalidad offline básica. Lighthouse audit PWA score. Ajustes finales basados en testing.
+		- Horas estimadas: **1**hs
+		- Margen: ±**0.3**hs (P80)
+		- Incertidumbre: **Baja**
+		- Dependencias: 0.5b (FS)
 		- Spike: **No**
 
 	- 0.6 **User Journey mapping** (flujos clave).
@@ -228,6 +252,35 @@ Lista/tiles, vista detalle y paginado simple.
 		- Dependencias: 3.1, 0.10 (FS)
 		- Spike: **No**
 
+	- 3.2a **Machine Registration Enhancement** (Sprint #8 Refinement).
+Grupo de mejoras al modelo y formulario de máquina implementadas en una sola pasada por eficiencia. Frontend: Agregar campo "Asignar a" (assignedTo), componente UsageRate (dailyHours + weeklyDays), campo machinePhotoUrl,reordenamiento de inputs Step 1 (Marca →Modelo → Type → Nombre), fix display tipo máquina (mapping enum a labels español). Backend: Agregar campos assignedTo, usageRate {dailyHours, weeklyDays}, machinePhotoUrl a Machine model/schema/DTOs. Fix validación powerSource en backend (actualmente rechazado). Implementar todas las capas (Domain, Persistence, Application, Presentation) en una sola iteración para aprovechar contexto.
+		- Horas estimadas: **12**hs
+		- Margen: ±**2.0**hs (P80)
+		- Incertidumbre: **Media**
+		- Dependencias: 3.1 (FS)
+		- Spike: **No**
+		- PERT: Optimista 10hs, Probable 12hs, Pesimista 15hs
+		- **Tareas agrupadas:** [5] Asignar a, [6] Fix display tipo, [7] Fix powerSource, [8] UsageRate, [NUEVA] machinePhotoUrl
+
+	- 3.2b **Navigation Drawer Global**.
+Implementar componente NavigationDrawer/Sidebar para navegación global accesible desde todas las páginas. Tecnología: React Aria o componente custom. Funcionalidad: Estado persistente (abierto/cerrado) con Zustand, responsive (desktop: sidebar, mobile: drawer), links a secciones principales (Dashboard, Máquinas, Mantenimientos, QuickCheck, Notificaciones), animaciones smooth. Integración: Layout wrapper para todas las rutas autenticadas.
+		- Horas estimadas: **7**hs
+		- Margen: ±**1.2**hs (P80)
+		- Incertidumbre: **Media**
+		- Dependencias: 0.10, 2.2 (FS)
+		- Spike: **No**
+		- PERT: Optimista 5hs, Probable 7hs, Pesimista 10hs
+
+	- 3.2c **UI Polish - QuickCheck & Wizard**.
+Mejoras rápidas de interfaz usuario. Animaciones de entrada (fade-in/slide-up) para items en QuickCheck results list usando Framer Motion o CSS transitions. Reordenar inputs en MachineRegistrationWizard Step 1 para flujo más natural (Marca → Modelo → Type → Nombre de referencia). Cambios solo en capa de presentación, sin lógica de backend.
+		- Horas estimadas: **0.75**hs
+		- Margen: ±**0.25**hs (P80)
+		- Incertidumbre: **Baja**
+		- Dependencias: 6.4, 3.1 (FS)
+		- Spike: **No**
+		- **Tareas agrupadas:** [2] Animaciones, [4] Reorder inputs
+
+
 	- 3.3 **Edición con historial** (RF-006).
 Edición + auditoría básica de cambios.
 		- Horas estimadas: **8**hs
@@ -343,7 +396,17 @@ Capa de Integración Frontend: Crear/actualizar services (quickCheckService.ts, 
 		- Spike: **No**
 		- PERT: Optimista 2hs, Probable 3hs, Pesimista 5hs
 
-	- 6.5 **Aviso QuickCheck no aprobado** (RF-017) [Should-Have].
+	- 6.5 **QuickCheck User Tracking** (RF-011 Enhancement).
+Capturar metadata del responsable al ejecutar QuickCheck para trazabilidad y auditoría. Frontend: Modal pre-submit con inputs para technicianName (requerido) y technicianId (opcional: DNI, matrícula). Backend: Agregar campos technicianName, technicianId, executorUserId al QuickCheckExecution model/schema/DTO. Implementación en todas las capas (Domain → Persistence → Application → Presentation). Validaciones Zod en shared/.
+		- Horas estimadas: **4.2**hs
+		- Margen: ±**0.8**hs (P80)
+		- Incertidumbre: **Baja-Media**
+		- Dependencias: 6.4 (FS)
+		- Spike: **No**
+		- PERT: Optimista 3hs, Probable 4hs, Pesimista 6hs
+		- **Tarea agrupada:** [1] QuickCheck tracking
+
+	- 6.6 **Aviso QuickCheck no aprobado** (RF-017) [Should-Have].
 Notificación de fallos: Genera notificación en centro de notificaciones cuando QuickCheck resulta FAIL. Registra fallo en historial de máquina. Hook en ExecuteQuickCheckUseCase para detectar resultado no aprobado. Integración con sistema de notificaciones (8.1). Email/SMS opcional si tiempo permite.
 		- Horas estimadas: **6**hs
 		- Margen: ±**1.0**hs (P80)
@@ -722,6 +785,15 @@ Carga inicial del dataset de demo.
 		- Incertidumbre: **Media**
 		- Dependencias: 16.5, 16.6, 16.8 (FS)
 		- Spike: **No**
+
+	- 16.12 **Azure Static Web App - Fix 404 en Refresh**.
+		Configurar fallback routing para SPA en Azure Static Web App. Crear archivo staticwebapp.config.json con navigationFallback apuntando a index.html. Soluciona error 404 al refrescar página o acceder directamente a rutas internas (/machines, /quickcheck, etc.). Crítico para usabilidad en producción (compartir links, bookmarks, refresh).
+		- Horas estimadas: **1**hs
+		- Margen: ±**0.5**hs (P80)
+		- Incertidumbre: **Baja**
+		- Dependencias: 16.11 (FS)
+		- Spike: **No**
+		- **Tarea agrupada:** [3] Azure routing fix
 
 17. **Documentación & Capacitación**
 
