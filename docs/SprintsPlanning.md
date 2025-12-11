@@ -365,7 +365,7 @@ Distribución por categoría:
 | Desarrollo | 12.8 UI Polish (animaciones + reorder inputs) | 5 | 0.75 | 0.1 |
 | Desarrollo | 12.7 Navigation Drawer | 6 | 3 | 1.3 |
 | Desarrollo | 16.12 Azure Static Web App - Fix 404 routing | 8 | 1 | 0.5 |
-| Desarrollo | 6.5 QuickCheck User Tracking | 9 | 4.2 | |
+| Desarrollo | 6.5 QuickCheck User Tracking | 9 | 4.2 | 0.5 |
 | Desarrollo | 3.2a Machine Enhancement (assignedTo, usageRate, fixes) | 10 | 12 | |
 | Desarrollo | 0.5a PWA Manifest + Icons | 11 | 1 | |
 | Desarrollo | 0.5b Service Worker Básico (inicio) | 12 | 1.5 | |
