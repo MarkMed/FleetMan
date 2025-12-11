@@ -293,6 +293,7 @@ export const useFormValidation = <T extends Record<string, any>>(
 
 // Navigation hooks
 export { useNavigateOnAuth, useRedirectAfterLogin } from './useNavigateOnAuth';
+export { useNavigationSync } from './useNavigationSync';
 
 // Timer hooks
 export { useButtonTimer } from './useButtonTimer';
