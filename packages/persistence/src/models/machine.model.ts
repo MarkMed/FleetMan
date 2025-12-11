@@ -201,6 +201,18 @@ const machineSchema = new Schema<IMachineDocument>({
       required: true,
       ref: 'User'
     },
+    responsibleName: {
+      type: String,
+      required: true,
+      trim: true,
+      maxlength: 100
+    },
+    responsibleWorkerId: {
+      type: String,
+      required: true,
+      trim: true,
+      maxlength: 50
+    },
     quickCheckItems: [{
       name: {
         type: String,
