@@ -363,7 +363,7 @@ Distribución por categoría:
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | 4.65 |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | 0 |
 | Desarrollo | 12.8 UI Polish (animaciones + reorder inputs) | 5 | 0.75 | 0.1 |
-| Desarrollo | 12.7 Navigation Drawer | 6 | 3 | 1.2 |
+| Desarrollo | 12.7 Navigation Drawer | 6 | 3 | 1.3 |
 | Desarrollo | 6.5 QuickCheck User Tracking | 8 | 4.2 | |
 | Desarrollo | 3.2a Machine Enhancement (assignedTo, usageRate, fixes) | 9 | 12 | |
 | Desarrollo | 16.12 Azure Static Web App - Fix 404 routing | 10 | 1 | |
