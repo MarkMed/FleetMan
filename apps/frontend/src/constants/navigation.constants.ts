@@ -3,7 +3,7 @@ import {
   Home, 
   Cog, 
   Bell, 
-  CheckSquare, 
+  Users, 
   User, 
   Settings,
   Menu
@@ -49,13 +49,21 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
     requiresAuth: true,
     showInMobile: true, // Position 3 in bottom nav
   },
+//   {
+//     id: 'quickcheck',
+//     label: 'QuickCheck',
+//     icon: CheckSquare,
+//     href: '/quickcheck',
+//     requiresAuth: true,
+//     showInMobile: false, // Only in drawer
+//   },
   {
-    id: 'quickcheck',
-    label: 'QuickCheck',
-    icon: CheckSquare,
-    href: '/quickcheck',
-    requiresAuth: true,
-    showInMobile: false, // Only in drawer
+	id: 'contacts',
+	label: 'Contactos',
+	icon: Users,
+	href: '/contacts',
+	requiresAuth: true,
+	showInMobile: false, // Only in drawer
   },
   {
     id: 'profile',

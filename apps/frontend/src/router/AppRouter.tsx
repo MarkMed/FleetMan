@@ -15,6 +15,10 @@ import { MachineDetailsScreen } from '../screens/machines/MachineDetailsScreen';
 import { NewMachineScreen } from '../screens/machines/NewMachineScreen';
 import { QuickCheckScreen } from '../screens/quickcheck/QuickCheckScreen';
 import { QuickCheckHistoryScreen } from '../screens/quickcheck/QuickCheckHistoryScreen';
+import { NotificationsScreen } from '../screens/notifications/NotificationsScreen';
+import { ContactsScreen } from '../screens/help/ContactsScreen';
+import { ProfileScreen } from '../screens/profile/ProfileScreen';
+import { ConfigurationsScreen } from '../screens/settings/ConfigurationsScreen';
 import { ExamplesScreen } from '../screens/ExamplesScreen';
 
 // Route components
@@ -59,6 +63,12 @@ export const AppRouter: React.FC = () => {
           <Route path="machines/:id" element={<MachineDetailsScreen />} />
           <Route path="machines/:id/quickcheck" element={<QuickCheckScreen />} />
           <Route path="machines/:id/quickcheck/history" element={<QuickCheckHistoryScreen />} />
+
+          {/* Other protected routes */}
+          <Route path="notifications" element={<NotificationsScreen />} />
+          <Route path="contacts" element={<ContactsScreen />} />
+          <Route path="profile" element={<ProfileScreen />} />
+          <Route path="settings" element={<ConfigurationsScreen />} />
 
           {/* Examples */}
           <Route path="ejemplos" element={<ExamplesScreen />} />
