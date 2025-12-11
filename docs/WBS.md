@@ -262,25 +262,6 @@ Grupo de mejoras al modelo y formulario de máquina implementadas en una sola pa
 		- PERT: Optimista 10hs, Probable 12hs, Pesimista 15hs
 		- **Tareas agrupadas:** [5] Asignar a, [6] Fix display tipo, [7] Fix powerSource, [8] UsageRate, [NUEVA] machinePhotoUrl
 
-	- 3.2b **Navigation Drawer Global**.
-Implementar componente NavigationDrawer/Sidebar para navegación global accesible desde todas las páginas. Tecnología: React Aria o componente custom. Funcionalidad: Estado persistente (abierto/cerrado) con Zustand, responsive (desktop: sidebar, mobile: drawer), links a secciones principales (Dashboard, Máquinas, Mantenimientos, QuickCheck, Notificaciones), animaciones smooth. Integración: Layout wrapper para todas las rutas autenticadas.
-		- Horas estimadas: **7**hs
-		- Margen: ±**1.2**hs (P80)
-		- Incertidumbre: **Media**
-		- Dependencias: 0.10, 2.2 (FS)
-		- Spike: **No**
-		- PERT: Optimista 5hs, Probable 7hs, Pesimista 10hs
-
-	- 3.2c **UI Polish - QuickCheck & Wizard**.
-Mejoras rápidas de interfaz usuario. Animaciones de entrada (fade-in/slide-up) para items en QuickCheck results list usando Framer Motion o CSS transitions. Reordenar inputs en MachineRegistrationWizard Step 1 para flujo más natural (Marca → Modelo → Type → Nombre de referencia). Cambios solo en capa de presentación, sin lógica de backend.
-		- Horas estimadas: **0.75**hs
-		- Margen: ±**0.25**hs (P80)
-		- Incertidumbre: **Baja**
-		- Dependencias: 6.4, 3.1 (FS)
-		- Spike: **No**
-		- **Tareas agrupadas:** [2] Animaciones, [4] Reorder inputs
-
-
 	- 3.3 **Edición con historial** (RF-006).
 Edición + auditoría básica de cambios.
 		- Horas estimadas: **8**hs
@@ -577,6 +558,24 @@ Frontend: Configuración básica de React Router con definición de rutas princi
 		- Incertidumbre: **Media**
 		- Dependencias: 12.4a, 12.5, 0.15 (FS)
 		- Spike: **No**
+
+	- 12.7 **Navigation Drawer Global**.
+	Implementar componente NavigationDrawer/Sidebar para navegación global accesible desde todas las páginas. Tecnología: React Aria o componente custom. Funcionalidad: Estado persistente (abierto/cerrado) con Zustand, responsive (desktop: sidebar, mobile: drawer), links a secciones principales (Dashboard, Máquinas, Mantenimientos, QuickCheck, Notificaciones), animaciones smooth. Integración: Layout wrapper para todas las rutas autenticadas.
+		- Horas estimadas: **7**hs
+		- Margen: ±**1.2**hs (P80)
+		- Incertidumbre: **Media**
+		- Dependencias: 12.4a, 0.10 (FS)
+		- Spike: **No**
+		- PERT: Optimista 5hs, Probable 7hs, Pesimista 10hs
+
+	- 12.8 **UI Polish - QuickCheck & Wizard**.
+	Mejoras rápidas de interfaz usuario. Animaciones de entrada (fade-in/slide-up) para items en QuickCheck results list usando Framer Motion o CSS transitions. Reordenar inputs en MachineRegistrationWizard Step 1 para flujo más natural (Marca → Modelo → Type → Nombre de referencia). Cambios solo en capa de presentación, sin lógica de backend.
+		- Horas estimadas: **0.75**hs
+		- Margen: ±**0.25**hs (P80)
+		- Incertidumbre: **Baja**
+		- Dependencias: 6.4, 3.1 (FS)
+		- Spike: **No**
+		- **Tareas agrupadas:** [2] Animaciones, [4] Reorder inputs
 
 13. **Calidad & Pruebas** (alineado a SQA)
 

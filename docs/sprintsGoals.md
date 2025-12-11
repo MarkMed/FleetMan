@@ -77,9 +77,10 @@
 - **Funcionalidades**: Sistema completo inspecciones rápidas end-to-end
 - **Entregable**: Feature diferenciadora funcional para demos
 
-#### **Hito #4: Infraestructura** (Sprint #8)
-- **Funcionalidades**: PWA + testing comprehensivo + cronjobs infrastructure
-- **Crítico**: Base sólida para módulos complejos posteriores
+#### **Hito #4: Infraestructura & Machine Enhancements** (Sprint #8)
+- **Funcionalidades**: Machine enhancements (assignedTo, usageRate, fixes) + Navigation Drawer global + QuickCheck tracking + PWA base + Azure fix
+- **Crítico**: Base sólida UX + mejoras core máquinas + fundación PWA para módulos posteriores
+- **Estrategia**: Orden simple→complejo (UI polish → navigation → tracking → enhancements → PWA)
 
 #### **Hito #5: Notificaciones** (Sprint #9)
 - **Funcionalidades**: Sistema completo front/back notificaciones

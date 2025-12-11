@@ -362,18 +362,18 @@ Distribución por categoría:
 | Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | |
-| **MIÉRCOLES** - Quick Wins UI |||||
-| Desarrollo | 3.2c UI Polish (animaciones + reorder inputs) | 5 | 0.75 | |
-| Desarrollo | 3.2b Navigation Drawer (Parte 1: layout + base) | 6 | 3 | |
-| Desarrollo | 0.5a PWA Manifest + Icons | 7 | 1 | |
-| **JUEVES** - Machine Enhancement Day |||||
-| Desarrollo | 3.2b Navigation Drawer (Parte 2: responsive + state) | 8 | 4 | |
+| **MIÉRCOLES** - UI Quick Wins |||||
+| Desarrollo | 12.8 UI Polish (animaciones + reorder inputs) | 5 | 0.75 | |
+| Desarrollo | 12.7 Navigation Drawer (Parte 1: layout + base) | 6 | 3 | |
+| **JUEVES** - Navigation + QuickCheck Tracking |||||
+| Desarrollo | 12.7 Navigation Drawer (Parte 2: responsive + state) | 7 | 4 | |
+| Desarrollo | 6.5 QuickCheck User Tracking | 8 | 4.2 | |
+| **VIERNES** - Machine Enhancement |||||
 | Desarrollo | 3.2a Machine Enhancement (assignedTo, usageRate, fixes) | 9 | 12 | |
-| **VIERNES** - Critical Fixes + QuickCheck Tracking |||||
+| **SÁBADO** - Azure Fix + PWA Completion |||||
 | Desarrollo | 16.12 Azure Static Web App - Fix 404 routing | 10 | 1 | |
-| Desarrollo | 6.5 QuickCheck User Tracking | 11 | 4.2 | |
+| Desarrollo | 0.5a PWA Manifest + Icons | 11 | 1 | |
 | Desarrollo | 0.5b Service Worker Básico (inicio) | 12 | 1.5 | |
-| **SÁBADO** - PWA Completion + Testing |||||
 | Desarrollo | 0.5b Service Worker Básico (final) | 13 | 1.5 | |
 | Desarrollo | 0.5c PWA Testing Multi-dispositivo | 14 | 1 | |
 
@@ -393,13 +393,19 @@ Distribución por categoría:
 %%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#e0f7fa','primaryTextColor':'#000','primaryBorderColor':'#006064','lineColor':'#00796b','secondaryColor':'#fff3e0','tertiaryColor':'#f3e5f5'}}}%%
 xychart-beta
     title "Sprint #8: Horas Estimadas (azul) vs Reales (verde)"
-    x-axis ["20.1 Reporte", "20.2 Demo", "20.3 Planning", "21.2 Tutorías", "3.2c UI Polish", "3.2b NavDrawer P1", "0.5a Manifest", "3.2b NavDrawer P2", "3.2a Machine Enh", "16.12 Azure Fix", "6.5 QC Tracking", "0.5b SW Inicio", "0.5b SW Final", "0.5c Testing"]
+    x-axis ["20.1 Reporte", "20.2 Demo", "20.3 Planning", "21.2 Tutorías", "12.8 UI Polish", "12.7 NavDrawer P1", "12.7 NavDrawer P2", "6.5 QC Tracking", "3.2a Machine Enh", "16.12 Azure Fix", "0.5a Manifest", "0.5b SW Inicio", "0.5b SW Final", "0.5c Testing"]
     y-axis "Horas" 0 --> 13
-    bar [5, 1.5, 1.3, 1, 0.75, 3, 1, 4, 12, 1, 4.2, 1.5, 1.5, 1]
+    bar [5, 1.5, 1.3, 1, 0.75, 3, 4, 4.2, 12, 1, 1, 1.5, 1.5, 1]
     bar [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 ```
 
 **Notas de Sprint:**
+- **Orden optimizado simple → complejo**: UI Polish → Navigation → QC Tracking → Machine Enhancement → Azure Fix + PWA
+- **Miércoles (Quick Wins)**: Animaciones, reorder inputs, navigation drawer base (3.75hs) - Calentamiento con tareas simples
+- **Jueves (UX + Feature)**: Navigation drawer responsive + QuickCheck user tracking (8.2hs) - Consolidar UX y feature completa
+- **Viernes (Core Enhancement)**: Machine Enhancement completo (12hs) - Día enfocado en la tarea más compleja con base limpia
+- **Sábado (Infra + PWA)**: Azure fix crítico + PWA completo (5.5hs) - Infraestructura y testing final
+- **Estrategia**: Tareas tempranas "limpian la base" (UI polish, navigation) para que Machine Enhancement se implemente sobre código mejorado
 - **PWA Base completa:** Manifest, icons, service worker básico, testing multi-dispositivo
 - **Machine Enhancement:** Agrupa 4 mejoras en una sola pasada (assignedTo, usageRate, powerSource fix, machinePhotoUrl básico)
 - **Navigation Drawer:** Implementado en 2 partes (día 1: estructura base, día 2: responsive + integración)
