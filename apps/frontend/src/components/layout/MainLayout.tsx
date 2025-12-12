@@ -11,19 +11,20 @@ export const MainLayout: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Navigation Drawer (opens from left) */}
-      <NavigationDrawer />
       
+
+      {/* Main content with padding to account for fixed navbars */}
+      <main className="container mx-auto px-4 py-8 md:pt-24 pb-20 md:pb-8">
+        <Outlet />
+      </main>
       {/* Desktop/Tablet Top Navigation Bar */}
       <NavBar />
 
       {/* Mobile Bottom Navigation Bar */}
       <MobileBottomNav />
 
-      {/* Main content with padding to account for fixed navbars */}
-      <main className="container mx-auto px-4 py-8 md:pt-24 pb-20 md:pb-8">
-        <Outlet />
-      </main>
+      {/* Navigation Drawer (opens from left) */}
+      <NavigationDrawer />
     </div>
   );
 };
