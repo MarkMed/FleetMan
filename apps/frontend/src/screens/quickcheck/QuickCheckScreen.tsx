@@ -308,12 +308,9 @@ export const QuickCheckScreen: React.FC = () => {
         isOpen={vm.isResponsibleModalOpen}
         onClose={() => vm.setIsResponsibleModalOpen(false)}
         onSubmit={(data) => {
-          vm.setResponsibleName(data.name);
-          vm.setResponsibleWorkerId(data.workerId);
-          vm.submitQuickCheck();
+          // Pass data directly to submitQuickCheck to avoid setState race condition
+          vm.submitQuickCheck(data);
         }}
-        initialName={vm.responsibleName}
-        initialWorkerId={vm.responsibleWorkerId}
       />
     </div>
   );

@@ -1,6 +1,23 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
+import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import { Modal, ModalFooter, Button, InputField } from '@components/ui';
 import { User, IdCard } from 'lucide-react';
+
+// Validation schema matching backend contracts
+const ResponsibleInfoSchema = z.object({
+  name: z.string()
+    .min(1, 'El nombre es requerido')
+    .max(100, 'El nombre no puede exceder 100 caracteres')
+    .trim(),
+  workerId: z.string()
+    .min(1, 'El número de trabajador es requerido')
+    .max(50, 'El número de trabajador no puede exceder 50 caracteres')
+    .trim(),
+});
+
+type ResponsibleInfoFormData = z.infer<typeof ResponsibleInfoSchema>;
 
 interface ResponsibleInfoModalProps {
   isOpen: boolean;
@@ -17,7 +34,7 @@ interface ResponsibleInfoModalProps {
  * - Nombre completo del técnico/operador
  * - Número de trabajador/credencial
  * 
- * Validaciones:
+ * Validaciones (Zod + RHF):
  * - Ambos campos son obligatorios
  * - Min 1 carácter cada uno
  * - Max 100 caracteres para nombre
@@ -30,38 +47,53 @@ export const ResponsibleInfoModal: React.FC<ResponsibleInfoModalProps> = ({
   initialName = '',
   initialWorkerId = '',
 }) => {
-  const [name, setName] = useState(initialName);
-  const [workerId, setWorkerId] = useState(initialWorkerId);
-  const [errors, setErrors] = useState<{ name?: string; workerId?: string }>({});
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    setFocus,
+    reset,
+    watch,
+  } = useForm<ResponsibleInfoFormData>({
+    resolver: zodResolver(ResponsibleInfoSchema),
+    defaultValues: {
+      name: initialName,
+      workerId: initialWorkerId,
+    },
+  });
 
-  const validate = (): boolean => {
-    const newErrors: { name?: string; workerId?: string } = {};
+  // Watch form values for character count
+  const nameValue = watch('name') || '';
+  const workerIdValue = watch('workerId') || '';
 
-    if (!name.trim()) {
-      newErrors.name = 'El nombre es requerido';
-    } else if (name.length > 100) {
-      newErrors.name = 'Máximo 100 caracteres';
+  // Auto-focus on name input when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      setFocus('name');
     }
+  }, [isOpen, setFocus]);
 
-    if (!workerId.trim()) {
-      newErrors.workerId = 'El número de trabajador es requerido';
-    } else if (workerId.length > 50) {
-      newErrors.workerId = 'Máximo 50 caracteres';
+  // Reset form when modal opens with new initial data
+  useEffect(() => {
+    if (isOpen) {
+      reset({
+        name: initialName,
+        workerId: initialWorkerId,
+      });
     }
+  }, [isOpen, initialName, initialWorkerId, reset]);
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = () => {
-    if (validate()) {
-      onSubmit({ name: name.trim(), workerId: workerId.trim() });
-      handleClose();
-    }
+  const handleFormSubmit = (data: ResponsibleInfoFormData) => {
+    onSubmit({
+      name: data.name.trim(),
+      workerId: data.workerId.trim(),
+    });
+    // reset();
+	handleClose();
   };
 
   const handleClose = () => {
-    setErrors({});
+    reset();
     onClose();
   };
 
@@ -73,93 +105,103 @@ export const ResponsibleInfoModal: React.FC<ResponsibleInfoModalProps> = ({
       description="Ingresa la información del técnico que ejecuta el QuickCheck"
       className="max-w-md"
     >
-      <div className="space-y-6 p-6">
+      <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6 p-6">
         <div className="space-y-4">
-            {/* Nombre del Responsable */}
-            <div className="space-y-2">
-              <label htmlFor="responsibleName" className="block text-sm font-medium text-foreground">
-                Nombre Completo <span className="text-destructive">*</span>
-              </label>
-              <div className="relative">
-                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none z-10">
-                  <User className="w-4 h-4" />
+          {/* Nombre del Responsable - Using Controller pattern */}
+          <div className="space-y-2">
+            <Controller
+              control={control}
+              name="name"
+              render={({ field: { onChange, onBlur, value } }) => (
+                <div className="relative">
+                  <div className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none z-10">
+                    <User className="w-4 h-4" />
+                  </div>
+                  <InputField
+                    id="responsibleName"
+                    label="Nombre Completo"
+                    required
+                    type="text"
+                    value={value || ''}
+                    onChangeText={onChange}
+                    onBlur={onBlur}
+                    placeholder="Ej: Juan Pérez"
+                    className="pl-10"
+                    maxLength={100}
+                    error={errors.name?.message}
+                  />
                 </div>
-                <InputField
-                  id="responsibleName"
-                  type="text"
-                  value={name}
-                  onChangeText={setName}
-                  placeholder="Ej: Juan Pérez"
-                  className="pl-10"
-                  maxLength={100}
-                  autoFocus
-                />
-              </div>
-              {errors.name && (
-                <p className="text-xs text-destructive">{errors.name}</p>
               )}
-              <p className="text-xs text-muted-foreground">
-                {name.length}/100 caracteres
-              </p>
-            </div>
-
-            {/* Número de Trabajador */}
-            <div className="space-y-2">
-              <label htmlFor="workerIdInput" className="block text-sm font-medium text-foreground">
-                Número de Trabajador <span className="text-destructive">*</span>
-              </label>
-              <div className="relative">
-                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none z-10">
-                  <IdCard className="w-4 h-4" />
-                </div>
-                <InputField
-                  id="workerIdInput"
-                  type="text"
-                  value={workerId}
-                  onChangeText={setWorkerId}
-                  placeholder="Ej: TEC-0042 o DNI-12345678"
-                  className="pl-10"
-                  maxLength={50}
-                />
-              </div>
-              {errors.workerId && (
-                <p className="text-xs text-destructive">{errors.workerId}</p>
-              )}
-              <p className="text-xs text-muted-foreground">
-                {workerId.length}/50 caracteres
-              </p>
-            </div>
-
-            {/* Info box */}
-            <div className="p-3 bg-muted/50 border border-border rounded-lg">
-              <p className="text-xs text-muted-foreground">
-                <strong className="text-foreground">Importante:</strong> Esta información se registra para trazabilidad
-                y auditoría. Asegúrate de ingresar los datos correctos del técnico responsable.
-              </p>
-            </div>
+            />
+            <p className="text-xs text-muted-foreground">
+              {nameValue.length}/100 caracteres
+            </p>
           </div>
+
+          {/* Número de Trabajador - Using Controller pattern */}
+          <div className="space-y-2">
+            <Controller
+              control={control}
+              name="workerId"
+              render={({ field: { onChange, onBlur, value } }) => (
+                <div className="relative">
+                  <div className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none z-10">
+                    <IdCard className="w-4 h-4" />
+                  </div>
+                  <InputField
+                    id="workerIdInput"
+                    label="Número de Trabajador"
+                    required
+                    type="text"
+                    value={value || ''}
+                    onChangeText={onChange}
+                    onBlur={onBlur}
+                    placeholder="Ej: TEC-0042 o DNI-12345678"
+                    className="pl-10"
+                    maxLength={50}
+                    error={errors.workerId?.message}
+                  />
+                </div>
+              )}
+            />
+            <p className="text-xs text-muted-foreground">
+              {workerIdValue.length}/50 caracteres
+            </p>
+          </div>
+
+          {/* Info box */}
+          <div className="p-3 bg-muted/50 border border-border rounded-lg">
+            <p className="text-xs text-muted-foreground">
+              <strong className="text-foreground">Importante:</strong> Esta información se registra para trazabilidad
+              y auditoría. Asegúrate de ingresar los datos correctos del técnico responsable.
+            </p>
+          </div>
+        </div>
 
         <ModalFooter>
           <div className="flex gap-3 w-full">
             <Button
+              htmlType="button"
               variant="outline"
               size="default"
               onPress={handleClose}
               className="flex-1"
+              disabled={isSubmitting}
             >
               Cancelar
             </Button>
             <Button
+              htmlType="submit"
               variant="filled"
               size="default"
-              onPress={handleSubmit}
               className="flex-1"
+              disabled={isSubmitting}
             >
-              Confirmar
+              {isSubmitting ? 'Confirmando...' : 'Confirmar'}
             </Button>
           </div>
         </ModalFooter>
-      </div>
+      </form>
     </Modal>
   );
 };
