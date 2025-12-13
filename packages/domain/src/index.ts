@@ -16,6 +16,9 @@ export * from "./entities/machine-event-type";
 // Value Objects
 export * from "./value-objects";
 
+// Enums
+export * from "./enums/DayOfWeek";
+
 // Puertos (interfaces) - Implementados
 export * from "./ports";
 
@@ -40,6 +43,7 @@ export {
   IBaseEntity,
   IQuickCheckRecord, // NEW - embedded in Machine
   IQuickCheckItem, // NEW - embedded item in QuickCheckRecord
+  IUsageSchedule, // NEW - embedded in Machine for scheduling
   QuickCheckItemResult,
   QuickCheckResult,
   QUICK_CHECK_ITEM_RESULTS, // SSOT constant for validation

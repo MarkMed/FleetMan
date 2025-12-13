@@ -5,7 +5,8 @@ import {
   type FuelType,
   type IQuickCheckRecord,
   type QuickCheckItemResult,
-  type QuickCheckResult
+  type QuickCheckResult,
+  DayOfWeek
 } from '@packages/domain';
 
 // =============================================================================
@@ -92,6 +93,48 @@ const machineSchema = new Schema<IMachineDocument>({
     type: Date,
     sparse: true
   },
+
+  // [NUEVO] Persona asignada (temporal string)
+  assignedTo: {
+    type: String,
+    trim: true,
+    maxlength: 100,
+    sparse: true
+  },
+
+  // [NUEVO] Programación de uso para cálculo de alertas
+  usageSchedule: {
+    type: {
+      dailyHours: {
+        type: Number,
+        required: true,
+        min: 1,
+        max: 24
+      },
+      operatingDays: {
+        type: [String],
+        required: true,
+        enum: Object.values(DayOfWeek), // SSOT: Usa el enum de domain
+        validate: {
+          validator: function(v: string[]) {
+            // Al menos 1 día, máximo 7, sin duplicados
+            return v.length > 0 && v.length <= 7 && new Set(v).size === v.length;
+          },
+          message: 'Must have 1-7 unique operating days'
+        }
+      }
+    },
+    required: false,
+    sparse: true
+  },
+
+  // [NUEVO] URL de foto de la máquina (preparación para Cloudinary)
+  machinePhotoUrl: {
+    type: String,
+    trim: true,
+    maxlength: 500,
+    sparse: true
+  },
   
   status: {
     code: {
@@ -132,7 +175,7 @@ const machineSchema = new Schema<IMachineDocument>({
     },
     fuelType: {
       type: String,
-      enum: ['DIESEL', 'GASOLINE', 'ELECTRIC', 'HYBRID'],
+      enum: ['ELECTRIC_LITHIUM', 'ELECTRIC_LEAD_ACID', 'DIESEL', 'LPG', 'GASOLINE', 'BIFUEL', 'HYBRID'],
       sparse: true
     },
     year: {
