@@ -236,15 +236,6 @@ export function useQuickCheckViewModel() {
       return;
     }
 
-    // Validate responsible fields (defensive check)
-    if (!responsibleData.name.trim() || !responsibleData.workerId.trim()) {
-      toast.error({
-        title: 'Información incompleta',
-        description: 'Debes ingresar el nombre y número del responsable',
-      });
-      return;
-    }
-
     setIsLoading(true);
     setError(null);
 
@@ -301,6 +292,7 @@ export function useQuickCheckViewModel() {
         title: 'Error',
         description: 'No se pudo completar el QuickCheck. Intenta nuevamente.',
       });
+      throw err; // Re-throw to let modal know submission failed
     } finally {
       setIsLoading(false);
     }

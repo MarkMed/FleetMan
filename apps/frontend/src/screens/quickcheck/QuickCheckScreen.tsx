@@ -307,9 +307,10 @@ export const QuickCheckScreen: React.FC = () => {
       <ResponsibleInfoModal
         isOpen={vm.isResponsibleModalOpen}
         onClose={() => vm.setIsResponsibleModalOpen(false)}
-        onSubmit={(data) => {
+        onSubmit={async (data) => {
           // Pass data directly to submitQuickCheck to avoid setState race condition
-          vm.submitQuickCheck(data);
+          // Now awaits completion - modal only closes on success
+          await vm.submitQuickCheck(data);
         }}
       />
     </div>

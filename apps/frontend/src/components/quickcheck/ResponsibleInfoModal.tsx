@@ -22,7 +22,7 @@ type ResponsibleInfoFormData = z.infer<typeof ResponsibleInfoSchema>;
 interface ResponsibleInfoModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: { name: string; workerId: string }) => void;
+  onSubmit: (data: { name: string; workerId: string }) => Promise<void>;
   initialName?: string;
   initialWorkerId?: string;
 }
@@ -83,13 +83,19 @@ export const ResponsibleInfoModal: React.FC<ResponsibleInfoModalProps> = ({
     }
   }, [isOpen, initialName, initialWorkerId, reset]);
 
-  const handleFormSubmit = (data: ResponsibleInfoFormData) => {
-    onSubmit({
-      name: data.name.trim(),
-      workerId: data.workerId.trim(),
-    });
-    // reset();
-	handleClose();
+  const handleFormSubmit = async (data: ResponsibleInfoFormData) => {
+    try {
+      await onSubmit({
+        name: data.name.trim(),
+        workerId: data.workerId.trim(),
+      });
+      // Only close modal if submission was successful
+      handleClose();
+    } catch (error) {
+      // Keep modal open on error so user doesn't lose their input
+      // Error will be displayed via toast in the ViewModel
+      console.error('Error submitting responsible info:', error);
+    }
   };
 
   const handleClose = () => {
@@ -114,7 +120,7 @@ export const ResponsibleInfoModal: React.FC<ResponsibleInfoModalProps> = ({
               name="name"
               render={({ field: { onChange, onBlur, value } }) => (
                 <div className="relative">
-                  <div className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none z-10">
+                  <div className="absolute left-3 top-[72%] -translate-y-1/2 text-muted-foreground pointer-events-none z-10">
                     <User className="w-4 h-4" />
                   </div>
                   <InputField
@@ -145,7 +151,7 @@ export const ResponsibleInfoModal: React.FC<ResponsibleInfoModalProps> = ({
               name="workerId"
               render={({ field: { onChange, onBlur, value } }) => (
                 <div className="relative">
-                  <div className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none z-10">
+                  <div className="absolute left-3 top-[72%] -translate-y-1/2 text-muted-foreground pointer-events-none z-10">
                     <IdCard className="w-4 h-4" />
                   </div>
                   <InputField
