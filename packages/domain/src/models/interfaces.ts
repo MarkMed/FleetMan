@@ -78,6 +78,8 @@ export interface IQuickCheckRecord {
   readonly result: QuickCheckResult;
   readonly date: Date;
   readonly executedById: string;
+  readonly responsibleName: string; // Nombre del técnico/responsable que ejecuta
+  readonly responsibleWorkerId: string; // Número de trabajador/identificador del responsable
   readonly quickCheckItems: readonly IQuickCheckItem[];
   readonly observations?: string;
 }

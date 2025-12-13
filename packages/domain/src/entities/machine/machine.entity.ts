@@ -481,6 +481,7 @@ export class Machine {
    * Aplica validaciones de negocio críticas:
    * - Máquina no debe estar RETIRED
    * - Al menos un item en el checklist
+   * - Identificación del responsable (nombre y número de trabajador)
    * - Consistencia entre resultado general y resultados de items
    * - 'notInitiated' solo cuando todos los items están 'omitted'
    * 
@@ -493,12 +494,29 @@ export class Machine {
       return err(DomainError.domainRule('Cannot add QuickCheck to retired machine'));
     }
 
-    // Validación 2: Al menos un item en el checklist
+    // Validación 2: Información del responsable es obligatoria
+    if (!record.responsibleName || record.responsibleName.trim().length === 0) {
+      return err(DomainError.validation('Responsible name is required for QuickCheck'));
+    }
+
+    if (!record.responsibleWorkerId || record.responsibleWorkerId.trim().length === 0) {
+      return err(DomainError.validation('Responsible worker ID is required for QuickCheck'));
+    }
+
+    if (record.responsibleName.trim().length > 100) {
+      return err(DomainError.validation('Responsible name cannot exceed 100 characters'));
+    }
+
+    if (record.responsibleWorkerId.trim().length > 50) {
+      return err(DomainError.validation('Responsible worker ID cannot exceed 50 characters'));
+    }
+
+    // Validación 3: Al menos un item en el checklist
     if (!record.quickCheckItems || record.quickCheckItems.length === 0) {
       return err(DomainError.validation('QuickCheck must have at least one item'));
     }
 
-    // Validación 3: Consistencia de resultados
+    // Validación 4: Consistencia de resultados
     const allApproved = record.quickCheckItems.every(item => item.result === 'approved');
     const anyDisapproved = record.quickCheckItems.some(item => item.result === 'disapproved');
     const allOmitted = record.quickCheckItems.every(item => item.result === 'omitted');
@@ -513,13 +531,13 @@ export class Machine {
       return err(DomainError.validation('Result cannot be approved when items are disapproved'));
     }
 
-    // Validación 4: 'notInitiated' solo cuando todos los items están 'omitted'
+    // Validación 5: 'notInitiated' solo cuando todos los items están 'omitted'
     // Esto representa una inspección que no fue completada/iniciada apropiadamente
     if (record.result === 'notInitiated' && !allOmitted) {
       return err(DomainError.validation("Result 'notInitiated' is only allowed when all items are 'omitted'"));
     }
 
-    // Validación 4: Límite de historial (soft limit - advisory)
+    // Validación 6: Límite de historial (soft limit - advisory)
     if (this.props.quickChecks.length >= 100) {
       // Nota: El repositorio usa $slice para mantener solo 100 registros
       // Esta validación es informativa, no bloqueante

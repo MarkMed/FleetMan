@@ -43,6 +43,9 @@ export function useQuickCheckViewModel() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Responsible tracking (Sprint 8) - Modal control only
+  const [isResponsibleModalOpen, setIsResponsibleModalOpen] = useState(false);
+
   // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<'create' | 'edit'>('create');
@@ -224,7 +227,7 @@ export function useQuickCheckViewModel() {
     });
   }, [items]);
 
-  const submitQuickCheck = useCallback(async () => {
+  const submitQuickCheck = useCallback(async (responsibleData: { name: string; workerId: string }) => {
     if (!canSubmit) {
       toast.error({
         title: 'Evaluación incompleta',
@@ -246,6 +249,8 @@ export function useQuickCheckViewModel() {
       // Prepare payload using CreateQuickCheckRecord from contracts
       const payload: CreateQuickCheckRecord = {
         result: overallResult,
+        responsibleName: responsibleData.name.trim(),
+        responsibleWorkerId: responsibleData.workerId.trim(),
         quickCheckItems: items.map(item => ({
           name: item.name,
           description: item.description,
@@ -287,6 +292,7 @@ export function useQuickCheckViewModel() {
         title: 'Error',
         description: 'No se pudo completar el QuickCheck. Intenta nuevamente.',
       });
+      throw err; // Re-throw to let modal know submission failed
     } finally {
       setIsLoading(false);
     }
@@ -342,6 +348,10 @@ export function useQuickCheckViewModel() {
     // Observations
     observations,
     setObservations,
+
+    // Responsible tracking (Sprint 8) - Modal control only
+    isResponsibleModalOpen,
+    setIsResponsibleModalOpen,
 
     // Summary
     stats,

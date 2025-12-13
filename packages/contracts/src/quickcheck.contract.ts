@@ -46,6 +46,14 @@ export const QuickCheckRecordSchema = z.object({
   date: z.coerce.date(),
   executedById: z.string()
     .min(1, 'ID del ejecutor es requerido'),
+  responsibleName: z.string()
+    .min(1, 'El nombre del responsable es requerido')
+    .max(100, 'El nombre no puede exceder 100 caracteres')
+    .trim(),
+  responsibleWorkerId: z.string()
+    .min(1, 'El número de trabajador es requerido')
+    .max(50, 'El número de trabajador no puede exceder 50 caracteres')
+    .trim(),
   quickCheckItems: z.array(QuickCheckItemSchema)
     .min(1, 'Debe tener al menos un item')
     .max(50, 'Máximo 50 items por QuickCheck'),
