@@ -31,6 +31,8 @@ export const QuickCheckHistoryScreen: React.FC = () => {
       size: "lg",
       showConfirm: false,
       showCancel: false,
+      // variant: 'info',
+      // showColoredBorder: true,
     });
   };
 
