@@ -366,10 +366,9 @@ Distribución por categoría:
 | Desarrollo | 12.7 Navigation Drawer | 6 | 3 | 2.3 |
 | Desarrollo | 16.12 Azure Static Web App - Fix 404 routing | 8 | 1 | 0.8 |
 | Desarrollo | 6.5 QuickCheck User Tracking | 9 | 4.2 | 2.5 |
-| Desarrollo | 3.2a Machine Enhancement (assignedTo, usageRate, fixes) | 10 | 12 | |
+| Desarrollo | 3.2a Machine Enhancement (assignedTo, usageRate, fixes) | 10 | 12 | 1.7 |
 | Desarrollo | 0.5a PWA Manifest + Icons | 11 | 1 | |
-| Desarrollo | 0.5b Service Worker Básico (inicio) | 12 | 1.5 | |
-| Desarrollo | 0.5b Service Worker Básico (final) | 13 | 1.5 | |
+| Desarrollo | 0.5b Service Worker Básico | 12 | 1.5 | |
 | Desarrollo | 0.5c PWA Testing Multi-dispositivo | 14 | 1 | |
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales | Consumo |
