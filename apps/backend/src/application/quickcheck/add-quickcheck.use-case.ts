@@ -15,6 +15,14 @@ import { type CreateQuickCheckRecord } from '@packages/contracts';
  * Reglas de Acceso:
  * - CLIENT puede agregar quickcheck a sus propias máquinas
  * - PROVIDER puede agregar quickcheck a máquinas asignadas
+ * 
+ * Campos de Responsabilidad (Obligatorios desde Sprint 8):
+ * - responsibleName: Nombre completo del técnico que ejecuta la inspección
+ * - responsibleWorkerId: Número de empleado/identificador del trabajador
+ * - executedById: ID del usuario logueado (extraído del JWT, server-side)
+ * 
+ * Estos campos permiten trackear tanto el "quién" (usuario del sistema) 
+ * como el "quién físicamente" (técnico que puede no tener cuenta en el sistema).
  */
 export class AddQuickCheckUseCase {
   private machineRepository: MachineRepository;
@@ -27,9 +35,14 @@ export class AddQuickCheckUseCase {
    * Ejecuta el caso de uso de agregar QuickCheck
    * 
    * @param machineId - ID de la máquina objetivo
-   * @param record - Registro de QuickCheck a agregar (sin fecha)
-   * @param userId - ID del usuario ejecutando la acción (desde JWT)
-   * @returns Promise con el registro agregado (incluye fecha generada)
+   * @param record - Registro de QuickCheck a agregar. Campos obligatorios:
+   *   - result: Resultado general (approved, disapproved, notInitiated)
+   *   - responsibleName: Nombre del técnico responsable (1-100 chars)
+   *   - responsibleWorkerId: Número/ID de trabajador (1-50 chars)
+   *   - quickCheckItems: Array de items inspeccionados (min 1, max 50)
+   *   - observations: (opcional) Comentarios generales
+   * @param userId - ID del usuario ejecutando la acción (desde JWT) - se asigna a executedById
+   * @returns Promise con el registro agregado (incluye fecha generada server-side)
    * @throws Error si máquina no existe, acceso denegado, o validación falla
    */
   async execute(

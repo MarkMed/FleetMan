@@ -100,6 +100,8 @@ export class MachineMapper {
         result: qc.result,
         date: qc.date,
         executedById: qc.executedById,
+        responsibleName: qc.responsibleName,
+        responsibleWorkerId: qc.responsibleWorkerId,
         quickCheckItems: qc.quickCheckItems.map(item => ({
           name: item.name,
           description: item.description,
@@ -161,6 +163,8 @@ export class MachineMapper {
         result: qc.result,
         date: qc.date,
         executedById: qc.executedById,
+        responsibleName: qc.responsibleName,
+        responsibleWorkerId: qc.responsibleWorkerId,
         quickCheckItems: qc.quickCheckItems.map(item => ({
           name: item.name,
           description: item.description,
