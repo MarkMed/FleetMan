@@ -165,10 +165,10 @@ export const QuickCheckHistoryScreen: React.FC = () => {
                     <p className="text-sm font-medium text-foreground">
                       {vm.formatDate(record.date)}
                     </p>
-                    {/* TODO: Fetch and display executor name from executedById */}
-                    {/* <p className="text-xs text-muted-foreground mt-0.5">
-                      Ejecutado por: {executorName}
-                    </p> */}
+                    {/* Responsible Info - Sprint 8 */}
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      {record.responsibleName} ({record.responsibleWorkerId})
+                    </p>
                   </div>
                   <span
                     className={`px-2.5 py-1 text-xs font-semibold rounded-full ${vm.getResultBadgeClasses(record.result)}`}
@@ -315,6 +315,26 @@ const QuickCheckDetailModal: React.FC<{
 
   return (
     <div className="space-y-6">
+      {/* Responsible Info Section - Sprint 8 */}
+      <div className="grid grid-cols-2 gap-4 p-4 bg-muted/30 rounded-lg">
+        <div>
+          <h4 className="text-xs font-semibold text-muted-foreground mb-1">
+            Responsable
+          </h4>
+          <p className="text-sm font-medium text-foreground">
+            {record.responsibleName}
+          </p>
+        </div>
+        <div>
+          <h4 className="text-xs font-semibold text-muted-foreground mb-1">
+            ID Trabajador
+          </h4>
+          <p className="text-sm font-medium text-foreground">
+            {record.responsibleWorkerId}
+          </p>
+        </div>
+      </div>
+
       {/* Observations Section */}
       {record.observations && (
         <div>

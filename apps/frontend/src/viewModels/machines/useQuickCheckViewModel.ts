@@ -43,6 +43,11 @@ export function useQuickCheckViewModel() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Responsible tracking (Sprint 8)
+  const [responsibleName, setResponsibleName] = useState<string>('');
+  const [responsibleWorkerId, setResponsibleWorkerId] = useState<string>('');
+  const [isResponsibleModalOpen, setIsResponsibleModalOpen] = useState(false);
+
   // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<'create' | 'edit'>('create');
@@ -225,10 +230,20 @@ export function useQuickCheckViewModel() {
   }, [items]);
 
   const submitQuickCheck = useCallback(async () => {
+    console.log('Submitting QuickCheck...', responsibleName, responsibleWorkerId);
     if (!canSubmit) {
       toast.error({
         title: 'Evaluación incompleta',
         description: 'Debes evaluar todos los items antes de finalizar',
+      });
+      return;
+    }
+
+    // Validate responsible fields before opening modal
+    if (!responsibleName.trim() || !responsibleWorkerId.trim()) {
+      toast.error({
+        title: 'Información incompleta',
+        description: 'Debes ingresar el nombre y número del responsable',
       });
       return;
     }
@@ -246,6 +261,8 @@ export function useQuickCheckViewModel() {
       // Prepare payload using CreateQuickCheckRecord from contracts
       const payload: CreateQuickCheckRecord = {
         result: overallResult,
+        responsibleName: responsibleName.trim(),
+        responsibleWorkerId: responsibleWorkerId.trim(),
         quickCheckItems: items.map(item => ({
           name: item.name,
           description: item.description,
@@ -278,6 +295,8 @@ export function useQuickCheckViewModel() {
       });
       setEvaluations(resetEvaluations);
       setObservations('');
+      setResponsibleName('');
+      setResponsibleWorkerId('');
 
     } catch (err) {
       console.error('Error submitting QuickCheck:', err);
@@ -290,7 +309,7 @@ export function useQuickCheckViewModel() {
     } finally {
       setIsLoading(false);
     }
-  }, [canSubmit, machineId, items, evaluations, observations, overallResult]);
+  }, [canSubmit, machineId, items, evaluations, observations, overallResult, responsibleName, responsibleWorkerId]);
 
   const reset = useCallback(() => {
     setMode('EDITING');
@@ -300,6 +319,8 @@ export function useQuickCheckViewModel() {
     });
     setEvaluations(resetEvaluations);
     setObservations('');
+    setResponsibleName('');
+    setResponsibleWorkerId('');
     setError(null);
   }, [items]);
 
@@ -342,6 +363,14 @@ export function useQuickCheckViewModel() {
     // Observations
     observations,
     setObservations,
+
+    // Responsible tracking (Sprint 8)
+    responsibleName,
+    setResponsibleName,
+    responsibleWorkerId,
+    setResponsibleWorkerId,
+    isResponsibleModalOpen,
+    setIsResponsibleModalOpen,
 
     // Summary
     stats,
