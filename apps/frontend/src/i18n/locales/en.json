@@ -36,7 +36,27 @@
     "profile": "Profile",
     "logout": "Logout",
     "login": "Login",
-    "register": "Register"
+    "register": "Register",
+    "daysOfWeek": {
+      "full": {
+        "SUN": "Sunday",
+        "MON": "Monday",
+        "TUE": "Tuesday",
+        "WED": "Wednesday",
+        "THU": "Thursday",
+        "FRI": "Friday",
+        "SAT": "Saturday"
+      },
+      "short": {
+        "SUN": "Su",
+        "MON": "Mo",
+        "TUE": "Tu",
+        "WED": "We",
+        "THU": "Th",
+        "FRI": "Fr",
+        "SAT": "Sa"
+      }
+    }
   },
   "navigation": {
     "dashboard": "Dashboard",
@@ -98,6 +118,15 @@
     "location": "Location",
     "status": "Status",
     "owner": "Owner",
+    "fuelTypes": {
+      "ELECTRIC_LITHIUM": "Electric (Lithium)",
+      "ELECTRIC_LEAD_ACID": "Electric (Lead Acid)",
+      "DIESEL": "Diesel",
+      "LPG": "LPG (Gas)",
+      "GASOLINE": "Gasoline",
+      "BIFUEL": "Bi-fuel",
+      "HYBRID": "Hybrid"
+    },
     "provider": "Service Provider",
     "hoursUsed": "Hours Used",
     "lastMaintenance": "Last Maintenance",

@@ -4,10 +4,15 @@ import { NavBar } from './NavBar';
 import { MobileBottomNav } from './MobileBottomNav';
 import { NavigationDrawer } from './NavigationDrawer';
 import { useNavigationSync } from '@hooks/useNavigationSync';
+import { useMachineTypes } from '@hooks';
 
 export const MainLayout: React.FC = () => {
   // Sync current route with navigation store
   useNavigationSync();
+  
+  // Pre-fetch machine types on authenticated layout mount (60min cache)
+  // This ensures machine types are cached before any screen needs them
+  useMachineTypes();
 
   return (
     <div className="min-h-screen bg-background">

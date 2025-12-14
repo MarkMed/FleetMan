@@ -1,9 +1,10 @@
 import React from 'react';
 import { useFormContext, Controller } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { InputField, Select, Textarea, Checkbox } from '../../../../components/ui';
 import { MachineRegistrationData } from '@contracts';
 import { DayOfWeek } from '@packages/domain';
-import { DAY_OF_WEEK_SHORT_LABELS_ES, DAY_OF_WEEK_LABELS_ES } from '@constants';
+import { FUEL_TYPE } from '@packages/domain';
 
 /**
  * Step 2: Especificaciones técnicas de la máquina - RHF Implementation
@@ -22,16 +23,14 @@ export function TechnicalSpecsStep() {
     formState: { errors },
     watch, // ✨ Needed for weeklyHours calculation
   } = useFormContext<MachineRegistrationData>();
+  
+  const { t } = useTranslation();
 
-  const fuelTypes = [
-    { value: 'ELECTRIC_LITHIUM', label: 'Eléctrico (Litio)' },
-    { value: 'ELECTRIC_LEAD_ACID', label: 'Eléctrico (Plomo Ácido)' },
-    { value: 'DIESEL', label: 'Diesel' },
-    { value: 'LPG', label: 'LPG (Gas)' },
-    { value: 'GASOLINE', label: 'Nafta' },
-    { value: 'BIFUEL', label: 'Bi-fuel' },
-    { value: 'HYBRID', label: 'Hybrid' },
-  ];
+  // Build fuel types from domain SSOT + i18n labels
+  const fuelTypes = Object.values(FUEL_TYPE).map(value => ({
+    value,
+    label: t(`machines.fuelTypes.${value}`),
+  }));
 
   return (
     <div className="space-y-8">
@@ -180,13 +179,13 @@ export function TechnicalSpecsStep() {
                   {/* Grid de botones para días */}
                   <div className="grid grid-cols-7 gap-2">
                     {[
-                      { value: DayOfWeek.MON, short: DAY_OF_WEEK_SHORT_LABELS_ES[DayOfWeek.MON], full: DAY_OF_WEEK_LABELS_ES[DayOfWeek.MON] },
-                      { value: DayOfWeek.TUE, short: DAY_OF_WEEK_SHORT_LABELS_ES[DayOfWeek.TUE], full: DAY_OF_WEEK_LABELS_ES[DayOfWeek.TUE] },
-                      { value: DayOfWeek.WED, short: DAY_OF_WEEK_SHORT_LABELS_ES[DayOfWeek.WED], full: DAY_OF_WEEK_LABELS_ES[DayOfWeek.WED] },
-                      { value: DayOfWeek.THU, short: DAY_OF_WEEK_SHORT_LABELS_ES[DayOfWeek.THU], full: DAY_OF_WEEK_LABELS_ES[DayOfWeek.THU] },
-                      { value: DayOfWeek.FRI, short: DAY_OF_WEEK_SHORT_LABELS_ES[DayOfWeek.FRI], full: DAY_OF_WEEK_LABELS_ES[DayOfWeek.FRI] },
-                      { value: DayOfWeek.SAT, short: DAY_OF_WEEK_SHORT_LABELS_ES[DayOfWeek.SAT], full: DAY_OF_WEEK_LABELS_ES[DayOfWeek.SAT] },
-                      { value: DayOfWeek.SUN, short: DAY_OF_WEEK_SHORT_LABELS_ES[DayOfWeek.SUN], full: DAY_OF_WEEK_LABELS_ES[DayOfWeek.SUN] },
+                      { value: DayOfWeek.MON, short: t('common.daysOfWeek.short.MON'), full: t('common.daysOfWeek.full.MON') },
+                      { value: DayOfWeek.TUE, short: t('common.daysOfWeek.short.TUE'), full: t('common.daysOfWeek.full.TUE') },
+                      { value: DayOfWeek.WED, short: t('common.daysOfWeek.short.WED'), full: t('common.daysOfWeek.full.WED') },
+                      { value: DayOfWeek.THU, short: t('common.daysOfWeek.short.THU'), full: t('common.daysOfWeek.full.THU') },
+                      { value: DayOfWeek.FRI, short: t('common.daysOfWeek.short.FRI'), full: t('common.daysOfWeek.full.FRI') },
+                      { value: DayOfWeek.SAT, short: t('common.daysOfWeek.short.SAT'), full: t('common.daysOfWeek.full.SAT') },
+                      { value: DayOfWeek.SUN, short: t('common.daysOfWeek.short.SUN'), full: t('common.daysOfWeek.full.SUN') },
                     ].map((day) => {
                       const isSelected = selectedDays.includes(day.value);
                      
