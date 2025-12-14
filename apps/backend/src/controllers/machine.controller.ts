@@ -8,6 +8,8 @@ import {
   DeleteMachineUseCase
 } from '../application/inventory';
 import type { AuthenticatedRequest } from '../middlewares/auth.middleware';
+import { Machine } from '@packages/domain';
+import type { CreateMachineResponse } from '@packages/contracts';
 
 /**
  * MachineController handles machine-related HTTP requests
@@ -35,25 +37,32 @@ export class MachineController {
 
   /**
    * Helper para convertir entidad de dominio a DTO de respuesta
+   * Tipado fuerte: TypeScript nos forzará a incluir todos los campos del contrato
    */
-  private toResponse(machine: any) {
+  private toResponse(machine: Machine): CreateMachineResponse {
     const publicInterface = machine.toPublicInterface();
     return {
       id: publicInterface.id,
       serialNumber: publicInterface.serialNumber,
       brand: publicInterface.brand,
       modelName: publicInterface.modelName,
-      nickname: publicInterface.nickname,
+      nickname: publicInterface.nickname ?? null,
       machineTypeId: publicInterface.machineTypeId,
       ownerId: publicInterface.ownerId,
       createdById: publicInterface.createdById,
       assignedProviderId: publicInterface.assignedProviderId,
-      providerAssignedAt: publicInterface.providerAssignedAt,
+      providerAssignedAt: publicInterface.providerAssignedAt?.toISOString(),
+      assignedTo: publicInterface.assignedTo,
+      usageSchedule: publicInterface.usageSchedule,
+      machinePhotoUrl: publicInterface.machinePhotoUrl,
       status: publicInterface.status.code,
-      specs: publicInterface.specs,
-      location: publicInterface.location,
-      createdAt: publicInterface.createdAt,
-      updatedAt: publicInterface.updatedAt
+      specs: publicInterface.specs ?? null,
+      location: publicInterface.location ? {
+        ...publicInterface.location,
+        lastUpdated: publicInterface.location.lastUpdated.toISOString()
+      } : null,
+      createdAt: publicInterface.createdAt.toISOString(),
+      updatedAt: publicInterface.updatedAt.toISOString()
     };
   }
 

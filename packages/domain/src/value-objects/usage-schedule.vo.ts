@@ -35,7 +35,7 @@ export class UsageSchedule {
    */
   public static create(
     dailyHours: number,
-    operatingDays: DayOfWeek[]
+    operatingDays: readonly DayOfWeek[] // Acepta readonly (del schema Zod)
   ): Result<UsageSchedule, DomainError> {
     // Validación 1: dailyHours debe estar entre 1 y 24
     if (dailyHours < 1 || dailyHours > 24) {

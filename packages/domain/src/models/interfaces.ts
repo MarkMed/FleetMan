@@ -5,6 +5,9 @@
 // Frontend consume estas interfaces (sin lógica de dominio)
 // Backend usa las entidades completas (con reglas de negocio)
 
+// Import for type references
+import { DayOfWeek } from '../enums/DayOfWeek';
+
 /**
  * Interface base para todas las entidades
  */
@@ -91,8 +94,8 @@ export interface IQuickCheckRecord {
  */
 export interface IUsageSchedule {
   readonly dailyHours: number; // 1-24 horas por día
-  readonly operatingDays: readonly string[]; // Array de DayOfWeek enums (SUN, MON, TUE, etc.)
-  readonly weeklyHours?: number; // Campo calculado: dailyHours × cantidad de días
+  readonly operatingDays: readonly DayOfWeek[]; // Array de DayOfWeek enums (tipo específico, no genérico string[])
+  readonly weeklyHours: number; // Campo calculado (SIEMPRE presente): dailyHours × cantidad de días
 }
 
 /**

@@ -96,6 +96,7 @@ export const UsageScheduleSchema = z.object({
   operatingDays: z.array(z.nativeEnum(DayOfWeek))
     .min(1, 'Must have at least one operating day')
     .max(7, 'Cannot have more than 7 operating days')
+    .readonly() // Immutability: alineado con domain readonly string[]
     .refine(
       (days) => new Set(days).size === days.length,
       { message: 'Operating days must be unique (no duplicates)' }
@@ -138,19 +139,27 @@ export const CreateMachineRequestSchema = z.object({
 
 /**
  * Schema de respuesta con información completa de la máquina
+ * SSOT: Define el contrato exacto de todas las respuestas HTTP de máquinas
  */
 export const CreateMachineResponseSchema = z.object({
   id: z.string(),
   serialNumber: z.string(),
   brand: z.string(),
   modelName: z.string(),
+  nickname: z.string().nullable(),
   machineTypeId: z.string(),
   ownerId: z.string(),
   createdById: z.string(),
+  assignedProviderId: z.string().nullish(), // Provider assigned to machine (puede ser undefined)
+  providerAssignedAt: z.string().datetime().nullish(), // Date provider was assigned (puede ser undefined)
+  assignedTo: z.string().nullish(), // Person responsible for machine (puede ser undefined)
+  usageSchedule: UsageScheduleSchema.extend({
+    weeklyHours: z.number() // Calculated field by VO
+  }).nullish(), // Operating schedule for maintenance alerts (puede ser undefined)
+  machinePhotoUrl: z.string().nullish(), // Photo URL - Cloudinary (puede ser undefined)
+  status: MachineStatusCodeSchema,
   specs: MachineSpecsSchema.nullable(),
   location: MachineLocationSchema.nullable(),
-  nickname: z.string().nullable(),
-  status: MachineStatusCodeSchema,
   createdAt: z.string().datetime(),
   updatedAt: z.string().datetime()
 });
