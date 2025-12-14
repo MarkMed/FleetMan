@@ -3,6 +3,7 @@ import {
   type IMachine, 
   type MachineStatusCode, 
   type FuelType,
+  FUEL_TYPE, // SSOT const para enum validation
   type IQuickCheckRecord,
   type QuickCheckItemResult,
   type QuickCheckResult,
@@ -122,6 +123,10 @@ const machineSchema = new Schema<IMachineDocument>({
           },
           message: 'Must have 1-7 unique operating days'
         }
+      },
+      weeklyHours: {
+        type: Number,
+        required: true // Campo calculado requerido
       }
     },
     required: false,
@@ -175,7 +180,7 @@ const machineSchema = new Schema<IMachineDocument>({
     },
     fuelType: {
       type: String,
-      enum: ['ELECTRIC_LITHIUM', 'ELECTRIC_LEAD_ACID', 'DIESEL', 'LPG', 'GASOLINE', 'BIFUEL', 'HYBRID'],
+      enum: Object.values(FUEL_TYPE), // SSOT: usar const de domain
       sparse: true
     },
     year: {

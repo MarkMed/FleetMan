@@ -160,7 +160,8 @@ export class MachineMapper {
       assignedTo: publicInterface.assignedTo,
       usageSchedule: publicInterface.usageSchedule ? {
         dailyHours: publicInterface.usageSchedule.dailyHours,
-        operatingDays: publicInterface.usageSchedule.operatingDays as string[]
+        operatingDays: publicInterface.usageSchedule.operatingDays,
+        weeklyHours: publicInterface.usageSchedule.weeklyHours
       } : undefined,
       machinePhotoUrl: publicInterface.machinePhotoUrl,
       status: {

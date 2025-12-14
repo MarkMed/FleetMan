@@ -36,12 +36,13 @@ export const MachineDetailsScreen: React.FC = () => {
   const infoItems = useMemo(() => ([
     { label: "Marca", value: machine?.brand },
     { label: "Modelo", value: machine?.modelName },
-    { label: "Nº Serie", value: machine?.serialNumber },
     { label: "Tipo", value: machine?.machineTypeId },
+    { label: "Nº Serie", value: machine?.serialNumber },
+    { label: "Nickname", value: machine?.nickname },
+    // {label: "Asignado a:", value: machine?.assignedTo },
     { label: "Año", value: specs?.year },
     { label: "Horas de operación", value: specs?.operatingHours ? `${specs.operatingHours} hrs` : undefined },
     { label: "Ubicación actual", value: location?.siteName ?? location?.address },
-    { label: "Nickname", value: machine?.nickname },
   ]), [machine, specs, location]);
 
   return (
@@ -49,7 +50,7 @@ export const MachineDetailsScreen: React.FC = () => {
       <div className="flex justify-between items-center flex-wrap gap-4">
         <div>
           <Heading1 size="headline" className="tracking-tight text-foreground">
-            {machine ? `${machine.brand} ${machine.modelName}` : `Máquina #${id ?? "—"}`}
+            {machine ? (machine.nickname || `${machine.brand} ${machine.modelName}`) : `Máquina #${id ?? "—"}`}
           </Heading1>
           <BodyText className="text-muted-foreground">
             Información completa y estado actual de la máquina
@@ -124,7 +125,7 @@ export const MachineDetailsScreen: React.FC = () => {
                   {machine && <StatusPill status={machine.status} />}
                 </div>
                 <InfoItem label="Horas de operación" value={specs?.operatingHours ? `${specs.operatingHours} hrs` : undefined} />
-                <InfoItem label="Asignado a" value={machine?.ownerId} />
+                <InfoItem label="Asignado a" value={machine?.assignedTo}/>
                 <InfoItem label="Actualizado" value={machine?.updatedAt ? new Date(machine.updatedAt).toLocaleString() : undefined} />
                 {/* TODO: integrar quickchecks/mantenimientos cuando backend exponga endpoints */}
               </>

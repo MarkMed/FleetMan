@@ -15,19 +15,8 @@ import {
   IQuickCheckRecord,
   IUsageSchedule
 } from '../../models/interfaces';
-
-/**
- * Tipos de combustible/energía para máquinas
- * Expandido para Task 7: incluye tipos específicos de baterías eléctricas
- */
-export type FuelType = 
-  | 'ELECTRIC_LITHIUM' 
-  | 'ELECTRIC_LEAD_ACID' 
-  | 'DIESEL' 
-  | 'LPG' 
-  | 'GASOLINE' 
-  | 'BIFUEL' 
-  | 'HYBRID';
+// FuelType imported from models/index.ts (SSOT)
+import type { FuelType } from '../../models';
 
 /**
  * Especificaciones técnicas de la máquina (interna - mutable)
@@ -35,7 +24,7 @@ export type FuelType =
 export interface MachineSpecs {
   enginePower?: number;
   maxCapacity?: number;
-  fuelType?: FuelType;
+  fuelType?: FuelType; // Using FuelType from SSOT in models/index.ts
   year?: number;
   weight?: number;
   operatingHours?: number;

@@ -50,6 +50,10 @@ export {
   QUICK_CHECK_RESULTS // SSOT constant for validation
 } from "./models/interfaces";
 
+// Export FUEL_TYPE const and type directly for internal package use (persistence/contracts layers)
+export { FUEL_TYPE, type FuelType } from "./models";
+
+// Export with aliases for external consumers
 export {
   USER_TYPE as PublicUserType,
   FUEL_TYPE as PublicFuelType,

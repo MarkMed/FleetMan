@@ -2,6 +2,8 @@ import React from 'react';
 import { useFormContext, Controller } from 'react-hook-form';
 import { InputField, Select, Textarea, Checkbox } from '../../../../components/ui';
 import { MachineRegistrationData } from '@contracts';
+import { DayOfWeek } from '@packages/domain';
+import { DAY_OF_WEEK_SHORT_LABELS_ES, DAY_OF_WEEK_LABELS_ES } from '@constants';
 
 /**
  * Step 2: Especificaciones técnicas de la máquina - RHF Implementation
@@ -18,6 +20,7 @@ export function TechnicalSpecsStep() {
   const {
     control,
     formState: { errors },
+    watch, // ✨ Needed for weeklyHours calculation
   } = useFormContext<MachineRegistrationData>();
 
   const fuelTypes = [
@@ -102,6 +105,186 @@ export function TechnicalSpecsStep() {
             )}
           />
         </div>
+      </div>
+
+      {/* ✨ NUEVA SECCIÓN - Asignación y Responsable - Task 3.2a */}
+      <div>
+        <h3 className="text-lg font-semibold text-foreground mb-4">
+          Asignación y Responsable
+        </h3>
+       
+        <Controller
+          control={control}
+          name="technicalSpecs.assignedTo"
+          render={({ field: { onChange, onBlur, value } }) => (
+            <InputField
+              label="Asignar a"
+              value={value || ''}
+              onChangeText={onChange}
+              onBlur={onBlur}
+              placeholder="Ej: Juan Pérez"
+              helperText="Persona responsable de esta máquina (operador, encargado, etc.)"
+              error={errors.technicalSpecs?.assignedTo?.message}
+            />
+          )}
+        />
+      </div>
+
+      {/* ✨ NUEVA SECCIÓN - Programación de Uso - Task 3.2a */}
+      <div>
+        <h3 className="text-lg font-semibold text-foreground mb-4">
+          Programación de Uso
+        </h3>
+        <p className="text-sm text-muted-foreground mb-6">
+          Define cuántas horas por día opera la máquina y qué días de la semana. 
+          Esta información se utiliza para calcular alertas de mantenimiento automáticas.
+        </p>
+       
+        <div className="space-y-6">
+          {/* Horas diarias */}
+          <Controller
+            control={control}
+            name="technicalSpecs.usageSchedule.dailyHours"
+            render={({ field: {onChange, onBlur, value } }) => (
+              <InputField
+                label="Horas diarias de operación"
+                keyboardType="numeric"
+                value={value?.toString() || ''}
+                onChangeText={(text) => onChange(parseInt(text) || undefined)}
+                onBlur={onBlur}
+                placeholder="Ej: 8"
+                helperText="Promedio de horas que opera por día (1-24)"
+                error={errors.technicalSpecs?.usageSchedule?.dailyHours?.message}
+              />
+            )}
+          />
+         
+          {/* Selector visual de días */}
+          <Controller
+            control={control}
+            name="technicalSpecs.usageSchedule.operatingDays"
+            render={({ field: { value, onChange } }) => {
+              const selectedDays = value || [];
+              const dailyHours = watch('technicalSpecs.usageSchedule.dailyHours') || 0;
+              const weeklyHours = selectedDays.length * dailyHours;
+             
+              return (
+                <div>
+                  <label className="text-sm font-medium text-foreground">
+                    Días de operación
+                  </label>
+                  <p className="text-xs text-muted-foreground mb-3">
+                    Selecciona los días en que esta máquina opera habitualmente
+                  </p>
+                 
+                  {/* Grid de botones para días */}
+                  <div className="grid grid-cols-7 gap-2">
+                    {[
+                      { value: DayOfWeek.MON, short: DAY_OF_WEEK_SHORT_LABELS_ES[DayOfWeek.MON], full: DAY_OF_WEEK_LABELS_ES[DayOfWeek.MON] },
+                      { value: DayOfWeek.TUE, short: DAY_OF_WEEK_SHORT_LABELS_ES[DayOfWeek.TUE], full: DAY_OF_WEEK_LABELS_ES[DayOfWeek.TUE] },
+                      { value: DayOfWeek.WED, short: DAY_OF_WEEK_SHORT_LABELS_ES[DayOfWeek.WED], full: DAY_OF_WEEK_LABELS_ES[DayOfWeek.WED] },
+                      { value: DayOfWeek.THU, short: DAY_OF_WEEK_SHORT_LABELS_ES[DayOfWeek.THU], full: DAY_OF_WEEK_LABELS_ES[DayOfWeek.THU] },
+                      { value: DayOfWeek.FRI, short: DAY_OF_WEEK_SHORT_LABELS_ES[DayOfWeek.FRI], full: DAY_OF_WEEK_LABELS_ES[DayOfWeek.FRI] },
+                      { value: DayOfWeek.SAT, short: DAY_OF_WEEK_SHORT_LABELS_ES[DayOfWeek.SAT], full: DAY_OF_WEEK_LABELS_ES[DayOfWeek.SAT] },
+                      { value: DayOfWeek.SUN, short: DAY_OF_WEEK_SHORT_LABELS_ES[DayOfWeek.SUN], full: DAY_OF_WEEK_LABELS_ES[DayOfWeek.SUN] },
+                    ].map((day) => {
+                      const isSelected = selectedDays.includes(day.value);
+                     
+                      return (
+                        <button
+                          key={day.value}
+                          type="button"
+                          onClick={() => {
+                            onChange(
+                              isSelected
+                                ? selectedDays.filter(d => d !== day.value)
+                                : [...selectedDays, day.value]
+                            );
+                          }}
+                          className={`
+                            p-3 rounded-lg border-2 font-semibold text-sm
+                            transition-all duration-200
+                            ${isSelected
+                              ? 'bg-primary text-primary-foreground border-primary shadow-md scale-105'
+                              : 'bg-background border-border hover:border-primary/50 hover:scale-105'
+                            }
+                          `}
+                          title={day.full}
+                        >
+                          {day.short}
+                        </button>
+                      );
+                    })}
+                  </div>
+                 
+                  {/* Info calculada - Horas semanales */}
+                  {selectedDays.length > 0 && dailyHours > 0 && (
+                    <div className="mt-4 p-4 bg-info/10 rounded-md border border-info/30">
+                      <div className="flex items-center gap-2 text-sm">
+                        <svg className="w-5 h-5 text-info" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <div className="text-info">
+                          <strong>{selectedDays.length}</strong> día(s) × <strong>{dailyHours}</strong> horas/día = <strong>{weeklyHours} horas/semana</strong>
+                        </div>
+                      </div>
+                      <p className="text-xs text-info/80 mt-2">
+                        Esta programación se usará para calcular alertas de mantenimiento basadas en horas de uso reales.
+                      </p>
+                    </div>
+                  )}
+                 
+                  {/* Error message */}
+                  {errors.technicalSpecs?.usageSchedule?.operatingDays && (
+                    <p className="text-sm text-destructive mt-2">
+                      {errors.technicalSpecs.usageSchedule.operatingDays.message}
+                    </p>
+                  )}
+                </div>
+              );
+            }}
+          />
+        </div>
+      </div>
+
+      {/* ✨ NUEVA SECCIÓN - Foto de Máquina - Task 3.2a */}
+      <div>
+        <h3 className="text-lg font-semibold text-foreground mb-4">
+          Imagen de la Máquina
+        </h3>
+       
+        <Controller
+          control={control}
+          name="technicalSpecs.machinePhotoUrl"
+          render={({ field: { onChange, onBlur, value } }) => (
+            <div className="space-y-3">
+              <InputField
+                label="URL de foto (temporal)"
+                type="url"
+                value={value || ''}
+                onChangeText={onChange}
+                onBlur={onBlur}
+                placeholder="https://example.com/foto-maquina.jpg"
+                helperText="URL de imagen (temporal hasta implementar carga de archivos)"
+                error={errors.technicalSpecs?.machinePhotoUrl?.message}
+              />
+             
+              {/* Preview de imagen si URL es válida */}
+              {value && !errors.technicalSpecs?.machinePhotoUrl && (
+                <div className="mt-3 relative rounded-lg overflow-hidden border border-border max-w-sm">
+                  <img 
+                    src={value} 
+                    alt="Vista previa" 
+                    className="w-full h-48 object-cover"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).style.display = 'none';
+                    }}
+                  />
+                </div>
+              )}
+            </div>
+          )}
+        />
       </div>
 
       {/* Accesorios y características especiales */}
