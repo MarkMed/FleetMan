@@ -33,19 +33,19 @@ export function ConfirmationStep() {
   }, [data, getValues]);
 
   // Helper para mostrar valores con fallback
-  const displayValue = (value: any, fallback: string = 'No especificado') => {
-    return value ?? fallback;
+  const displayValue = (value: any, fallback?: string) => {
+    return value ?? (fallback || t('common.notSpecified'));
   };
 
   // Helper para mostrar arrays
-  const displayArray = (arr: string[] | undefined, fallback: string = 'Ninguno') => {
-    if (!arr || arr.length === 0) return fallback;
+  const displayArray = (arr: string[] | undefined, fallback?: string) => {
+    if (!arr || arr.length === 0) return fallback || t('common.notSpecified');
     return arr.join(', ');
   };
 
   // Helper para mostrar fuel type traducido
   const getFuelTypeLabel = (fuelType: string | undefined) => {
-    if (!fuelType) return 'No especificado';
+    if (!fuelType) return t('common.notSpecified');
     return t(`machines.fuelTypes.${fuelType}`);
   };
 

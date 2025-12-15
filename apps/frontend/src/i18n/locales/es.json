@@ -37,6 +37,8 @@
     "logout": "Cerrar Sesión",
     "login": "Iniciar Sesión",
     "register": "Registrarse",
+    "notSpecified": "No especificado",
+    "imageLoadError": "Error al cargar la imagen",
     "daysOfWeek": {
       "full": {
         "SUN": "Domingo",

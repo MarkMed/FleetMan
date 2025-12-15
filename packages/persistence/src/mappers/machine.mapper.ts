@@ -58,12 +58,13 @@ export class MachineMapper {
       if (doc.usageSchedule) {
         const usageScheduleResult = UsageSchedule.create(
           doc.usageSchedule.dailyHours,
-          doc.usageSchedule.operatingDays as DayOfWeek[]
+          doc.usageSchedule.operatingDays as readonly DayOfWeek[]
         );
         if (usageScheduleResult.success) {
           usageSchedule = usageScheduleResult.data;
         } else {
           console.error('Failed to create UsageSchedule:', usageScheduleResult.error.message);
+          return null; // Fail fast - no crear entidad con datos inconsistentes
         }
       }
 

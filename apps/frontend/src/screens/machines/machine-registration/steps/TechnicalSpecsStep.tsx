@@ -144,7 +144,7 @@ export function TechnicalSpecsStep() {
           <Controller
             control={control}
             name="technicalSpecs.usageSchedule.dailyHours"
-            render={({ field: {onChange, onBlur, value } }) => (
+            render={({ field: { onChange, onBlur, value } }) => (
               <InputField
                 label="Horas diarias de operación"
                 keyboardType="numeric"
@@ -209,6 +209,8 @@ export function TechnicalSpecsStep() {
                             }
                           `}
                           title={day.full}
+                          aria-pressed={isSelected}
+                          aria-label={day.full}
                         >
                           {day.short}
                         </button>
@@ -255,34 +257,51 @@ export function TechnicalSpecsStep() {
         <Controller
           control={control}
           name="technicalSpecs.machinePhotoUrl"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <div className="space-y-3">
-              <InputField
-                label="URL de foto (temporal)"
-                type="url"
-                value={value || ''}
-                onChangeText={onChange}
-                onBlur={onBlur}
-                placeholder="https://example.com/foto-maquina.jpg"
-                helperText="URL de imagen (temporal hasta implementar carga de archivos)"
-                error={errors.technicalSpecs?.machinePhotoUrl?.message}
-              />
-             
-              {/* Preview de imagen si URL es válida */}
-              {value && !errors.technicalSpecs?.machinePhotoUrl && (
-                <div className="mt-3 relative rounded-lg overflow-hidden border border-border max-w-sm">
-                  <img 
-                    src={value} 
-                    alt="Vista previa" 
-                    className="w-full h-48 object-cover"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).style.display = 'none';
-                    }}
-                  />
-                </div>
-              )}
-            </div>
-          )}
+          render={({ field: { onChange, onBlur, value } }) => {
+            const [imageError, setImageError] = React.useState(false);
+            
+            // Reset error when URL changes
+            React.useEffect(() => {
+              setImageError(false);
+            }, [value]);
+            
+            return (
+              <div className="space-y-3">
+                <InputField
+                  label="URL de foto (temporal)"
+                  type="url"
+                  value={value || ''}
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  placeholder="https://example.com/foto-maquina.jpg"
+                  helperText="URL de imagen (temporal hasta implementar carga de archivos)"
+                  error={errors.technicalSpecs?.machinePhotoUrl?.message}
+                />
+               
+                {/* Preview de imagen si URL es válida */}
+                {value && !errors.technicalSpecs?.machinePhotoUrl && (
+                  <div className="mt-3 relative rounded-lg overflow-hidden border border-border max-w-sm">
+                    {imageError ? (
+                      <div className="w-full h-48 flex flex-col items-center justify-center bg-muted text-muted-foreground">
+                        <svg className="w-12 h-12 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                        <p className="text-sm font-medium">{t('common.imageLoadError')}</p>
+                        <p className="text-xs mt-1">Verifica que la URL sea correcta</p>
+                      </div>
+                    ) : (
+                      <img 
+                        src={value} 
+                        alt="Vista previa" 
+                        className="w-full h-48 object-cover"
+                        onError={() => setImageError(true)}
+                      />
+                    )}
+                  </div>
+                )}
+              </div>
+            );
+          }}
         />
       </div>
 

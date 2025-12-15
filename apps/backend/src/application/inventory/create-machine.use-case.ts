@@ -45,7 +45,7 @@ export class CreateMachineUseCase {
       if (request.usageSchedule) {
         const usageScheduleResult = UsageSchedule.create(
           request.usageSchedule.dailyHours,
-          [...request.usageSchedule.operatingDays] // Spread para convertir readonly → mutable
+          request.usageSchedule.operatingDays // UsageSchedule.create acepta readonly arrays
         );
         if (!usageScheduleResult.success) {
           throw new Error(usageScheduleResult.error.message);

@@ -217,9 +217,9 @@ export class Machine {
       status: initialStatus,
       ownerId: ownerIdResult.data,
       createdById: creatorIdResult.data,
-      assignedTo: createProps.assignedTo?.trim(), // Nuevo campo
+      assignedTo: createProps.assignedTo === undefined ? undefined : createProps.assignedTo.trim(), // Nuevo campo
       usageSchedule: createProps.usageSchedule, // Nuevo campo
-      machinePhotoUrl: createProps.machinePhotoUrl?.trim(), // Nuevo campo
+      machinePhotoUrl: createProps.machinePhotoUrl === undefined ? undefined : createProps.machinePhotoUrl.trim(), // Nuevo campo
       specs: createProps.specs,
       location: createProps.location,
       quickChecks: [], // Initialize empty history

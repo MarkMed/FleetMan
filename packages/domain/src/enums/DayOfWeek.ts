@@ -29,11 +29,11 @@ export const DAY_OF_WEEK_LABELS: Record<DayOfWeek, string> = {
  * Helper map for short day labels
  */
 export const DAY_OF_WEEK_SHORT_LABELS: Record<DayOfWeek, string> = {
-  [DayOfWeek.SUN]: 'S',
-  [DayOfWeek.MON]: 'M',
-  [DayOfWeek.TUE]: 'T',
-  [DayOfWeek.WED]: 'W',
-  [DayOfWeek.THU]: 'T',
-  [DayOfWeek.FRI]: 'F',
-  [DayOfWeek.SAT]: 'S'
+  [DayOfWeek.SUN]: 'Su',
+  [DayOfWeek.MON]: 'Mo',
+  [DayOfWeek.TUE]: 'Tu',
+  [DayOfWeek.WED]: 'We',
+  [DayOfWeek.THU]: 'Th',
+  [DayOfWeek.FRI]: 'Fr',
+  [DayOfWeek.SAT]: 'Sa'
 };

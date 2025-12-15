@@ -37,6 +37,8 @@
     "logout": "Logout",
     "login": "Login",
     "register": "Register",
+    "notSpecified": "Not specified",
+    "imageLoadError": "Failed to load image",
     "daysOfWeek": {
       "full": {
         "SUN": "Sunday",

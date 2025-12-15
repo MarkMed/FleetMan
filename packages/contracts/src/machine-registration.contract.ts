@@ -83,11 +83,16 @@ export const MachineTechnicalSpecsSchema = z.object({
   }).optional(),
   
   // [Campo 3] URL de foto (preparación para Cloudinary)
+  // Permite string vacío O URL válida (refinamiento condicional)
   machinePhotoUrl: z.string()
-    .url('La URL de la foto no es válida')
-    .max(500, 'La URL no puede exceder 500 caracteres')
     .trim()
-    .optional(),
+    .max(500, 'La URL no puede exceder 500 caracteres')
+    .refine(
+      (val) => val === '' || z.string().url().safeParse(val).success,
+      { message: 'La URL de la foto no es válida' }
+    )
+    .optional()
+    .or(z.literal('')),
 });
 
 // ❌ MachineLocationInfoSchema OBLITERATED - moved to TechnicalSpecs

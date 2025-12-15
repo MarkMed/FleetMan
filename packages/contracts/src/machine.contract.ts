@@ -87,6 +87,9 @@ export const MachineLocationSchema = z.object({
 /**
  * Schema para UsageSchedule - Programación de uso de máquina
  * Valida dailyHours (1-24) y operatingDays (al menos 1 día, sin duplicados)
+ * 
+ * NOTA: weeklyHours es un campo CALCULADO (dailyHours × días operativos)
+ * y NO debe enviarse en requests. Se calcula automáticamente server-side.
  */
 export const UsageScheduleSchema = z.object({
   dailyHours: z.number()
@@ -128,11 +131,16 @@ export const CreateMachineRequestSchema = z.object({
     .trim()
     .optional(),
   usageSchedule: UsageScheduleSchema.optional(),
+  // Photo URL - permite string vacío O URL válida
   machinePhotoUrl: z.string()
-    .url('Invalid photo URL format')
-    .max(500, 'Photo URL cannot exceed 500 characters')
     .trim()
+    .max(500, 'Photo URL cannot exceed 500 characters')
+    .refine(
+      (val) => val === '' || z.string().url().safeParse(val).success,
+      { message: 'Invalid photo URL format' }
+    )
     .optional()
+    .or(z.literal(''))
 }) satisfies z.ZodType<Omit<CreateMachineProps, 'location' | 'usageSchedule'> & { 
   location?: Omit<MachineLocation, 'lastUpdated'> & { lastUpdated: string } 
 }>;
@@ -187,11 +195,16 @@ export const UpdateMachineRequestSchema = z.object({
     .trim()
     .optional(),
   usageSchedule: UsageScheduleSchema.optional(),
+  // Photo URL - permite string vacío O URL válida
   machinePhotoUrl: z.string()
-    .url('Invalid photo URL format')
-    .max(500, 'Photo URL cannot exceed 500 characters')
     .trim()
+    .max(500, 'Photo URL cannot exceed 500 characters')
+    .refine(
+      (val) => val === '' || z.string().url().safeParse(val).success,
+      { message: 'Invalid photo URL format' }
+    )
     .optional()
+    .or(z.literal(''))
 });
 
 export const UpdateMachineResponseSchema = CreateMachineResponseSchema;
