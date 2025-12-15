@@ -341,6 +341,7 @@ export const DashboardScreen: React.FC = () => {
         </div>
 
       </div>
+      <div>Este layout es temporal, con propósito visual</div>
     </div>
   );
 };
