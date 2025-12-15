@@ -55,13 +55,14 @@ export default defineConfig({
       },
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
       manifest: {
+        id: '/',
         name: 'FleetMan - Fleet Management',
         short_name: 'FleetMan',
         description: 'Comprehensive fleet management application for machines and maintenance',
         theme_color: '#3b82f6',
-        background_color: '#ffffff',
+        background_color: '#0163c8',
         display: 'standalone',
-        orientation: 'portrait',
+        orientation: 'any',
         start_url: '/',
         scope: '/',
         icons: [
@@ -78,13 +79,13 @@ export default defineConfig({
             purpose: 'any'
           },
           {
-            src: 'pwa-192x192.png',
+            src: 'pwa-192x192-maskable.png',
             sizes: '192x192',
             type: 'image/png',
             purpose: 'maskable'
           },
           {
-            src: 'pwa-512x512.png',
+            src: 'pwa-512x512-maskable.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'maskable'
