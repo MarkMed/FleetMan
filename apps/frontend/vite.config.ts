@@ -91,8 +91,8 @@ export default defineConfig({
           }
         ]
       },
-      // Desactivar PWA en CI para evitar fallos de workbox durante el build en Actions
-      disable: isCi,
+      // PWA habilitada en todos los entornos (CI y local) para deployment en Azure
+      disable: false,
     })
   ],
   resolve: {

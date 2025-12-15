@@ -5,11 +5,56 @@
 			"/assets/*",
 			"/images/*",
 			"/favicon.ico",
-			"*.css",
-			"*.js"
+			"/sw.js",
+			"/workbox-*.js",
+			"/registerSW.js",
+			"/manifest.webmanifest",
+			"/manifest.json",
+			"/pwa-*.png",
+			"/apple-touch-icon.png",
+			"/masked-icon.svg",
+			"*.css"
 		]
 	},
+	"routes": [
+		{
+			"route": "/sw.js",
+			"headers": {
+				"Content-Type": "application/javascript; charset=utf-8",
+				"Service-Worker-Allowed": "/",
+				"Cache-Control": "no-cache, no-store, must-revalidate"
+			}
+		},
+		{
+			"route": "/workbox-*.js",
+			"headers": {
+				"Content-Type": "application/javascript; charset=utf-8",
+				"Cache-Control": "public, max-age=31536000, immutable"
+			}
+		},
+		{
+			"route": "/registerSW.js",
+			"headers": {
+				"Content-Type": "application/javascript; charset=utf-8",
+				"Cache-Control": "no-cache"
+			}
+		},
+		{
+			"route": "/manifest.webmanifest",
+			"headers": {
+				"Content-Type": "application/manifest+json",
+				"Cache-Control": "public, max-age=604800"
+			}
+		}
+	],
 	"mimeTypes": {
-		".json": "application/json"
+		".json": "application/json",
+		".webmanifest": "application/manifest+json",
+		".js": "application/javascript; charset=utf-8"
+	},
+	"globalHeaders": {
+		"X-Content-Type-Options": "nosniff",
+		"X-Frame-Options": "DENY",
+		"X-XSS-Protection": "1; mode=block"
 	}
 }
