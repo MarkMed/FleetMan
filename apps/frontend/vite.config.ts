@@ -4,6 +4,7 @@ import { VitePWA } from 'vite-plugin-pwa';
 import path from 'path';
 
 const isCi = !!process.env.GITHUB_ACTIONS || !!process.env.CI
+const appVersion = process.env.npm_package_version || new Date().toISOString();
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -54,17 +55,18 @@ export default defineConfig({
         ]
       },
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
-      manifest: {
+      manifest: ({
         id: '/',
         name: 'FleetMan - Fleet Management',
         short_name: 'FleetMan',
-        description: 'Comprehensive fleet management application for machines and maintenance',
-        theme_color: '#3b82f6',
+        description: 'Simple fleet management application for machines and maintenance',
+        theme_color: '#0163c8',
         background_color: '#0163c8',
         display: 'standalone',
         orientation: 'any',
         start_url: '/',
         scope: '/',
+        version: appVersion,
         icons: [
           {
             src: 'pwa-192x192.png',
@@ -91,7 +93,7 @@ export default defineConfig({
             purpose: 'maskable'
           }
         ]
-      },
+      } as unknown) as Partial<import('vite-plugin-pwa').ManifestOptions>, // cast para evitar el error de tipo,
       // PWA habilitada en todos los entornos (CI y local) para deployment en Azure
       disable: false,
     })
