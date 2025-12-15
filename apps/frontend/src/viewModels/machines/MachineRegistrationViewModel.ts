@@ -280,12 +280,15 @@ function mapWizardDataToDomain(wizardData: MachineRegistrationData): CreateMachi
       // specialFeatures: wizardData.technicalSpecs.specialFeatures,
     },
     // TODO: Implement location mapping when backend supports full location object
-    // location: wizardData.technicalSpecs.currentLocation ? {
-    //   siteName: wizardData.technicalSpecs.currentLocation,
-    //   lastUpdated: new Date().toISOString(),
-    // } : undefined,
-    nickname: wizardData.basicInfo.nickname,
+    location: wizardData.technicalSpecs.currentLocation ? {
+      siteName: wizardData.technicalSpecs.currentLocation,
+      lastUpdated: new Date().toISOString(),
+    } : undefined,
+    nickname: wizardData.basicInfo.name,
     initialStatus: wizardData.technicalSpecs.isActive ? 'ACTIVE' : 'MAINTENANCE',
+    assignedTo: wizardData.technicalSpecs.assignedTo,
+    usageSchedule: wizardData.technicalSpecs.usageSchedule,
+    machinePhotoUrl: wizardData.technicalSpecs.machinePhotoUrl,
   };
 }
 

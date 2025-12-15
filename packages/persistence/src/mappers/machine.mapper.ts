@@ -5,9 +5,11 @@ import {
   UserId, 
   MachineTypeId,
   MachineStatusRegistry,
+  UsageSchedule,
   type MachineSpecs,
   type MachineLocation,
-  type IQuickCheckRecord
+  type IQuickCheckRecord,
+  DayOfWeek
 } from '@packages/domain';
 import { type IMachineDocument } from '../models';
 
@@ -51,6 +53,21 @@ export class MachineMapper {
         lastUpdated: doc.location.lastUpdated
       } : undefined;
 
+      // Mapear UsageSchedule si existe
+      let usageSchedule: UsageSchedule | undefined;
+      if (doc.usageSchedule) {
+        const usageScheduleResult = UsageSchedule.create(
+          doc.usageSchedule.dailyHours,
+          doc.usageSchedule.operatingDays as readonly DayOfWeek[]
+        );
+        if (usageScheduleResult.success) {
+          usageSchedule = usageScheduleResult.data;
+        } else {
+          console.error('Failed to create UsageSchedule:', usageScheduleResult.error.message);
+          return null; // Fail fast - no crear entidad con datos inconsistentes
+        }
+      }
+
       // Crear la máquina con las propiedades mínimas requeridas
       const createResult = Machine.create({
         serialNumber: doc.serialNumber,
@@ -62,7 +79,10 @@ export class MachineMapper {
         nickname: doc.nickname,
         specs,
         location,
-        initialStatus: doc.status.code
+        initialStatus: doc.status.code,
+        assignedTo: doc.assignedTo,
+        usageSchedule,
+        machinePhotoUrl: doc.machinePhotoUrl
       });
 
       if (!createResult.success) {
@@ -138,6 +158,13 @@ export class MachineMapper {
       createdById: publicInterface.createdById,
       assignedProviderId: publicInterface.assignedProviderId,
       providerAssignedAt: publicInterface.providerAssignedAt,
+      assignedTo: publicInterface.assignedTo,
+      usageSchedule: publicInterface.usageSchedule ? {
+        dailyHours: publicInterface.usageSchedule.dailyHours,
+        operatingDays: publicInterface.usageSchedule.operatingDays,
+        weeklyHours: publicInterface.usageSchedule.weeklyHours
+      } : undefined,
+      machinePhotoUrl: publicInterface.machinePhotoUrl,
       status: {
         code: publicInterface.status.code,
         displayName: publicInterface.status.displayName,

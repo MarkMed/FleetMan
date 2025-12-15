@@ -1,4 +1,4 @@
-import { Machine } from '@packages/domain';
+import { Machine, UsageSchedule } from '@packages/domain';
 import { MachineRepository, MachineTypeRepository } from '@packages/persistence';
 import { logger } from '../../config/logger.config';
 import { CreateMachineRequest } from '@packages/contracts';
@@ -40,6 +40,19 @@ export class CreateMachineUseCase {
         throw new Error(`Machine type with ID ${request.machineTypeId} not found`);
       }
 
+      // Crear UsageSchedule VO si viene en request
+      let usageSchedule: UsageSchedule | undefined;
+      if (request.usageSchedule) {
+        const usageScheduleResult = UsageSchedule.create(
+          request.usageSchedule.dailyHours,
+          request.usageSchedule.operatingDays // UsageSchedule.create acepta readonly arrays
+        );
+        if (!usageScheduleResult.success) {
+          throw new Error(usageScheduleResult.error.message);
+        }
+        usageSchedule = usageScheduleResult.data;
+      }
+
       // Crear entidad de dominio
       const machineResult = Machine.create({
         serialNumber: request.serialNumber,
@@ -54,7 +67,10 @@ export class CreateMachineUseCase {
           ...request.location,
           lastUpdated: new Date(request.location.lastUpdated)
         } : undefined,
-        initialStatus: request.initialStatus
+        initialStatus: request.initialStatus,
+        assignedTo: request.assignedTo, // [NEW Task 3.2a] Person assigned to machine
+        usageSchedule, // [NEW Task 3.2a] Value Object (not plain object!)
+        machinePhotoUrl: request.machinePhotoUrl // [NEW Task 3.2a] Photo URL
       });
 
       if (!machineResult.success) {

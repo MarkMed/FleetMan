@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { 
   CreateMachineRequestSchema as BaseCreateMachineRequestSchema,
 } from './machine.contract';
+import { DayOfWeek } from '@packages/domain';
 
 // ============================
 // Machine Registration - Frontend Specific Wizard Schemas
@@ -34,6 +35,7 @@ export const MachineBasicInfoSchema = z.object({
 /**
  * Schema para Step 2: Especificaciones técnicas - SIMPLIFICADO
  * Incluye solo los campos especificados + ubicación básica
+ * ✨ UPDATED: Task 3.2a - Agregados assignedTo, usageSchedule, machinePhotoUrl
  */
 export const MachineTechnicalSpecsSchema = z.object({
   // Campos requeridos
@@ -56,6 +58,41 @@ export const MachineTechnicalSpecsSchema = z.object({
   // Ubicación básica (movido desde LocationInfo)
   currentLocation: z.string().max(100).optional(),
   isActive: z.boolean().default(true),
+  
+  // ✨ NUEVOS CAMPOS - Task 3.2a
+  
+  // [Campo 1] Persona asignada a la máquina
+  assignedTo: z.string()
+    .max(100, 'El nombre no puede exceder 100 caracteres')
+    .trim()
+    .optional(),
+  
+  // [Campo 2] Programación de uso (para alertas de mantenimiento)
+  usageSchedule: z.object({
+    dailyHours: z.number()
+      .int('Las horas deben ser un número entero')
+      .min(1, 'Debe ser al menos 1 hora')
+      .max(24, 'No puede exceder 24 horas'),
+    operatingDays: z.array(z.nativeEnum(DayOfWeek))
+      .min(1, 'Selecciona al menos un día')
+      .max(7, 'No puede exceder 7 días')
+      .refine(
+        (days) => new Set(days).size === days.length,
+        { message: 'No se permiten días duplicados' }
+      )
+  }).optional(),
+  
+  // [Campo 3] URL de foto (preparación para Cloudinary)
+  // Permite string vacío O URL válida (refinamiento condicional)
+  machinePhotoUrl: z.string()
+    .trim()
+    .max(500, 'La URL no puede exceder 500 caracteres')
+    .refine(
+      (val) => val === '' || z.string().url().safeParse(val).success,
+      { message: 'La URL de la foto no es válida' }
+    )
+    .optional()
+    .or(z.literal('')),
 });
 
 // ❌ MachineLocationInfoSchema OBLITERATED - moved to TechnicalSpecs
@@ -149,5 +186,9 @@ export const defaultMachineRegistrationData: Partial<MachineRegistrationData> = 
     specialFeatures: [],
     currentLocation: '',
     isActive: true,
+    // ✨ NUEVOS - Task 3.2a
+    assignedTo: '',
+    usageSchedule: undefined,
+    machinePhotoUrl: '',
   },
 };

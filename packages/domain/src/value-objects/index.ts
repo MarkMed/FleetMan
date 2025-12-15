@@ -6,6 +6,7 @@ export * from './email.vo';
 export * from './machine-id.vo';
 export * from './machine-type-id.vo';
 export * from './serial-number.vo';
+export * from './usage-schedule.vo';
 
 // TODO: Implementar Value Objects restantes:
 // - MaintenanceSchedule

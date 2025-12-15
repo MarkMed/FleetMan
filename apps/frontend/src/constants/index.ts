@@ -192,3 +192,6 @@ export type NotificationType = typeof NOTIFICATION_TYPES[keyof typeof NOTIFICATI
 export type QuickCheckStatus = typeof QUICKCHECK_STATUS[keyof typeof QUICKCHECK_STATUS];
 export type Theme = typeof THEMES[keyof typeof THEMES];
 export type Language = typeof LANGUAGES[keyof typeof LANGUAGES];
+
+// Day of Week labels
+export * from './dayOfWeekLabels';

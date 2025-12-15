@@ -1,5 +1,6 @@
 ﻿import React, { useEffect } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '../../../../components/ui';
 import { MachineRegistrationData } from '@contracts';
 import { useMachineTypes } from '@hooks';
@@ -14,6 +15,8 @@ export function ConfirmationStep() {
     formState: { errors },
     getValues
   } = useFormContext<MachineRegistrationData>();
+  
+  const { t } = useTranslation();
   
   // Watch all form values for real-time updates
   const data = useWatch({ control });
@@ -30,25 +33,20 @@ export function ConfirmationStep() {
   }, [data, getValues]);
 
   // Helper para mostrar valores con fallback
-  const displayValue = (value: any, fallback: string = 'No especificado') => {
-    return value ?? fallback;
+  const displayValue = (value: any, fallback?: string) => {
+    return value ?? (fallback || t('common.notSpecified'));
   };
 
   // Helper para mostrar arrays
-  const displayArray = (arr: string[] | undefined, fallback: string = 'Ninguno') => {
-    if (!arr || arr.length === 0) return fallback;
+  const displayArray = (arr: string[] | undefined, fallback?: string) => {
+    if (!arr || arr.length === 0) return fallback || t('common.notSpecified');
     return arr.join(', ');
   };
 
-  // Mapeo de valores para mostrar texto amigable
-  const fuelTypeLabels = {
-    ELECTRIC_LITHIUM: 'Eléctrico (Litio)',
-    ELECTRIC_LEAD_ACID: 'Eléctrico (Plomo Ácido)',
-    DIESEL: 'Diesel',
-    LPG: 'LPG (Gas)',
-    GASOLINE: 'Nafta',
-    BIFUEL: 'Bi-fuel',
-    HYBRID: 'Hybrid'
+  // Helper para mostrar fuel type traducido
+  const getFuelTypeLabel = (fuelType: string | undefined) => {
+    if (!fuelType) return t('common.notSpecified');
+    return t(`machines.fuelTypes.${fuelType}`);
   };
 
   return (
@@ -132,7 +130,7 @@ export function ConfirmationStep() {
               <div>
                 <dt className="text-sm font-medium text-muted-foreground">Tipo de combustible</dt>
                 <dd className="text-sm text-foreground">
-                  {fuelTypeLabels[technicalSpecs.fuelType as keyof typeof fuelTypeLabels] || technicalSpecs.fuelType}
+                  {getFuelTypeLabel(technicalSpecs.fuelType)}
                 </dd>
               </div>
             )}
@@ -188,7 +186,7 @@ export function ConfirmationStep() {
               <div>
                 <dt className="text-sm font-medium text-muted-foreground">Tipo de combustible</dt>
                 <dd className="text-sm text-foreground">
-                  {fuelTypeLabels[technicalSpecs.fuelType as keyof typeof fuelTypeLabels] || technicalSpecs.fuelType}
+                  {getFuelTypeLabel(technicalSpecs.fuelType)}
                 </dd>
               </div>
             )}
