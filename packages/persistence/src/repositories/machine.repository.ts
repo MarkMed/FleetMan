@@ -313,7 +313,7 @@ export class MachineRepository implements IMachineRepository {
    * consistencia de reglas de negocio antes de persistir.
    * 
    * @param machineId - ID de la máquina
-   * @param record - Registro del QuickCheck a agregar
+   * @param record - Registro del QuickCheck a agregar (incluye responsibleName, responsibleWorkerId y executedById)
    * @returns Result con el registro agregado y total de quickchecks (evita query extra)
    */
   async addQuickCheckRecord(
@@ -329,7 +329,9 @@ export class MachineRepository implements IMachineRepository {
 
       const machine = machineResult.data;
 
-      // 2. El record ya viene con executedById desde el use case (línea 62 de add-quickcheck.use-case.ts)
+      // 2. El record ya viene completo desde el use case:
+      //    - executedById: extraído del JWT del usuario autenticado
+      //    - responsibleName y responsibleWorkerId: ingresados por el usuario en el frontend
       // Solo agregamos la fecha del servidor
       const quickCheckRecord: IQuickCheckRecord = {
         ...record,

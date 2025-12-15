@@ -1,4 +1,4 @@
-import { Machine, MachineId, MachineStatusRegistry } from '@packages/domain';
+import { Machine, MachineId, MachineStatusRegistry, UsageSchedule } from '@packages/domain';
 import { MachineRepository } from '@packages/persistence';
 import { logger } from '../../config/logger.config';
 import { UpdateMachineRequest } from '@packages/contracts';
@@ -87,6 +87,38 @@ export class UpdateMachineUseCase {
         const changeStatusResult = machine.changeStatus(newStatus);
         if (!changeStatusResult.success) {
           throw new Error(changeStatusResult.error.message);
+        }
+      }
+
+      // Actualizar assignedTo si se proporciona
+      if (request.assignedTo !== undefined) {
+        const updateAssignedToResult = machine.updateAssignedTo(request.assignedTo);
+        if (!updateAssignedToResult.success) {
+          throw new Error(updateAssignedToResult.error.message);
+        }
+      }
+
+      // Actualizar usageSchedule si se proporciona
+      if (request.usageSchedule !== undefined) {
+        // Convertir objeto plano a UsageSchedule VO
+        const usageScheduleResult = UsageSchedule.create(
+          request.usageSchedule.dailyHours,
+          request.usageSchedule.operatingDays // UsageSchedule.create acepta readonly arrays
+        );
+        if (!usageScheduleResult.success) {
+          throw new Error(usageScheduleResult.error.message);
+        }
+        const updateUsageScheduleResult = machine.updateUsageSchedule(usageScheduleResult.data);
+        if (!updateUsageScheduleResult.success) {
+          throw new Error(updateUsageScheduleResult.error.message);
+        }
+      }
+
+      // Actualizar machinePhotoUrl si se proporciona
+      if (request.machinePhotoUrl !== undefined) {
+        const updatePhotoUrlResult = machine.updateMachinePhotoUrl(request.machinePhotoUrl);
+        if (!updatePhotoUrlResult.success) {
+          throw new Error(updatePhotoUrlResult.error.message);
         }
       }
 

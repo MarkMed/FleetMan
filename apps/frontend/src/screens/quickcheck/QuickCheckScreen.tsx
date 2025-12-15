@@ -8,6 +8,7 @@ import {
   QuickCheckItemModal,
   QuickCheckItemCard,
   QuickCheckSummary,
+  ResponsibleInfoModal,
 } from '@components/quickcheck';
 
 export const QuickCheckScreen: React.FC = () => {
@@ -269,7 +270,7 @@ export const QuickCheckScreen: React.FC = () => {
               <Button
                 variant="filled"
                 size="lg"
-                onPress={vm.submitQuickCheck}
+                onPress={() => vm.setIsResponsibleModalOpen(true)}
                 disabled={!vm.canSubmit || vm.isLoading}
                 className="gap-2"
               >
@@ -301,6 +302,17 @@ export const QuickCheckScreen: React.FC = () => {
           </div>
         )}
       </Card>
+
+      {/* Responsible Info Modal - Sprint 8 */}
+      <ResponsibleInfoModal
+        isOpen={vm.isResponsibleModalOpen}
+        onClose={() => vm.setIsResponsibleModalOpen(false)}
+        onSubmit={async (data) => {
+          // Pass data directly to submitQuickCheck to avoid setState race condition
+          // Now awaits completion - modal only closes on success
+          await vm.submitQuickCheck(data);
+        }}
+      />
     </div>
   );
 };

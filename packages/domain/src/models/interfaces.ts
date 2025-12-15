@@ -5,6 +5,9 @@
 // Frontend consume estas interfaces (sin lógica de dominio)
 // Backend usa las entidades completas (con reglas de negocio)
 
+// Import for type references
+import { DayOfWeek } from '../enums/DayOfWeek';
+
 /**
  * Interface base para todas las entidades
  */
@@ -78,8 +81,21 @@ export interface IQuickCheckRecord {
   readonly result: QuickCheckResult;
   readonly date: Date;
   readonly executedById: string;
+  readonly responsibleName: string; // Nombre del técnico/responsable que ejecuta
+  readonly responsibleWorkerId: string; // Número de trabajador/identificador del responsable
   readonly quickCheckItems: readonly IQuickCheckItem[];
   readonly observations?: string;
+}
+
+/**
+ * Usage Schedule - Programación de uso de máquina
+ * Define cuántas horas por día opera y qué días de la semana
+ * Crítico para cálculo preciso de alertas de mantenimiento basadas en HORAS REALES de uso
+ */
+export interface IUsageSchedule {
+  readonly dailyHours: number; // 1-24 horas por día
+  readonly operatingDays: readonly DayOfWeek[]; // Array de DayOfWeek enums (tipo específico, no genérico string[])
+  readonly weeklyHours: number; // Campo calculado (SIEMPRE presente): dailyHours × cantidad de días
 }
 
 /**
@@ -95,6 +111,9 @@ export interface IMachine extends IBaseEntity {
   readonly createdById: string;
   readonly assignedProviderId?: string;
   readonly providerAssignedAt?: Date;
+  readonly assignedTo?: string; // [NUEVO] Persona asignada (temporal string, futuro: userId)
+  readonly usageSchedule?: IUsageSchedule; // [NUEVO] Programación de uso para cálculo de alertas
+  readonly machinePhotoUrl?: string; // [NUEVO] URL de foto de la máquina (preparación para Cloudinary)
   readonly status: {
     readonly code: 'ACTIVE' | 'MAINTENANCE' | 'OUT_OF_SERVICE' | 'RETIRED';
     readonly displayName: string;
@@ -105,7 +124,7 @@ export interface IMachine extends IBaseEntity {
   readonly specs?: {
     readonly enginePower?: number;
     readonly maxCapacity?: number;
-    readonly fuelType?: 'DIESEL' | 'GASOLINE' | 'ELECTRIC' | 'HYBRID';
+    readonly fuelType?: 'ELECTRIC_LITHIUM' | 'ELECTRIC_LEAD_ACID' | 'DIESEL' | 'LPG' | 'GASOLINE' | 'BIFUEL' | 'HYBRID';
     readonly year?: number;
     readonly weight?: number;
     readonly operatingHours?: number;

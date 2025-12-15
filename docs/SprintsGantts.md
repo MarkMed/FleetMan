@@ -260,9 +260,9 @@ gantt
 
   12.8 UI Polish (0.75hs)                      :t128, 2025-12-09, 1d
   12.7 Navigation Drawer (3hs)              :t127a, 2025-12-09, 2d
+  16.12 Azure Fix 404 (1hs)                    :t1612, 2025-12-10, 1d
   6.5 QuickCheck Tracking (4.2hs)              :t65, 2025-12-10, 2d
   3.2a Machine Enhancement (12hs)              :t32a, 2025-12-10, 3d
-  16.12 Azure Fix 404 (1hs)                    :t1612, 2025-12-13, 1d
   0.5a PWA Manifest + Icons (1hs)              :t05a, 2025-12-13, 1d
   0.5b Service Worker Inicio (1.5hs)           :t05b1, 2025-12-13, 1d
   0.5b Service Worker Final (1.5hs)            :t05b2, 2025-12-13, 1d

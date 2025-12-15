@@ -27,7 +27,17 @@ export class QuickCheckController {
   /**
    * POST /machines/:machineId/quickchecks
    * Agrega un nuevo registro de QuickCheck a una máquina
-   * Body ya validado por Zod middleware (CreateQuickCheckRecordSchema)
+   * 
+   * Body validado por Zod middleware (CreateQuickCheckRecordSchema):
+   * - result: 'approved' | 'disapproved' | 'notInitiated'
+   * - responsibleName: string (1-100 chars) - Nombre del técnico responsable
+   * - responsibleWorkerId: string (1-50 chars) - Número de trabajador/empleado
+   * - quickCheckItems: array (1-50 items) - Items inspeccionados
+   * - observations?: string (max 1000 chars) - Comentarios opcionales
+   * 
+   * Campos auto-generados server-side:
+   * - date: Date.now()
+   * - executedById: req.user.userId (desde JWT)
    */
   async addQuickCheck(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {

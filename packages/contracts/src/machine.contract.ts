@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { SortOrderSchema, PaginationSchema, BasePaginatedResponseSchema, SearchSchema } from './common.types';
+import { DayOfWeek } from '@packages/domain';
 
 // =============================================================================
 // REAL DRY APPROACH: Re-export de types del dominio
@@ -11,7 +12,8 @@ import type {
   MachineLocation, 
   CreateMachineProps,
   FuelType,
-  MachineStatusCode
+  MachineStatusCode,
+  IUsageSchedule
 } from '@packages/domain';
 
 // Re-exportamos los types exactos del dominio para reutilización
@@ -20,7 +22,8 @@ export type {
   MachineLocation, 
   CreateMachineProps,
   FuelType,
-  MachineStatusCode
+  MachineStatusCode,
+  IUsageSchedule
 } from '@packages/domain';
 
 // =============================================================================
@@ -39,11 +42,15 @@ export const MachineStatusCodeSchema = z.union([
 
 /**
  * Schema derivado de FuelType del dominio (NO DUPLICADO)
+ * Expandido Task 7: tipos específicos de baterías eléctricas
  */
 export const FuelTypeSchema = z.union([
+  z.literal('ELECTRIC_LITHIUM'),
+  z.literal('ELECTRIC_LEAD_ACID'),
   z.literal('DIESEL'),
+  z.literal('LPG'),
   z.literal('GASOLINE'),
-  z.literal('ELECTRIC'),
+  z.literal('BIFUEL'),
   z.literal('HYBRID')
 ]) satisfies z.ZodType<FuelType>;
 
@@ -78,6 +85,28 @@ export const MachineLocationSchema = z.object({
 }) satisfies z.ZodType<Omit<MachineLocation, 'lastUpdated'> & { lastUpdated: string }>;
 
 /**
+ * Schema para UsageSchedule - Programación de uso de máquina
+ * Valida dailyHours (1-24) y operatingDays (al menos 1 día, sin duplicados)
+ * 
+ * NOTA: weeklyHours es un campo CALCULADO (dailyHours × días operativos)
+ * y NO debe enviarse en requests. Se calcula automáticamente server-side.
+ */
+export const UsageScheduleSchema = z.object({
+  dailyHours: z.number()
+    .int('Daily hours must be an integer')
+    .min(1, 'Daily hours must be at least 1')
+    .max(24, 'Daily hours cannot exceed 24'),
+  operatingDays: z.array(z.nativeEnum(DayOfWeek))
+    .min(1, 'Must have at least one operating day')
+    .max(7, 'Cannot have more than 7 operating days')
+    .readonly() // Immutability: alineado con domain readonly string[]
+    .refine(
+      (days) => new Set(days).size === days.length,
+      { message: 'Operating days must be unique (no duplicates)' }
+    )
+}) satisfies z.ZodType<Omit<IUsageSchedule, 'weeklyHours'>>;
+
+/**
  * Schema para crear máquina basado en CreateMachineProps del dominio
  */
 export const CreateMachineRequestSchema = z.object({
@@ -96,26 +125,49 @@ export const CreateMachineRequestSchema = z.object({
   specs: MachineSpecsSchema.optional(),
   location: MachineLocationSchema.optional(),
   nickname: z.string().max(100).optional(),
-  initialStatus: MachineStatusCodeSchema.default('ACTIVE')
-}) satisfies z.ZodType<Omit<CreateMachineProps, 'location'> & { 
+  initialStatus: MachineStatusCodeSchema.default('ACTIVE'),
+  assignedTo: z.string()
+    .max(100, 'Assigned to name cannot exceed 100 characters')
+    .trim()
+    .optional(),
+  usageSchedule: UsageScheduleSchema.optional(),
+  // Photo URL - permite string vacío O URL válida
+  machinePhotoUrl: z.string()
+    .trim()
+    .max(500, 'Photo URL cannot exceed 500 characters')
+    .refine(
+      (val) => val === '' || z.string().url().safeParse(val).success,
+      { message: 'Invalid photo URL format' }
+    )
+    .optional()
+    .or(z.literal(''))
+}) satisfies z.ZodType<Omit<CreateMachineProps, 'location' | 'usageSchedule'> & { 
   location?: Omit<MachineLocation, 'lastUpdated'> & { lastUpdated: string } 
 }>;
 
 /**
  * Schema de respuesta con información completa de la máquina
+ * SSOT: Define el contrato exacto de todas las respuestas HTTP de máquinas
  */
 export const CreateMachineResponseSchema = z.object({
   id: z.string(),
   serialNumber: z.string(),
   brand: z.string(),
   modelName: z.string(),
+  nickname: z.string().nullable(),
   machineTypeId: z.string(),
   ownerId: z.string(),
   createdById: z.string(),
+  assignedProviderId: z.string().nullish(), // Provider assigned to machine (puede ser undefined)
+  providerAssignedAt: z.string().datetime().nullish(), // Date provider was assigned (puede ser undefined)
+  assignedTo: z.string().nullish(), // Person responsible for machine (puede ser undefined)
+  usageSchedule: UsageScheduleSchema.extend({
+    weeklyHours: z.number() // Calculated field by VO
+  }).nullish(), // Operating schedule for maintenance alerts (puede ser undefined)
+  machinePhotoUrl: z.string().nullish(), // Photo URL - Cloudinary (puede ser undefined)
+  status: MachineStatusCodeSchema,
   specs: MachineSpecsSchema.nullable(),
   location: MachineLocationSchema.nullable(),
-  nickname: z.string().nullable(),
-  status: MachineStatusCodeSchema,
   createdAt: z.string().datetime(),
   updatedAt: z.string().datetime()
 });
@@ -137,7 +189,22 @@ export const UpdateMachineRequestSchema = z.object({
   specs: MachineSpecsSchema.optional(),
   location: MachineLocationSchema.optional(),
   nickname: z.string().max(100).optional(),
-  status: MachineStatusCodeSchema.optional()
+  status: MachineStatusCodeSchema.optional(),
+  assignedTo: z.string()
+    .max(100, 'Assigned to name cannot exceed 100 characters')
+    .trim()
+    .optional(),
+  usageSchedule: UsageScheduleSchema.optional(),
+  // Photo URL - permite string vacío O URL válida
+  machinePhotoUrl: z.string()
+    .trim()
+    .max(500, 'Photo URL cannot exceed 500 characters')
+    .refine(
+      (val) => val === '' || z.string().url().safeParse(val).success,
+      { message: 'Invalid photo URL format' }
+    )
+    .optional()
+    .or(z.literal(''))
 });
 
 export const UpdateMachineResponseSchema = CreateMachineResponseSchema;

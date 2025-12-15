@@ -36,7 +36,29 @@
     "profile": "Perfil",
     "logout": "Cerrar Sesión",
     "login": "Iniciar Sesión",
-    "register": "Registrarse"
+    "register": "Registrarse",
+    "notSpecified": "No especificado",
+    "imageLoadError": "Error al cargar la imagen",
+    "daysOfWeek": {
+      "full": {
+        "SUN": "Domingo",
+        "MON": "Lunes",
+        "TUE": "Martes",
+        "WED": "Miércoles",
+        "THU": "Jueves",
+        "FRI": "Viernes",
+        "SAT": "Sábado"
+      },
+      "short": {
+        "SUN": "Do",
+        "MON": "Lu",
+        "TUE": "Ma",
+        "WED": "Mi",
+        "THU": "Ju",
+        "FRI": "Vi",
+        "SAT": "Sá"
+      }
+    }
   },
   "navigation": {
     "dashboard": "Panel Principal",
@@ -98,6 +120,15 @@
     "location": "Ubicación",
     "status": "Estado",
     "owner": "Propietario",
+    "fuelTypes": {
+      "ELECTRIC_LITHIUM": "Eléctrico (Litio)",
+      "ELECTRIC_LEAD_ACID": "Eléctrico (Plomo Ácido)",
+      "DIESEL": "Diesel",
+      "LPG": "LPG (Gas)",
+      "GASOLINE": "Nafta",
+      "BIFUEL": "Bi-fuel",
+      "HYBRID": "Híbrido"
+    },
     "provider": "Proveedor de Servicios",
     "hoursUsed": "Horas de Uso",
     "lastMaintenance": "Último Mantenimiento",

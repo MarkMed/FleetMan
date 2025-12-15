@@ -3,6 +3,7 @@ import { MachineId } from '../../value-objects/machine-id.vo';
 import { MachineTypeId } from '../../value-objects/machine-type-id.vo';
 import { SerialNumber } from '../../value-objects/serial-number.vo';
 import { UserId } from '../../value-objects/user-id.vo';
+import { UsageSchedule } from '../../value-objects/usage-schedule.vo';
 import { 
   MachineStatus, 
   MachineStatusRegistry, 
@@ -11,13 +12,11 @@ import {
 } from './machineStatus';
 import { 
   IMachine, 
-  IQuickCheckRecord
+  IQuickCheckRecord,
+  IUsageSchedule
 } from '../../models/interfaces';
-
-/**
- * Tipos de combustible para máquinas
- */
-export type FuelType = 'DIESEL' | 'GASOLINE' | 'ELECTRIC' | 'HYBRID';
+// FuelType imported from models/index.ts (SSOT)
+import type { FuelType } from '../../models';
 
 /**
  * Especificaciones técnicas de la máquina (interna - mutable)
@@ -25,7 +24,7 @@ export type FuelType = 'DIESEL' | 'GASOLINE' | 'ELECTRIC' | 'HYBRID';
 export interface MachineSpecs {
   enginePower?: number;
   maxCapacity?: number;
-  fuelType?: 'DIESEL' | 'GASOLINE' | 'ELECTRIC' | 'HYBRID';
+  fuelType?: FuelType; // Using FuelType from SSOT in models/index.ts
   year?: number;
   weight?: number;
   operatingHours?: number;
@@ -57,7 +56,10 @@ export interface CreateMachineProps {
   specs?: MachineSpecs;
   location?: MachineLocation;
   nickname?: string; // Nombre amigable para la máquina
-  initialStatus?: MachineStatusCode
+  initialStatus?: MachineStatusCode;
+  assignedTo?: string; // [NUEVO] Persona asignada (temporal string)
+  usageSchedule?: UsageSchedule; // [NUEVO] Programación de uso
+  machinePhotoUrl?: string; // [NUEVO] URL de foto
 }
 
 /**
@@ -75,6 +77,9 @@ interface MachineProps {
   createdById: UserId;
   assignedProviderId?: UserId;
   providerAssignedAt?: Date;
+  assignedTo?: string; // [NUEVO] Persona asignada
+  usageSchedule?: UsageSchedule; // [NUEVO] Programación de uso
+  machinePhotoUrl?: string; // [NUEVO] URL de foto
   specs?: MachineSpecs;
   location?: MachineLocation;
   quickChecks: IQuickCheckRecord[]; // Historial de inspecciones (mutable)
@@ -105,6 +110,13 @@ export class Machine {
       createdById: this.props.createdById.getValue(),
       assignedProviderId: this.props.assignedProviderId?.getValue(),
       providerAssignedAt: this.props.providerAssignedAt,
+      assignedTo: this.props.assignedTo,
+      usageSchedule: this.props.usageSchedule ? {
+        dailyHours: this.props.usageSchedule.dailyHours,
+        operatingDays: this.props.usageSchedule.operatingDays,
+        weeklyHours: this.props.usageSchedule.weeklyHours
+      } : undefined,
+      machinePhotoUrl: this.props.machinePhotoUrl,
       status: {
         code: this.props.status.code as 'ACTIVE' | 'MAINTENANCE' | 'OUT_OF_SERVICE' | 'RETIRED',
         displayName: this.props.status.displayName,
@@ -205,6 +217,9 @@ export class Machine {
       status: initialStatus,
       ownerId: ownerIdResult.data,
       createdById: creatorIdResult.data,
+      assignedTo: createProps.assignedTo === undefined ? undefined : createProps.assignedTo.trim(), // Nuevo campo
+      usageSchedule: createProps.usageSchedule, // Nuevo campo
+      machinePhotoUrl: createProps.machinePhotoUrl === undefined ? undefined : createProps.machinePhotoUrl.trim(), // Nuevo campo
       specs: createProps.specs,
       location: createProps.location,
       quickChecks: [], // Initialize empty history
@@ -335,6 +350,18 @@ export class Machine {
 
   get providerAssignedAt(): Date | undefined {
     return this.props.providerAssignedAt ? new Date(this.props.providerAssignedAt) : undefined;
+  }
+
+  get assignedTo(): string | undefined {
+    return this.props.assignedTo;
+  }
+
+  get usageSchedule(): UsageSchedule | undefined {
+    return this.props.usageSchedule;
+  }
+
+  get machinePhotoUrl(): string | undefined {
+    return this.props.machinePhotoUrl;
   }
 
   get specs(): MachineSpecs | undefined {
@@ -477,10 +504,61 @@ export class Machine {
   }
 
   /**
+   * Actualiza la persona asignada a la máquina
+   */
+  public updateAssignedTo(assignedTo?: string): Result<void, DomainError> {
+    if (assignedTo && assignedTo.trim().length > 100) {
+      return err(DomainError.validation('Assigned to name cannot exceed 100 characters'));
+    }
+
+    this.props.assignedTo = assignedTo?.trim();
+    this.props.updatedAt = new Date();
+
+    return ok(undefined);
+  }
+
+  /**
+   * Actualiza la programación de uso de la máquina
+   * Valida el UsageSchedule VO antes de asignar
+   */
+  public updateUsageSchedule(usageSchedule?: UsageSchedule): Result<void, DomainError> {
+    // UsageSchedule ya viene validado por su factory method
+    // No necesitamos validaciones adicionales aquí
+    this.props.usageSchedule = usageSchedule;
+    this.props.updatedAt = new Date();
+
+    return ok(undefined);
+  }
+
+  /**
+   * Actualiza la URL de la foto de la máquina
+   */
+  public updateMachinePhotoUrl(photoUrl?: string): Result<void, DomainError> {
+    if (photoUrl && photoUrl.trim().length > 500) {
+      return err(DomainError.validation('Photo URL cannot exceed 500 characters'));
+    }
+
+    // Validación básica de URL
+    if (photoUrl && photoUrl.trim().length > 0) {
+      try {
+        new URL(photoUrl);
+      } catch {
+        return err(DomainError.validation('Invalid photo URL format'));
+      }
+    }
+
+    this.props.machinePhotoUrl = photoUrl?.trim();
+    this.props.updatedAt = new Date();
+
+    return ok(undefined);
+  }
+
+  /**
    * Agrega un registro de QuickCheck al historial de la máquina
    * Aplica validaciones de negocio críticas:
    * - Máquina no debe estar RETIRED
    * - Al menos un item en el checklist
+   * - Identificación del responsable (nombre y número de trabajador)
    * - Consistencia entre resultado general y resultados de items
    * - 'notInitiated' solo cuando todos los items están 'omitted'
    * 
@@ -493,12 +571,29 @@ export class Machine {
       return err(DomainError.domainRule('Cannot add QuickCheck to retired machine'));
     }
 
-    // Validación 2: Al menos un item en el checklist
+    // Validación 2: Información del responsable es obligatoria
+    if (!record.responsibleName || record.responsibleName.trim().length === 0) {
+      return err(DomainError.validation('Responsible name is required for QuickCheck'));
+    }
+
+    if (!record.responsibleWorkerId || record.responsibleWorkerId.trim().length === 0) {
+      return err(DomainError.validation('Responsible worker ID is required for QuickCheck'));
+    }
+
+    if (record.responsibleName.trim().length > 100) {
+      return err(DomainError.validation('Responsible name cannot exceed 100 characters'));
+    }
+
+    if (record.responsibleWorkerId.trim().length > 50) {
+      return err(DomainError.validation('Responsible worker ID cannot exceed 50 characters'));
+    }
+
+    // Validación 3: Al menos un item en el checklist
     if (!record.quickCheckItems || record.quickCheckItems.length === 0) {
       return err(DomainError.validation('QuickCheck must have at least one item'));
     }
 
-    // Validación 3: Consistencia de resultados
+    // Validación 4: Consistencia de resultados
     const allApproved = record.quickCheckItems.every(item => item.result === 'approved');
     const anyDisapproved = record.quickCheckItems.some(item => item.result === 'disapproved');
     const allOmitted = record.quickCheckItems.every(item => item.result === 'omitted');
@@ -513,13 +608,13 @@ export class Machine {
       return err(DomainError.validation('Result cannot be approved when items are disapproved'));
     }
 
-    // Validación 4: 'notInitiated' solo cuando todos los items están 'omitted'
+    // Validación 5: 'notInitiated' solo cuando todos los items están 'omitted'
     // Esto representa una inspección que no fue completada/iniciada apropiadamente
     if (record.result === 'notInitiated' && !allOmitted) {
       return err(DomainError.validation("Result 'notInitiated' is only allowed when all items are 'omitted'"));
     }
 
-    // Validación 4: Límite de historial (soft limit - advisory)
+    // Validación 6: Límite de historial (soft limit - advisory)
     if (this.props.quickChecks.length >= 100) {
       // Nota: El repositorio usa $slice para mantener solo 100 registros
       // Esta validación es informativa, no bloqueante

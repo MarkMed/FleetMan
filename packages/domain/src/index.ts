@@ -16,6 +16,9 @@ export * from "./entities/machine-event-type";
 // Value Objects
 export * from "./value-objects";
 
+// Enums
+export * from "./enums/DayOfWeek";
+
 // Puertos (interfaces) - Implementados
 export * from "./ports";
 
@@ -40,12 +43,17 @@ export {
   IBaseEntity,
   IQuickCheckRecord, // NEW - embedded in Machine
   IQuickCheckItem, // NEW - embedded item in QuickCheckRecord
+  IUsageSchedule, // NEW - embedded in Machine for scheduling
   QuickCheckItemResult,
   QuickCheckResult,
   QUICK_CHECK_ITEM_RESULTS, // SSOT constant for validation
   QUICK_CHECK_RESULTS // SSOT constant for validation
 } from "./models/interfaces";
 
+// Export FUEL_TYPE const and type directly for internal package use (persistence/contracts layers)
+export { FUEL_TYPE, type FuelType } from "./models";
+
+// Export with aliases for external consumers
 export {
   USER_TYPE as PublicUserType,
   FUEL_TYPE as PublicFuelType,

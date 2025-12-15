@@ -26,43 +26,6 @@ export function BasicInfoStep() {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Nombre */}
-        <Controller
-          control={control}
-          name="basicInfo.name"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <InputField
-              label="Nombre de la máquina"
-              required
-              value={value || ''}
-              onChangeText={onChange}
-              onBlur={onBlur}
-              placeholder="Ej: Excavadora 001"
-              error={errors.basicInfo?.name?.message}
-            />
-          )}
-        />
-
-        {/* Tipo de máquina */}
-        <Controller
-          control={control}
-          name="basicInfo.machineTypeId"
-          render={({ field: { onChange, value } }) => (
-            isLoading ? (
-              <Skeleton className="h-10 w-full" />
-            ) : (
-              <Select
-                label="Tipo de máquina"
-                required
-                value={value || ''}
-                onValueChange={onChange}
-                options={machineTypes}
-                placeholder={isError ? 'Error al cargar tipos' : 'Selecciona un tipo'}
-                error={errors.basicInfo?.machineTypeId?.message}
-              />
-            )
-          )}
-        />
 
         {/* Marca */}
         <Controller
@@ -116,6 +79,45 @@ export function BasicInfoStep() {
             )}
           />
         </div>
+        
+        {/* Tipo de máquina */}
+        <Controller
+          control={control}
+          name="basicInfo.machineTypeId"
+          render={({ field: { onChange, value } }) => (
+            isLoading ? (
+              <Skeleton className="h-10 w-full" />
+            ) : (
+              <Select
+                label="Tipo de máquina"
+                required
+                value={value || ''}
+                onValueChange={onChange}
+                options={machineTypes}
+                placeholder={isError ? 'Error al cargar tipos' : 'Selecciona un tipo'}
+                error={errors.basicInfo?.machineTypeId?.message}
+              />
+            )
+          )}
+        />
+        
+        {/* Nombre */}
+        <Controller
+          control={control}
+          name="basicInfo.name"
+          render={({ field: { onChange, onBlur, value } }) => (
+            <InputField
+              label="Nombre de referencia"
+              required
+              value={value || ''}
+              onChangeText={onChange}
+              onBlur={onBlur}
+              placeholder="Ej: Excavadora 001"
+              error={errors.basicInfo?.name?.message}
+            />
+          )}
+        />
+
 
         {/* Descripción */}
         <div className="md:col-span-2">

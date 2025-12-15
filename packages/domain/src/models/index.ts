@@ -12,9 +12,12 @@ export const USER_TYPE = {
 } as const;
 
 export const FUEL_TYPE = {
+  ELECTRIC_LITHIUM: 'ELECTRIC_LITHIUM' as const,
+  ELECTRIC_LEAD_ACID: 'ELECTRIC_LEAD_ACID' as const,
   DIESEL: 'DIESEL' as const,
+  LPG: 'LPG' as const,
   GASOLINE: 'GASOLINE' as const,
-  ELECTRIC: 'ELECTRIC' as const,
+  BIFUEL: 'BIFUEL' as const,
   HYBRID: 'HYBRID' as const
 } as const;
 

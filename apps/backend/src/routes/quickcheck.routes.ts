@@ -47,6 +47,8 @@ const quickCheckController = new QuickCheckController();
  *             type: object
  *             required:
  *               - result
+ *               - responsibleName
+ *               - responsibleWorkerId
  *               - quickCheckItems
  *             properties:
  *               result:
@@ -54,6 +56,18 @@ const quickCheckController = new QuickCheckController();
  *                 enum: [approved, disapproved, notInitiated]
  *                 description: Overall result of the inspection
  *                 example: "approved"
+ *               responsibleName:
+ *                 type: string
+ *                 minLength: 1
+ *                 maxLength: 100
+ *                 description: Full name of the technician/person executing the inspection
+ *                 example: "Juan Pérez"
+ *               responsibleWorkerId:
+ *                 type: string
+ *                 minLength: 1
+ *                 maxLength: 50
+ *                 description: Worker ID, employee number, or identification of the responsible person
+ *                 example: "TEC-0042"
  *               quickCheckItems:
  *                 type: array
  *                 minItems: 1
@@ -110,6 +124,13 @@ const quickCheckController = new QuickCheckController();
  *                           format: date-time
  *                         executedById:
  *                           type: string
+ *                           description: ID of the user who executed (from JWT)
+ *                         responsibleName:
+ *                           type: string
+ *                           description: Name of the responsible technician
+ *                         responsibleWorkerId:
+ *                           type: string
+ *                           description: Worker ID/employee number
  *                         quickCheckItems:
  *                           type: array
  *                         observations:
@@ -222,6 +243,13 @@ router.post('/:machineId/quickchecks',
  *                             format: date-time
  *                           executedById:
  *                             type: string
+ *                             description: ID of the user who executed (from JWT)
+ *                           responsibleName:
+ *                             type: string
+ *                             description: Name of the responsible technician
+ *                           responsibleWorkerId:
+ *                             type: string
+ *                             description: Worker ID/employee number
  *                           quickCheckItems:
  *                             type: array
  *                           observations:

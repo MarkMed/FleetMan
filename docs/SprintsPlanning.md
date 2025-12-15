@@ -358,28 +358,22 @@ Distribución por categoría:
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
-| Documentación | 20.1 Reporte Académico (dominical) | 1 | 5 | |
-| Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | |
-| Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
-| Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | |
-| **MIÉRCOLES** - UI Quick Wins |||||
-| Desarrollo | 12.8 UI Polish (animaciones + reorder inputs) | 5 | 0.75 | |
-| Desarrollo | 12.7 Navigation Drawer (Parte 1: layout + base) | 6 | 3 | |
-| **JUEVES** - Navigation + QuickCheck Tracking |||||
-| Desarrollo | 12.7 Navigation Drawer (Parte 2: responsive + state) | 7 | 4 | |
-| Desarrollo | 6.5 QuickCheck User Tracking | 8 | 4.2 | |
-| **VIERNES** - Machine Enhancement |||||
-| Desarrollo | 3.2a Machine Enhancement (assignedTo, usageRate, fixes) | 9 | 12 | |
-| **SÁBADO** - Azure Fix + PWA Completion |||||
-| Desarrollo | 16.12 Azure Static Web App - Fix 404 routing | 10 | 1 | |
-| Desarrollo | 0.5a PWA Manifest + Icons | 11 | 1 | |
-| Desarrollo | 0.5b Service Worker Básico (inicio) | 12 | 1.5 | |
-| Desarrollo | 0.5b Service Worker Básico (final) | 13 | 1.5 | |
-| Desarrollo | 0.5c PWA Testing Multi-dispositivo | 14 | 1 | |
+| Documentación | 20.1 Reporte Académico (dominical) | 1 | 5 | 5.4 |
+| Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | 1.2 |
+| Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | 4.65 |
+| Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | 0 |
+| Desarrollo | 12.8 UI Polish (animaciones + reorder inputs) | 5 | 0.75 | 0.1 |
+| Desarrollo | 12.7 Navigation Drawer | 6 | 3 | 2.3 |
+| Desarrollo | 16.12 Azure Static Web App - Fix 404 routing | 8 | 1 | 0.8 |
+| Desarrollo | 6.5 QuickCheck User Tracking | 9 | 4.2 | 3.5 |
+| Desarrollo | 3.2a Machine Enhancement (assignedTo, usageRate, fixes) | 10 | 12 | 10.1 |
+| Desarrollo | 0.5a PWA Manifest + Icons | 11 | 1 | 1.7 |
+| Desarrollo | 0.5b Service Worker Básico | 12 | 1.5 | 0.9 |
+| Desarrollo | 0.5c PWA Testing Multi-dispositivo | 14 | 1 | 0.4 |
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales | Consumo |
 |:---:|:----------:|:-------:|
-| **37.75**hs | **0**hs | **0.0%** |
+| **37.75**hs | **31.05**hs | **82.3%** |
 
 Buffer reservado: **-2.75**hs (absorbido en machinePhotoUrl + SW + testing)
 Total con buffer: **35**hs
@@ -390,13 +384,16 @@ Distribución por categoría:
 | **5**hs | **29**hs | **0**hs | **1**hs | **2.75**hs |
 
 ```mermaid
-%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#e0f7fa','primaryTextColor':'#000','primaryBorderColor':'#006064','lineColor':'#00796b','secondaryColor':'#fff3e0','tertiaryColor':'#f3e5f5'}}}%%
 xychart-beta
     title "Sprint #8: Horas Estimadas (azul) vs Reales (verde)"
-    x-axis ["20.1 Reporte", "20.2 Demo", "20.3 Planning", "21.2 Tutorías", "12.8 UI Polish", "12.7 NavDrawer P1", "12.7 NavDrawer P2", "6.5 QC Tracking", "3.2a Machine Enh", "16.12 Azure Fix", "0.5a Manifest", "0.5b SW Inicio", "0.5b SW Final", "0.5c Testing"]
-    y-axis "Horas" 0 --> 13
-    bar [5, 1.5, 1.3, 1, 0.75, 3, 4, 4.2, 12, 1, 1, 1.5, 1.5, 1]
-    bar [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    x-axis "Tareas" ["20.1", "20.2", "20.3", "21.2", "12.8", "12.7", "16.12", "6.5", "3.2a", "0.5a", "0.5b", "0.5c", "TOTAL"]
+    y-axis "Horas" 0 --> 38
+
+    %% Green line (estimadas)
+    line [5, 1.5, 1.3, 1, 0.75, 3, 1, 4.2, 12, 1, 1.5, 1, 37.75]
+
+    %% Black line (reales)
+    line [5.4, 1.2, 4.65, 0, 0.1, 2.3, 0.8, 3.5, 10.1, 1.7, 0.9, 0.4, 31.05]
 ```
 
 **Notas de Sprint:**
