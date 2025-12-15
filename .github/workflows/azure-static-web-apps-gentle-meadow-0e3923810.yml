@@ -58,6 +58,25 @@ jobs:
         env:
           VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL_DEV }}
 
+      - name: Verificar archivos PWA generados
+        run: |
+          echo "Verificando archivos PWA en apps/frontend/dist/"
+          ls -la apps/frontend/dist/ | grep -E '(manifest|sw\.js|registerSW|pwa-)' || echo "Archivos PWA no encontrados"
+          
+          # Validar archivos críticos
+          MISSING=""
+          [ ! -f "apps/frontend/dist/manifest.webmanifest" ] && MISSING="${MISSING}manifest.webmanifest "
+          [ ! -f "apps/frontend/dist/sw.js" ] && MISSING="${MISSING}sw.js "
+          [ ! -f "apps/frontend/dist/registerSW.js" ] && MISSING="${MISSING}registerSW.js "
+          [ ! -f "apps/frontend/dist/pwa-192x192.png" ] && MISSING="${MISSING}pwa-192x192.png "
+          [ ! -f "apps/frontend/dist/pwa-512x512.png" ] && MISSING="${MISSING}pwa-512x512.png "
+          
+          if [ -n "$MISSING" ]; then
+            echo "::warning::Archivos PWA faltantes: $MISSING"
+          else
+            echo "✅ Todos los archivos PWA críticos están presentes"
+          fi
+
       - name: Validar token de SWA
         run: |
           if [ -z "$TOKEN" ]; then

@@ -42,3 +42,4 @@ coverage/
 # PWA
 sw.js
 workbox-*.js
+dev-dist/
