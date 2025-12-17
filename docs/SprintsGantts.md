@@ -286,22 +286,43 @@ gantt
 
 ```mermaid
 gantt
-  title Sprint 9 (2025-12-14 → 2025-12-20)
+  title Sprint 9 (2025-12-14 → 2025-12-20) - Centro Notificaciones por Capas
   dateFormat  YYYY-MM-DD
   axisFormat  %d
 
   %% Asumimos 5 h/día. Horas estimadas incluidas en el nombre.
+  %% Sprint enfocado 100% en sistema de notificaciones con arquitectura por capas
 
-  20.1 Reporte Académico (0.9hs)               :t201, 2025-12-14, 1d
+  section Domingo (Overhead)
   20.2 Demo/UAT con cliente (1.5hs)            :t202, 2025-12-14, 1d
   20.3 Sprint Planning dominguero (1.3hs)      :t203, 2025-12-14, 1d
-  6.3 Persistencia en historial (RF-011) (5hs) :t63, after t203, 1d
-  8.1 Modelo + bandeja (12hs)                  :t81, after t63, 3d
-  4.2 Registrar evento (RF-008) - Parte 1 (10hs) :t421, after t81, 2d
+  20.1 Reporte Académico (5hs)                 :t201, 2025-12-15, 1d
+  21.2 Tutorías (1hs)                          :t212, 2025-12-15, 1d
+  8.1 Domain+Contracts+Persistence (5hs)       :t81, 2025-12-16, 1d
+  8.2 Application Layer Backend (6hs)          :t82, after t81, 1d
+  8.3 Frontend UI Components (4hs)             :t83, after t82, 1d
+  8.4 Frontend Integration+Observer (5hs)      :t84, after t83, 1d
+  6.6 Integración QC→Notificaciones (4hs)      :t66, after t84, 1d
+  8.5 Documentación Patrón (1hs)               :t85, after t84, 1d
 
   section Hitos
   Cierre Sprint 9                              :milestone, s9, 2025-12-20, 1d
 ```
+
+**Notas del Sprint #9:**
+- **Enfoque:** Sistema completo de notificaciones con arquitectura por capas (Domain → Application → UI → Integration)
+- **Arquitectura:** Notification como subdocumento en User (no entidad independiente)
+- **Orden secuencial:** Backend primero (Lun-Mar) → Frontend después (Mié-Jue) → Integración real (Vie) → Documentación (Sáb)
+- **Observer Pattern:** Implementado con TanStack Query cache subscription (polling 30s automático)
+- **Primera integración:** QuickCheck FAIL → Notificación → Toast automático
+- **Buffer:** +1.2hs (33.8hs planificadas vs 35hs capacidad)
+- **Distribución:**
+  - Lunes: 8.1 Backend base (Domain + Persistence + Contracts)
+  - Martes: 8.2 Application Layer (Use Cases + Controllers + API REST)
+  - Miércoles: 8.3 Frontend UI (Badge + Bandeja + Toast components)
+  - Jueves: 8.4 Frontend Integration (Services + TanStack Query + Observer)
+  - Viernes: 6.6 Integración real con QuickCheck + Testing e2e
+  - Sábado: 8.5 Documentación patrón + Buffer 1.2hs
 
 ---
 
