@@ -29,6 +29,7 @@ export interface IUser extends IBaseEntity {
   };
   readonly type: 'CLIENT' | 'PROVIDER';
   readonly isActive: boolean;
+  readonly notifications?: readonly INotification[]; // 🆕 Sprint #9: Notificaciones embebidas
 }
 
 /**
@@ -38,6 +39,7 @@ export interface IClientUser extends IUser {
   readonly type: 'CLIENT';
   readonly subscriptionLevel: 'FREE' | 'BASIC' | 'PREMIUM';
   readonly subscriptionExpiry?: Date;
+  readonly notifications?: readonly INotification[]; // Hereda de IUser
 }
 
 /**
@@ -48,6 +50,7 @@ export interface IProviderUser extends IUser {
   readonly serviceAreas: readonly string[];
   readonly isVerified: boolean;
   readonly verificationDate?: Date;
+  readonly notifications?: readonly INotification[]; // Hereda de IUser
 }
 
 /**
@@ -179,21 +182,29 @@ export interface IMachineEventType extends IBaseEntity {
   readonly isActive: boolean;
 }
 
+// =============================================================================
+// 🔔 NOTIFICATION INTERFACES (Sprint #9)
+// =============================================================================
+
+import type { NotificationType, NotificationSourceType } from '../enums/NotificationEnums';
+export type { NotificationType, NotificationSourceType };
+
 /**
- * Interface pública para Notification
+ * Notification Record - Notificación embebida en User
+ * Similar a IQuickCheckRecord embebido en Machine
+ * NO es una entidad independiente, sino un subdocumento
  */
-export interface INotification extends IBaseEntity {
-  readonly userId: string;
-  readonly type: 'MAINTENANCE_DUE' | 'MAINTENANCE_OVERDUE' | 'QUICKCHECK_FAILED' | 'MACHINE_DOWN' | 'REMINDER' | 'SYSTEM';
-  readonly title: string;
+export interface INotification {
+  readonly id: string; // ID del subdocumento (no entidad)
+  readonly notificationType: NotificationType;
   readonly message: string;
-  readonly isRead: boolean;
-  readonly readAt?: Date;
-  readonly relatedEntityType?: 'MACHINE' | 'MAINTENANCE_REMINDER' | 'QUICKCHECK' | 'EVENT';
-  readonly relatedEntityId?: string;
-  readonly actionUrl?: string;
-  readonly priority: 'LOW' | 'MEDIUM' | 'HIGH';
-  readonly expiresAt?: Date;
+  readonly wasSeen: boolean;
+  readonly notificationDate: Date;
+  readonly actionUrl?: string; // URL para navegar al detalle (ej: /machines/123/quickchecks/456)
+  readonly sourceType?: NotificationSourceType; // Clasificación del tipo de origen
+  // 🔮 POST-MVP: Campos comentados para futuras versiones
+  // readonly priority?: 'LOW' | 'MEDIUM' | 'HIGH'; // Priorización visual
+  // readonly expiresAt?: Date; // Auto-eliminación de notificaciones
 }
 
 /**

@@ -4,7 +4,9 @@ import {
   type IClientUser, 
   type IProviderUser,
   type UserType,
-  type SubscriptionLevel
+  type SubscriptionLevel,
+  NOTIFICATION_TYPES,
+  NOTIFICATION_SOURCE_TYPES
 } from '@packages/domain';
 
 // =============================================================================
@@ -12,32 +14,88 @@ import {
 // =============================================================================
 
 /**
+ * Notification subdocument type (with Mongoose _id)
+ */
+interface INotificationSubdoc {
+  _id: Types.ObjectId;
+  notificationType: typeof NOTIFICATION_TYPES[number];
+  message: string;
+  wasSeen: boolean;
+  notificationDate: Date;
+  actionUrl?: string;
+  sourceType?: typeof NOTIFICATION_SOURCE_TYPES[number];
+}
+
+/**
  * Base User Document interface extending domain IUser
  * Adds Mongoose-specific _id, document methods, and passwordHash for persistence
  */
-export interface IUserDocument extends Omit<IUser, 'id'>, Document {
+export interface IUserDocument extends Omit<IUser, 'id' | 'notifications'>, Document {
   _id: Types.ObjectId;
   id: string; // Virtual getter from _id
   passwordHash: string; // Solo para persistencia, no expuesta en domain interfaces
+  notifications?: Types.DocumentArray<INotificationSubdoc>; // Sprint #9 - Array de subdocumentos
 }
 
 /**
  * Client User Document interface
  */
-export interface IClientUserDocument extends Omit<IClientUser, 'id'>, Document {
+export interface IClientUserDocument extends Omit<IClientUser, 'id' | 'notifications'>, Document {
   _id: Types.ObjectId;
   id: string;
   passwordHash: string;
+  notifications?: Types.DocumentArray<INotificationSubdoc>;
 }
 
 /**
  * Provider User Document interface
  */
-export interface IProviderUserDocument extends Omit<IProviderUser, 'id'>, Document {
+export interface IProviderUserDocument extends Omit<IProviderUser, 'id' | 'notifications'>, Document {
   _id: Types.ObjectId;
   id: string;
   passwordHash: string;
+  notifications?: Types.DocumentArray<INotificationSubdoc>;
 }
+
+// =============================================================================
+// NOTIFICATION SUBDOCUMENT SCHEMA (Sprint #9)
+// =============================================================================
+
+/**
+ * Notification Subdocument Schema
+ * Embebido en User similar a QuickCheck en Machine
+ */
+const NotificationSubSchema = new Schema({
+  notificationType: {
+    type: String,
+    enum: NOTIFICATION_TYPES,
+    required: true
+  },
+  message: {
+    type: String,
+    required: true,
+    maxlength: 500
+  },
+  wasSeen: {
+    type: Boolean,
+    default: false,
+    required: true
+  },
+  notificationDate: {
+    type: Date,
+    default: Date.now,
+    required: true
+  },
+  actionUrl: {
+    type: String,
+    sparse: true
+  },
+  sourceType: {
+    type: String,
+    enum: NOTIFICATION_SOURCE_TYPES,
+    sparse: true
+  }
+}, { _id: true }); // Genera _id automático para cada notificación
 
 // =============================================================================
 // USER SCHEMA DEFINITION
@@ -87,7 +145,10 @@ const userSchema = new Schema<IUserDocument>({
   isActive: {
     type: Boolean,
     default: true
-  }
+  },
+
+  // 🔔 Sprint #9: Notifications array
+  notifications: [NotificationSubSchema]
 }, {
   timestamps: true, // Adds createdAt and updatedAt
   discriminatorKey: 'type',
@@ -111,6 +172,8 @@ userSchema.set('toJSON', {
 
 // Indexes for performance
 userSchema.index({ type: 1, isActive: 1 });
+// Sprint #9: Índice compuesto para queries rápidas de notificaciones unread
+userSchema.index({ 'notifications.wasSeen': 1, 'notifications.notificationDate': -1 });
 
 // =============================================================================
 // CLIENT USER DISCRIMINATOR

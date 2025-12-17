@@ -7,7 +7,9 @@ import {
   ok,
   err,
   ClientUser,
-  ProviderUser
+  ProviderUser,
+  type NotificationType,
+  type NotificationSourceType
 } from '@packages/domain';
 import { 
   UserModel, 
@@ -273,6 +275,163 @@ export class UserRepository implements IUserRepository {
       return result.data;
     } else {
       throw new Error(`Unknown user type: ${doc.type}`);
+    }
+  }
+
+  // =============================================================================
+  // 🔔 NOTIFICATION METHODS (Sprint #9)
+  // =============================================================================
+
+  /**
+   * Agrega una notificación al array de notificaciones del usuario
+   */
+  async addNotification(userId: UserId, notification: {
+    notificationType: NotificationType;
+    message: string;
+    actionUrl?: string;
+    sourceType?: NotificationSourceType;
+  }): Promise<Result<void, DomainError>> {
+    try {
+      const result = await UserModel.findByIdAndUpdate(
+        userId.getValue(),
+        {
+          $push: {
+            notifications: {
+              notificationType: notification.notificationType,
+              message: notification.message,
+              wasSeen: false,
+              notificationDate: new Date(),
+              actionUrl: notification.actionUrl,
+              sourceType: notification.sourceType
+            }
+          }
+        },
+        { new: true }
+      );
+
+      if (!result) {
+        return err(DomainError.notFound(`User with ID ${userId.getValue()} not found`));
+      }
+
+      return ok(undefined);
+    } catch (error: any) {
+      return err(DomainError.create('PERSISTENCE_ERROR', `Error adding notification: ${error.message}`));
+    }
+  }
+
+  /**
+   * Obtiene las notificaciones del usuario con filtros y paginación
+   */
+  async getUserNotifications(userId: UserId, filters: {
+    onlyUnread?: boolean;
+    page: number;
+    limit: number;
+  }): Promise<Result<{
+    notifications: Array<{
+      id: string;
+      notificationType: NotificationType;
+      message: string;
+      wasSeen: boolean;
+      notificationDate: Date;
+      actionUrl?: string;
+      sourceType?: NotificationSourceType;
+    }>;
+    total: number;
+    page: number;
+    limit: number;
+  }, DomainError>> {
+    try {
+      const user = await UserModel.findById(userId.getValue());
+
+      if (!user) {
+        return err(DomainError.notFound(`User with ID ${userId.getValue()} not found`));
+      }
+
+      // Convertir DocumentArray a array normal
+      const notificationsArray = Array.from(user.notifications || []);
+
+      // Filtrar notificaciones si se especifica onlyUnread
+      const filteredNotifications = filters.onlyUnread
+        ? notificationsArray.filter(n => !n.wasSeen)
+        : notificationsArray;
+
+      // Ordenar por fecha descendente (más recientes primero)
+      const sortedNotifications = filteredNotifications.sort(
+        (a, b) => new Date(b.notificationDate).getTime() - new Date(a.notificationDate).getTime()
+      );
+
+      // Calcular paginación
+      const total = sortedNotifications.length;
+      const skip = (filters.page - 1) * filters.limit;
+      const paginatedNotifications = sortedNotifications.slice(skip, skip + filters.limit);
+
+      // Mapear a formato de respuesta
+      const mappedNotifications = paginatedNotifications.map(n => ({
+        id: n._id.toString(),
+        notificationType: n.notificationType,
+        message: n.message,
+        wasSeen: n.wasSeen,
+        notificationDate: n.notificationDate,
+        actionUrl: n.actionUrl,
+        sourceType: n.sourceType
+      }));
+
+      return ok({
+        notifications: mappedNotifications,
+        total,
+        page: filters.page,
+        limit: filters.limit
+      });
+    } catch (error: any) {
+      return err(DomainError.create('PERSISTENCE_ERROR', `Error getting notifications: ${error.message}`));
+    }
+  }
+
+  /**
+   * Marca notificaciones como vistas
+   */
+  async markNotificationsAsSeen(userId: UserId, notificationIds: string[]): Promise<Result<void, DomainError>> {
+    try {
+      const result = await UserModel.findOneAndUpdate(
+        {
+          _id: userId.getValue(),
+          'notifications._id': { $in: notificationIds }
+        },
+        {
+          $set: { 'notifications.$[elem].wasSeen': true }
+        },
+        {
+          arrayFilters: [{ 'elem._id': { $in: notificationIds } }],
+          new: true
+        }
+      );
+
+      if (!result) {
+        return err(DomainError.notFound(`User with ID ${userId.getValue()} not found or no matching notifications`));
+      }
+
+      return ok(undefined);
+    } catch (error: any) {
+      return err(DomainError.create('PERSISTENCE_ERROR', `Error marking notifications as seen: ${error.message}`));
+    }
+  }
+
+  /**
+   * Cuenta las notificaciones no vistas del usuario
+   */
+  async countUnreadNotifications(userId: UserId): Promise<Result<number, DomainError>> {
+    try {
+      const user = await UserModel.findById(userId.getValue());
+
+      if (!user) {
+        return err(DomainError.notFound(`User with ID ${userId.getValue()} not found`));
+      }
+
+      const unreadCount = (user.notifications || []).filter(n => !n.wasSeen).length;
+
+      return ok(unreadCount);
+    } catch (error: any) {
+      return err(DomainError.create('PERSISTENCE_ERROR', `Error counting unread notifications: ${error.message}`));
     }
   }
 }

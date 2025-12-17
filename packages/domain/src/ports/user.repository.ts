@@ -2,6 +2,7 @@ import { Result } from '../errors';
 import { User } from '../entities/user';
 import { UserId } from '../value-objects/user-id.vo';
 import { DomainError } from '../errors';
+import type { NotificationType, NotificationSourceType } from '../enums/NotificationEnums';
 
 /**
  * Puerto (interface) para persistencia de User
@@ -71,6 +72,59 @@ export interface IUserRepository {
     limit: number;
     totalPages: number;
   }>;
+
+  // =============================================================================
+  // 🔔 NOTIFICATION METHODS (Sprint #9)
+  // =============================================================================
+
+  /**
+   * Agrega una notificación al array de notificaciones del usuario
+   * @param userId - ID del usuario
+   * @param notification - Datos de la notificación a crear
+   */
+  addNotification(userId: UserId, notification: {
+    notificationType: NotificationType;
+    message: string;
+    actionUrl?: string;
+    sourceType?: NotificationSourceType;
+  }): Promise<Result<void, DomainError>>;
+
+  /**
+   * Obtiene las notificaciones del usuario con filtros y paginación
+   * @param userId - ID del usuario
+   * @param filters - Filtros y opciones de paginación
+   */
+  getUserNotifications(userId: UserId, filters: {
+    onlyUnread?: boolean;
+    page: number;
+    limit: number;
+  }): Promise<Result<{
+    notifications: Array<{
+      id: string;
+      notificationType: NotificationType;
+      message: string;
+      wasSeen: boolean;
+      notificationDate: Date;
+      actionUrl?: string;
+      sourceType?: NotificationSourceType;
+    }>;
+    total: number;
+    page: number;
+    limit: number;
+  }, DomainError>>;
+
+  /**
+   * Marca notificaciones como vistas
+   * @param userId - ID del usuario (para validar ownership)
+   * @param notificationIds - Array de IDs de notificaciones a marcar
+   */
+  markNotificationsAsSeen(userId: UserId, notificationIds: string[]): Promise<Result<void, DomainError>>;
+
+  /**
+   * Cuenta las notificaciones no vistas del usuario (para badge)
+   * @param userId - ID del usuario
+   */
+  countUnreadNotifications(userId: UserId): Promise<Result<number, DomainError>>;
 
   // TODO: Métodos estratégicos a considerar:
   // findByCompanyName(name: string): Promise<User[]>; // Para buscar por empresa
