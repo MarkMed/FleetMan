@@ -388,13 +388,13 @@ Capturar metadata del responsable al ejecutar QuickCheck para trazabilidad y aud
 		- **Tarea agrupada:** [1] QuickCheck tracking
 
 	- 6.6 **Aviso QuickCheck no aprobado** (RF-017) [Should-Have].
-Notificación de fallos: Genera notificación en centro de notificaciones cuando QuickCheck resulta FAIL. Registra fallo en historial de máquina. Hook en ExecuteQuickCheckUseCase para detectar resultado no aprobado. Integración con sistema de notificaciones (8.1). Email/SMS opcional si tiempo permite.
-		- Horas estimadas: **6**hs
-		- Margen: ±**1.0**hs (P80)
-		- Incertidumbre: **Baja-Media**
-		- Dependencias: 6.3, 6.4, 8.1 (FS)
+Notificación de fallos: Integrar ExecuteQuickCheckUseCase con AddNotificationUseCase para generar notificación cuando QuickCheck resulta FAIL. Llamada directa a AddNotificationUseCase pasando {notificationType: 'warning', message, sourceId: quickCheckId, sourceType: 'QuickCheck'}. Registrar fallo en historial de máquina. Validar que Observer Pattern detecta notificación y dispara toast automáticamente. Testing end-to-end: QC fail → notificación en BD → visible en bandeja → toast disparado → badge actualizado. Email/SMS opcional si tiempo permite.
+		- Horas estimadas: **4**hs
+		- Margen: ±**0.8**hs (P80)
+		- Incertidumbre: **Media**
+		- Dependencias: 6.3, 8.2, 8.4 (FS)
 		- Spike: **No**
-		- PERT: Optimista 4hs, Probable 6hs, Pesimista 8hs
+		- PERT: Optimista 3hs, Probable 4hs, Pesimista 6hs
 
 7. **Repuestos** (RF-012..RF-014) [NiceToHave]
 
@@ -416,21 +416,50 @@ Vista de repuestos con estados básicos.
 
 8. **Centro de Notificaciones** (RF-016)
 
-	- 8.1 **Modelo + bandeja**.
-Entidad notificación, estados (leída/no) y fuentes (alertas, eventos, QC).
-		- Horas estimadas: **12**hs
-		- Margen: ±**2.5**hs (P80)
-		- Incertidumbre: **Media**
-		- Dependencias: 1.1, 5.2, 4.2, 6.3 (FS)
+	- 8.1 **Domain + Contracts + Persistence**.
+Capa de Dominio y Persistencia: Definir estructura Notification como subdocumento de User (notificationType, message, wasSeen, notificationDate, sourceId, sourceType). Extender User schema en Mongoose agregando array de notifications con índices apropiados. Crear contratos Zod compartidos (AddNotificationDTO, NotificationDTO, MarkAsSeenDTO). NO crear entidad independiente ni repositorio separado - extender UserRepository. Implementar métodos básicos para add/get/markAsSeen en UserRepository.
+		- Horas estimadas: **5**hs
+		- Margen: ±**1.0**hs (P80)
+		- Incertidumbre: **Baja-Media**
+		- Dependencias: 1.1, 1.2, 1.3 (FS)
 		- Spike: **No**
+		- PERT: Optimista 4hs, Probable 5hs, Pesimista 7hs
 
-	- 8.2 **UI lectura/estado**.
-Filtros, marcar leído y paginado.
-		- Horas estimadas: **7**hs
+	- 8.2 **Application Layer Backend**.
+Capa de Aplicación: Implementar 4 Use Cases modulares: AddNotificationUseCase (llamado desde otros módulos), GetUserNotificationsUseCase (retorna lista filtrada por tipo/estado), MarkNotificationsAsSeenUseCase (batch update), CountUnreadNotificationsUseCase (para badge). Controllers y Routes REST: GET /api/notifications, PATCH /api/notifications/mark-as-seen, GET /api/notifications/unread-count. Validación de DTOs con Zod. Integración con UserRepository. Manejo estructurado de errores. DI con tsyringe.
+		- Horas estimadas: **6**hs
 		- Margen: ±**1.2**hs (P80)
 		- Incertidumbre: **Media**
-		- Dependencias: 8.1, 0.10 (FS)
+		- Dependencias: 8.1 (FS)
 		- Spike: **No**
+		- PERT: Optimista 5hs, Probable 6hs, Pesimista 8hs
+
+	- 8.3 **Frontend UI Components**.
+Componentes visuales: NotificationBadge (contador navbar con badge rojo), NotificationList (página completa con lista), NotificationItem (card individual), NotificationToast (wrapper react-hot-toast, config 5s duration). Estilos con Tailwind. Responsive. Estados vacío/loading/error. Filtros básicos por tipo/estado. Lista paginada simple. NO implementar observer aquí - solo UI.
+		- Horas estimadas: **4**hs
+		- Margen: ±**0.8**hs (P80)
+		- Incertidumbre: **Baja-Media**
+		- Dependencias: 0.14, 8.2 (FS)
+		- Spike: **No**
+		- PERT: Optimista 3hs, Probable 4hs, Pesimista 6hs
+
+	- 8.4 **Frontend Integration + Observer Pattern**.
+Integración y tiempo real: Hooks (useNotifications con TanStack Query refetchInterval 30s, useUnreadCount, useMarkAsSeen). NotificationObserver component implementando Observer Pattern: subscription a TanStack Query cache detecta nuevas notificaciones → dispara toasts automáticamente. Services (notificationService.ts con métodos API). Type-safe calls con contratos compartidos. Invalidación cache apropiada. Testing del flujo completo: polling → detección cambios → toast → actualización badge.
+		- Horas estimadas: **5**hs
+		- Margen: ±**1.0**hs (P80)
+		- Incertidumbre: **Media**
+		- Dependencias: 8.3, 8.2 (FS)
+		- Spike: **No**
+		- PERT: Optimista 4hs, Probable 5hs, Pesimista 7hs
+
+	- 8.5 **Documentación del Patrón**.
+Documentar patrón de integración para futuros módulos: Cómo llamar AddNotificationUseCase desde otros casos de uso, estructura del DTO, tipos de notificaciones soportados, ejemplos de uso (QuickCheck fail, alerta vencida, evento crítico). README específico en docs/ explicando arquitectura subdocumento y flujo Observer. Facilitar replicación por otros desarrolladores.
+		- Horas estimadas: **1**hs
+		- Margen: ±**0.3**hs (P80)
+		- Incertidumbre: **Baja**
+		- Dependencias: 8.2 (FS)
+		- Spike: **No**
+		- PERT: Optimista 0.5hs, Probable 1hs, Pesimista 1.5hs
 
 9. **Comunicación entre Usuarios** (RF-015)
 
