@@ -4,6 +4,7 @@ import machinesRoutes from './machines.routes';
 import usersRoutes from './users.routes';
 import machineTypeRoutes from './machine-type.routes';
 import quickCheckRoutes from './quickcheck.routes';
+import notificationRoutes from './notification.routes';
 
 /**
  * Router principal de la API v1
@@ -26,9 +27,11 @@ router.use('/users', usersRoutes);
 // Rutas de QuickCheck (inspecciones rápidas)
 router.use('/machines', quickCheckRoutes);
 
+// Rutas de notificaciones (Sprint #9)
+router.use('/users', notificationRoutes);
+
 // TODO: Agregar más rutas según se implementen los módulos
 // router.use('/maintenance', maintenanceRoutes);
-// router.use('/notifications', notificationsRoutes);
 // router.use('/messages', messagesRoutes);
 // router.use('/admin', adminRoutes);
 

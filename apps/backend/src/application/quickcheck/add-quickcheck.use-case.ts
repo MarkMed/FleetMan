@@ -1,7 +1,13 @@
-import { MachineId } from '@packages/domain';
+import { 
+  MachineId, 
+  QUICK_CHECK_RESULTS, 
+  NOTIFICATION_SOURCE_TYPES,
+  NOTIFICATION_TYPES 
+} from '@packages/domain';
 import { MachineRepository } from '@packages/persistence';
 import { logger } from '../../config/logger.config';
 import { type CreateQuickCheckRecord } from '@packages/contracts';
+import { AddNotificationUseCase } from '../notifications';
 
 /**
  * Use Case: Agregar registro de QuickCheck a una máquina
@@ -26,9 +32,11 @@ import { type CreateQuickCheckRecord } from '@packages/contracts';
  */
 export class AddQuickCheckUseCase {
   private machineRepository: MachineRepository;
+  private addNotificationUseCase: AddNotificationUseCase;
 
   constructor() {
     this.machineRepository = new MachineRepository();
+    this.addNotificationUseCase = new AddNotificationUseCase();
   }
 
   /**
@@ -105,6 +113,16 @@ export class AddQuickCheckUseCase {
         result: quickCheckRecord.result
       }, '✅ QuickCheck added successfully');
 
+      // 3. Integración Sprint #9: Notificar al owner de la máquina
+      // Fire-and-forget pattern: no bloquear si falla la notificación
+      this.notifyMachineOwner(machineId, quickCheckRecord.result)
+        .catch(error => {
+          logger.warn({ 
+            machineId,
+            error: error instanceof Error ? error.message : 'Unknown error'
+          }, '⚠️ Failed to send QuickCheck notification (non-blocking)');
+        });
+
       return {
         machineId,
         quickCheckAdded: quickCheckRecord,
@@ -119,6 +137,74 @@ export class AddQuickCheckUseCase {
       }, 'QuickCheck addition failed');
       
       throw error;
+    }
+  }
+
+  /**
+   * Notifica al dueño de la máquina sobre el QuickCheck completado
+   * Fire-and-forget: errores no bloquean operación principal
+   * Sprint #9 - Integración QuickCheck → Notifications
+   * 
+   * @param machineId - ID de la máquina inspeccionada
+   * @param result - Resultado del QuickCheck (SSOT: QUICK_CHECK_RESULTS)
+   */
+  private async notifyMachineOwner(
+    machineId: string,
+    result: typeof QUICK_CHECK_RESULTS[number]
+  ): Promise<void> {
+    try {
+      // 1. Obtener la máquina para extraer ownerId
+      const machineIdResult = MachineId.create(machineId);
+      if (!machineIdResult.success) {
+        logger.error({ machineId }, 'Invalid machineId format for notification');
+        return;
+      }
+
+      const machineResult = await this.machineRepository.findById(machineIdResult.data);
+      if (!machineResult.success) {
+        logger.error({ machineId }, 'Machine not found for notification');
+        return;
+      }
+
+      const machine = machineResult.data;
+      const ownerId = machine.toPublicInterface().ownerId;
+
+      // 2. Determinar tipo de notificación según resultado (SSOT: QUICK_CHECK_RESULTS y NOTIFICATION_TYPES)
+      const notificationType = result === QUICK_CHECK_RESULTS[0] // 'approved'
+        ? NOTIFICATION_TYPES[0] // 'success'
+        : result === QUICK_CHECK_RESULTS[1] // 'disapproved'
+        ? NOTIFICATION_TYPES[1] // 'warning'
+        : NOTIFICATION_TYPES[3]; // 'info'
+
+      // 3. Construir mensaje descriptivo
+      const resultText = result === QUICK_CHECK_RESULTS[0] // 'approved'
+        ? 'Aprobado ✓' 
+        : result === QUICK_CHECK_RESULTS[1] // 'disapproved'
+        ? 'No Aprobado ✗' 
+        : 'No Iniciado';
+
+      const message = `QuickCheck completado: ${resultText}`;
+
+      // 4. Enviar notificación al owner (SSOT: NOTIFICATION_SOURCE_TYPES)
+      await this.addNotificationUseCase.execute(ownerId, {
+        notificationType,
+        message,
+        actionUrl: `/machines/${machineId}/quickchecks`,
+        sourceType: NOTIFICATION_SOURCE_TYPES[0] // 'QUICKCHECK'
+      });
+
+      logger.info({ 
+        ownerId,
+        machineId,
+        result 
+      }, '🔔 QuickCheck notification sent successfully');
+
+    } catch (error) {
+      // Log error pero no propagar (fire-and-forget)
+      logger.warn({ 
+        machineId,
+        error: error instanceof Error ? error.message : 'Unknown error'
+      }, 'Failed to send QuickCheck notification');
     }
   }
 }
