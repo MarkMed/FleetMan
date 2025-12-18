@@ -142,19 +142,19 @@ export class AddQuickCheckUseCase {
   }
 
   /**
-   * Notifica al dueño de la máquina sobre el QuickCheck completado
-   * Fire-and-forget: errores no bloquean operación principal
-   * Sprint #9 - Integración QuickCheck → Notifications
+   * Notifies machine owner about completed QuickCheck
+   * Fire-and-forget: errors don't block main operation
+   * Sprint #9 - QuickCheck → Notifications Integration
    * 
-   * @param machineId - ID de la máquina inspeccionada
-   * @param result - Resultado del QuickCheck (SSOT: QUICK_CHECK_RESULTS)
+   * @param machineId - ID of inspected machine
+   * @param result - QuickCheck result (SSOT: QUICK_CHECK_RESULTS)
    */
   private async notifyMachineOwner(
     machineId: string,
     result: typeof QUICK_CHECK_RESULTS[number]
   ): Promise<void> {
     try {
-      // 1. Obtener la máquina para extraer ownerId
+      // 1. Get machine to extract ownerId
       const machineIdResult = MachineId.create(machineId);
       if (!machineIdResult.success) {
         logger.error({ machineId }, 'Invalid machineId format for notification');
@@ -170,25 +170,33 @@ export class AddQuickCheckUseCase {
       const machine = machineResult.data;
       const ownerId = machine.toPublicInterface().ownerId;
 
-      // 2. Determinar tipo de notificación según resultado (SSOT: QUICK_CHECK_RESULTS y NOTIFICATION_TYPES)
-      const notificationType = result === QUICK_CHECK_RESULTS[0] // 'approved'
-        ? NOTIFICATION_TYPES[0] // 'success'
-        : result === QUICK_CHECK_RESULTS[1] // 'disapproved'
-        ? NOTIFICATION_TYPES[1] // 'warning'
-        : NOTIFICATION_TYPES[3]; // 'info'
+      // 2. Map QuickCheck result to notification type and message (SSOT)
+      const RESULT_TO_NOTIFICATION_MAP = {
+        [QUICK_CHECK_RESULTS[0]]: { // 'approved'
+          type: NOTIFICATION_TYPES[0], // 'success'
+          message: NOTIFICATION_MESSAGE_KEYS.quickcheck.completed.approved
+        },
+        [QUICK_CHECK_RESULTS[1]]: { // 'disapproved'
+          type: NOTIFICATION_TYPES[1], // 'warning'
+          message: NOTIFICATION_MESSAGE_KEYS.quickcheck.completed.disapproved
+        },
+        [QUICK_CHECK_RESULTS[2]]: { // 'notInitiated'
+          type: NOTIFICATION_TYPES[3], // 'info'
+          message: NOTIFICATION_MESSAGE_KEYS.quickcheck.completed.notInitiated
+        }
+      };
 
-      // 3. Determinar mensaje i18n key según resultado (SSOT: NOTIFICATION_MESSAGE_KEYS)
-      const message = result === QUICK_CHECK_RESULTS[0] // 'approved'
-        ? NOTIFICATION_MESSAGE_KEYS.quickcheck.completed.approved
-        : result === QUICK_CHECK_RESULTS[1] // 'disapproved'
-        ? NOTIFICATION_MESSAGE_KEYS.quickcheck.completed.disapproved
-        : NOTIFICATION_MESSAGE_KEYS.quickcheck.completed.notInitiated;
+      const notificationConfig = RESULT_TO_NOTIFICATION_MAP[result];
+      if (!notificationConfig) {
+        logger.warn({ result }, 'Unknown QuickCheck result, skipping notification');
+        return;
+      }
 
-      // 4. Enviar notificación al owner (SSOT: NOTIFICATION_SOURCE_TYPES)
-      // El mensaje es una key i18n que será traducida en el frontend
+      // 3. Send notification to owner (SSOT: NOTIFICATION_SOURCE_TYPES)
+      // Message is an i18n key that will be translated in frontend
       await this.addNotificationUseCase.execute(ownerId, {
-        notificationType,
-        message,
+        notificationType: notificationConfig.type,
+        message: notificationConfig.message,
         actionUrl: `/machines/${machineId}/quickchecks/history`,
         sourceType: NOTIFICATION_SOURCE_TYPES[0] // 'QUICKCHECK'
       });
@@ -200,7 +208,7 @@ export class AddQuickCheckUseCase {
       }, '🔔 QuickCheck notification sent successfully');
 
     } catch (error) {
-      // Log error pero no propagar (fire-and-forget)
+      // Log error but don't propagate (fire-and-forget)
       logger.warn({ 
         machineId,
         error: error instanceof Error ? error.message : 'Unknown error'

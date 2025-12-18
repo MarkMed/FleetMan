@@ -35,45 +35,82 @@ export class NotificationController {
   }
 
   /**
+   * Validates authentication - req.user must be present
+   * @returns true if valid, false otherwise
+   */
+  private validateAuthentication(req: AuthenticatedRequest, res: Response): boolean {
+    if (!req.user) {
+      res.status(401).json({
+        success: false,
+        message: 'Unauthorized - Authentication required',
+        error: 'MISSING_AUTH'
+      });
+      return false;
+    }
+    return true;
+  }
+
+  /**
+   * Validates ownership - user can only access their own resources
+   * @returns true if valid, false otherwise
+   */
+  private validateOwnership(req: AuthenticatedRequest, res: Response, userId: string): boolean {
+    if (req.user!.userId !== userId) {
+      logger.warn({ 
+        authenticatedUserId: req.user!.userId,
+        requestedUserId: userId
+      }, 'Unauthorized access attempt - ownership validation failed');
+      
+      res.status(403).json({
+        success: false,
+        message: 'Forbidden - You can only access your own resources',
+        error: 'FORBIDDEN'
+      });
+      return false;
+    }
+    return true;
+  }
+
+  /**
+   * Maps errors to HTTP response with status code and error code
+   */
+  private handleError(error: Error): { statusCode: number; errorCode: string } {
+    const errorMessage = error.message.toLowerCase();
+
+    if (errorMessage.includes('not found')) {
+      return { statusCode: 404, errorCode: 'NOT_FOUND' };
+    }
+
+    if (errorMessage.includes('invalid') || errorMessage.includes('format')) {
+      return { statusCode: 400, errorCode: 'INVALID_INPUT' };
+    }
+
+    if (errorMessage.includes('forbidden') || errorMessage.includes('access denied')) {
+      return { statusCode: 403, errorCode: 'FORBIDDEN' };
+    }
+
+    return { statusCode: 500, errorCode: 'INTERNAL_ERROR' };
+  }
+
+  /**
    * GET /users/:userId/notifications
-   * Obtiene las notificaciones del usuario con filtros y paginación
+   * Retrieves user notifications with filters and pagination
    * 
-   * Query params validados por Zod middleware (GetNotificationsQuerySchema):
-   * - onlyUnread?: boolean - Filtrar solo no vistas
-   * - page?: number - Página actual (default: 1)
-   * - limit?: number - Items por página (default: 20, max: 100)
+   * Query params validated by Zod middleware (GetNotificationsQuerySchema):
+   * - onlyUnread?: boolean - Filter only unread notifications
+   * - page?: number - Current page (default: 1)
+   * - limit?: number - Items per page (default: 20, max: 100)
    */
   async getNotifications(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
-      if (!req.user) {
-        res.status(401).json({
-          success: false,
-          message: 'Unauthorized - Authentication required',
-          error: 'MISSING_AUTH'
-        });
-        return;
-      }
+      if (!this.validateAuthentication(req, res)) return;
 
       const { userId } = req.params;
       
-      // Validar ownership: usuario solo puede ver sus propias notificaciones
-      if (req.user.userId !== userId) {
-        logger.warn({ 
-          authenticatedUserId: req.user.userId,
-          requestedUserId: userId
-        }, 'Unauthorized access attempt to notifications');
-        
-        res.status(403).json({
-          success: false,
-          message: 'Forbidden - You can only access your own notifications',
-          error: 'FORBIDDEN'
-        });
-        return;
-      }
+      if (!this.validateOwnership(req, res, userId)) return;
 
-      // Query params ya validados y parseados por Zod middleware
-      // z.coerce.number() parsea strings a numbers automáticamente
-      // Zod reemplaza req.query con el objeto validado y parseado
+      // Query params already validated and parsed by Zod middleware
+      // z.coerce automatically parses strings to correct types
       const validatedQuery = req.query as unknown as GetNotificationsQuery;
       const filters: GetNotificationsQuery = {
         onlyUnread: validatedQuery.onlyUnread,
@@ -81,10 +118,7 @@ export class NotificationController {
         limit: validatedQuery.limit
       };
 
-      logger.info({ 
-        userId,
-        filters
-      }, 'Getting user notifications');
+      logger.info({ userId, filters }, 'Getting user notifications');
 
       const result = await this.getUserNotificationsUseCase.execute(userId, filters);
 
@@ -101,7 +135,7 @@ export class NotificationController {
       });
 
     } catch (error) {
-      const statusCode = this.mapErrorToHttpStatus(error as Error);
+      const { statusCode, errorCode } = this.handleError(error as Error);
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
 
       logger.error({ 
@@ -113,46 +147,26 @@ export class NotificationController {
       res.status(statusCode).json({
         success: false,
         message: errorMessage,
-        error: this.getErrorCode(error as Error)
+        error: errorCode
       });
     }
   }
 
   /**
    * PATCH /users/:userId/notifications/mark-as-seen
-   * Marca notificaciones como vistas (batch update)
+   * Marks notifications as seen (batch update)
    * 
-   * Body validado por Zod middleware (MarkAsSeenRequestSchema):
-   * - notificationIds: string[] - Array de MongoDB ObjectIds (min: 1, max: 100)
+   * Body validated by Zod middleware (MarkAsSeenRequestSchema):
+   * - notificationIds: string[] - Array of MongoDB ObjectIds (min: 1, max: 100)
    */
   async markAsSeen(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
-      if (!req.user) {
-        res.status(401).json({
-          success: false,
-          message: 'Unauthorized - Authentication required',
-          error: 'MISSING_AUTH'
-        });
-        return;
-      }
+      if (!this.validateAuthentication(req, res)) return;
 
       const { userId } = req.params;
       const request = req.body;
       
-      // Validar ownership: usuario solo puede marcar sus propias notificaciones
-      if (req.user.userId !== userId) {
-        logger.warn({ 
-          authenticatedUserId: req.user.userId,
-          requestedUserId: userId
-        }, 'Unauthorized attempt to mark notifications as seen');
-        
-        res.status(403).json({
-          success: false,
-          message: 'Forbidden - You can only mark your own notifications',
-          error: 'FORBIDDEN'
-        });
-        return;
-      }
+      if (!this.validateOwnership(req, res, userId)) return;
 
       logger.info({ 
         userId,
@@ -170,7 +184,7 @@ export class NotificationController {
       });
 
     } catch (error) {
-      const statusCode = this.mapErrorToHttpStatus(error as Error);
+      const { statusCode, errorCode } = this.handleError(error as Error);
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
 
       logger.error({ 
@@ -182,45 +196,25 @@ export class NotificationController {
       res.status(statusCode).json({
         success: false,
         message: errorMessage,
-        error: this.getErrorCode(error as Error)
+        error: errorCode
       });
     }
   }
 
   /**
    * GET /users/:userId/notifications/unread-count
-   * Obtiene el conteo de notificaciones no vistas
+   * Gets the count of unread notifications
    * 
-   * Usado para badge en navbar/header (polling cada 30s)
-   * Endpoint lightweight sin paginación ni filtros complejos
+   * Used for badge in navbar/header (polling every 30s)
+   * Lightweight endpoint without pagination or complex filters
    */
   async countUnread(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
-      if (!req.user) {
-        res.status(401).json({
-          success: false,
-          message: 'Unauthorized - Authentication required',
-          error: 'MISSING_AUTH'
-        });
-        return;
-      }
+      if (!this.validateAuthentication(req, res)) return;
 
       const { userId } = req.params;
       
-      // Validar ownership: usuario solo puede ver su propio conteo
-      if (req.user.userId !== userId) {
-        logger.warn({ 
-          authenticatedUserId: req.user.userId,
-          requestedUserId: userId
-        }, 'Unauthorized access attempt to unread count');
-        
-        res.status(403).json({
-          success: false,
-          message: 'Forbidden - You can only access your own notification count',
-          error: 'FORBIDDEN'
-        });
-        return;
-      }
+      if (!this.validateOwnership(req, res, userId)) return;
 
       logger.debug({ userId }, 'Counting unread notifications');
 
@@ -235,7 +229,7 @@ export class NotificationController {
       });
 
     } catch (error) {
-      const statusCode = this.mapErrorToHttpStatus(error as Error);
+      const { statusCode, errorCode } = this.handleError(error as Error);
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
 
       logger.error({ 
@@ -247,51 +241,8 @@ export class NotificationController {
       res.status(statusCode).json({
         success: false,
         message: errorMessage,
-        error: this.getErrorCode(error as Error)
+        error: errorCode
       });
     }
-  }
-
-  /**
-   * Mapea errores de dominio/use case a códigos HTTP
-   */
-  private mapErrorToHttpStatus(error: Error): number {
-    const errorMessage = error.message.toLowerCase();
-
-    if (errorMessage.includes('not found')) {
-      return 404;
-    }
-
-    if (errorMessage.includes('invalid') || errorMessage.includes('format')) {
-      return 400;
-    }
-
-    if (errorMessage.includes('forbidden') || errorMessage.includes('access denied')) {
-      return 403;
-    }
-
-    // Default: Internal Server Error
-    return 500;
-  }
-
-  /**
-   * Genera código de error para response
-   */
-  private getErrorCode(error: Error): string {
-    const errorMessage = error.message.toLowerCase();
-
-    if (errorMessage.includes('not found')) {
-      return 'NOT_FOUND';
-    }
-
-    if (errorMessage.includes('invalid') || errorMessage.includes('format')) {
-      return 'INVALID_INPUT';
-    }
-
-    if (errorMessage.includes('forbidden') || errorMessage.includes('access denied')) {
-      return 'FORBIDDEN';
-    }
-
-    return 'INTERNAL_ERROR';
   }
 }

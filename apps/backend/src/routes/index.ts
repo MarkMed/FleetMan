@@ -24,10 +24,10 @@ router.use('/machine-types', machineTypeRoutes);
 // Rutas de usuarios
 router.use('/users', usersRoutes);
 
-// Rutas de QuickCheck (inspecciones rápidas)
+// QuickCheck routes (quick inspections)
 router.use('/machines', quickCheckRoutes);
 
-// Rutas de notificaciones (Sprint #9)
+// Notification routes (Sprint #9)
 router.use('/users', notificationRoutes);
 
 // TODO: Agregar más rutas según se implementen los módulos
