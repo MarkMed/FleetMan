@@ -73,24 +73,16 @@ export class MachineController {
    */
   async create(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
-      if (!req.user) {
-        res.status(401).json({
-          success: false,
-          message: 'Unauthorized',
-          error: 'MISSING_AUTH'
-        });
-        return;
-      }
-
+      // Authentication already validated by authMiddleware
       logger.info({ 
         serialNumber: req.body.serialNumber,
-        userId: req.user.userId 
+        userId: req.user!.userId 
       }, 'Creating machine');
 
       const machine = await this.createUseCase.execute({
         ...req.body,
-        ownerId: req.user.userId,
-        createdById: req.user.userId
+        ownerId: req.user!.userId,
+        createdById: req.user!.userId
       });
 
       logger.info({ id: machine.id.getValue() }, 'Machine created successfully');
@@ -151,23 +143,15 @@ export class MachineController {
    */
   async getById(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
-      if (!req.user) {
-        res.status(401).json({
-          success: false,
-          message: 'Unauthorized',
-          error: 'MISSING_AUTH'
-        });
-        return;
-      }
-
+      // Authentication already validated by authMiddleware
       const { id } = req.params;
 
-      logger.info({ id, userId: req.user.userId }, 'Getting machine by ID');
+      logger.info({ id, userId: req.user!.userId }, 'Getting machine by ID');
 
       const machine = await this.getUseCase.execute(
         id,
-        req.user.userId,
-        req.user.type
+        req.user!.userId,
+        req.user!.type
       );
 
       res.status(200).json({
@@ -216,21 +200,13 @@ export class MachineController {
    */
   async list(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
-      if (!req.user) {
-        res.status(401).json({
-          success: false,
-          message: 'Unauthorized',
-          error: 'MISSING_AUTH'
-        });
-        return;
-      }
-
-      logger.info({ userId: req.user.userId }, 'Listing machines');
+      // Authentication already validated by authMiddleware
+      logger.info({ userId: req.user!.userId }, 'Listing machines');
 
       const result = await this.listUseCase.execute(
         req.query as any,
-        req.user.userId,
-        req.user.type
+        req.user!.userId,
+        req.user!.type
       );
 
       res.status(200).json({
@@ -268,24 +244,16 @@ export class MachineController {
    */
   async update(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
-      if (!req.user) {
-        res.status(401).json({
-          success: false,
-          message: 'Unauthorized',
-          error: 'MISSING_AUTH'
-        });
-        return;
-      }
-
+      // Authentication already validated by authMiddleware
       const { id } = req.params;
 
-      logger.info({ id, userId: req.user.userId }, 'Updating machine');
+      logger.info({ id, userId: req.user!.userId }, 'Updating machine');
 
       const machine = await this.updateUseCase.execute(
         id,
         req.body,
-        req.user.userId,
-        req.user.type
+        req.user!.userId,
+        req.user!.type
       );
 
       logger.info({ id }, 'Machine updated successfully');
@@ -345,23 +313,15 @@ export class MachineController {
    */
   async delete(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
-      if (!req.user) {
-        res.status(401).json({
-          success: false,
-          message: 'Unauthorized',
-          error: 'MISSING_AUTH'
-        });
-        return;
-      }
-
+      // Authentication already validated by authMiddleware
       const { id } = req.params;
 
-      logger.info({ id, userId: req.user.userId }, 'Deleting machine');
+      logger.info({ id, userId: req.user!.userId }, 'Deleting machine');
 
       await this.deleteUseCase.execute(
         id,
-        req.user.userId,
-        req.user.type
+        req.user!.userId,
+        req.user!.type
       );
 
       logger.info({ id }, 'Machine deleted successfully');

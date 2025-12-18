@@ -41,18 +41,10 @@ export class QuickCheckController {
    */
   async addQuickCheck(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
-      if (!req.user) {
-        res.status(401).json({
-          success: false,
-          message: 'Unauthorized - Authentication required',
-          error: 'MISSING_AUTH'
-        });
-        return;
-      }
-
+      // Authentication already validated by authMiddleware
       const { machineId } = req.params;
       const record = req.body;
-      const userId = req.user.userId;
+      const userId = req.user!.userId;
 
       logger.info({ 
         machineId,
@@ -97,17 +89,9 @@ export class QuickCheckController {
    */
   async getHistory(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
-      if (!req.user) {
-        res.status(401).json({
-          success: false,
-          message: 'Unauthorized - Authentication required',
-          error: 'MISSING_AUTH'
-        });
-        return;
-      }
-
+      // Authentication already validated by authMiddleware
       const { machineId } = req.params;
-      const userId = req.user.userId;
+      const userId = req.user!.userId;
       
       // Query params opcionales (ya validados por Zod)
       // Solo incluir filtros que realmente fueron proporcionados

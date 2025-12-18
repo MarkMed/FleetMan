@@ -35,23 +35,11 @@ export class NotificationController {
   }
 
   /**
-   * Validates authentication - req.user must be present
-   * @returns true if valid, false otherwise
-   */
-  private validateAuthentication(req: AuthenticatedRequest, res: Response): boolean {
-    if (!req.user) {
-      res.status(401).json({
-        success: false,
-        message: 'Unauthorized - Authentication required',
-        error: 'MISSING_AUTH'
-      });
-      return false;
-    }
-    return true;
-  }
-
-  /**
    * Validates ownership - user can only access their own resources
+   * 
+   * NOTE: Authentication is already validated by authMiddleware in routes,
+   * so req.user is guaranteed to exist at this point.
+   * 
    * @returns true if valid, false otherwise
    */
   private validateOwnership(req: AuthenticatedRequest, res: Response, userId: string): boolean {
@@ -103,10 +91,9 @@ export class NotificationController {
    */
   async getNotifications(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
-      if (!this.validateAuthentication(req, res)) return;
-
       const { userId } = req.params;
       
+      // Authentication already validated by authMiddleware
       if (!this.validateOwnership(req, res, userId)) return;
 
       // Query params already validated and parsed by Zod middleware
@@ -161,11 +148,10 @@ export class NotificationController {
    */
   async markAsSeen(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
-      if (!this.validateAuthentication(req, res)) return;
-
       const { userId } = req.params;
       const request = req.body;
       
+      // Authentication already validated by authMiddleware
       if (!this.validateOwnership(req, res, userId)) return;
 
       logger.info({ 
@@ -210,10 +196,9 @@ export class NotificationController {
    */
   async countUnread(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
-      if (!this.validateAuthentication(req, res)) return;
-
       const { userId } = req.params;
       
+      // Authentication already validated by authMiddleware
       if (!this.validateOwnership(req, res, userId)) return;
 
       logger.debug({ userId }, 'Counting unread notifications');
