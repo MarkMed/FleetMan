@@ -50,11 +50,12 @@ export const MarkAsSeenRequestSchema = z.object({
 
 /**
  * Schema for query params when fetching notifications (GET request)
+ * Query params always arrive as strings, so we use z.coerce for automatic parsing
  */
 export const GetNotificationsQuerySchema = z.object({
-  onlyUnread: z.boolean().optional(),
-  page: z.number().int().positive().default(1),
-  limit: z.number().int().positive().max(100).default(20)
+  onlyUnread: z.enum(['true', 'false']).transform(val => val === 'true').optional(),
+  page: z.coerce.number().int().positive().default(1),
+  limit: z.coerce.number().int().positive().max(100).default(20)
 });
 
 /**

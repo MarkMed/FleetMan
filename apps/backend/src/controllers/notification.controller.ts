@@ -6,6 +6,7 @@ import {
   CountUnreadNotificationsUseCase
 } from '../application/notifications';
 import type { AuthenticatedRequest } from '../middlewares/auth.middleware';
+import { GetNotificationsQuery } from '@packages/contracts';
 
 /**
  * NotificationController handles Notification-related HTTP requests
@@ -70,11 +71,14 @@ export class NotificationController {
         return;
       }
 
-      // Query params ya validados por Zod middleware
-      const filters = {
-        onlyUnread: req.query.onlyUnread === 'true',
-        page: parseInt(req.query.page as string) || 1,
-        limit: parseInt(req.query.limit as string) || 20
+      // Query params ya validados y parseados por Zod middleware
+      // z.coerce.number() parsea strings a numbers automáticamente
+      // Zod reemplaza req.query con el objeto validado y parseado
+      const validatedQuery = req.query as unknown as GetNotificationsQuery;
+      const filters: GetNotificationsQuery = {
+        onlyUnread: validatedQuery.onlyUnread,
+        page: validatedQuery.page,
+        limit: validatedQuery.limit
       };
 
       logger.info({ 
