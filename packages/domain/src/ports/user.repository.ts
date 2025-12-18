@@ -111,6 +111,7 @@ export interface IUserRepository {
     total: number;
     page: number;
     limit: number;
+    totalPages: number;
   }, DomainError>>;
 
   /**

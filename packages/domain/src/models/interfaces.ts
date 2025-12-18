@@ -39,7 +39,6 @@ export interface IClientUser extends IUser {
   readonly type: 'CLIENT';
   readonly subscriptionLevel: 'FREE' | 'BASIC' | 'PREMIUM';
   readonly subscriptionExpiry?: Date;
-  readonly notifications?: readonly INotification[]; // Hereda de IUser
 }
 
 /**
@@ -50,7 +49,6 @@ export interface IProviderUser extends IUser {
   readonly serviceAreas: readonly string[];
   readonly isVerified: boolean;
   readonly verificationDate?: Date;
-  readonly notifications?: readonly INotification[]; // Hereda de IUser
 }
 
 /**

@@ -33,8 +33,8 @@ interface INotificationSubdoc {
 export interface IUserDocument extends Omit<IUser, 'id' | 'notifications'>, Document {
   _id: Types.ObjectId;
   id: string; // Virtual getter from _id
-  passwordHash: string; // Solo para persistencia, no expuesta en domain interfaces
-  notifications?: Types.DocumentArray<INotificationSubdoc>; // Sprint #9 - Array de subdocumentos
+  passwordHash: string; // Only for persistence, not exposed in domain interfaces
+  notifications?: Types.DocumentArray<INotificationSubdoc>; // Sprint #9 - Subdocument array
 }
 
 /**
@@ -63,7 +63,7 @@ export interface IProviderUserDocument extends Omit<IProviderUser, 'id' | 'notif
 
 /**
  * Notification Subdocument Schema
- * Embebido en User similar a QuickCheck en Machine
+ * Embedded in User similar to QuickCheck in Machine
  */
 const NotificationSubSchema = new Schema({
   notificationType: {
@@ -95,7 +95,7 @@ const NotificationSubSchema = new Schema({
     enum: NOTIFICATION_SOURCE_TYPES,
     sparse: true
   }
-}, { _id: true }); // Genera _id automático para cada notificación
+}, { _id: true }); // Auto-generate _id for each notification
 
 // =============================================================================
 // USER SCHEMA DEFINITION
@@ -147,7 +147,7 @@ const userSchema = new Schema<IUserDocument>({
     default: true
   },
 
-  // 🔔 Sprint #9: Notifications array
+  // 🔔 Sprint #9: Embedded notifications array
   notifications: [NotificationSubSchema]
 }, {
   timestamps: true, // Adds createdAt and updatedAt
@@ -172,8 +172,10 @@ userSchema.set('toJSON', {
 
 // Indexes for performance
 userSchema.index({ type: 1, isActive: 1 });
-// Sprint #9: Índice compuesto para queries rápidas de notificaciones unread
-userSchema.index({ 'notifications.wasSeen': 1, 'notifications.notificationDate': -1 });
+// Note: Notification queries use in-memory filtering (not MongoDB queries),
+// so a compound index on notification fields wouldn't be beneficial.
+// If we implement aggregation pipeline in the future, consider adding:
+// userSchema.index({ 'notifications.wasSeen': 1, 'notifications.notificationDate': -1 });
 
 // =============================================================================
 // CLIENT USER DISCRIMINATOR

@@ -283,7 +283,7 @@ export class UserRepository implements IUserRepository {
   // =============================================================================
 
   /**
-   * Agrega una notificación al array de notificaciones del usuario
+   * Adds a notification to the user's notifications array
    */
   async addNotification(userId: UserId, notification: {
     notificationType: NotificationType;
@@ -320,7 +320,7 @@ export class UserRepository implements IUserRepository {
   }
 
   /**
-   * Obtiene las notificaciones del usuario con filtros y paginación
+   * Gets user notifications with filters and pagination
    */
   async getUserNotifications(userId: UserId, filters: {
     onlyUnread?: boolean;
@@ -339,33 +339,35 @@ export class UserRepository implements IUserRepository {
     total: number;
     page: number;
     limit: number;
+    totalPages: number;
   }, DomainError>> {
     try {
-      const user = await UserModel.findById(userId.getValue());
+      // Optimization: Only fetch notifications field, not entire user document
+      const user = await UserModel.findById(userId.getValue()).select('notifications');
 
       if (!user) {
         return err(DomainError.notFound(`User with ID ${userId.getValue()} not found`));
       }
 
-      // Convertir DocumentArray a array normal
+      // Convert DocumentArray to normal array
       const notificationsArray = Array.from(user.notifications || []);
 
-      // Filtrar notificaciones si se especifica onlyUnread
+      // Filter notifications if onlyUnread is specified
       const filteredNotifications = filters.onlyUnread
         ? notificationsArray.filter(n => !n.wasSeen)
         : notificationsArray;
 
-      // Ordenar por fecha descendente (más recientes primero)
+      // Sort by date descending (most recent first)
       const sortedNotifications = filteredNotifications.sort(
         (a, b) => new Date(b.notificationDate).getTime() - new Date(a.notificationDate).getTime()
       );
 
-      // Calcular paginación
+      // Calculate pagination
       const total = sortedNotifications.length;
       const skip = (filters.page - 1) * filters.limit;
       const paginatedNotifications = sortedNotifications.slice(skip, skip + filters.limit);
 
-      // Mapear a formato de respuesta
+      // Map to response format
       const mappedNotifications = paginatedNotifications.map(n => ({
         id: n._id.toString(),
         notificationType: n.notificationType,
@@ -380,7 +382,8 @@ export class UserRepository implements IUserRepository {
         notifications: mappedNotifications,
         total,
         page: filters.page,
-        limit: filters.limit
+        limit: filters.limit,
+        totalPages: Math.ceil(total / filters.limit)
       });
     } catch (error: any) {
       return err(DomainError.create('PERSISTENCE_ERROR', `Error getting notifications: ${error.message}`));
@@ -388,18 +391,13 @@ export class UserRepository implements IUserRepository {
   }
 
   /**
-   * Marca notificaciones como vistas
+   * Marks notifications as seen
    */
   async markNotificationsAsSeen(userId: UserId, notificationIds: string[]): Promise<Result<void, DomainError>> {
     try {
       const result = await UserModel.findOneAndUpdate(
-        {
-          _id: userId.getValue(),
-          'notifications._id': { $in: notificationIds }
-        },
-        {
-          $set: { 'notifications.$[elem].wasSeen': true }
-        },
+        { _id: userId.getValue() },
+        { $set: { 'notifications.$[elem].wasSeen': true } },
         {
           arrayFilters: [{ 'elem._id': { $in: notificationIds } }],
           new: true
@@ -407,9 +405,11 @@ export class UserRepository implements IUserRepository {
       );
 
       if (!result) {
-        return err(DomainError.notFound(`User with ID ${userId.getValue()} not found or no matching notifications`));
+        return err(DomainError.notFound(`User with ID ${userId.getValue()} not found`));
       }
 
+      // Note: If notification IDs don't match, MongoDB will still return the user document
+      // but won't update any notifications. This is acceptable behavior as invalid IDs are silently ignored.
       return ok(undefined);
     } catch (error: any) {
       return err(DomainError.create('PERSISTENCE_ERROR', `Error marking notifications as seen: ${error.message}`));
@@ -417,7 +417,7 @@ export class UserRepository implements IUserRepository {
   }
 
   /**
-   * Cuenta las notificaciones no vistas del usuario
+   * Counts unread notifications for the user
    */
   async countUnreadNotifications(userId: UserId): Promise<Result<number, DomainError>> {
     try {

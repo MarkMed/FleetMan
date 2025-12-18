@@ -7,8 +7,8 @@ import { NOTIFICATION_TYPES, NOTIFICATION_SOURCE_TYPES } from '@packages/domain'
 // =============================================================================
 
 /**
- * Schema para Notification Record embebida en User
- * Similar a QuickCheckRecordSchema pero para notificaciones
+ * Schema for Notification Record embedded in User
+ * Similar to QuickCheckRecordSchema but for notifications
  */
 export const NotificationSchema = z.object({
   id: z.string(),
@@ -23,8 +23,8 @@ export const NotificationSchema = z.object({
 });
 
 /**
- * Schema para crear una notificación (request DTO)
- * Solo se envían los campos necesarios, el resto se genera server-side
+ * Schema for creating a notification (request DTO)
+ * Only required fields are sent, the rest is generated server-side
  */
 export const AddNotificationRequestSchema = z.object({
   notificationType: z.enum(NOTIFICATION_TYPES),
@@ -37,16 +37,18 @@ export const AddNotificationRequestSchema = z.object({
 });
 
 /**
- * Schema para marcar notificaciones como vistas (PATCH request)
+ * Schema for marking notifications as seen (PATCH request)
  */
 export const MarkAsSeenRequestSchema = z.object({
-  notificationIds: z.array(z.string())
+  notificationIds: z.array(
+    z.string().regex(/^[a-f\d]{24}$/i, 'Must be a valid MongoDB ObjectId')
+  )
     .min(1, 'At least one notification ID is required')
     .max(100, 'Cannot mark more than 100 notifications at once')
 });
 
 /**
- * Schema para query params al obtener notificaciones (GET request)
+ * Schema for query params when fetching notifications (GET request)
  */
 export const GetNotificationsQuerySchema = z.object({
   onlyUnread: z.boolean().optional(),
@@ -55,7 +57,7 @@ export const GetNotificationsQuerySchema = z.object({
 });
 
 /**
- * Schema para response de notificaciones paginadas
+ * Schema for paginated notifications response
  */
 export const GetNotificationsResponseSchema = z.object({
   success: z.boolean(),
@@ -69,7 +71,7 @@ export const GetNotificationsResponseSchema = z.object({
 });
 
 /**
- * Schema para response de contador de no leídas
+ * Schema for unread count response
  */
 export const UnreadCountResponseSchema = z.object({
   success: z.boolean(),
@@ -79,7 +81,7 @@ export const UnreadCountResponseSchema = z.object({
 });
 
 // =============================================================================
-// TYPES INFERIDOS DE SCHEMAS
+// INFERRED TYPES FROM SCHEMAS
 // =============================================================================
 
 export type NotificationDTO = z.infer<typeof NotificationSchema>;
