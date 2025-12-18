@@ -8,6 +8,7 @@ import { MachineRepository } from '@packages/persistence';
 import { logger } from '../../config/logger.config';
 import { type CreateQuickCheckRecord } from '@packages/contracts';
 import { AddNotificationUseCase } from '../notifications';
+import { NOTIFICATION_MESSAGE_KEYS } from '../../constants/notification-messages.constants';
 
 /**
  * Use Case: Agregar registro de QuickCheck a una máquina
@@ -176,20 +177,19 @@ export class AddQuickCheckUseCase {
         ? NOTIFICATION_TYPES[1] // 'warning'
         : NOTIFICATION_TYPES[3]; // 'info'
 
-      // 3. Construir mensaje descriptivo
-      const resultText = result === QUICK_CHECK_RESULTS[0] // 'approved'
-        ? 'Aprobado ✓' 
+      // 3. Determinar mensaje i18n key según resultado (SSOT: NOTIFICATION_MESSAGE_KEYS)
+      const message = result === QUICK_CHECK_RESULTS[0] // 'approved'
+        ? NOTIFICATION_MESSAGE_KEYS.quickcheck.completed.approved
         : result === QUICK_CHECK_RESULTS[1] // 'disapproved'
-        ? 'No Aprobado ✗' 
-        : 'No Iniciado';
-
-      const message = `QuickCheck completado: ${resultText}`;
+        ? NOTIFICATION_MESSAGE_KEYS.quickcheck.completed.disapproved
+        : NOTIFICATION_MESSAGE_KEYS.quickcheck.completed.notInitiated;
 
       // 4. Enviar notificación al owner (SSOT: NOTIFICATION_SOURCE_TYPES)
+      // El mensaje es una key i18n que será traducida en el frontend
       await this.addNotificationUseCase.execute(ownerId, {
         notificationType,
         message,
-        actionUrl: `/machines/${machineId}/quickchecks`,
+        actionUrl: `/machines/${machineId}/quickchecks/history`,
         sourceType: NOTIFICATION_SOURCE_TYPES[0] // 'QUICKCHECK'
       });
 
