@@ -25,5 +25,8 @@ export * from "./machine-event.contract";
 // QuickCheck contracts
 export * from "./quickcheck.contract";
 
+// Notification contracts (Sprint #9)
+export * from "./notification.contract";
+
 // Re-export DayOfWeek from domain for convenience
 export { DayOfWeek } from "@packages/domain";

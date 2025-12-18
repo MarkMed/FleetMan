@@ -18,9 +18,11 @@ export * from "./value-objects";
 
 // Enums
 export * from "./enums/DayOfWeek";
+export * from "./enums/NotificationEnums";
 
 // Puertos (interfaces) - Implementados
 export * from "./ports";
+export type { IGetNotificationsResult } from "./ports/user.repository";
 
 // Servicios de dominio - Implementados
 export * from "./services";
@@ -35,6 +37,8 @@ export {
   IMachineEvent,
   IMachineEventType,
   INotification,
+  NotificationType, // 🔔 Sprint #9 - notification types
+  NotificationSourceType, // 🔔 Sprint #9 - notification source types
   IMaintenanceReminder,
   IQuickCheckTemplate, // OLD - not used in MVP
   IQuickCheckItemTemplate, // OLD - not used in MVP
