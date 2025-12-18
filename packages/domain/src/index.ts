@@ -22,6 +22,7 @@ export * from "./enums/NotificationEnums";
 
 // Puertos (interfaces) - Implementados
 export * from "./ports";
+export type { IGetNotificationsResult } from "./ports/user.repository";
 
 // Servicios de dominio - Implementados
 export * from "./services";

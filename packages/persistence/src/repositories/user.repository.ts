@@ -1,5 +1,6 @@
 import { 
   type IUserRepository,
+  type IGetNotificationsResult,
   User,
   UserId,
   Result,
@@ -15,6 +16,7 @@ import {
   UserModel, 
   type IUserDocument
 } from '../models';
+import { NotificationMapper } from '../mappers/notification.mapper';
 
 export class UserRepository implements IUserRepository {
 
@@ -326,21 +328,7 @@ export class UserRepository implements IUserRepository {
     onlyUnread?: boolean;
     page: number;
     limit: number;
-  }): Promise<Result<{
-    notifications: Array<{
-      id: string;
-      notificationType: NotificationType;
-      message: string;
-      wasSeen: boolean;
-      notificationDate: Date;
-      actionUrl?: string;
-      sourceType?: NotificationSourceType;
-    }>;
-    total: number;
-    page: number;
-    limit: number;
-    totalPages: number;
-  }, DomainError>> {
+  }): Promise<Result<IGetNotificationsResult, DomainError>> {
     try {
       // Optimization: Only fetch notifications field, not entire user document
       const user = await UserModel.findById(userId.getValue()).select('notifications');
@@ -367,16 +355,8 @@ export class UserRepository implements IUserRepository {
       const skip = (filters.page - 1) * filters.limit;
       const paginatedNotifications = sortedNotifications.slice(skip, skip + filters.limit);
 
-      // Map to response format
-      const mappedNotifications = paginatedNotifications.map(n => ({
-        id: n._id.toString(),
-        notificationType: n.notificationType,
-        message: n.message,
-        wasSeen: n.wasSeen,
-        notificationDate: n.notificationDate,
-        actionUrl: n.actionUrl,
-        sourceType: n.sourceType
-      }));
+      // Map to domain interfaces using NotificationMapper (DRY)
+      const mappedNotifications = NotificationMapper.toDomainArray(paginatedNotifications);
 
       return ok({
         notifications: mappedNotifications,

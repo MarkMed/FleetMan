@@ -3,6 +3,19 @@ import { User } from '../entities/user';
 import { UserId } from '../value-objects/user-id.vo';
 import { DomainError } from '../errors';
 import type { NotificationType, NotificationSourceType } from '../enums/NotificationEnums';
+import type { INotification } from '../models/interfaces';
+
+/**
+ * Result type for getUserNotifications method (DRY/SSOT)
+ * Uses INotification interface directly to avoid field-by-field duplication
+ */
+export interface IGetNotificationsResult {
+  notifications: INotification[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
 
 /**
  * Puerto (interface) para persistencia de User
@@ -98,21 +111,7 @@ export interface IUserRepository {
     onlyUnread?: boolean;
     page: number;
     limit: number;
-  }): Promise<Result<{
-    notifications: Array<{
-      id: string;
-      notificationType: NotificationType;
-      message: string;
-      wasSeen: boolean;
-      notificationDate: Date;
-      actionUrl?: string;
-      sourceType?: NotificationSourceType;
-    }>;
-    total: number;
-    page: number;
-    limit: number;
-    totalPages: number;
-  }, DomainError>>;
+  }): Promise<Result<IGetNotificationsResult, DomainError>>;
 
   /**
    * Marca notificaciones como vistas

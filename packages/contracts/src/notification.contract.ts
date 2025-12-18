@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import type { NotificationType, NotificationSourceType } from '@packages/domain';
+import type { NotificationType, NotificationSourceType, INotification } from '@packages/domain';
 import { NOTIFICATION_TYPES, NOTIFICATION_SOURCE_TYPES } from '@packages/domain';
 
 // =============================================================================
@@ -9,18 +9,19 @@ import { NOTIFICATION_TYPES, NOTIFICATION_SOURCE_TYPES } from '@packages/domain'
 /**
  * Schema for Notification Record embedded in User
  * Similar to QuickCheckRecordSchema but for notifications
+ * Uses satisfies to ensure compile-time validation against domain INotification
  */
 export const NotificationSchema = z.object({
   id: z.string(),
-  notificationType: z.enum(NOTIFICATION_TYPES) satisfies z.ZodType<NotificationType>,
+  notificationType: z.enum(NOTIFICATION_TYPES),
   message: z.string()
     .min(1, 'Message is required')
     .max(500, 'Message cannot exceed 500 characters'),
   wasSeen: z.boolean(),
   notificationDate: z.coerce.date(),
   actionUrl: z.string().url('Must be a valid URL').optional(),
-  sourceType: z.enum(NOTIFICATION_SOURCE_TYPES).optional() satisfies z.ZodType<NotificationSourceType | undefined>
-});
+  sourceType: z.enum(NOTIFICATION_SOURCE_TYPES).optional()
+}) satisfies z.ZodType<INotification>;
 
 /**
  * Schema for creating a notification (request DTO)

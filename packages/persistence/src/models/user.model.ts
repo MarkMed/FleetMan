@@ -5,6 +5,7 @@ import {
   type IProviderUser,
   type UserType,
   type SubscriptionLevel,
+  type INotification,
   NOTIFICATION_TYPES,
   NOTIFICATION_SOURCE_TYPES
 } from '@packages/domain';
@@ -15,15 +16,11 @@ import {
 
 /**
  * Notification subdocument type (with Mongoose _id)
+ * Extends domain INotification, replacing 'id' with MongoDB '_id'
+ * Pattern: Same as IMachineDocument extends Omit<IMachine, 'id'>
  */
-interface INotificationSubdoc {
+interface INotificationSubdoc extends Omit<INotification, 'id'> {
   _id: Types.ObjectId;
-  notificationType: typeof NOTIFICATION_TYPES[number];
-  message: string;
-  wasSeen: boolean;
-  notificationDate: Date;
-  actionUrl?: string;
-  sourceType?: typeof NOTIFICATION_SOURCE_TYPES[number];
 }
 
 /**
