@@ -192,13 +192,21 @@ export class AddQuickCheckUseCase {
         return;
       }
 
-      // 3. Send notification to owner (SSOT: NOTIFICATION_SOURCE_TYPES)
+      // 3. Extract metadata for i18next interpolation
+      const machinePublic = machine.toPublicInterface();
+      const machineName = machinePublic.nickname || machinePublic.serialNumber;
+      
+      // 4. Send notification to owner (SSOT: NOTIFICATION_SOURCE_TYPES)
       // Message is an i18n key that will be translated in frontend
       await this.addNotificationUseCase.execute(ownerId, {
         notificationType: notificationConfig.type,
         message: notificationConfig.message,
-        actionUrl: `/machines/${machineId}/quickchecks/history`,
-        sourceType: NOTIFICATION_SOURCE_TYPES[0] // 'QUICKCHECK'
+        actionUrl: `/machines/${machineId}/quickcheck/history`,
+        sourceType: NOTIFICATION_SOURCE_TYPES[0], // 'QUICKCHECK'
+        metadata: {
+          machineName,
+          userName: 'Técnico' // TODO: Extract from authenticated user context when available
+        }
       });
 
       logger.info({ 

@@ -292,6 +292,7 @@ export class UserRepository implements IUserRepository {
     message: string;
     actionUrl?: string;
     sourceType?: NotificationSourceType;
+    metadata?: Record<string, any>;
   }): Promise<Result<void, DomainError>> {
     try {
       const result = await UserModel.findByIdAndUpdate(
@@ -304,7 +305,8 @@ export class UserRepository implements IUserRepository {
               wasSeen: false,
               notificationDate: new Date(),
               actionUrl: notification.actionUrl,
-              sourceType: notification.sourceType
+              sourceType: notification.sourceType,
+              metadata: notification.metadata
             }
           }
         },

@@ -23,6 +23,7 @@
     "no": "No",
     "ok": "OK",
     "close": "Close",
+    "view": "View",
     "submit": "Submit",
     "reset": "Reset",
     "clear": "Clear",
@@ -206,21 +207,150 @@
   },
   "notifications": {
     "title": "Notifications",
+    "subtitle": "Stay up to date with all system alerts and notifications",
     "markAsRead": "Mark as Read",
     "markAllAsRead": "Mark All as Read",
+    "configure": "Configure",
+    "allNotifications": "All Notifications",
+    "loadMore": "Load more notifications",
+    "loading": "Loading...",
+    "filters": "Filters",
+    "type": "Type",
+    "status": "Status",
+    "applyFilters": "Apply Filters",
+    "all": "All",
+    "unread": "Unread",
+    "read": "Read",
+    "dismiss": "Dismiss",
     "noNotifications": "No notifications",
-    "types": {
-      "maintenance_due": "Maintenance Due",
-      "maintenance_overdue": "Maintenance Overdue",
-      "quickcheck_failed": "Quick Check Failed",
-      "machine_down": "Machine Down",
-      "reminder": "Reminder",
-      "system": "System"
-    },
     "priority": {
       "low": "Low",
       "medium": "Medium",
       "high": "High"
+    },
+    "stats": {
+      "total": "Total",
+      "unread": "Unread",
+      "critical": "Critical",
+      "thisWeek": "This week",
+      "notifications": "Notifications",
+      "new": "New",
+      "requireAttention": "Require attention"
+    },
+    "empty": {
+      "title": "No notifications",
+      "description": "When you receive notifications, they will appear here"
+    },
+    "error": {
+      "fetchFailed": "Error loading notifications",
+      "markAsSeenFailed": "Error marking as read"
+    },
+    "new": "New notification",
+    "types": {
+      "quickcheck": "QuickCheck",
+      "event": "Event",
+      "maintenance": "Maintenance",
+      "system": "System"
+    },
+    "quickcheck": {
+      "completed": {
+        "approved": "QuickCheck completed: Machine {{machineName}} approved by {{userName}}",
+        "disapproved": "QuickCheck completed: Machine {{machineName}} disapproved by {{userName}}",
+        "notInitiated": "QuickCheck completed: Machine {{machineName}} not initiated by {{userName}}"
+      },
+      "created": "New QuickCheck created for machine {{machineName}}",
+      "assigned": "QuickCheck assigned to {{userName}} for machine {{machineName}}"
+    },
+    "machine": {
+      "created": "New machine {{machineName}} registered",
+      "updated": "Machine {{machineName}} updated",
+      "deleted": "Machine {{machineName}} deleted",
+      "statusChanged": "Machine {{machineName}} status changed to {{status}}",
+      "event": {
+        "maintenanceStarted": "Maintenance started on machine {{machineName}}",
+        "maintenanceCompleted": "Maintenance completed on machine {{machineName}}",
+        "maintenanceCancelled": "Maintenance cancelled on machine {{machineName}}",
+        "sparePartAdded": "Spare part added to machine {{machineName}}",
+        "sparePartRemoved": "Spare part removed from machine {{machineName}}",
+        "documentUploaded": "Document uploaded for machine {{machineName}}",
+        "documentDeleted": "Document deleted from machine {{machineName}}",
+        "operatorAssigned": "Operator {{userName}} assigned to machine {{machineName}}",
+        "operatorUnassigned": "Operator {{userName}} unassigned from machine {{machineName}}",
+        "breakdown": "Machine {{machineName}} out of service",
+        "breakdownResolved": "Machine {{machineName}} operational again"
+      }
+    },
+    "maintenance": {
+      "scheduled": "Maintenance scheduled for machine {{machineName}} on {{date}}",
+      "reminder": "Reminder: Maintenance for machine {{machineName}} in {{hours}} hours",
+      "overdue": "Maintenance overdue for machine {{machineName}}",
+      "completed": "Maintenance completed on machine {{machineName}}",
+      "cancelled": "Maintenance cancelled for machine {{machineName}}",
+      "rescheduled": "Maintenance rescheduled for machine {{machineName}}"
+    },
+    "user": {
+      "assigned": "You have been assigned to {{taskType}}",
+      "unassigned": "You have been unassigned from {{taskType}}",
+      "roleChanged": "Your role has changed to {{roleName}}",
+      "permissionsChanged": "Your permissions have been updated"
+    },
+    "system": {
+      "welcome": "Welcome to FleetMan, {{userName}}",
+      "passwordChanged": "Your password has been successfully updated",
+      "accountUpdated": "Your account has been updated",
+      "dataExported": "Your data has been exported successfully",
+      "reportGenerated": "Report {{reportName}} generated successfully"
+    }
+  },
+  "notification": {
+    "quickcheck": {
+      "completed": {
+        "approved": "QuickCheck completed: Machine {{machineName}} approved by {{userName}}",
+        "disapproved": "QuickCheck completed: Machine {{machineName}} disapproved by {{userName}}",
+        "notInitiated": "QuickCheck completed: Machine {{machineName}} not initiated by {{userName}}"
+      },
+      "created": "New QuickCheck created for machine {{machineName}}",
+      "assigned": "QuickCheck assigned to {{userName}} for machine {{machineName}}"
+    },
+    "machine": {
+      "created": "New machine {{machineName}} registered",
+      "updated": "Machine {{machineName}} updated",
+      "deleted": "Machine {{machineName}} deleted",
+      "statusChanged": "Machine {{machineName}} status changed to {{status}}",
+      "event": {
+        "maintenanceStarted": "Maintenance started on machine {{machineName}}",
+        "maintenanceCompleted": "Maintenance completed on machine {{machineName}}",
+        "maintenanceCancelled": "Maintenance cancelled on machine {{machineName}}",
+        "sparePartAdded": "Spare part added to machine {{machineName}}",
+        "sparePartRemoved": "Spare part removed from machine {{machineName}}",
+        "documentUploaded": "Document uploaded for machine {{machineName}}",
+        "documentDeleted": "Document deleted from machine {{machineName}}",
+        "operatorAssigned": "Operator {{userName}} assigned to machine {{machineName}}",
+        "operatorUnassigned": "Operator {{userName}} unassigned from machine {{machineName}}",
+        "breakdown": "Machine {{machineName}} out of service",
+        "breakdownResolved": "Machine {{machineName}} operational again"
+      }
+    },
+    "maintenance": {
+      "scheduled": "Maintenance scheduled for machine {{machineName}} on {{date}}",
+      "reminder": "Reminder: Maintenance for machine {{machineName}} in {{hours}} hours",
+      "overdue": "Maintenance overdue for machine {{machineName}}",
+      "completed": "Maintenance completed on machine {{machineName}}",
+      "cancelled": "Maintenance cancelled for machine {{machineName}}",
+      "rescheduled": "Maintenance rescheduled for machine {{machineName}}"
+    },
+    "user": {
+      "assigned": "You have been assigned to {{taskType}}",
+      "unassigned": "You have been unassigned from {{taskType}}",
+      "roleChanged": "Your role has changed to {{roleName}}",
+      "permissionsChanged": "Your permissions have been updated"
+    },
+    "system": {
+      "welcome": "Welcome to FleetMan, {{userName}}",
+      "passwordChanged": "Your password has been successfully updated",
+      "accountUpdated": "Your account has been updated",
+      "dataExported": "Your data has been exported successfully",
+      "reportGenerated": "Report {{reportName}} generated successfully"
     }
   },
   "dashboard": {

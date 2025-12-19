@@ -420,8 +420,8 @@ xychart-beta
 | Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | 1.45 |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | 2.15 |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | 1.1 |
-| Desarrollo | 8.1 Domain+Contracts+Persistence | 5 | 5 | |
-| Desarrollo | 8.2 Application Layer Backend | 6 | 6 | |
+| Desarrollo | 8.1 Domain+Contracts+Persistence | 5 | 5 | 4.1 |
+| Desarrollo | 8.2 Application Layer Backend | 6 | 6 | 4.4 |
 | Desarrollo | 8.3 Frontend UI Components | 7 | 4 | |
 | Desarrollo | 8.4 Frontend Integration+Observer | 8 | 5 | |
 | Desarrollo | 6.6 Integración QC→Notificaciones | 9 | 4 | |

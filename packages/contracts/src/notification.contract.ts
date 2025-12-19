@@ -20,7 +20,8 @@ export const NotificationSchema = z.object({
   wasSeen: z.boolean(),
   notificationDate: z.coerce.date(),
   actionUrl: z.string().url('Must be a valid URL').optional(),
-  sourceType: z.enum(NOTIFICATION_SOURCE_TYPES).optional()
+  sourceType: z.enum(NOTIFICATION_SOURCE_TYPES).optional(),
+  metadata: z.record(z.any()).optional()
 }) satisfies z.ZodType<INotification>;
 
 /**
@@ -34,7 +35,8 @@ export const AddNotificationRequestSchema = z.object({
     .max(500, 'Message cannot exceed 500 characters')
     .trim(),
   actionUrl: z.string().url('Must be a valid URL').optional(),
-  sourceType: z.enum(NOTIFICATION_SOURCE_TYPES).optional()
+  sourceType: z.enum(NOTIFICATION_SOURCE_TYPES).optional(),
+  metadata: z.record(z.any()).optional()
 });
 
 /**
@@ -50,10 +52,37 @@ export const MarkAsSeenRequestSchema = z.object({
 
 /**
  * Schema for query params when fetching notifications (GET request)
- * Query params always arrive as strings, so we use z.coerce for automatic parsing
+ * 
+ * Note: Query params always arrive as strings from Express
+ * - onlyUnread: Manual transform to handle "true"/"false" strings correctly
+ *   (z.coerce.boolean() has a bug: Boolean("false") = true)
+ * - page/limit: z.coerce works fine for numbers
+ * 
+ * Sprint #9 - Sistema de Notificaciones
  */
 export const GetNotificationsQuerySchema = z.object({
-  onlyUnread: z.coerce.boolean().optional(),
+  onlyUnread: z
+    .union([z.boolean(), z.string(), z.undefined()])
+    .optional()
+    .transform((val) => {
+      // Si es undefined o no viene el parámetro, retornar undefined
+      if (val === undefined || val === null) return undefined;
+      
+      // Si ya es boolean, retornarlo tal cual
+      if (typeof val === 'boolean') return val;
+      
+      // Si es string, parsear correctamente
+      if (typeof val === 'string') {
+        const lower = val.toLowerCase().trim();
+        if (lower === 'true' || lower === '1') return true;
+        if (lower === 'false' || lower === '0') return false;
+        // Si no es un valor reconocido, tratar como undefined
+        return undefined;
+      }
+      
+      // Fallback: coercion normal para números
+      return Boolean(val);
+    }),
   page: z.coerce.number().int().positive().default(1),
   limit: z.coerce.number().int().positive().max(100).default(20)
 });
