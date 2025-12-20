@@ -116,7 +116,7 @@ export class AddQuickCheckUseCase {
 
       // 3. Integración Sprint #9: Notificar al owner de la máquina
       // Fire-and-forget pattern: no bloquear si falla la notificación
-      this.notifyMachineOwner(machineId, quickCheckRecord.result)
+      this.notifyMachineOwner(machineId, quickCheckRecord.result, quickCheckRecord.responsibleName)
         .catch(error => {
           logger.warn({ 
             machineId,
@@ -151,7 +151,8 @@ export class AddQuickCheckUseCase {
    */
   private async notifyMachineOwner(
     machineId: string,
-    result: typeof QUICK_CHECK_RESULTS[number]
+    result: typeof QUICK_CHECK_RESULTS[number],
+    responsibleName: string
   ): Promise<void> {
     try {
       // 1. Get machine to extract ownerId
@@ -205,7 +206,7 @@ export class AddQuickCheckUseCase {
         sourceType: NOTIFICATION_SOURCE_TYPES[0], // 'QUICKCHECK'
         metadata: {
           machineName,
-          userName: 'Usuario' // TODO Sprint #10: Extract from authenticated user context (req.user)
+          userName: responsibleName
         }
       });
 
