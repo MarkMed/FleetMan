@@ -4,7 +4,10 @@ import {
   type IClientUser, 
   type IProviderUser,
   type UserType,
-  type SubscriptionLevel
+  type SubscriptionLevel,
+  type INotification,
+  NOTIFICATION_TYPES,
+  NOTIFICATION_SOURCE_TYPES
 } from '@packages/domain';
 
 // =============================================================================
@@ -12,32 +15,88 @@ import {
 // =============================================================================
 
 /**
+ * Notification subdocument type (with Mongoose _id)
+ * Extends domain INotification, replacing 'id' with MongoDB '_id'
+ * Pattern: Same as IMachineDocument extends Omit<IMachine, 'id'>
+ */
+interface INotificationSubdoc extends Omit<INotification, 'id'> {
+  _id: Types.ObjectId;
+}
+
+/**
  * Base User Document interface extending domain IUser
  * Adds Mongoose-specific _id, document methods, and passwordHash for persistence
  */
-export interface IUserDocument extends Omit<IUser, 'id'>, Document {
+export interface IUserDocument extends Omit<IUser, 'id' | 'notifications'>, Document {
   _id: Types.ObjectId;
   id: string; // Virtual getter from _id
-  passwordHash: string; // Solo para persistencia, no expuesta en domain interfaces
+  passwordHash: string; // Only for persistence, not exposed in domain interfaces
+  notifications?: Types.DocumentArray<INotificationSubdoc>; // Sprint #9 - Subdocument array
 }
 
 /**
  * Client User Document interface
  */
-export interface IClientUserDocument extends Omit<IClientUser, 'id'>, Document {
+export interface IClientUserDocument extends Omit<IClientUser, 'id' | 'notifications'>, Document {
   _id: Types.ObjectId;
   id: string;
   passwordHash: string;
+  notifications?: Types.DocumentArray<INotificationSubdoc>;
 }
 
 /**
  * Provider User Document interface
  */
-export interface IProviderUserDocument extends Omit<IProviderUser, 'id'>, Document {
+export interface IProviderUserDocument extends Omit<IProviderUser, 'id' | 'notifications'>, Document {
   _id: Types.ObjectId;
   id: string;
   passwordHash: string;
+  notifications?: Types.DocumentArray<INotificationSubdoc>;
 }
+
+// =============================================================================
+// NOTIFICATION SUBDOCUMENT SCHEMA (Sprint #9)
+// =============================================================================
+
+/**
+ * Notification Subdocument Schema
+ * Embedded in User similar to QuickCheck in Machine
+ */
+const NotificationSubSchema = new Schema({
+  notificationType: {
+    type: String,
+    enum: NOTIFICATION_TYPES,
+    required: true
+  },
+  message: {
+    type: String,
+    required: true,
+    maxlength: 500
+  },
+  wasSeen: {
+    type: Boolean,
+    default: false,
+    required: true
+  },
+  notificationDate: {
+    type: Date,
+    default: Date.now,
+    required: true
+  },
+  actionUrl: {
+    type: String,
+    sparse: true
+  },
+  sourceType: {
+    type: String,
+    enum: NOTIFICATION_SOURCE_TYPES,
+    sparse: true
+  },
+  metadata: {
+    type: Schema.Types.Mixed,
+    required: false
+  }
+}, { _id: true }); // Auto-generate _id for each notification
 
 // =============================================================================
 // USER SCHEMA DEFINITION
@@ -87,7 +146,10 @@ const userSchema = new Schema<IUserDocument>({
   isActive: {
     type: Boolean,
     default: true
-  }
+  },
+
+  // 🔔 Sprint #9: Embedded notifications array
+  notifications: [NotificationSubSchema]
 }, {
   timestamps: true, // Adds createdAt and updatedAt
   discriminatorKey: 'type',
@@ -111,6 +173,10 @@ userSchema.set('toJSON', {
 
 // Indexes for performance
 userSchema.index({ type: 1, isActive: 1 });
+// Note: Notification queries use in-memory filtering (not MongoDB queries),
+// so a compound index on notification fields wouldn't be beneficial.
+// If we implement aggregation pipeline in the future, consider adding:
+// userSchema.index({ 'notifications.wasSeen': 1, 'notifications.notificationDate': -1 });
 
 // =============================================================================
 // CLIENT USER DISCRIMINATOR

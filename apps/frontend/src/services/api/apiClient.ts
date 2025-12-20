@@ -123,6 +123,7 @@ class ApiClient {
         method,
         headers: requestHeaders,
         signal: controller.signal,
+        cache: 'no-store', // Disable browser caching - ensures fresh data from API
       };
 
       // Add body for non-GET requests
@@ -153,6 +154,34 @@ class ApiClient {
 
       // Handle HTTP errors
       if (!response.ok) {
+        // Detect 401 Unauthorized (session expired)
+        if (response.status === 401) {
+          // Dynamic import to avoid circular dependency
+          const { useAuthStore } = await import('../../store/slices/authSlice');
+          const authState = useAuthStore.getState();
+          
+          // Only trigger modal if:
+          // 1. User is currently authenticated (has active session)
+          // 2. Modal hasn't been shown yet (anti-spam)
+          // 3. Not already on login page
+          const isOnLoginPage = window.location.pathname.includes('/auth/login');
+          
+          if (
+            authState.isAuthenticated && 
+            !authState.isSessionExpiredModalShown &&
+            !isOnLoginPage
+          ) {
+            // Mark as shown to prevent multiple triggers
+            authState.markSessionExpired();
+            
+            // Trigger session expired modal (handled by global listener)
+            // NOTE: Separation of concerns - this interceptor only DETECTS and DISPATCHES.
+            // Actual logout, state cleanup, and navigation are handled by useSessionExpiredHandler.
+            // This prevents tight coupling and allows the UI layer to control user flow.
+            window.dispatchEvent(new CustomEvent('session-expired'));
+          }
+        }
+        
         return {
           success: false,
           error:

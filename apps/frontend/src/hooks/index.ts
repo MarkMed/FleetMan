@@ -298,6 +298,11 @@ export { useNavigationSync } from './useNavigationSync';
 // Timer hooks
 export { useButtonTimer } from './useButtonTimer';
 export type { UseButtonTimerProps, UseButtonTimerReturn } from './useButtonTimer';
+
+// Notification hooks
+export { useNotifications, useUnreadCount, useMarkNotificationsAsSeen } from './useNotifications';
+export { useNotificationObserver } from './useNotificationObserver';
+
 // Machine types
 export { useMachineTypes } from './useMachineTypes';
 export { useMachineTypeName, useMachineTypeResolver } from './useMachineTypeName';

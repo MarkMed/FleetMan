@@ -2,9 +2,11 @@ import { Response } from 'express';
 import { logger } from '../config/logger.config';
 import {
   AddQuickCheckUseCase,
-  GetQuickCheckHistoryUseCase
+  GetQuickCheckHistoryUseCase,
+  GetQuickCheckItemsTemplateUseCase
 } from '../application/quickcheck';
 import type { AuthenticatedRequest } from '../middlewares/auth.middleware';
+import { MachineRepository } from '@packages/persistence';
 
 /**
  * QuickCheckController handles QuickCheck-related HTTP requests
@@ -18,10 +20,13 @@ import type { AuthenticatedRequest } from '../middlewares/auth.middleware';
 export class QuickCheckController {
   private addQuickCheckUseCase: AddQuickCheckUseCase;
   private getHistoryUseCase: GetQuickCheckHistoryUseCase;
+  private getItemsTemplateUseCase: GetQuickCheckItemsTemplateUseCase;
 
   constructor() {
     this.addQuickCheckUseCase = new AddQuickCheckUseCase();
     this.getHistoryUseCase = new GetQuickCheckHistoryUseCase();
+    const machineRepository = new MachineRepository();
+    this.getItemsTemplateUseCase = new GetQuickCheckItemsTemplateUseCase(machineRepository);
   }
 
   /**
@@ -41,18 +46,10 @@ export class QuickCheckController {
    */
   async addQuickCheck(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
-      if (!req.user) {
-        res.status(401).json({
-          success: false,
-          message: 'Unauthorized - Authentication required',
-          error: 'MISSING_AUTH'
-        });
-        return;
-      }
-
+      // Authentication already validated by authMiddleware
       const { machineId } = req.params;
       const record = req.body;
-      const userId = req.user.userId;
+      const userId = req.user!.userId;
 
       logger.info({ 
         machineId,
@@ -97,17 +94,9 @@ export class QuickCheckController {
    */
   async getHistory(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
-      if (!req.user) {
-        res.status(401).json({
-          success: false,
-          message: 'Unauthorized - Authentication required',
-          error: 'MISSING_AUTH'
-        });
-        return;
-      }
-
+      // Authentication already validated by authMiddleware
       const { machineId } = req.params;
-      const userId = req.user.userId;
+      const userId = req.user!.userId;
       
       // Query params opcionales (ya validados por Zod)
       // Solo incluir filtros que realmente fueron proporcionados
@@ -215,5 +204,54 @@ export class QuickCheckController {
     if (message.includes('invalid')) return 'INVALID_INPUT';
 
     return 'INTERNAL_ERROR';
+  }
+
+  /**
+   * GET /machines/:machineId/quickcheck/items-template
+   * Obtiene plantilla de ítems derivada del último QuickCheck
+   * 
+   * Estrategia: Reutilizar estructura del último QuickCheck sin duplicar storage
+   * 
+   * Autorización:
+   * - Owner de la máquina
+   * - Provider asignado a la máquina
+   * 
+   * Response:
+   * - Si hay historial: Retorna items[] sin resultado (para inicializar formulario)
+   * - Si NO hay historial: Retorna items[] vacío (usuario crea desde cero)
+   * 
+   * Headers:
+   * - Cache-Control: max-age=900 (cacheable 15 minutos - balance performance/frescura)
+   */
+  async getItemsTemplate(req: AuthenticatedRequest, res: Response): Promise<void> {
+    try {
+      const { machineId } = req.params;
+      const userId = req.user!.userId;
+
+      logger.info({ machineId, userId }, 'Getting QuickCheck items template');
+
+      const result = await this.getItemsTemplateUseCase.execute(machineId, userId);
+
+      // Cache response (ítems raramente cambian entre QuickChecks)
+      // 15 minutos: balance entre performance y frescura de datos
+      res.set('Cache-Control', 'max-age=900'); // 15 minutos
+
+      res.status(200).json(result);
+
+    } catch (error) {
+      const statusCode = this.mapErrorToHttpStatus(error as Error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+
+      logger.error({ 
+        error: errorMessage,
+        machineId: req.params.machineId 
+      }, 'Failed to get QuickCheck items template');
+
+      res.status(statusCode).json({
+        success: false,
+        message: errorMessage,
+        error: this.getErrorCode(error as Error)
+      });
+    }
   }
 }

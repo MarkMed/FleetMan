@@ -411,25 +411,41 @@ xychart-beta
 - **Deferred a Sprint #9:** Sistema de fotos completo Cloudinary (17hs), Scheduler + Alertas (requiere decisión arquitectónica previa)
 
 ### **Sprint #9**: dom 14 dic → sáb 20 dic 2025
-VER ARCHIVO MD ALERTS-VS-NOTIFICATIONS
-**Objetivo:** 🔔 Full Notificaciones - Sistema completo front y back de notificaciones.
+
+**Objetivo:** 🔔 Centro de Notificaciones Completo - Sistema completo front/back de bandeja de notificaciones multi-source con primera integración funcional.
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
-| Documentación | 20.1 Reporte Académico (dominical) | 1 | 5 | |
-| Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | |
-| Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
-| Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | |
-| Desarrollo | 6.3 Persistencia en historial (RF-011) | 5 | 5 | |
-| Desarrollo | 8.1 Modelo + bandeja | 6 | 12 | |
-| Desarrollo | 4.2 Registrar evento (RF-008) - Parte 1 | 7 | 10 | |
+| Documentación | 20.1 Reporte Académico (dominical) | 1 | 5 | 5.3 |
+| Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | 1.45 |
+| Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | 2.15 |
+| Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | 1.1 |
+| Desarrollo | 8.1 Domain+Contracts+Persistence | 5 | 5 | 4.1 |
+| Desarrollo | 8.2 Application Layer Backend | 6 | 6 | 4.4 |
+| Desarrollo | 8.3 Frontend UI Components | 7 | 4 | 4.3 |
+| Desarrollo | 8.4 Frontend Integration+Observer | 8 | 5 | 7.7 |
+| Desarrollo | 6.6 Integración QC→Notificaciones | 9 | 4 | 1.2 |
+| Documentación | 8.5 Documentación Patrón | 10 | 1 | 0.8 |
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales | Consumo |
 |:---:|:----------:|:-------:|
-| **35.8**hs | **0**hs | **0.0%** |
+| **33.8**hs | **32.5**hs | **96.2%** |
 
-Buffer reservado: **-0.8**hs
+Buffer reservado: **+1.2**hs
 Total con buffer: **35**hs
+
+```mermaid
+xychart-beta
+    title "Sprint #9: Horas Estimadas (azul) vs Reales (verde)"
+    x-axis "Tareas" ["20.1", "20.2", "20.3", "21.2", "8.1", "8.2", "8.3", "8.4", "6.6", "8.5", "TOTAL"]
+    y-axis "Horas" 0 --> 36
+
+    %% Green line (estimadas)
+    line [5, 1.5, 1.3, 1, 5, 6, 4, 5, 4, 1, 33.8]
+
+    %% Black line (reales)
+    line [5.3, 1.45, 2.15, 1.1, 4.1, 4.4, 4.3, 7.7, 1.2, 0.8, 32.5]
+```
 
 Distribución por categoría:
 | Documentación | Desarrollo | QA | Capacitación | Gestión |
@@ -456,17 +472,50 @@ Distribución por categoría:
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales | Consumo |
 |:---:|:----------:|:-------:|
-| **38.8**hs | **0**hs | **0.0%** |
+| **33.8**hs | **7.85**hs | **23.2%** |
 
-Buffer reservado: **-3.8**hs
+Buffer reservado: **+1.2**hs
 Total con buffer: **35**hs
 
 Distribución por categoría:
 | Documentación | Desarrollo | QA | Capacitación | Gestión |
 |:-------:|:----------:|:--:|:------------:|:-------------:|
-| **5**hs | **30**hs | **0**hs | **1**hs | **2.8**hs |
+| **6**hs | **24**hs | **0**hs | **1**hs | **2.8**hs |
 
-**Riesgos:** Sprint denso con múltiples integraciones críticas. Período navideño puede afectar productividad.
+**Notas del Sprint:**
+- Sprint enfocado 100% en sistema de notificaciones con enfoque por capas
+- Arquitectura pragmática: Notification como subdocumento en User (no entidad independiente)
+- Use Cases modulares para facilitar testing y reutilización
+- Observer Pattern implementado con TanStack Query cache subscription (sin polling manual)
+- Integración real con QuickCheck (6.6) valida patrón end-to-end
+- Orden secuencial: Domain/Persistence → Application → UI → Integration → QuickCheck hook
+- Documentación crítica (8.5) facilita integración futura con Alertas y Eventos
+
+**Distribución semanal sugerida:**
+- **Dom 14 dic (planning):** 20.1 (5h) + 20.2 (1.5h) + 20.3 (1.3h) + 21.2 (1h) = 8.8hs [COMPLETADO 7.85hs]
+- **Lun 15 dic:** 8.1 Domain+Contracts+Persistence (5hs) = 5hs  
+- **Mar 16 dic:** 8.2 Application Layer Backend (5hs) = 5hs  
+- **Mié 17 dic:** Completar 8.2 (1h) + 8.3 Frontend UI (4hs) = 5hs  
+- **Jue 18 dic:** 8.4 Frontend Integration+Observer (5hs) = 5hs  
+- **Vie 19 dic:** 6.6 Integración QC→Notificaciones (4hs) + buffer (1h) = 5hs  
+- **Sáb 20 dic:** 8.5 Documentación (1h) + buffer (4hs) = 5hs  
+
+**Total:** 33.8hs planificadas + buffer +1.2hs
+
+**Fortalezas:**
+- ✅ Buffer positivo (+1.2hs)
+- ✅ Tareas bien acotadas (1-6hs cada una)
+- ✅ Dependencias lineales claras
+- ✅ Patrón documentado para futuros módulos
+- ✅ Testing end-to-end incorporado en 6.6
+
+**Consideraciones técnicas:**
+- TanStack Query refetchInterval: 30 segundos (balance tiempo real vs. carga)
+- react-hot-toast: toasts 5 segundos duration
+- Subdocumento User.notifications: suficiente para MVP (no requiere colección separada)
+- Observer valida detección automática sin recargas manuales
+
+**Riesgos:** Período navideño puede afectar productividad levemente.
 
 ### **Sprint #11**: dom 28 dic → sáb 3 ene 2026
 
