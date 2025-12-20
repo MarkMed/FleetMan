@@ -265,7 +265,7 @@ export const NotificationsScreen: React.FC = () => {
                   >
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
-                        <div className="flex items-center gap-4 text-xs text-muted-foreground mt-2">
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground mt-2">
                           {/* {!notification.wasSeen && (
                             <span className="text-xs text-primary bg-primary/10 px-2 py-1 rounded">
                               {vm.t('notifications.unread')}
