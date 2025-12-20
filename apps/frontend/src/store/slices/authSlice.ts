@@ -11,6 +11,7 @@ interface AuthState {
   isLoading: boolean;
   isHydrated: boolean;  // Track if state has been loaded from storage
   error?: string;
+  isSessionExpiredModalShown: boolean; // Anti-spam flag for session expired modal
 }
 
 interface AuthStore extends AuthState {
@@ -26,6 +27,7 @@ interface AuthStore extends AuthState {
   setError: (error: string | null) => void;
   clearError: () => void;
   setHydrated: (isHydrated: boolean) => void;
+  markSessionExpired: () => void; // Mark session as expired (prevent duplicate modals)
 }
 
 export const useAuthStore = create<AuthStore>()(
@@ -38,6 +40,7 @@ export const useAuthStore = create<AuthStore>()(
       isLoading: false,
       isHydrated: false,  // Will be true once storage is loaded
       error: undefined,
+      isSessionExpiredModalShown: false, // Initialize flag
 
       // Actions
       login: async (email: string, password: string) => {
@@ -56,6 +59,7 @@ export const useAuthStore = create<AuthStore>()(
             isAuthenticated: true,
             isLoading: false,
             error: undefined,
+            isSessionExpiredModalShown: false, // Reset flag on successful login
           });
 
           return { shouldNavigate: true };
@@ -139,6 +143,7 @@ export const useAuthStore = create<AuthStore>()(
             isAuthenticated: false,
             isLoading: false,
             error: undefined,
+            isSessionExpiredModalShown: false, // Reset flag on logout
           });
 
           return { shouldNavigate: true };
@@ -243,6 +248,17 @@ export const useAuthStore = create<AuthStore>()(
       setHydrated: (isHydrated: boolean) => {
         set({ isHydrated });
       },
+
+      markSessionExpired: () => {
+        set({ isSessionExpiredModalShown: true });
+      },
+
+      // TODO: Future enhancement - Auto-refresh token before expiration
+      // scheduleTokenRefresh: (expiresIn: number) => {
+      //   // Schedule refresh 5 minutes before token expires
+      //   const refreshTime = (expiresIn - 300) * 1000;
+      //   setTimeout(() => get().refreshToken(), refreshTime);
+      // },
     }),
     {
       name: config.STORAGE_KEYS.AUTH_TOKEN,

@@ -1,4 +1,11 @@
 {
+  "auth": {
+    "sessionExpired": {
+      "title": "Session Expired",
+      "description": "For security reasons, your session has expired. Please log in again to continue.",
+      "action": "Log In"
+    }
+  },
   "common": {
     "loading": "Loading...",
     "error": "Error",

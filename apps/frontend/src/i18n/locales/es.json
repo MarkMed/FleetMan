@@ -1,4 +1,11 @@
 {
+  "auth": {
+    "sessionExpired": {
+      "title": "Sesión expirada",
+      "description": "Por razones de seguridad, tu sesión ha expirado. Por favor, inicia sesión nuevamente para continuar.",
+      "action": "Iniciar sesión"
+    }
+  },
   "common": {
     "loading": "Cargando...",
     "error": "Error",
