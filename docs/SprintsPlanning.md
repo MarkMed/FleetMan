@@ -423,13 +423,13 @@ xychart-beta
 | Desarrollo | 8.1 Domain+Contracts+Persistence | 5 | 5 | 4.1 |
 | Desarrollo | 8.2 Application Layer Backend | 6 | 6 | 4.4 |
 | Desarrollo | 8.3 Frontend UI Components | 7 | 4 | 4.3 |
-| Desarrollo | 8.4 Frontend Integration+Observer | 8 | 5 | 6.7 |
+| Desarrollo | 8.4 Frontend Integration+Observer | 8 | 5 | 7.7 |
 | Desarrollo | 6.6 Integración QC→Notificaciones | 9 | 4 | 1.2 |
 | Documentación | 8.5 Documentación Patrón | 10 | 1 | 0.8 |
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales | Consumo |
 |:---:|:----------:|:-------:|
-| **33.8**hs | **31.5**hs | **93.2%** |
+| **33.8**hs | **32.5**hs | **96.2%** |
 
 Buffer reservado: **+1.2**hs
 Total con buffer: **35**hs
@@ -444,7 +444,7 @@ xychart-beta
     line [5, 1.5, 1.3, 1, 5, 6, 4, 5, 4, 1, 33.8]
 
     %% Black line (reales)
-    line [5.3, 1.45, 2.15, 1.1, 4.1, 4.4, 4.3, 6.7, 1.2, 0.8, 31.5]
+    line [5.3, 1.45, 2.15, 1.1, 4.1, 4.4, 4.3, 7.7, 1.2, 0.8, 32.5]
 ```
 
 Distribución por categoría:
