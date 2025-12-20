@@ -1,6 +1,5 @@
-import { DomainError, ok, err } from '@packages/domain';
 import type { IMachineRepository } from '@packages/domain';
-import { MachineId } from '@packages/domain';
+import { MachineId, DomainError } from '@packages/domain';
 import type { GetQuickCheckItemsTemplateResponse, QuickCheckItemTemplate } from '@packages/contracts';
 
 /**
@@ -25,7 +24,7 @@ export class GetQuickCheckItemsTemplateUseCase {
     private readonly machineRepository: IMachineRepository
   ) {}
 
-  async execute(machineId: string): Promise<GetQuickCheckItemsTemplateResponse> {
+  async execute(machineId: string, userId: string): Promise<GetQuickCheckItemsTemplateResponse> {
     try {
       // 1. Validar machineId
       const machineIdVO = MachineId.create(machineId);
@@ -33,7 +32,23 @@ export class GetQuickCheckItemsTemplateUseCase {
         throw new Error('Invalid machine ID format');
       }
 
-      // 2. Obtener último QuickCheck de la máquina
+      // 2. Validar que la máquina existe y que el usuario tiene acceso
+      const machineResult = await this.machineRepository.findById(machineIdVO.data);
+      if (!machineResult.success) {
+        throw new Error(`Machine with ID ${machineId} not found`);
+      }
+
+      const machine = machineResult.data;
+
+      // 3. Validar acceso del usuario (owner o provider asignado)
+      const isOwner = machine.ownerId.getValue() === userId;
+      const isAssignedProvider = machine.assignedProviderId?.getValue() === userId;
+
+      if (!isOwner && !isAssignedProvider) {
+        throw new Error('Access denied: you are not the owner or assigned provider');
+      }
+
+      // 4. Obtener último QuickCheck de la máquina
       const latestQuickCheckResult = await this.machineRepository.getLatestQuickCheck(machineIdVO.data);
       
       if (!latestQuickCheckResult.success) {
@@ -42,7 +57,7 @@ export class GetQuickCheckItemsTemplateUseCase {
 
       const latestQuickCheck = latestQuickCheckResult.data;
 
-      // 3a. CASO: NO hay QuickChecks previos (máquina nueva o sin historial)
+      // 5a. CASO: NO hay QuickChecks previos (máquina nueva o sin historial)
       if (!latestQuickCheck || !latestQuickCheck.quickCheckItems || latestQuickCheck.quickCheckItems.length === 0) {
         return {
           success: true,
@@ -55,7 +70,7 @@ export class GetQuickCheckItemsTemplateUseCase {
         };
       }
 
-      // 3b. CASO: Existe QuickCheck previo → Derivar template
+      // 5b. CASO: Existe QuickCheck previo → Derivar template
       // Mapear items: Solo extraer name + description (omitir 'result')
       const templateItems: QuickCheckItemTemplate[] = latestQuickCheck.quickCheckItems.map(item => ({
         name: item.name,
@@ -74,7 +89,14 @@ export class GetQuickCheckItemsTemplateUseCase {
       };
 
     } catch (error: any) {
-      throw new Error(`Error getting QuickCheck items template: ${error.message}`);
+      // Preservar errores de dominio para manejo apropiado en controller
+      if (error instanceof DomainError) {
+        throw error;
+      }
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw new Error(`Error getting QuickCheck items template: ${String(error)}`);
     }
   }
 

@@ -430,11 +430,6 @@ export class MachineRepository implements IMachineRepository {
 
   /**
    * Obtiene el último QuickCheck de una máquina
-   * @param machineId - ID de la máquina
-   * @returns Último registro QuickCheck o undefined
-   */
-  /**
-   * Obtiene el último QuickCheck de una máquina
    * Optimizado: Solo carga campo quickChecks (no todo el documento)
    * 
    * @param machineId - ID de la máquina

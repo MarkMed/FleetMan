@@ -4,7 +4,8 @@ import type {
   CreateQuickCheckRecord,
   AddQuickCheckResponse,
   QuickCheckHistoryFilters,
-  GetQuickCheckHistoryResponse
+  GetQuickCheckHistoryResponse,
+  GetQuickCheckItemsTemplateResponse
 } from '@contracts';
 
 /**
@@ -67,25 +68,13 @@ export class QuickCheckService {
    * 
    * @param machineId - Target machine ID
    * @param headers - Optional headers (e.g., Authorization)
-   * @returns Promise with template items array (empty if no history), hasTemplate flag, and source date
+   * @returns Promise with template data (uses contract type - SSOT)
    */
   async getItemsTemplate(
     machineId: string,
     headers?: Record<string, string>
-  ): Promise<{
-    items: Array<{ name: string; description?: string }>;
-    hasTemplate: boolean;
-    sourceQuickCheckDate?: string;
-  }> {
-    const response = await apiClient.get<{
-      success: boolean;
-      message: string;
-      data: {
-        items: Array<{ name: string; description?: string }>;
-        hasTemplate: boolean;
-        sourceQuickCheckDate?: string;
-      };
-    }>(
+  ): Promise<GetQuickCheckItemsTemplateResponse['data']> {
+    const response = await apiClient.get<{ success: boolean; message: string; data: GetQuickCheckItemsTemplateResponse['data'] }>(
       `/machines/${machineId}/quickcheck/items-template`,
       undefined,
       headers

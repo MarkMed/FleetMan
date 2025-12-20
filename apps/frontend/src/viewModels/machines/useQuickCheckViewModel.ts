@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { toast } from '@components/ui';
 import type {
   QuickCheckItemUI,
@@ -30,6 +31,7 @@ const getStorageKey = (machineId: string) => `quickcheck_${machineId}`;
  */
 export function useQuickCheckViewModel() {
   const { id: machineId } = useParams<{ id: string }>();
+  const { t } = useTranslation();
   
   if (!machineId) {
     throw new Error('Machine ID is required');
@@ -65,9 +67,9 @@ export function useQuickCheckViewModel() {
         const template = await quickCheckService.getItemsTemplate(machineId, headers);
         
         if (template.hasTemplate && template.items.length > 0) {
-          // Convert template items to UI items with unique IDs
-          const templateItems: QuickCheckItemUI[] = template.items.map((item, idx) => ({
-            id: `item-${Date.now()}-${idx}-${Math.random().toString(36).slice(2, 7)}`,
+          // Convert template items to UI items with unique IDs (crypto.randomUUID for robustness)
+          const templateItems: QuickCheckItemUI[] = template.items.map((item) => ({
+            id: crypto.randomUUID(),
             name: item.name,
             description: item.description || '',
           }));
@@ -84,7 +86,10 @@ export function useQuickCheckViewModel() {
           // Persist to localStorage for temporary work-in-progress
           saveItems(templateItems);
           
-          console.log(`[QuickCheck] Template loaded: ${template.items.length} items from ${template.sourceQuickCheckDate || 'previous QuickCheck'}`);
+          const dateStr = template.sourceQuickCheckDate 
+            ? new Date(template.sourceQuickCheckDate).toLocaleDateString()
+            : 'previous QuickCheck';
+          console.log(`[QuickCheck] Template loaded: ${template.items.length} items from ${dateStr}`);
         } else {
           // No template available - start with empty checklist
           setItems([]);
@@ -94,7 +99,7 @@ export function useQuickCheckViewModel() {
         
       } catch (err) {
         console.error('[QuickCheck] Failed to load template:', err);
-        setError('No se pudo cargar el template. Puedes crear el checklist manualmente.');
+        setError(t('quickcheck.template.loadError'));
         // Allow user to continue with empty checklist
         setItems([]);
         setEvaluations({});
@@ -120,7 +125,7 @@ export function useQuickCheckViewModel() {
  // ===== CRUD Operations =====
   const addItem = useCallback((data: QuickCheckItemInput) => {
     const newItem: QuickCheckItemUI = {
-      id: `item-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`,
+      id: crypto.randomUUID(),
       name: data.name,
       description: data.description,
     };

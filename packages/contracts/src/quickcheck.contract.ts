@@ -150,6 +150,10 @@ export const QuickCheckItemTemplateSchema = z.object({
   description: z.string()
     .max(500, 'La descripción no puede exceder 500 caracteres')
     .optional()
+    .refine(
+      (value) => value === undefined || value.trim().length > 0,
+      'La descripción no puede estar vacía si se proporciona'
+    )
   // NOTE: NO incluir 'result' - se seleccionará en el formulario
 });
 

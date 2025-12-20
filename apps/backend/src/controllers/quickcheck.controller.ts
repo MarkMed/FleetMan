@@ -212,23 +212,29 @@ export class QuickCheckController {
    * 
    * Estrategia: Reutilizar estructura del último QuickCheck sin duplicar storage
    * 
+   * Autorización:
+   * - Owner de la máquina
+   * - Provider asignado a la máquina
+   * 
    * Response:
    * - Si hay historial: Retorna items[] sin resultado (para inicializar formulario)
    * - Si NO hay historial: Retorna items[] vacío (usuario crea desde cero)
    * 
    * Headers:
-   * - Cache-Control: max-age=3600 (cacheable 1 hora - ítems raramente cambian)
+   * - Cache-Control: max-age=900 (cacheable 15 minutos - balance performance/frescura)
    */
   async getItemsTemplate(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
       const { machineId } = req.params;
+      const userId = req.user!.userId;
 
-      logger.info({ machineId }, 'Getting QuickCheck items template');
+      logger.info({ machineId, userId }, 'Getting QuickCheck items template');
 
-      const result = await this.getItemsTemplateUseCase.execute(machineId);
+      const result = await this.getItemsTemplateUseCase.execute(machineId, userId);
 
       // Cache response (ítems raramente cambian entre QuickChecks)
-      res.set('Cache-Control', 'max-age=3600'); // 1 hora
+      // 15 minutos: balance entre performance y frescura de datos
+      res.set('Cache-Control', 'max-age=900'); // 15 minutos
 
       res.status(200).json(result);
 
