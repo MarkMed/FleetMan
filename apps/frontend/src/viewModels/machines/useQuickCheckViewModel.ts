@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { toast } from '@components/ui';
 import type {
   QuickCheckItemUI,
@@ -30,7 +31,8 @@ const getStorageKey = (machineId: string) => `quickcheck_${machineId}`;
  */
 export function useQuickCheckViewModel() {
   const { id: machineId } = useParams<{ id: string }>();
-  
+  const { t } = useTranslation();
+  const location = useLocation();
   if (!machineId) {
     throw new Error('Machine ID is required');
   }
@@ -52,47 +54,78 @@ export function useQuickCheckViewModel() {
   const [editingItemId, setEditingItemId] = useState<string | null>(null);
 
   // ===== Load items from localStorage on mount =====
+  // ===== Load items from backend (DB as SSOT) on mount =====
   useEffect(() => {
-    const loadItems = () => {
+    const loadTemplateFromBackend = async () => {
       try {
-        const stored = localStorage.getItem(getStorageKey(machineId));
-        if (stored) {
-          const parsedItems = JSON.parse(stored) as QuickCheckItemUI[];
-          setItems(parsedItems);
+        setIsLoading(true);
+        setError(null);
+        
+        const token = getSessionToken();
+        const headers = token ? { Authorization: `Bearer ${token}` } : undefined;
+        
+        const template = await quickCheckService.getItemsTemplate(machineId, headers);
+        
+        if (template.hasTemplate && template.items.length > 0) {
+          // Convert template items to UI items with unique IDs (crypto.randomUUID for robustness)
+          const templateItems: QuickCheckItemUI[] = template.items.map((item) => ({
+            id: crypto.randomUUID(),
+            name: item.name,
+            description: item.description || '',
+          }));
+          
+          setItems(templateItems);
           
           // Initialize evaluations for all items
           const initialEvaluations: QuickCheckEvaluations = {};
-          parsedItems.forEach(item => {
+          templateItems.forEach(item => {
             initialEvaluations[item.id] = null;
           });
           setEvaluations(initialEvaluations);
+          
+          // Persist to localStorage for temporary work-in-progress
+          saveItems(templateItems);
+          
+          const dateStr = template.sourceQuickCheckDate 
+            ? new Date(template.sourceQuickCheckDate).toLocaleDateString()
+            : 'previous QuickCheck';
+          console.log(`[QuickCheck] Template loaded: ${template.items.length} items from ${dateStr}`);
+        } else {
+          // No template available - start with empty checklist
+          setItems([]);
+          setEvaluations({});
+          console.log('[QuickCheck] No template found - starting from scratch');
         }
+        
       } catch (err) {
-        console.error('Error loading QuickCheck items:', err);
-        setError('Error al cargar los items del QuickCheck');
+        console.error('[QuickCheck] Failed to load template:', err);
+        setError(t('quickcheck.template.loadError'));
+        // Allow user to continue with empty checklist
+        setItems([]);
+        setEvaluations({});
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    loadItems();
-  }, [machineId]);
+    loadTemplateFromBackend();
+  }, [machineId, location.key]);
 
-  // ===== Save items to localStorage whenever they change =====
+  // ===== Save items to localStorage for work-in-progress persistence =====
+  // Note: localStorage is now secondary - DB (via template) is SSOT
   const saveItems = useCallback((newItems: QuickCheckItemUI[]) => {
     try {
       localStorage.setItem(getStorageKey(machineId), JSON.stringify(newItems));
     } catch (err) {
-      console.error('Error saving QuickCheck items:', err);
-      toast.error({
-        title: 'Error',
-        description: 'No se pudieron guardar los items',
-      });
+      console.error('Error saving QuickCheck items to localStorage:', err);
+      // Non-critical error - don't show toast, just log
     }
   }, [machineId]);
 
  // ===== CRUD Operations =====
   const addItem = useCallback((data: QuickCheckItemInput) => {
     const newItem: QuickCheckItemUI = {
-      id: `item-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`,
+      id: crypto.randomUUID(),
       name: data.name,
       description: data.description,
     };

@@ -4,3 +4,4 @@
 // QuickCheck Use Cases
 export * from './add-quickcheck.use-case';
 export * from './get-quickcheck-history.use-case';
+export * from './get-quickcheck-items-template.use-case';
