@@ -422,17 +422,30 @@ xychart-beta
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | 1.1 |
 | Desarrollo | 8.1 Domain+Contracts+Persistence | 5 | 5 | 4.1 |
 | Desarrollo | 8.2 Application Layer Backend | 6 | 6 | 4.4 |
-| Desarrollo | 8.3 Frontend UI Components | 7 | 4 | |
-| Desarrollo | 8.4 Frontend Integration+Observer | 8 | 5 | |
-| Desarrollo | 6.6 Integración QC→Notificaciones | 9 | 4 | |
-| Documentación | 8.5 Documentación Patrón | 10 | 1 | |
+| Desarrollo | 8.3 Frontend UI Components | 7 | 4 | 4.3 |
+| Desarrollo | 8.4 Frontend Integration+Observer | 8 | 5 | 6.7 |
+| Desarrollo | 6.6 Integración QC→Notificaciones | 9 | 4 | 1.2 |
+| Documentación | 8.5 Documentación Patrón | 10 | 1 | 0.8 |
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales | Consumo |
 |:---:|:----------:|:-------:|
-| **33.8**hs | **7.85**hs | **23.2%** |
+| **33.8**hs | **31.5**hs | **93.2%** |
 
-Buffer reservado: **-0.8**hs
+Buffer reservado: **+1.2**hs
 Total con buffer: **35**hs
+
+```mermaid
+xychart-beta
+    title "Sprint #9: Horas Estimadas (azul) vs Reales (verde)"
+    x-axis "Tareas" ["20.1", "20.2", "20.3", "21.2", "8.1", "8.2", "8.3", "8.4", "6.6", "8.5", "TOTAL"]
+    y-axis "Horas" 0 --> 36
+
+    %% Green line (estimadas)
+    line [5, 1.5, 1.3, 1, 5, 6, 4, 5, 4, 1, 33.8]
+
+    %% Black line (reales)
+    line [5.3, 1.45, 2.15, 1.1, 4.1, 4.4, 4.3, 6.7, 1.2, 0.8, 31.5]
+```
 
 Distribución por categoría:
 | Documentación | Desarrollo | QA | Capacitación | Gestión |
