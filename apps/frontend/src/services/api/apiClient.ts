@@ -123,6 +123,7 @@ class ApiClient {
         method,
         headers: requestHeaders,
         signal: controller.signal,
+        cache: 'no-store', // Disable browser caching - ensures fresh data from API
       };
 
       // Add body for non-GET requests

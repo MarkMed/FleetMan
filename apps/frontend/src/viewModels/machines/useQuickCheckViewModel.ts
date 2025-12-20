@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { toast } from '@components/ui';
 import type {
@@ -32,7 +32,7 @@ const getStorageKey = (machineId: string) => `quickcheck_${machineId}`;
 export function useQuickCheckViewModel() {
   const { id: machineId } = useParams<{ id: string }>();
   const { t } = useTranslation();
-  
+  const location = useLocation();
   if (!machineId) {
     throw new Error('Machine ID is required');
   }
@@ -109,7 +109,7 @@ export function useQuickCheckViewModel() {
     };
 
     loadTemplateFromBackend();
-  }, [machineId]);
+  }, [machineId, location.key]);
 
   // ===== Save items to localStorage for work-in-progress persistence =====
   // Note: localStorage is now secondary - DB (via template) is SSOT
