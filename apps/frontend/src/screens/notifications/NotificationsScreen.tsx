@@ -249,8 +249,8 @@ export const NotificationsScreen: React.FC = () => {
                 return (
                   <div
                     key={notification.id}
-                    className={`p-4 ${styles.bg} border-l-4 ${styles.border} ${
-                      !notification.wasSeen ? 'opacity-100' : 'opacity-60'
+                    className={`p-2 ${styles.bg} border-l-4 ${styles.border} ${
+                      !notification.wasSeen ? 'opacity-100' : 'opacity-80'
                     } cursor-pointer hover:bg-muted/50`}
                     role="button"
                     tabIndex={0}
@@ -264,25 +264,33 @@ export const NotificationsScreen: React.FC = () => {
                   >
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <div className={`w-2 h-2 ${styles.dot} rounded-full`}></div>
-                          <h4 className="font-medium text-foreground">
-                            {String(vm.t(notification.message, notification.metadata || {}))}
-                          </h4>
-                          <span className={`text-xs ${styles.badge} px-2 py-1 rounded`}>
-                            {styles.label}
-                          </span>
-                          {!notification.wasSeen && (
+                        <div className="flex items-center gap-4 text-xs text-muted-foreground mt-2">
+                          {/* {!notification.wasSeen && (
                             <span className="text-xs text-primary bg-primary/10 px-2 py-1 rounded">
                               {vm.t('notifications.unread')}
                             </span>
+                          )} */}
+                          
+                          {!
+                            notification.wasSeen && (
+                            <div className={`w-2 h-2 ${styles.dot} rounded-full`}></div>
                           )}
-                        </div>
-                        <div className="flex items-center gap-4 text-xs text-muted-foreground mt-2">
                           <span>{formatTimeAgo(notification.notificationDate)}</span>
                           {notification.sourceType && (
                             <span>{notification.sourceType}</span>
                           )}
+                        </div>
+                        <div className="flex items-center gap-2 mb-1">
+                          <div className="flex items-start flex-col gap-2">
+                            <h4 className="font-medium text-foreground">
+                              {String(vm.t(notification.message, notification.metadata || {}))}
+                            </h4>
+                            <div className="flex items-center gap-2">
+                              <span className={`text-xs ${styles.badge} px-2 py-1 rounded`}>
+                                {styles.label}
+                              </span>
+                            </div>
+                          </div>
                         </div>
                       </div>
                       <button
