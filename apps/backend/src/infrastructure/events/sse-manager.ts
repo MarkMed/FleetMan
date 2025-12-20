@@ -140,7 +140,10 @@ class SSEManager {
     const data = JSON.stringify(event.toJSON());
 
     // Push to ALL devices of this company account
+    // Collect failed devices to remove after iteration (avoid modifying array during forEach)
     let successCount = 0;
+    const failedDevices: Response[] = [];
+    
     userDevices.forEach((deviceResponse, index) => {
       try {
         // SSE format: `data: ${JSON}\n\n`
@@ -150,9 +153,13 @@ class SSEManager {
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
         console.error(`❌ [SSE] Error pushing to device #${index + 1}:`, errorMessage);
-        // Auto-cleanup failed connection
-        this.unsubscribe(event.userId, deviceResponse);
+        failedDevices.push(deviceResponse);
       }
+    });
+
+    // Auto-cleanup failed connections after iteration completes
+    failedDevices.forEach((deviceResponse) => {
+      this.unsubscribe(event.userId, deviceResponse);
     });
 
     console.log(`✅ [SSE] Event published | userId=${event.userId} | devices=${successCount}/${userDevices.length} | type=${event.notificationType}`);

@@ -447,6 +447,15 @@ router.get(
       // EventSource can't send custom headers, so query param is standard approach
       const token = (req.query.token as string) || req.headers.authorization?.replace('Bearer ', '');
 
+      // 🔒 SECURITY: Sanitize sensitive token data to prevent leaking in logs
+      // Tokens in query params can appear in server logs, browser history, and proxy logs
+      if (typeof req.query.token === 'string') {
+        req.query.token = '[REDACTED]';
+      }
+      if (typeof req.headers.authorization === 'string') {
+        req.headers.authorization = 'Bearer [REDACTED]';
+      }
+
       if (!token) {
         logger.warn({
           ip: req.ip,
@@ -564,7 +573,7 @@ router.get(
 
       // 10. Handle errors
       req.on('error', (error) => {
-        clearInterval(keepAliveInterval);
+        clearInterval(keepAliveInterval); // Prevent memory leak
         sseManager.unsubscribe(userId, res);
         
         logger.error({

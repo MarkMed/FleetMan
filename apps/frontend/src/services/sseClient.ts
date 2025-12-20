@@ -60,7 +60,7 @@ class SSEClient {
   private reconnectAttempts = 0;
   private readonly maxReconnectAttempts = 5;
   private readonly baseReconnectDelay = 1000; // Base delay in ms
-  private reconnectTimeoutId: number | null = null;
+  private reconnectTimeoutId: ReturnType<typeof setTimeout> | null = null;
 
   /**
    * Connect to SSE stream endpoint
@@ -176,7 +176,7 @@ class SSEClient {
       `🔄 [SSE] Reconnecting in ${delay}ms (attempt ${this.reconnectAttempts + 1}/${this.maxReconnectAttempts})`
     );
 
-    this.reconnectTimeoutId = window.setTimeout(() => {
+    this.reconnectTimeoutId = setTimeout(() => {
       this.reconnectAttempts++;
       this.connect(token, userId);
     }, delay);

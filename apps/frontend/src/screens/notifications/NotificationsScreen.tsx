@@ -252,7 +252,15 @@ export const NotificationsScreen: React.FC = () => {
                     className={`p-4 ${styles.bg} border-l-4 ${styles.border} ${
                       !notification.wasSeen ? 'opacity-100' : 'opacity-60'
                     } cursor-pointer hover:bg-muted/50`}
+                    role="button"
+                    tabIndex={0}
                     onClick={() => vm.actions.handleNotificationClick(notification)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        vm.actions.handleNotificationClick(notification);
+                      }
+                    }}
                   >
                     <div className="flex items-start justify-between">
                       <div className="flex-1">

@@ -51,8 +51,17 @@ class EventBus {
   /**
    * Emit event to all registered listeners
    * 
-   * Executes handlers synchronously in registration order.
-   * Errors in individual handlers don't prevent other handlers from executing.
+   * ⚠️ SYNCHRONOUS EXECUTION: Handlers are executed synchronously in registration order.
+   * Long-running handlers will block subsequent handlers and the emit call.
+   * For the current system scale (SSE push only), this is acceptable.
+   * 
+   * Future consideration: If handler complexity increases, consider:
+   * - Async handler support with Promise.allSettled()
+   * - Queue-based event processing
+   * - Handler timeout enforcement
+   * 
+   * Error Handling: Errors in individual handlers don't prevent other handlers from executing.
+   * Each handler is wrapped in try-catch for isolation.
    * 
    * @param eventName - Event type being emitted
    * @param event - Event payload (typically a domain event instance)

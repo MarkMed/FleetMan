@@ -240,13 +240,25 @@ setInterval(() => {
 
 EventSource doesn't support custom headers (no `Authorization: Bearer TOKEN`).
 
-**Current MVP Approach**:
-- Use `withCredentials: true` + HTTP-only cookies, OR
-- Query param: `?token=${JWT}` (less secure, acceptable for MVP)
+**🚨 SECURITY WARNING**: Current MVP implementation uses query parameters for JWT tokens.
 
-**Future** (Sprint #10):
-- Migrate to HTTP-only cookies for security
-- Modify login endpoint to set cookie alongside JSON response
+**Current MVP Approach**:
+- Query param: `?token=${JWT}`
+- ⚠️ **Security Risk**: Tokens appear in server logs, browser history, and proxy logs
+- ⚠️ **Exposure**: Anyone with log access can replay tokens to impersonate users
+- ✅ **Mitigation**: Tokens are sanitized from logs after extraction (see `notification.routes.ts`)
+- ✅ **Acceptable for MVP**: Sprint #9 priority is functionality, security hardening in Sprint #10
+
+**Alternative (if supported by your frontend)**:
+- Use `withCredentials: true` + HTTP-only cookies
+- Requires login endpoint to set cookie alongside JSON response
+
+**🔒 RECOMMENDED for Production** (Sprint #10+):
+- Migrate to HTTP-only cookie-based authentication
+- Remove query parameter support entirely
+- Update login endpoint: `Set-Cookie: token=JWT; HttpOnly; Secure; SameSite=Strict`
+- Frontend: Enable `withCredentials: true` in EventSource
+- Benefits: Tokens never appear in URLs, browser history, or standard logs
 
 ### 4. Error Handling
 

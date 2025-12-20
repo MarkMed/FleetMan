@@ -205,6 +205,7 @@
     "executedBy": "Ejecutado Por",
     "executedAt": "Ejecutado En"
   },
+  "_comment_1": "IMPORTANT: 'notifications' (plural) = UI strings (screen, buttons, filters). 'notification' (singular) = backend SSE messages with {{interpolation}}. DO NOT merge - intentional separation.",
   "notifications": {
     "title": "Notificaciones",
     "subtitle": "Mantente al día con todas las alertas y notificaciones del sistema",

@@ -80,12 +80,6 @@ export function useNotificationsViewModel() {
    * @param notification - Notification object
    */
   const handleNotificationClick = (notification: any) => {
-    console.log('[NotificationsVM] Click:', {
-      id: notification.id,
-      actionUrl: notification.actionUrl,
-      wasSeen: notification.wasSeen
-    });
-
     // Mark as seen if unread
     if (!notification.wasSeen) {
       handleMarkAsSeen(notification.id);
@@ -102,13 +96,8 @@ export function useNotificationsViewModel() {
       
       // Check if it's an internal route (starts with /)
       if (url.startsWith('/')) {
-        console.log('[NotificationsVM] Navigating to:', url);
         navigate(url);
-      } else {
-        console.warn('[NotificationsVM] Ignoring external/invalid actionUrl:', url);
       }
-    } else {
-      console.log('[NotificationsVM] No actionUrl to navigate');
     }
   };
 

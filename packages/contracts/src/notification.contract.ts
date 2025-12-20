@@ -54,34 +54,19 @@ export const MarkAsSeenRequestSchema = z.object({
  * Schema for query params when fetching notifications (GET request)
  * 
  * Note: Query params always arrive as strings from Express
- * - onlyUnread: Manual transform to handle "true"/"false" strings correctly
- *   (z.coerce.boolean() has a bug: Boolean("false") = true)
+ * - onlyUnread: Strict validation with enum - only accepts 'true', 'false', '1', '0'
+ *   Rejects invalid values like 'yes', 'no', typos (fail-fast principle)
  * - page/limit: z.coerce works fine for numbers
  * 
  * Sprint #9 - Sistema de Notificaciones
  */
 export const GetNotificationsQuerySchema = z.object({
   onlyUnread: z
-    .union([z.boolean(), z.string(), z.undefined()])
+    .enum(['true', 'false', '1', '0'])
     .optional()
     .transform((val) => {
-      // Si es undefined o no viene el parámetro, retornar undefined
-      if (val === undefined || val === null) return undefined;
-      
-      // Si ya es boolean, retornarlo tal cual
-      if (typeof val === 'boolean') return val;
-      
-      // Si es string, parsear correctamente
-      if (typeof val === 'string') {
-        const lower = val.toLowerCase().trim();
-        if (lower === 'true' || lower === '1') return true;
-        if (lower === 'false' || lower === '0') return false;
-        // Si no es un valor reconocido, tratar como undefined
-        return undefined;
-      }
-      
-      // Fallback: coercion normal para números
-      return Boolean(val);
+      if (val === undefined) return undefined;
+      return val === 'true' || val === '1';
     }),
   page: z.coerce.number().int().positive().default(1),
   limit: z.coerce.number().int().positive().max(100).default(20)

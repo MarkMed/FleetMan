@@ -113,8 +113,19 @@ export function useNotificationObserver() {
       });
 
       // 3. Show toast with appropriate variant
-      // Fallback to 'info' if backend doesn't send notificationType (temporary fix)
-      const toastVariant = event.notificationType || 'info'; // 'success' | 'warning' | 'error' | 'info'
+      let toastVariant: 'success' | 'warning' | 'error' | 'info' = event.notificationType || 'info';
+      
+      // Warn if backend doesn't send notificationType (helps identify backend issues)
+      if (!event.notificationType) {
+        console.warn(
+          '[NotificationObserver] Missing notificationType in notification event, falling back to "info"',
+          {
+            notificationId: event.notificationId,
+            sourceType: event.sourceType,
+          }
+        );
+        toastVariant = 'info';
+      }
 
       // Build toast title based on sourceType
       const title = event.sourceType

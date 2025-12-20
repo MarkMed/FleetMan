@@ -1,4 +1,4 @@
-import { apiClient, handleBackendApiResponse } from './apiClient';
+import { apiClient } from './apiClient';
 import { API_ENDPOINTS } from '../../constants';
 import type { 
   GetNotificationsQuery,
@@ -49,8 +49,6 @@ export class NotificationService {
     userId: string,
     query?: GetNotificationsQuery
   ): Promise<GetNotificationsResponse['data']> {
-    console.log('🔗 NotificationService.getNotifications called with:', { userId, query });
-
     // Build query params
     const params: Record<string, string> = {};
     if (query?.onlyUnread !== undefined) {
@@ -68,13 +66,9 @@ export class NotificationService {
       params
     );
 
-    console.log('🔗 Raw API response:', response);
-
     if (!response.success || !response.data) {
       throw new Error(response.error || 'Failed to fetch notifications');
     }
-
-    console.log('🔗 Processed result (GetNotificationsResponse.data):', response.data.data);
 
     return response.data.data;
   }
@@ -86,8 +80,6 @@ export class NotificationService {
    * @returns Unread count
    */
   async getUnreadCount(userId: string): Promise<number> {
-    console.log('🔗 NotificationService.getUnreadCount called with:', { userId });
-
     const response = await apiClient.get<UnreadCountResponse>(
       API_ENDPOINTS.USER_NOTIFICATIONS_UNREAD_COUNT(userId)
     );
@@ -95,8 +87,6 @@ export class NotificationService {
     if (!response.success || !response.data) {
       throw new Error(response.error || 'Failed to fetch unread count');
     }
-
-    console.log('🔗 Unread count result:', response.data.data.unreadCount);
 
     return response.data.data.unreadCount;
   }

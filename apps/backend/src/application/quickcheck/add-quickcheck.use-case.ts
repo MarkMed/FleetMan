@@ -205,7 +205,7 @@ export class AddQuickCheckUseCase {
         sourceType: NOTIFICATION_SOURCE_TYPES[0], // 'QUICKCHECK'
         metadata: {
           machineName,
-          userName: 'Técnico' // TODO: Extract from authenticated user context when available
+          userName: 'Usuario' // TODO Sprint #10: Extract from authenticated user context (req.user)
         }
       });
 
