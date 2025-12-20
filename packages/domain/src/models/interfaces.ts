@@ -200,6 +200,7 @@ export interface INotification {
   readonly notificationDate: Date;
   readonly actionUrl?: string; // URL para navegar al detalle (ej: /machines/123/quickchecks/456)
   readonly sourceType?: NotificationSourceType; // Clasificación del tipo de origen
+  readonly metadata?: Record<string, any>; // Datos para interpolación i18next (ej: {machineName, userName})
   // 🔮 POST-MVP: Campos comentados para futuras versiones
   // readonly priority?: 'LOW' | 'MEDIUM' | 'HIGH'; // Priorización visual
   // readonly expiresAt?: Date; // Auto-eliminación de notificaciones

@@ -28,7 +28,8 @@ export class NotificationMapper {
       wasSeen: doc.wasSeen,
       notificationDate: doc.notificationDate,
       actionUrl: doc.actionUrl,
-      sourceType: doc.sourceType
+      sourceType: doc.sourceType,
+      metadata: doc.metadata
     };
   }
 

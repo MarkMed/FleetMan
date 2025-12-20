@@ -270,10 +270,10 @@ export function useQuickCheckViewModel() {
 
       console.log('QuickCheck submitted successfully:', response);
 
-      toast.success({
-        title: '¡QuickCheck completado!',
-        description: `Resultado: ${overallResult === 'approved' ? 'Aprobado' : overallResult === 'disapproved' ? 'Desaprobado' : 'No iniciado'}`,
-      });
+      // toast.success({
+      //   title: '¡QuickCheck completado!',
+      //   description: `Resultado: ${overallResult === 'approved' ? 'Aprobado' : overallResult === 'disapproved' ? 'Desaprobado' : 'No iniciado'}`,
+      // });
 
       // Reset state after successful submit
       setMode('EDITING');

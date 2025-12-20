@@ -100,6 +100,7 @@ export interface IUserRepository {
     message: string;
     actionUrl?: string;
     sourceType?: NotificationSourceType;
+    metadata?: Record<string, any>;
   }): Promise<Result<void, DomainError>>;
 
   /**

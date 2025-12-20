@@ -20,6 +20,9 @@ export * from "./value-objects";
 export * from "./enums/DayOfWeek";
 export * from "./enums/NotificationEnums";
 
+// Domain Events
+export * from "./events";
+
 // Puertos (interfaces) - Implementados
 export * from "./ports";
 export type { IGetNotificationsResult } from "./ports/user.repository";

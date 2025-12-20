@@ -91,6 +91,10 @@ const NotificationSubSchema = new Schema({
     type: String,
     enum: NOTIFICATION_SOURCE_TYPES,
     sparse: true
+  },
+  metadata: {
+    type: Schema.Types.Mixed,
+    required: false
   }
 }, { _id: true }); // Auto-generate _id for each notification
 

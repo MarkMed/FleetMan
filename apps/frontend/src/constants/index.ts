@@ -62,11 +62,11 @@ export const API_ENDPOINTS = {
   MACHINE_QUICKCHECKS: (machineId: string) => `/machines/${machineId}/quickchecks`, // For add/history
   QUICKCHECK_EXECUTE: (id: string) => `/quickchecks/${id}/execute`,
   
-  // Notifications
-  NOTIFICATIONS: '/notifications',
-  NOTIFICATION: (id: string) => `/notifications/${id}`,
-  NOTIFICATIONS_MARK_READ: '/notifications/mark-read',
-  NOTIFICATIONS_MARK_ALL_READ: '/notifications/mark-all-read',
+  // Notifications (User-scoped endpoints matching backend routes)
+  USER_NOTIFICATIONS: (userId: string) => `/users/${userId}/notifications`,
+  USER_NOTIFICATIONS_UNREAD_COUNT: (userId: string) => `/users/${userId}/notifications/unread-count`,
+  USER_NOTIFICATIONS_MARK_SEEN: (userId: string) => `/users/${userId}/notifications/mark-as-seen`,
+  USER_NOTIFICATIONS_STREAM: (userId: string) => `/users/${userId}/notifications/stream`, // SSE endpoint
   
   // Spare Parts (Post-MVP)
   SPARE_PARTS: '/spare-parts',
@@ -177,9 +177,9 @@ export const QUERY_KEYS = {
   MACHINE_QUICKCHECK: (machineId: string) => ['machines', machineId, 'quickcheck'],
   QUICKCHECK_HISTORY: (machineId: string) => ['machines', machineId, 'quickchecks', 'history'],
   
-  // Notifications
-  NOTIFICATIONS: ['notifications'],
-  NOTIFICATIONS_COUNT: ['notifications', 'count'],
+  // Notifications (User-scoped query keys)
+  NOTIFICATIONS: (userId: string) => ['notifications', userId],
+  NOTIFICATIONS_UNREAD_COUNT: (userId: string) => ['notifications', 'unread-count', userId],
   
   // Spare Parts
   SPARE_PARTS: ['spare-parts'],

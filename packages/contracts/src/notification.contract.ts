@@ -20,7 +20,8 @@ export const NotificationSchema = z.object({
   wasSeen: z.boolean(),
   notificationDate: z.coerce.date(),
   actionUrl: z.string().url('Must be a valid URL').optional(),
-  sourceType: z.enum(NOTIFICATION_SOURCE_TYPES).optional()
+  sourceType: z.enum(NOTIFICATION_SOURCE_TYPES).optional(),
+  metadata: z.record(z.any()).optional()
 }) satisfies z.ZodType<INotification>;
 
 /**
@@ -34,7 +35,8 @@ export const AddNotificationRequestSchema = z.object({
     .max(500, 'Message cannot exceed 500 characters')
     .trim(),
   actionUrl: z.string().url('Must be a valid URL').optional(),
-  sourceType: z.enum(NOTIFICATION_SOURCE_TYPES).optional()
+  sourceType: z.enum(NOTIFICATION_SOURCE_TYPES).optional(),
+  metadata: z.record(z.any()).optional()
 });
 
 /**
@@ -50,10 +52,22 @@ export const MarkAsSeenRequestSchema = z.object({
 
 /**
  * Schema for query params when fetching notifications (GET request)
- * Query params always arrive as strings, so we use z.coerce for automatic parsing
+ * 
+ * Note: Query params always arrive as strings from Express
+ * - onlyUnread: Strict validation with enum - only accepts 'true', 'false', '1', '0'
+ *   Rejects invalid values like 'yes', 'no', typos (fail-fast principle)
+ * - page/limit: z.coerce works fine for numbers
+ * 
+ * Sprint #9 - Sistema de Notificaciones
  */
 export const GetNotificationsQuerySchema = z.object({
-  onlyUnread: z.coerce.boolean().optional(),
+  onlyUnread: z
+    .enum(['true', 'false', '1', '0'])
+    .optional()
+    .transform((val) => {
+      if (val === undefined) return undefined;
+      return val === 'true' || val === '1';
+    }),
   page: z.coerce.number().int().positive().default(1),
   limit: z.coerce.number().int().positive().max(100).default(20)
 });
