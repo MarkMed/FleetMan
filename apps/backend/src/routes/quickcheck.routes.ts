@@ -272,4 +272,113 @@ router.get('/:machineId/quickchecks',
   quickCheckController.getHistory.bind(quickCheckController)
 );
 
+/**
+ * @swagger
+ * /api/v1/machines/{machineId}/quickcheck/items-template:
+ *   get:
+ *     summary: Get QuickCheck items template (derived from latest inspection)
+ *     description: |
+ *       Returns a template of inspection items derived from the last QuickCheck.
+ *       Eliminates need for duplicate catalogs - reuses existing history.
+ *       
+ *       Strategy:
+ *       - If history exists: Returns items WITHOUT result (user completes form)
+ *       - If NO history: Returns empty array (user creates items from scratch)
+ *       
+ *       Benefits:
+ *       - Zero storage duplication
+ *       - Self-documenting (last QC reflects current items)
+ *       - Evolutionary (adapts automatically to checklist changes)
+ *     tags: [QuickCheck]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: machineId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID of the machine
+ *         example: "machine_abc123"
+ *     responses:
+ *       200:
+ *         description: Template retrieved successfully
+ *         headers:
+ *           Cache-Control:
+ *             schema:
+ *               type: string
+ *             description: max-age=3600 (cacheable 1 hour)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Template derived from latest QuickCheck (3 items)"
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     items:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           name:
+ *                             type: string
+ *                             example: "Frenos"
+ *                           description:
+ *                             type: string
+ *                             example: "Inspección visual y prueba de frenado"
+ *                       example:
+ *                         - name: "Frenos"
+ *                           description: "Inspección visual y prueba de frenado"
+ *                         - name: "Luces"
+ *                           description: "Verificar todas las luces funcionales"
+ *                         - name: "Nivel de aceite"
+ *                     sourceQuickCheckDate:
+ *                       type: string
+ *                       format: date-time
+ *                       description: Date of source QuickCheck (for audit/debugging)
+ *                       example: "2025-12-19T10:30:00.000Z"
+ *                     hasTemplate:
+ *                       type: boolean
+ *                       description: true if derived from previous QC, false if empty
+ *                       example: true
+ *             examples:
+ *               withTemplate:
+ *                 summary: Machine with inspection history
+ *                 value:
+ *                   success: true
+ *                   message: "Template derived from latest QuickCheck (3 items)"
+ *                   data:
+ *                     items:
+ *                       - name: "Frenos"
+ *                         description: "Inspección visual y prueba de frenado"
+ *                       - name: "Luces"
+ *                       - name: "Nivel de aceite"
+ *                     sourceQuickCheckDate: "2025-12-19T10:30:00.000Z"
+ *                     hasTemplate: true
+ *               noTemplate:
+ *                 summary: New machine (no inspection history)
+ *                 value:
+ *                   success: true
+ *                   message: "No previous QuickChecks found. Start from scratch."
+ *                   data:
+ *                     items: []
+ *                     hasTemplate: false
+ *       403:
+ *         description: Access denied - not owner or assigned provider
+ *       404:
+ *         description: Machine not found
+ */
+router.get('/:machineId/quickcheck/items-template',
+  requestSanitization,
+  authMiddleware,
+  quickCheckController.getItemsTemplate.bind(quickCheckController)
+);
+
 export default router;

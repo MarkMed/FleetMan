@@ -13,6 +13,7 @@ import type {
  * Endpoints:
  * - POST /machines/:machineId/quickchecks - Add new QuickCheck record
  * - GET /machines/:machineId/quickchecks - Get QuickCheck history with filters
+ * - GET /machines/:machineId/quickcheck/items-template - Get items template from last QuickCheck
  */
 export class QuickCheckService {
   /**
@@ -52,6 +53,41 @@ export class QuickCheckService {
     const response = await apiClient.get<{ success: boolean; message: string; data: GetQuickCheckHistoryResponse }>(
       API_ENDPOINTS.MACHINE_QUICKCHECKS(machineId),
       filters as any, // Query params
+      headers
+    );
+    return handleBackendApiResponse(response);
+  }
+
+  /**
+   * Get items template derived from last QuickCheck execution
+   * 
+   * Strategy: Backend extracts items (without result field) from the most recent QuickCheck.
+   * Enables "continue where you left off" pattern - users can build on previous checklists.
+   * Supports multi-device sync: changes from user A on device A visible to user B on device B.
+   * 
+   * @param machineId - Target machine ID
+   * @param headers - Optional headers (e.g., Authorization)
+   * @returns Promise with template items array (empty if no history), hasTemplate flag, and source date
+   */
+  async getItemsTemplate(
+    machineId: string,
+    headers?: Record<string, string>
+  ): Promise<{
+    items: Array<{ name: string; description?: string }>;
+    hasTemplate: boolean;
+    sourceQuickCheckDate?: string;
+  }> {
+    const response = await apiClient.get<{
+      success: boolean;
+      message: string;
+      data: {
+        items: Array<{ name: string; description?: string }>;
+        hasTemplate: boolean;
+        sourceQuickCheckDate?: string;
+      };
+    }>(
+      `/machines/${machineId}/quickcheck/items-template`,
+      undefined,
       headers
     );
     return handleBackendApiResponse(response);

@@ -52,40 +52,68 @@ export function useQuickCheckViewModel() {
   const [editingItemId, setEditingItemId] = useState<string | null>(null);
 
   // ===== Load items from localStorage on mount =====
+  // ===== Load items from backend (DB as SSOT) on mount =====
   useEffect(() => {
-    const loadItems = () => {
+    const loadTemplateFromBackend = async () => {
       try {
-        const stored = localStorage.getItem(getStorageKey(machineId));
-        if (stored) {
-          const parsedItems = JSON.parse(stored) as QuickCheckItemUI[];
-          setItems(parsedItems);
+        setIsLoading(true);
+        setError(null);
+        
+        const token = getSessionToken();
+        const headers = token ? { Authorization: `Bearer ${token}` } : undefined;
+        
+        const template = await quickCheckService.getItemsTemplate(machineId, headers);
+        
+        if (template.hasTemplate && template.items.length > 0) {
+          // Convert template items to UI items with unique IDs
+          const templateItems: QuickCheckItemUI[] = template.items.map((item, idx) => ({
+            id: `item-${Date.now()}-${idx}-${Math.random().toString(36).slice(2, 7)}`,
+            name: item.name,
+            description: item.description || '',
+          }));
+          
+          setItems(templateItems);
           
           // Initialize evaluations for all items
           const initialEvaluations: QuickCheckEvaluations = {};
-          parsedItems.forEach(item => {
+          templateItems.forEach(item => {
             initialEvaluations[item.id] = null;
           });
           setEvaluations(initialEvaluations);
+          
+          // Persist to localStorage for temporary work-in-progress
+          saveItems(templateItems);
+          
+          console.log(`[QuickCheck] Template loaded: ${template.items.length} items from ${template.sourceQuickCheckDate || 'previous QuickCheck'}`);
+        } else {
+          // No template available - start with empty checklist
+          setItems([]);
+          setEvaluations({});
+          console.log('[QuickCheck] No template found - starting from scratch');
         }
+        
       } catch (err) {
-        console.error('Error loading QuickCheck items:', err);
-        setError('Error al cargar los items del QuickCheck');
+        console.error('[QuickCheck] Failed to load template:', err);
+        setError('No se pudo cargar el template. Puedes crear el checklist manualmente.');
+        // Allow user to continue with empty checklist
+        setItems([]);
+        setEvaluations({});
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    loadItems();
+    loadTemplateFromBackend();
   }, [machineId]);
 
-  // ===== Save items to localStorage whenever they change =====
+  // ===== Save items to localStorage for work-in-progress persistence =====
+  // Note: localStorage is now secondary - DB (via template) is SSOT
   const saveItems = useCallback((newItems: QuickCheckItemUI[]) => {
     try {
       localStorage.setItem(getStorageKey(machineId), JSON.stringify(newItems));
     } catch (err) {
-      console.error('Error saving QuickCheck items:', err);
-      toast.error({
-        title: 'Error',
-        description: 'No se pudieron guardar los items',
-      });
+      console.error('Error saving QuickCheck items to localStorage:', err);
+      // Non-critical error - don't show toast, just log
     }
   }, [machineId]);
 

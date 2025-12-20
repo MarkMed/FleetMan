@@ -133,6 +133,53 @@ export const GetQuickCheckHistoryResponseSchema = z.object({
 export type GetQuickCheckHistoryResponse = z.infer<typeof GetQuickCheckHistoryResponseSchema>;
 
 // =============================================================================
+// TEMPLATE DERIVATION (para inicializar formularios sin duplicación)
+// =============================================================================
+
+/**
+ * Template item - Item SIN resultado (para inicializar formulario)
+ * Derivado del último QuickCheck ejecutado en la máquina
+ * 
+ * Propósito: Reutilizar estructura de ítems del último QuickCheck sin duplicar
+ * almacenamiento. El usuario completará los campos 'result' en el formulario.
+ */
+export const QuickCheckItemTemplateSchema = z.object({
+  name: z.string()
+    .min(1, 'El nombre del item es requerido')
+    .max(100, 'El nombre no puede exceder 100 caracteres'),
+  description: z.string()
+    .max(500, 'La descripción no puede exceder 500 caracteres')
+    .optional()
+  // NOTE: NO incluir 'result' - se seleccionará en el formulario
+});
+
+export type QuickCheckItemTemplate = z.infer<typeof QuickCheckItemTemplateSchema>;
+
+/**
+ * Response para GET /machines/:machineId/quickcheck/items-template
+ * 
+ * Estrategia: Derivar template desde último QuickCheck ejecutado
+ * - Si existe historial: Retorna items sin resultado (usuario los completa)
+ * - Si NO existe: Retorna array vacío (usuario crea items desde cero)
+ * 
+ * Ventajas vs catálogo separado:
+ * - Zero duplicación de almacenamiento
+ * - Self-documenting: Último QuickCheck refleja ítems actuales
+ * - Evolutivo: Si checklist cambia, se adapta automáticamente
+ */
+export const GetQuickCheckItemsTemplateResponseSchema = z.object({
+  success: z.boolean(),
+  message: z.string(),
+  data: z.object({
+    items: z.array(QuickCheckItemTemplateSchema),
+    sourceQuickCheckDate: z.coerce.date().optional(), // Para debugging/auditoría
+    hasTemplate: z.boolean() // true si derivado de QC previo, false si array vacío
+  })
+});
+
+export type GetQuickCheckItemsTemplateResponse = z.infer<typeof GetQuickCheckItemsTemplateResponseSchema>;
+
+// =============================================================================
 // ESTADÍSTICAS Y MÉTRICAS (para dashboard - POST-MVP)
 // =============================================================================
 

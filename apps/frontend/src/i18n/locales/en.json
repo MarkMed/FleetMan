@@ -203,7 +203,10 @@
     "completeButton": "Complete Check",
     "overallStatus": "Overall Status",
     "executedBy": "Executed By",
-    "executedAt": "Executed At"
+    "executedAt": "Executed At",
+    "template": {
+      "loadError": "Failed to load template. You can create the checklist manually."
+    }
   },
   "_comment_1": "IMPORTANT: 'notifications' (plural) = UI strings (screen, buttons, filters). 'notification' (singular) = backend SSE messages with {{interpolation}}. DO NOT merge - intentional separation.",
   "notifications": {

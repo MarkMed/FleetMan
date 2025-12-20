@@ -203,7 +203,10 @@
     "completeButton": "Completar Chequeo",
     "overallStatus": "Estado General",
     "executedBy": "Ejecutado Por",
-    "executedAt": "Ejecutado En"
+    "executedAt": "Ejecutado En",
+    "template": {
+      "loadError": "No se pudo cargar el template. Puedes crear el checklist manualmente."
+    }
   },
   "_comment_1": "IMPORTANT: 'notifications' (plural) = UI strings (screen, buttons, filters). 'notification' (singular) = backend SSE messages with {{interpolation}}. DO NOT merge - intentional separation.",
   "notifications": {

@@ -4,6 +4,7 @@ import { MachineId } from '../value-objects/machine-id.vo';
 import { UserId } from '../value-objects/user-id.vo';
 import { MachineTypeId } from '../value-objects/machine-type-id.vo';
 import { DomainError } from '../errors';
+import type { IQuickCheckRecord } from '../models/interfaces';
 
 /**
  * Puerto (interface) para persistencia de Machine
@@ -88,6 +89,18 @@ export interface IMachineRepository {
     limit: number;
     totalPages: number;
   }>;
+
+  /**
+   * Obtiene el último QuickCheck ejecutado para una máquina
+   * Ordenado por fecha descendente (más reciente primero)
+   * 
+   * @param machineId - ID de la máquina
+   * @returns Último QuickCheck o undefined si no hay registros
+   * 
+   * Caso de uso: Derivar template de ítems para inicializar formulario
+   * sin duplicar catálogos de ítems en base de datos
+   */
+  getLatestQuickCheck(machineId: MachineId): Promise<Result<IQuickCheckRecord | undefined, DomainError>>;
 
   // TODO: Métodos estratégicos para considerar:
   // findNearLocation(lat: number, lng: number, radiusKm: number): Promise<Machine[]>; // Geolocalización

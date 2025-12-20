@@ -2,9 +2,11 @@ import { Response } from 'express';
 import { logger } from '../config/logger.config';
 import {
   AddQuickCheckUseCase,
-  GetQuickCheckHistoryUseCase
+  GetQuickCheckHistoryUseCase,
+  GetQuickCheckItemsTemplateUseCase
 } from '../application/quickcheck';
 import type { AuthenticatedRequest } from '../middlewares/auth.middleware';
+import { MachineRepository } from '@packages/persistence';
 
 /**
  * QuickCheckController handles QuickCheck-related HTTP requests
@@ -18,10 +20,13 @@ import type { AuthenticatedRequest } from '../middlewares/auth.middleware';
 export class QuickCheckController {
   private addQuickCheckUseCase: AddQuickCheckUseCase;
   private getHistoryUseCase: GetQuickCheckHistoryUseCase;
+  private getItemsTemplateUseCase: GetQuickCheckItemsTemplateUseCase;
 
   constructor() {
     this.addQuickCheckUseCase = new AddQuickCheckUseCase();
     this.getHistoryUseCase = new GetQuickCheckHistoryUseCase();
+    const machineRepository = new MachineRepository();
+    this.getItemsTemplateUseCase = new GetQuickCheckItemsTemplateUseCase(machineRepository);
   }
 
   /**
@@ -199,5 +204,48 @@ export class QuickCheckController {
     if (message.includes('invalid')) return 'INVALID_INPUT';
 
     return 'INTERNAL_ERROR';
+  }
+
+  /**
+   * GET /machines/:machineId/quickcheck/items-template
+   * Obtiene plantilla de ítems derivada del último QuickCheck
+   * 
+   * Estrategia: Reutilizar estructura del último QuickCheck sin duplicar storage
+   * 
+   * Response:
+   * - Si hay historial: Retorna items[] sin resultado (para inicializar formulario)
+   * - Si NO hay historial: Retorna items[] vacío (usuario crea desde cero)
+   * 
+   * Headers:
+   * - Cache-Control: max-age=3600 (cacheable 1 hora - ítems raramente cambian)
+   */
+  async getItemsTemplate(req: AuthenticatedRequest, res: Response): Promise<void> {
+    try {
+      const { machineId } = req.params;
+
+      logger.info({ machineId }, 'Getting QuickCheck items template');
+
+      const result = await this.getItemsTemplateUseCase.execute(machineId);
+
+      // Cache response (ítems raramente cambian entre QuickChecks)
+      res.set('Cache-Control', 'max-age=3600'); // 1 hora
+
+      res.status(200).json(result);
+
+    } catch (error) {
+      const statusCode = this.mapErrorToHttpStatus(error as Error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+
+      logger.error({ 
+        error: errorMessage,
+        machineId: req.params.machineId 
+      }, 'Failed to get QuickCheck items template');
+
+      res.status(statusCode).json({
+        success: false,
+        message: errorMessage,
+        error: this.getErrorCode(error as Error)
+      });
+    }
   }
 }

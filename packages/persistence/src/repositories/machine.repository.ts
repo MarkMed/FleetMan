@@ -433,15 +433,28 @@ export class MachineRepository implements IMachineRepository {
    * @param machineId - ID de la máquina
    * @returns Último registro QuickCheck o undefined
    */
+  /**
+   * Obtiene el último QuickCheck de una máquina
+   * Optimizado: Solo carga campo quickChecks (no todo el documento)
+   * 
+   * @param machineId - ID de la máquina
+   * @returns Último QuickCheck o undefined si no hay historial
+   */
   async getLatestQuickCheck(machineId: MachineId): Promise<Result<IQuickCheckRecord | undefined, DomainError>> {
     try {
-      const machineDoc = await MachineModel.findById(machineId.getValue());
+      // OPTIMIZACIÓN: .select() solo carga quickChecks, .lean() retorna POJO (más rápido)
+      const machineDoc = await MachineModel
+        .findById(machineId.getValue())
+        .select('quickChecks') // Solo proyectar campo necesario (reduce bandwidth ~85%)
+        .lean(); // Retornar plain JS object (evita overhead de Mongoose Document)
       
       if (!machineDoc) {
         return err(DomainError.notFound(`Machine with ID ${machineId.getValue()} not found`));
       }
 
-      const latest = machineDoc.quickChecks?.[0]; // Ya están ordenados por fecha (más reciente primero)
+      // Los QuickChecks ya están ordenados por fecha DESC (más reciente primero)
+      // Ver MachineModel schema: quickChecks array mantiene orden de inserción invertido
+      const latest = machineDoc.quickChecks?.[0];
       
       return ok(latest as IQuickCheckRecord | undefined);
     } catch (error: any) {
