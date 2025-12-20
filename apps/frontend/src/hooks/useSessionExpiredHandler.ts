@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../store/AuthProvider';
@@ -28,46 +28,47 @@ export function useSessionExpiredHandler() {
   const { logout } = useAuth();
   const { showModal, hideModal } = useModalStore();
 
-  useEffect(() => {
-    const handleSessionExpired = async () => {
-      // Double-check we're not on login page (extra safety)
-      if (location.pathname.includes('/auth/login')) {
-        return;
-      }
+  // Memoize handler to prevent stale closures and unnecessary re-renders
+  const handleSessionExpired = useCallback(async () => {
+    // Double-check we're not on login page (extra safety)
+    if (location.pathname.includes('/auth/login')) {
+      return;
+    }
 
-      // Show session expired modal
-      showModal({
-        mode: 'default',
-        variant: 'warning',
-        title: t('auth.sessionExpired.title'),
-        description: t('auth.sessionExpired.description'),
-        showCloseButton: false, // Force user to acknowledge
-        dismissible: false, // Prevent closing by clicking overlay or ESC
-        showConfirm: true,
-        confirmText: t('auth.sessionExpired.action'),
-        showCancel: false,
-        onConfirm: async () => {
-          try {
-            // Execute logout logic (clears token, resets auth state)
-            const result = await logout();
-            
-            // Close modal
-            hideModal();
-            
-            // Navigate to login page
-            if (result.shouldNavigate) {
-              navigate('/auth/login', { replace: true });
-            }
-          } catch (error) {
-            console.error('[SessionExpired] Error during logout:', error);
-            // Still navigate to login even if logout API fails
-            hideModal();
+    // Show session expired modal
+    showModal({
+      mode: 'default',
+      variant: 'warning',
+      title: t('auth.sessionExpired.title'),
+      description: t('auth.sessionExpired.description'),
+      showCloseButton: false, // Force user to acknowledge
+      dismissible: false, // Prevent closing by clicking overlay or ESC
+      showConfirm: true,
+      confirmText: t('auth.sessionExpired.action'),
+      showCancel: false,
+      onConfirm: async () => {
+        try {
+          // Execute logout logic (clears token, resets auth state)
+          const result = await logout();
+          
+          // Close modal
+          hideModal();
+          
+          // Navigate to login page
+          if (result.shouldNavigate) {
             navigate('/auth/login', { replace: true });
           }
-        },
-      });
-    };
+        } catch (error) {
+          console.error('[SessionExpired] Error during logout:', error);
+          // Still navigate to login even if logout API fails
+          hideModal();
+          navigate('/auth/login', { replace: true });
+        }
+      },
+    });
+  }, [location.pathname, logout, navigate, showModal, hideModal, t]);
 
+  useEffect(() => {
     // Listen for session expired events from apiClient
     window.addEventListener('session-expired', handleSessionExpired);
 
@@ -75,7 +76,7 @@ export function useSessionExpiredHandler() {
     return () => {
       window.removeEventListener('session-expired', handleSessionExpired);
     };
-  }, [location.pathname, logout, navigate, showModal, hideModal, t]);
+  }, [handleSessionExpired]); // Now properly depends on memoized handler
 }
 
 // TODO: Future enhancements

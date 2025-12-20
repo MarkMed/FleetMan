@@ -28,7 +28,6 @@ interface AuthStore extends AuthState {
   clearError: () => void;
   setHydrated: (isHydrated: boolean) => void;
   markSessionExpired: () => void; // Mark session as expired (prevent duplicate modals)
-  resetSessionExpiredFlag: () => void; // Reset flag on new login
 }
 
 export const useAuthStore = create<AuthStore>()(
@@ -252,10 +251,6 @@ export const useAuthStore = create<AuthStore>()(
 
       markSessionExpired: () => {
         set({ isSessionExpiredModalShown: true });
-      },
-
-      resetSessionExpiredFlag: () => {
-        set({ isSessionExpiredModalShown: false });
       },
 
       // TODO: Future enhancement - Auto-refresh token before expiration

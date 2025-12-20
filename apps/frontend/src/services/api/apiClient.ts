@@ -175,6 +175,9 @@ class ApiClient {
             authState.markSessionExpired();
             
             // Trigger session expired modal (handled by global listener)
+            // NOTE: Separation of concerns - this interceptor only DETECTS and DISPATCHES.
+            // Actual logout, state cleanup, and navigation are handled by useSessionExpiredHandler.
+            // This prevents tight coupling and allows the UI layer to control user flow.
             window.dispatchEvent(new CustomEvent('session-expired'));
           }
         }
