@@ -230,7 +230,7 @@ export const NotificationsScreen: React.FC = () => {
               </Heading2>
             </div>
             
-            <div className="divide-y divide-border">
+            <div className="divide-y">
               {/* Empty State */}
               {vm.data.notifications.length === 0 && (
                 <div className="p-12 text-center">
@@ -245,11 +245,12 @@ export const NotificationsScreen: React.FC = () => {
 
               {/* Notification Items */}
               {vm.data.notifications.map((notification: any) => {
+                console.log('Rendering notification:', notification);
                 const styles = getNotificationStyles(notification.notificationType);
                 return (
                   <div
                     key={notification.id}
-                    className={`p-2 ${styles.bg} border-l-4 ${styles.border} ${
+                    className={`p-2 ${styles.bg} border-t-2 border-t-gray-950 border-l-4 ${styles.border} ${
                       !notification.wasSeen ? 'opacity-100' : 'opacity-80'
                     } cursor-pointer hover:bg-muted/50`}
                     role="button"
