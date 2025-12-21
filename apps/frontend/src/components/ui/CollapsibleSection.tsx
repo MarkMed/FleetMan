@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useId } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { cn } from '@utils/cn';
 
@@ -17,7 +17,7 @@ interface CollapsibleSectionProps {
  * Features:
  * - Smooth animation on expand/collapse
  * - Optional badge for metadata (e.g., item count)
- * - Accessible with keyboard navigation
+ * - Accessible with keyboard navigation and unique IDs per instance
  * - Customizable styling via className
  * 
  * Usage:
@@ -36,6 +36,7 @@ export const CollapsibleSection: React.FC<CollapsibleSectionProps> = ({
   onExpandChange,
 }) => {
   const [isExpanded, setIsExpanded] = useState(defaultExpanded);
+  const contentId = useId(); // Generate unique ID for each instance
 
   const handleToggle = () => {
     const newState = !isExpanded;
@@ -56,7 +57,7 @@ export const CollapsibleSection: React.FC<CollapsibleSectionProps> = ({
           'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary'
         )}
         aria-expanded={isExpanded}
-        aria-controls="collapsible-content"
+        aria-controls={contentId}
       >
         <div className="flex items-center gap-3">
           <h3 className="text-lg font-semibold text-foreground">{title}</h3>
@@ -76,7 +77,7 @@ export const CollapsibleSection: React.FC<CollapsibleSectionProps> = ({
 
       {/* Content - Expandable */}
       <div
-        id="collapsible-content"
+        id={contentId}
         className={cn(
           'overflow-hidden transition-all duration-300 ease-in-out',
           isExpanded ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'
