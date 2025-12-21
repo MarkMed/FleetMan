@@ -309,11 +309,28 @@
       "fetchFailed": "Error loading notifications",
       "markAsSeenFailed": "Error marking as read"
     },
+    "browser": {
+      "permissionBanner": {
+        "title": "Receive real-time notifications",
+        "description": "Enable browser notifications to stay informed about important events even when you're not on this tab",
+        "enable": "Enable",
+        "dismiss": "Later",
+        "close": "Close",
+        "blocked": "Notifications are blocked. Please enable them in your browser settings."
+      },
+      "settings": {
+        "enabled": "Browser notifications enabled",
+        "disabled": "Browser notifications disabled",
+        "toggle": "Toggle browser notifications"
+      }
+    },
     "new": "New notification",
     "types": {
       "quickcheck": "QuickCheck",
+      "machine": "Machine",
       "event": "Event",
       "maintenance": "Maintenance",
+      "user": "User",
       "system": "System"
     },
     "quickcheck": {

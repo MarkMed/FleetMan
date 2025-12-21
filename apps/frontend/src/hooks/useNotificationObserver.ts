@@ -6,6 +6,7 @@ import { useAuth } from '@store/AuthProvider';
 import { sseClient } from '@services/sseClient';
 import { QUERY_KEYS } from '@constants';
 import { toast } from './useToast';
+import { useBrowserNotification } from './useBrowserNotification';
 
 /**
  * Hook: Notification Observer for Real-Time SSE Events
@@ -38,7 +39,7 @@ import { toast } from './useToast';
  * 2. SSEManager pushes to connected devices
  * 3. EventSource.onmessage receives event
  * 4. sseClient.notify() calls this hook's handler
- * 5. Handler: invalidate queries + show toast
+ * 5. Handler: invalidate queries + show toast + native notification (if tab hidden)
  * 6. TanStack Query auto-refetches notifications
  * 7. UI updates (badge count, notification list)
  * 
@@ -51,6 +52,7 @@ export function useNotificationObserver() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const browserNotification = useBrowserNotification();
 
   // Stabilize values with refs to prevent reconnection loop
   const userRef = useRef(user);
@@ -58,6 +60,10 @@ export function useNotificationObserver() {
   const queryClientRef = useRef(queryClient);
   const navigateRef = useRef(navigate);
   const tRef = useRef(t);
+  const browserNotificationRef = useRef(browserNotification);
+  
+  // Store active notifications for cleanup (prevent memory leaks)
+  const activeNotificationsRef = useRef<Notification[]>([]);
 
   // Update refs when values change (doesn't trigger useEffect)
   useEffect(() => {
@@ -66,31 +72,21 @@ export function useNotificationObserver() {
     queryClientRef.current = queryClient;
     navigateRef.current = navigate;
     tRef.current = t;
-  }, [user, token, queryClient, navigate, t]);
+    browserNotificationRef.current = browserNotification;
+  }, [user, token, queryClient, navigate, t, browserNotification]);
 
   // SSE connection lifecycle - executes ONLY on mount/unmount
   useEffect(() => {
     // Only connect if user is authenticated
     if (!userRef.current || !tokenRef.current) {
-      console.log('[NotificationObserver] Skipping SSE connection (no user/token)');
       return;
     }
-
-    console.log('[NotificationObserver] 🔌 Mounting SSE connection for userId:', userRef.current.id);
 
     // Connect SSE using ref values (stable across renders)
     sseClient.connect(tokenRef.current, userRef.current.id);
 
     // Subscribe to notification events
     const unsubscribe = sseClient.subscribe((event) => {
-      console.log('📬 [NotificationObserver] Event received:', {
-        id: event.notificationId,
-        notificationType: event.notificationType,
-        sourceType: event.sourceType,
-        hasActionUrl: !!event.actionUrl,
-        hasMetadata: !!event.metadata
-      });
-
       // Use refs to access latest values without triggering reconnection
       const currentUser = userRef.current;
       const currentQueryClient = queryClientRef.current;
@@ -98,7 +94,6 @@ export function useNotificationObserver() {
       const currentT = tRef.current;
 
       if (!currentUser) {
-        console.warn('[NotificationObserver] No user available, skipping event handling');
         return;
       }
 
@@ -113,24 +108,12 @@ export function useNotificationObserver() {
       });
 
       // 3. Show toast with appropriate variant
-      let toastVariant: 'success' | 'warning' | 'error' | 'info' = event.notificationType || 'info';
-      
-      // Warn if backend doesn't send notificationType (helps identify backend issues)
-      if (!event.notificationType) {
-        console.warn(
-          '[NotificationObserver] Missing notificationType in notification event, falling back to "info"',
-          {
-            notificationId: event.notificationId,
-            sourceType: event.sourceType,
-          }
-        );
-        toastVariant = 'info';
-      }
+      const toastVariant: 'success' | 'warning' | 'error' | 'info' = event.notificationType || 'info';
 
       // Build toast title based on sourceType
       const title = event.sourceType
-        ? currentT(`notification.types.${event.sourceType.toLowerCase()}`, event.sourceType)
-        : currentT('notification.new');
+        ? currentT(`notifications.types.${event.sourceType.toLowerCase()}`, event.sourceType)
+        : currentT('notifications.new');
 
       // Translate message with metadata for i18n interpolation
       const description = String(currentT(event.message, event.metadata || {}));
@@ -143,25 +126,24 @@ export function useNotificationObserver() {
       };
 
       // Show toast with action button if actionUrl present
-      // TODO Sprint #9 - Punto 2: Navegación desde actionUrl
       if (event.actionUrl) {
-        Object.assign(toastConfig, {
-          action: React.createElement(
-            'button',
-            {
-              className: 'text-sm font-medium underline',
-              onClick: () => {
-                // Validate that actionUrl is internal route (starts with /)
-                if (event.actionUrl!.startsWith('/')) {
-                  currentNavigate(event.actionUrl!);
-                } else {
-                  console.warn('[NotificationObserver] Ignoring external actionUrl:', event.actionUrl);
-                }
-              }
-            },
-            currentT('common.view')
-          )
-        });
+        // Validate actionUrl: must start with / and not contain suspicious patterns
+        const isValidInternalUrl = /^\/[a-zA-Z0-9\-_/]*$/.test(event.actionUrl);
+        
+        if (isValidInternalUrl) {
+          Object.assign(toastConfig, {
+            action: React.createElement(
+              'button',
+              {
+                className: 'text-sm font-medium underline',
+                onClick: () => currentNavigate(event.actionUrl!)
+              },
+              currentT('common.view')
+            )
+          });
+        } else {
+          console.warn('[NotificationObserver] Invalid actionUrl rejected:', event.actionUrl);
+        }
       }
 
       // Call toast method directly (cannot use bracket notation with TypeScript)
@@ -180,12 +162,68 @@ export function useNotificationObserver() {
           break;
       }
 
-      console.log('✅ [NotificationObserver] Cache invalidated + Toast shown');
+      // Show native browser notification if tab is in background
+      // This avoids redundancy when user is actively viewing the app
+      const currentBrowserNotif = browserNotificationRef.current;
+      
+      if (currentBrowserNotif.isGranted) {
+        const notification = currentBrowserNotif.showNotification(title, {
+          body: description,
+          tag: event.notificationId, // Prevents duplicate notifications
+          data: { actionUrl: event.actionUrl }, // Store for click handler
+          requireInteraction: false, // Auto-dismiss after timeout
+        });
+
+        // Handle notification click: focus window and navigate if URL present
+        if (notification) {
+          // Store notification reference for cleanup
+          activeNotificationsRef.current.push(notification);
+          
+          // Click handler with improved URL validation
+          const clickHandler = () => {
+            window.focus();
+            const actionUrl = event.actionUrl;
+            
+            if (actionUrl) {
+              // Same validation as toast action
+              const isValidInternalUrl = /^\/[a-zA-Z0-9\-_/]*$/.test(actionUrl);
+              
+              if (isValidInternalUrl) {
+                const currentNavigate = navigateRef.current;
+                currentNavigate(actionUrl);
+              } else {
+                console.warn('[NotificationObserver] Invalid actionUrl in notification click:', actionUrl);
+              }
+            }
+          };
+          
+          notification.addEventListener('click', clickHandler);
+          
+          // Auto-cleanup when notification closes
+          notification.addEventListener('close', () => {
+            const index = activeNotificationsRef.current.indexOf(notification);
+            if (index > -1) {
+              activeNotificationsRef.current.splice(index, 1);
+            }
+          });
+        }
+      }
+
+      // TODO: Add multi-tab coordination to prevent notification spam
+      // Could use BroadcastChannel API to signal other tabs that notification was shown
+      // TODO: Add notification sound toggle in settings (play sound only if enabled)
+      // TODO: Track notification click-through rate for analytics
     });
 
     // Cleanup ONLY when component unmounts (MainLayout unmounts = logout/app close)
     return () => {
-      console.log('[NotificationObserver] 🔌 UNMOUNTING - Closing SSE connection');
+      // Close all active notifications to prevent memory leaks
+      activeNotificationsRef.current.forEach(notification => {
+        notification.close();
+      });
+      activeNotificationsRef.current = [];
+      
+      // Disconnect SSE
       unsubscribe();
       sseClient.disconnect();
     };

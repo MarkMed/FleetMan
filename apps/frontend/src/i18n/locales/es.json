@@ -309,11 +309,28 @@
       "fetchFailed": "Error al cargar las notificaciones",
       "markAsSeenFailed": "Error al marcar como leída"
     },
+    "browser": {
+      "permissionBanner": {
+        "title": "Recibe notificaciones en tiempo real",
+        "description": "Activa las notificaciones del navegador para estar al tanto de eventos importantes incluso cuando no estés en esta pestaña",
+        "enable": "Activar",
+        "dismiss": "Más tarde",
+        "close": "Cerrar",
+        "blocked": "Las notificaciones están bloqueadas. Por favor, habilítalas en la configuración del navegador."
+      },
+      "settings": {
+        "enabled": "Notificaciones del navegador activadas",
+        "disabled": "Notificaciones del navegador desactivadas",
+        "toggle": "Alternar notificaciones del navegador"
+      }
+    },
     "new": "Nueva notificación",
     "types": {
       "quickcheck": "QuickCheck",
+      "machine": "Máquina",
       "event": "Evento",
       "maintenance": "Mantenimiento",
+      "user": "Usuario",
       "system": "Sistema"
     },
     "quickcheck": {
