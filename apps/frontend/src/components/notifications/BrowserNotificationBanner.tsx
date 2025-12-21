@@ -29,7 +29,6 @@ export function BrowserNotificationBanner() {
   const { t } = useTranslation();
   const { 
     isSupported, 
-    permission, 
     isDefault,
     requestPermission 
   } = useBrowserNotification();
