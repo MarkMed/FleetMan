@@ -302,6 +302,7 @@ export type { UseButtonTimerProps, UseButtonTimerReturn } from './useButtonTimer
 // Notification hooks
 export { useNotifications, useUnreadCount, useMarkNotificationsAsSeen } from './useNotifications';
 export { useNotificationObserver } from './useNotificationObserver';
+export { useBrowserNotification } from './useBrowserNotification';
 
 // Machine types
 export { useMachineTypes } from './useMachineTypes';

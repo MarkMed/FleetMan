@@ -6,6 +6,7 @@ import { useAuth } from '@store/AuthProvider';
 import { sseClient } from '@services/sseClient';
 import { QUERY_KEYS } from '@constants';
 import { toast } from './useToast';
+import { useBrowserNotification } from './useBrowserNotification';
 
 /**
  * Hook: Notification Observer for Real-Time SSE Events
@@ -38,7 +39,7 @@ import { toast } from './useToast';
  * 2. SSEManager pushes to connected devices
  * 3. EventSource.onmessage receives event
  * 4. sseClient.notify() calls this hook's handler
- * 5. Handler: invalidate queries + show toast
+ * 5. Handler: invalidate queries + show toast + native notification (if tab hidden)
  * 6. TanStack Query auto-refetches notifications
  * 7. UI updates (badge count, notification list)
  * 
@@ -51,6 +52,7 @@ export function useNotificationObserver() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const browserNotification = useBrowserNotification();
 
   // Stabilize values with refs to prevent reconnection loop
   const userRef = useRef(user);
@@ -58,6 +60,7 @@ export function useNotificationObserver() {
   const queryClientRef = useRef(queryClient);
   const navigateRef = useRef(navigate);
   const tRef = useRef(t);
+  const browserNotificationRef = useRef(browserNotification);
 
   // Update refs when values change (doesn't trigger useEffect)
   useEffect(() => {
@@ -66,7 +69,8 @@ export function useNotificationObserver() {
     queryClientRef.current = queryClient;
     navigateRef.current = navigate;
     tRef.current = t;
-  }, [user, token, queryClient, navigate, t]);
+    browserNotificationRef.current = browserNotification;
+  }, [user, token, queryClient, navigate, t, browserNotification]);
 
   // SSE connection lifecycle - executes ONLY on mount/unmount
   useEffect(() => {
@@ -179,6 +183,47 @@ export function useNotificationObserver() {
           toast.info(toastConfig);
           break;
       }
+
+      // Show native browser notification if tab is in background
+      // This avoids redundancy when user is actively viewing the app
+      const currentBrowserNotif = browserNotificationRef.current;
+      console.log('[NotificationObserver] Browser notification state:', {
+        isGranted: currentBrowserNotif.isGranted,
+        permission: currentBrowserNotif.permission,
+        isSupported: currentBrowserNotif.isSupported,
+      });
+      
+      if (currentBrowserNotif.isGranted) {
+        console.log('[NotificationObserver] Attempting to show native notification...');
+        const notification = currentBrowserNotif.showNotification(title, {
+          body: description,
+          // icon: removed - can cause issues if path doesn't exist
+          tag: event.notificationId, // Prevents duplicate notifications
+          data: { actionUrl: event.actionUrl }, // Store for click handler
+          requireInteraction: false, // Auto-dismiss after timeout
+        });
+
+        // Handle notification click: focus window and navigate if URL present
+        if (notification) {
+          console.log('[NotificationObserver] ✅ Native notification shown successfully');
+          notification.addEventListener('click', () => {
+            window.focus();
+            if (event.actionUrl?.startsWith('/')) {
+              const currentNavigate = navigateRef.current;
+              currentNavigate(event.actionUrl);
+            }
+          });
+        } else {
+          console.warn('[NotificationObserver] ⚠️ Notification was null (creation failed)');
+        }
+      } else {
+        console.log('[NotificationObserver] Native notification not shown (permission not granted or not supported)');
+      }
+
+      // TODO: Add multi-tab coordination to prevent notification spam
+      // Could use BroadcastChannel API to signal other tabs that notification was shown
+      // TODO: Add notification sound toggle in settings (play sound only if enabled)
+      // TODO: Track notification click-through rate for analytics
 
       console.log('✅ [NotificationObserver] Cache invalidated + Toast shown');
     });

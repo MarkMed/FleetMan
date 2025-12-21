@@ -1,6 +1,7 @@
 import React from 'react';
 import { Heading1, Heading2, BodyText, Button, Card } from '@components/ui';
 import { useNotificationsViewModel } from '../../viewModels/useNotificationsViewModel';
+import { BrowserNotificationBanner } from '@components/notifications';
 
 /**
  * NotificationsScreen: View Layer (MVVM-lite)
@@ -159,6 +160,9 @@ export const NotificationsScreen: React.FC = () => {
         </div>
       </div>
 
+      {/* Browser Notification Permission Banner */}
+      <BrowserNotificationBanner />
+
       <div className="flex flex-col lg:grid lg:grid-cols-3 gap-6">
         {/* Notifications List */}
         <div className="lg:col-span-2 space-y-6">
@@ -202,7 +206,7 @@ export const NotificationsScreen: React.FC = () => {
                 return (
                   <div
                     key={notification.id}
-                    className={`p-2 ${styles.bg} border-t-2 border-t-gray-950 border-l-4 ${styles.border} ${
+                    className={`p-2 ${styles.bg} border-t-2 border-t-gray-950 border-l-4 ${notification.wasSeen ? "" : styles.border} ${
                       !notification.wasSeen ? 'opacity-100' : 'opacity-80'
                     } cursor-pointer hover:bg-muted/50`}
                     role="button"
