@@ -5,7 +5,6 @@ import { useMachineDetailsViewModel } from "../../viewModels/machines";
 import { useMachineTypeName } from "@hooks";
 import { useTranslation } from "react-i18next";
 import { Settings, Clock } from "lucide-react";
-import type { DayOfWeek } from "@domain";
 
 const statusVariants: Record<string, string> = {
   ACTIVE: "bg-success/10 text-success",
