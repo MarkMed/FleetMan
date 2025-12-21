@@ -4,6 +4,44 @@
       "title": "Sesión expirada",
       "description": "Por razones de seguridad, tu sesión ha expirado. Por favor, inicia sesión nuevamente para continuar.",
       "action": "Iniciar sesión"
+    },
+    "login": {
+      "title": "Iniciar Sesión",
+      "subtitle": "Accede a tu cuenta de gestión de flota",
+      "email": "Correo Electrónico",
+      "password": "Contraseña",
+      "rememberMe": "Recordarme",
+      "forgotPassword": "¿Olvidaste tu contraseña?",
+      "loginButton": "Iniciar Sesión",
+      "noAccount": "¿No tienes una cuenta?",
+      "signUpLink": "Regístrate aquí"
+    },
+    "register": {
+      "title": "Registrarse",
+      "subtitle": "Crea tu cuenta de gestión de flota",
+      "name": "Nombre Completo",
+      "email": "Correo Electrónico",
+      "password": "Contraseña",
+      "confirmPassword": "Confirmar Contraseña",
+      "role": "Tipo de Cuenta",
+      "roleClient": "Cliente",
+      "roleProvider": "Proveedor de Servicios",
+      "phone": "Número de Teléfono",
+      "companyName": "Nombre de la Empresa",
+      "businessName": "Nombre del Negocio",
+      "registerButton": "Crear Cuenta",
+      "hasAccount": "¿Ya tienes una cuenta?",
+      "signInLink": "Inicia sesión aquí"
+    },
+    "errors": {
+      "invalidCredentials": "Correo o contraseña inválidos",
+      "emailRequired": "El correo es requerido",
+      "passwordRequired": "La contraseña es requerida",
+      "passwordMinLength": "La contraseña debe tener al menos 8 caracteres",
+      "passwordMatch": "Las contraseñas no coinciden",
+      "emailInvalid": "Ingresa un correo válido",
+      "nameRequired": "El nombre es requerido",
+      "roleRequired": "Selecciona un tipo de cuenta"
     }
   },
   "common": {
@@ -76,46 +114,6 @@
     "notifications": "Notificaciones",
     "reports": "Reportes",
     "settings": "Configuración"
-  },
-  "auth": {
-    "login": {
-      "title": "Iniciar Sesión",
-      "subtitle": "Accede a tu cuenta de gestión de flota",
-      "email": "Correo Electrónico",
-      "password": "Contraseña",
-      "rememberMe": "Recordarme",
-      "forgotPassword": "¿Olvidaste tu contraseña?",
-      "loginButton": "Iniciar Sesión",
-      "noAccount": "¿No tienes una cuenta?",
-      "signUpLink": "Regístrate aquí"
-    },
-    "register": {
-      "title": "Registrarse",
-      "subtitle": "Crea tu cuenta de gestión de flota",
-      "name": "Nombre Completo",
-      "email": "Correo Electrónico",
-      "password": "Contraseña",
-      "confirmPassword": "Confirmar Contraseña",
-      "role": "Tipo de Cuenta",
-      "roleClient": "Cliente",
-      "roleProvider": "Proveedor de Servicios",
-      "phone": "Número de Teléfono",
-      "companyName": "Nombre de la Empresa",
-      "businessName": "Nombre del Negocio",
-      "registerButton": "Crear Cuenta",
-      "hasAccount": "¿Ya tienes una cuenta?",
-      "signInLink": "Inicia sesión aquí"
-    },
-    "errors": {
-      "invalidCredentials": "Correo o contraseña inválidos",
-      "emailRequired": "El correo es requerido",
-      "passwordRequired": "La contraseña es requerida",
-      "passwordMinLength": "La contraseña debe tener al menos 8 caracteres",
-      "passwordMatch": "Las contraseñas no coinciden",
-      "emailInvalid": "Ingresa un correo válido",
-      "nameRequired": "El nombre es requerido",
-      "roleRequired": "Selecciona un tipo de cuenta"
-    }
   },
   "machines": {
     "title": "Máquinas",

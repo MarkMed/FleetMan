@@ -4,6 +4,44 @@
       "title": "Session Expired",
       "description": "For security reasons, your session has expired. Please log in again to continue.",
       "action": "Log In"
+    },
+    "login": {
+      "title": "Login",
+      "subtitle": "Access your fleet management account",
+      "email": "Email",
+      "password": "Password",
+      "rememberMe": "Remember me",
+      "forgotPassword": "Forgot password?",
+      "loginButton": "Sign In",
+      "noAccount": "Don't have an account?",
+      "signUpLink": "Sign up here"
+    },
+    "register": {
+      "title": "Register",
+      "subtitle": "Create your fleet management account",
+      "name": "Full Name",
+      "email": "Email",
+      "password": "Password",
+      "confirmPassword": "Confirm Password",
+      "role": "Account Type",
+      "roleClient": "Client",
+      "roleProvider": "Service Provider",
+      "phone": "Phone Number",
+      "companyName": "Company Name",
+      "businessName": "Business Name",
+      "registerButton": "Create Account",
+      "hasAccount": "Already have an account?",
+      "signInLink": "Sign in here"
+    },
+    "errors": {
+      "invalidCredentials": "Invalid email or password",
+      "emailRequired": "Email is required",
+      "passwordRequired": "Password is required",
+      "passwordMinLength": "Password must be at least 8 characters",
+      "passwordMatch": "Passwords do not match",
+      "emailInvalid": "Please enter a valid email",
+      "nameRequired": "Name is required",
+      "roleRequired": "Please select an account type"
     }
   },
   "common": {
@@ -76,46 +114,6 @@
     "notifications": "Notifications",
     "reports": "Reports",
     "settings": "Settings"
-  },
-  "auth": {
-    "login": {
-      "title": "Login",
-      "subtitle": "Access your fleet management account",
-      "email": "Email",
-      "password": "Password",
-      "rememberMe": "Remember me",
-      "forgotPassword": "Forgot password?",
-      "loginButton": "Sign In",
-      "noAccount": "Don't have an account?",
-      "signUpLink": "Sign up here"
-    },
-    "register": {
-      "title": "Register",
-      "subtitle": "Create your fleet management account",
-      "name": "Full Name",
-      "email": "Email",
-      "password": "Password",
-      "confirmPassword": "Confirm Password",
-      "role": "Account Type",
-      "roleClient": "Client",
-      "roleProvider": "Service Provider",
-      "phone": "Phone Number",
-      "companyName": "Company Name",
-      "businessName": "Business Name",
-      "registerButton": "Create Account",
-      "hasAccount": "Already have an account?",
-      "signInLink": "Sign in here"
-    },
-    "errors": {
-      "invalidCredentials": "Invalid email or password",
-      "emailRequired": "Email is required",
-      "passwordRequired": "Password is required",
-      "passwordMinLength": "Password must be at least 8 characters",
-      "passwordMatch": "Passwords do not match",
-      "emailInvalid": "Please enter a valid email",
-      "nameRequired": "Name is required",
-      "roleRequired": "Please select an account type"
-    }
   },
   "machines": {
     "title": "Machines",
