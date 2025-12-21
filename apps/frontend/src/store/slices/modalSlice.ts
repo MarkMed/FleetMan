@@ -183,7 +183,7 @@ const defaultConfig: ModalConfig = {
   showConfirm: true,
   showCancel: false,
   loading: false,
-  showColoredBorder: false,
+  showColoredBorder: true,
   confirmText: 'Confirmar',
   cancelText: 'Cancelar',
   feedbackVariant: 'info',

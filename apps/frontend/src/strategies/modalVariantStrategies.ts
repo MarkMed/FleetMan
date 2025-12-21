@@ -52,7 +52,7 @@ class DefaultModalStrategy implements ModalVariantStrategy {
   }
 
   getBackgroundAccent(): string {
-    return 'bg-gradient-to-r from-gray-50/50 via-background to-background dark:from-gray-950/40 dark:via-background dark:to-background';
+    return 'bg-gradient-to-r from-gray-400/30 via-background to-background dark:from-gray-500/10 dark:via-background dark:to-background';
   }
 
   getConfirmButtonVariant(): "filled" {
@@ -77,7 +77,7 @@ class InfoModalStrategy implements ModalVariantStrategy {
   }
 
   getBackgroundAccent(): string {
-    return 'bg-gradient-to-r from-blue-50/50 via-background to-background dark:from-blue-950/40 dark:via-background dark:to-background';
+    return 'bg-gradient-to-r from-blue-400/30 via-background to-background dark:from-blue-500/10 dark:via-background dark:to-background';
   }
 
   getConfirmButtonVariant(): "filled" {
@@ -102,7 +102,7 @@ class WarningModalStrategy implements ModalVariantStrategy {
   }
 
   getBackgroundAccent(): string {
-    return 'bg-gradient-to-r from-yellow-50/50 via-background to-background dark:from-yellow-950/40 dark:via-background dark:to-background';
+    return 'bg-gradient-to-r from-yellow-400/30 via-background to-background dark:from-yellow-500/10 dark:via-background dark:to-background';
   }
 
   getConfirmButtonVariant(): "warning" {
@@ -127,7 +127,7 @@ class DangerModalStrategy implements ModalVariantStrategy {
   }
 
   getBackgroundAccent(): string {
-    return 'bg-gradient-to-r from-red-50/50 via-background to-background dark:from-red-950/40 dark:via-background dark:to-background';
+    return 'bg-gradient-to-r from-red-400/30 via-background to-background dark:from-red-500/10 dark:via-background dark:to-background';
   }
 
   getConfirmButtonVariant(): "destructive" {
@@ -152,7 +152,7 @@ class SuccessModalStrategy implements ModalVariantStrategy {
   }
 
   getBackgroundAccent(): string {
-    return 'bg-gradient-to-r from-green-50/50 via-background to-background dark:from-green-950/40 dark:via-background dark:to-background';
+    return 'bg-gradient-to-r from-green-400/30 via-background to-background dark:from-green-500/10 dark:via-background dark:to-background';
   }
 
   getConfirmButtonVariant(): "success" {
@@ -177,7 +177,7 @@ class ConfirmationModalStrategy implements ModalVariantStrategy {
   }
 
   getBackgroundAccent(): string {
-    return 'bg-gradient-to-r from-blue-50/50 via-background to-background dark:from-blue-950/40 dark:via-background dark:to-background';
+    return 'bg-gradient-to-r from-blue-400/30 via-background to-background dark:from-blue-500/10 dark:via-background dark:to-background';
   }
 
   getConfirmButtonVariant(): "filled" {
