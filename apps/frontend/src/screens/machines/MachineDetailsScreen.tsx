@@ -1,4 +1,4 @@
-﻿import React, { useMemo, useState } from "react";
+﻿import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Heading1, Heading2, BodyText, Button, Card, CollapsibleSection } from "@components/ui";
 import { useMachineDetailsViewModel } from "../../viewModels/machines";
