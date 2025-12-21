@@ -184,7 +184,27 @@
       "active": "Active",
       "inactive": "Inactive",
       "maintenance": "In Maintenance",
-      "broken": "Broken"
+      "broken": "Broken"    },
+    "registration": {
+      "verificationTime": "Check your data!",
+      "confirmation": {
+        "title": "Confirm Registration",
+        "description": "Are you sure you want to register this machine? This action will create a new record in the system.",
+        "cancelButton": "Cancel",
+        "confirmButton": "Register Machine"
+      },
+      "success": {
+        "title": "Machine Registered",
+        "description": "Machine \"{{machineName}}\" was successfully registered."
+      },
+      "error": {
+        "title": "Registration Error",
+        "invalidData": "The entered data is not valid",
+        "invalidResponse": "Invalid response from server",
+        "noToken": "Authentication token not found. Please log in again.",
+        "unknown": "Unknown error while registering machine"
+      },
+      "loading": "Processing and redirecting..."
     }
   },
   "maintenance": {

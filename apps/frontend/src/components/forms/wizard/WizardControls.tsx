@@ -27,6 +27,8 @@ interface WizardControlsProps {
   submitLabel?: string;
   /** Texto del botón cancelar */
   cancelLabel?: string;
+  /** Label del timer durante countdown (ej: "¡Verifica los datos!") */
+  timerLabel?: string;
   /** Clase CSS adicional */
   className?: string;
 }
@@ -44,6 +46,7 @@ export const WizardControls: React.FC<WizardControlsProps> = ({
   nextLabel = 'Siguiente',
   submitLabel = 'Enviar',
   cancelLabel = 'Cancelar',
+  timerLabel = '¡Verifica los datos!',
   className,
 }) => {
   return (
@@ -76,12 +79,12 @@ export const WizardControls: React.FC<WizardControlsProps> = ({
       <div>
         {isLastStep ? (
           <TimerButton
-            doubleConfirmation={true}
+            doubleConfirmation={false}
             resetOnAction={true}
             duration={5}
             onAction={onSubmit}
             label={submitLabel}
-            timerLabel={(remaining: number) => `${remaining}`}
+            timerLabel={() => timerLabel}
             disabled={!isValid || isSubmitting}
             variant="filled"
             className="px-8 py-2"

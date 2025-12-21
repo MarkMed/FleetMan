@@ -1,5 +1,6 @@
 ﻿import { useState, useCallback, useEffect, useReducer } from 'react';
 import { UseFormReturn } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import {
   MachineRegistrationData,
   MachineRegistrationSchema,
@@ -63,6 +64,8 @@ export interface MachineRegistrationViewModel {
  * • Sincronización perfecta wizard <-> RHF
  */
 export function useMachineRegistrationViewModel(): MachineRegistrationViewModel {
+  const { t } = useTranslation();
+  
   // React Hook Form con Zod validation
   const form = useZodForm<MachineRegistrationData>({
     schema: MachineRegistrationSchema,
@@ -160,7 +163,7 @@ export function useMachineRegistrationViewModel(): MachineRegistrationViewModel 
       // Trigger validation
       const isValid = await form.trigger();
       if (!isValid) {
-        throw new Error('Los datos no son válidos');
+        throw new Error(t('machines.registration.error.invalidData'));
       }
 
       console.log('✔️ Submitting machine registration:', currentFormData);
@@ -172,7 +175,7 @@ export function useMachineRegistrationViewModel(): MachineRegistrationViewModel 
       // Get token from auth store
       const token = getSessionToken();
       if (!token) {
-        throw new Error('No se encontró token de autenticación. Por favor, inicia sesión nuevamente.');
+        throw new Error(t('machines.registration.error.noToken'));
       }
       
       // Build headers with Authorization
@@ -184,30 +187,43 @@ export function useMachineRegistrationViewModel(): MachineRegistrationViewModel 
       
       // Call API to create machine
       const response = await machineService.createMachine(payload, headers);
+      
+      // Validate server response
+      if (!response || !response.data) {
+        throw new Error(t('machines.registration.error.invalidResponse'));
+      }
+
       console.log('✅ Machine registered successfully:', response.data);
-      toast.success({
-        title: 'Máquina registrada',
-        description: `La máquina "${machineName}" fue registrada exitosamente.`,
-      });
-      modal.showLoading("Procesando y redireccionando...");
+      
+      // Show loading modal and redirect after delay
+      modal.showLoading(t('machines.registration.loading'));
       setTimeout(() => {
         modal.hide();
         form.reset(defaultMachineRegistrationData);
         navigate('/machines');
-      }, 2000);      
+      }, 2000);
+      
     } catch (error) {
       console.error('❌ Error registering machine:', error);
       
-      // Set error both in ViewModel and RHF
-      const errorMessage = error instanceof Error ? error.message : 'Error desconocido al registrar la máquina';
+      // Determine error message
+      const errorMessage = error instanceof Error 
+        ? error.message 
+        : t('machines.registration.error.unknown');
+      
       setError(errorMessage);
-      form.setError('root', { message: errorMessage });
+      
+      // Show error toast
+      toast.error({
+        title: t('machines.registration.error.title'),
+        description: errorMessage,
+      });
       
       throw error; // Re-throw to be handled by wizard
     } finally {
       setIsLoading(false);
     }
-  }, [form, navigate]);
+  }, [form, navigate, t]);
 
   /**
    * Handle cancel action

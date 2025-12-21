@@ -105,7 +105,7 @@ export const TimerButton: React.FC<TimerButtonProps> = ({
   
   if (isAwaitingConfirmation) {
     // Estado de confirmación: botón habilitado, texto de confirmación
-    finalDisplayText = `Click para confirmar "${label}"`;
+    finalDisplayText = `${label}`;
   } else if (isRunning && currentLabel) {
     // Timer corriendo con label personalizado
     finalDisplayText = currentLabel;

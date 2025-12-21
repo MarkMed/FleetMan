@@ -185,6 +185,27 @@
       "inactive": "Inactiva",
       "maintenance": "En Mantenimiento",
       "broken": "Averiada"
+    },
+    "registration": {
+      "verificationTime": "¡Verifica los datos!",
+      "confirmation": {
+        "title": "Confirmar Registro",
+        "description": "¿Estás seguro de que deseas registrar esta máquina? Esta acción creará un nuevo registro en el sistema.",
+        "cancelButton": "Cancelar",
+        "confirmButton": "Registrar Máquina"
+      },
+      "success": {
+        "title": "Máquina Registrada",
+        "description": "La máquina \"{{machineName}}\" fue registrada exitosamente."
+      },
+      "error": {
+        "title": "Error al Registrar",
+        "invalidData": "Los datos ingresados no son válidos",
+        "invalidResponse": "Respuesta inválida del servidor",
+        "noToken": "No se encontró token de autenticación. Por favor, inicia sesión nuevamente.",
+        "unknown": "Error desconocido al registrar la máquina"
+      },
+      "loading": "Procesando y redireccionando..."
     }
   },
   "maintenance": {
