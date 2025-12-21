@@ -109,7 +109,7 @@ export function BrowserNotificationBanner() {
         <button
           onClick={handleDismiss}
           className="flex-shrink-0 text-muted-foreground hover:text-foreground transition-colors"
-          aria-label="Cerrar"
+          aria-label={t('notifications.browser.permissionBanner.close')}
         >
           <X className="h-5 w-5" />
         </button>

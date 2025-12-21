@@ -42,23 +42,14 @@ export function useBrowserNotification() {
 
   // Check browser support and initial permission state on mount
   useEffect(() => {
-    console.log('[useBrowserNotification] Checking support...');
-    console.log('[useBrowserNotification] window object exists:', typeof window !== 'undefined');
-    console.log('[useBrowserNotification] "Notification" in window:', 'Notification' in window);
-    console.log('[useBrowserNotification] Notification constructor:', typeof window.Notification);
-    
     const supported = 'Notification' in window && typeof window.Notification !== 'undefined';
-    console.log('[useBrowserNotification] Final supported value:', supported);
-    
     setIsSupported(supported);
     
     if (supported) {
       const currentPermission = Notification.permission;
-      console.log('[useBrowserNotification] Initial permission:', currentPermission);
       setPermission(currentPermission);
     } else {
-      console.warn('[useBrowserNotification] ❌ Browser does NOT support Notifications API');
-      console.warn('[useBrowserNotification] User Agent:', navigator.userAgent);
+      console.warn('[useBrowserNotification] Browser does NOT support Notifications API. User Agent:', navigator.userAgent);
     }
   }, []);
 
@@ -72,7 +63,7 @@ export function useBrowserNotification() {
    */
   const requestPermission = useCallback(async (): Promise<boolean> => {
     if (!isSupported) {
-      console.warn('[useBrowserNotification] Notifications not supported in this browser');
+      console.warn('[useBrowserNotification] Notifications not supported');
       return false;
     }
     
@@ -101,28 +92,23 @@ export function useBrowserNotification() {
     options?: NotificationOptions
   ): Notification | null => {
     if (!isSupported) {
-      console.warn('[useBrowserNotification] Notifications not supported');
       return null;
     }
     
     if (permission !== 'granted') {
-      console.warn('[useBrowserNotification] Permission not granted, current:', permission);
       return null;
     }
     
     try {
-      console.log('[useBrowserNotification] Creating notification:', { title, options });
-      
       // Don't include icon/badge by default - can cause issues if paths don't exist
       const notification = new Notification(title, {
         requireInteraction: false, // Auto-dismiss after ~5 seconds
         ...options,
       });
       
-      console.log('[useBrowserNotification] ✅ Notification created successfully');
       return notification;
     } catch (error) {
-      console.error('[useBrowserNotification] ❌ Failed to show notification:', error);
+      console.error('[useBrowserNotification] Failed to show notification:', error);
       return null;
     }
   }, [isSupported, permission]);

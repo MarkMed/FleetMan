@@ -315,6 +315,7 @@
         "description": "Enable browser notifications to stay informed about important events even when you're not on this tab",
         "enable": "Enable",
         "dismiss": "Later",
+        "close": "Close",
         "blocked": "Notifications are blocked. Please enable them in your browser settings."
       },
       "settings": {

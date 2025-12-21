@@ -61,6 +61,9 @@ export function useNotificationObserver() {
   const navigateRef = useRef(navigate);
   const tRef = useRef(t);
   const browserNotificationRef = useRef(browserNotification);
+  
+  // Store active notifications for cleanup (prevent memory leaks)
+  const activeNotificationsRef = useRef<Notification[]>([]);
 
   // Update refs when values change (doesn't trigger useEffect)
   useEffect(() => {
@@ -76,25 +79,14 @@ export function useNotificationObserver() {
   useEffect(() => {
     // Only connect if user is authenticated
     if (!userRef.current || !tokenRef.current) {
-      console.log('[NotificationObserver] Skipping SSE connection (no user/token)');
       return;
     }
-
-    console.log('[NotificationObserver] 🔌 Mounting SSE connection for userId:', userRef.current.id);
 
     // Connect SSE using ref values (stable across renders)
     sseClient.connect(tokenRef.current, userRef.current.id);
 
     // Subscribe to notification events
     const unsubscribe = sseClient.subscribe((event) => {
-      console.log('📬 [NotificationObserver] Event received:', {
-        id: event.notificationId,
-        notificationType: event.notificationType,
-        sourceType: event.sourceType,
-        hasActionUrl: !!event.actionUrl,
-        hasMetadata: !!event.metadata
-      });
-
       // Use refs to access latest values without triggering reconnection
       const currentUser = userRef.current;
       const currentQueryClient = queryClientRef.current;
@@ -102,7 +94,6 @@ export function useNotificationObserver() {
       const currentT = tRef.current;
 
       if (!currentUser) {
-        console.warn('[NotificationObserver] No user available, skipping event handling');
         return;
       }
 
@@ -117,19 +108,7 @@ export function useNotificationObserver() {
       });
 
       // 3. Show toast with appropriate variant
-      let toastVariant: 'success' | 'warning' | 'error' | 'info' = event.notificationType || 'info';
-      
-      // Warn if backend doesn't send notificationType (helps identify backend issues)
-      if (!event.notificationType) {
-        console.warn(
-          '[NotificationObserver] Missing notificationType in notification event, falling back to "info"',
-          {
-            notificationId: event.notificationId,
-            sourceType: event.sourceType,
-          }
-        );
-        toastVariant = 'info';
-      }
+      const toastVariant: 'success' | 'warning' | 'error' | 'info' = event.notificationType || 'info';
 
       // Build toast title based on sourceType
       const title = event.sourceType
@@ -147,25 +126,24 @@ export function useNotificationObserver() {
       };
 
       // Show toast with action button if actionUrl present
-      // TODO Sprint #9 - Punto 2: Navegación desde actionUrl
       if (event.actionUrl) {
-        Object.assign(toastConfig, {
-          action: React.createElement(
-            'button',
-            {
-              className: 'text-sm font-medium underline',
-              onClick: () => {
-                // Validate that actionUrl is internal route (starts with /)
-                if (event.actionUrl!.startsWith('/')) {
-                  currentNavigate(event.actionUrl!);
-                } else {
-                  console.warn('[NotificationObserver] Ignoring external actionUrl:', event.actionUrl);
-                }
-              }
-            },
-            currentT('common.view')
-          )
-        });
+        // Validate actionUrl: must start with / and not contain suspicious patterns
+        const isValidInternalUrl = /^\/[a-zA-Z0-9\-_/]*$/.test(event.actionUrl);
+        
+        if (isValidInternalUrl) {
+          Object.assign(toastConfig, {
+            action: React.createElement(
+              'button',
+              {
+                className: 'text-sm font-medium underline',
+                onClick: () => currentNavigate(event.actionUrl!)
+              },
+              currentT('common.view')
+            )
+          });
+        } else {
+          console.warn('[NotificationObserver] Invalid actionUrl rejected:', event.actionUrl);
+        }
       }
 
       // Call toast method directly (cannot use bracket notation with TypeScript)
@@ -187,17 +165,10 @@ export function useNotificationObserver() {
       // Show native browser notification if tab is in background
       // This avoids redundancy when user is actively viewing the app
       const currentBrowserNotif = browserNotificationRef.current;
-      console.log('[NotificationObserver] Browser notification state:', {
-        isGranted: currentBrowserNotif.isGranted,
-        permission: currentBrowserNotif.permission,
-        isSupported: currentBrowserNotif.isSupported,
-      });
       
       if (currentBrowserNotif.isGranted) {
-        console.log('[NotificationObserver] Attempting to show native notification...');
         const notification = currentBrowserNotif.showNotification(title, {
           body: description,
-          // icon: removed - can cause issues if path doesn't exist
           tag: event.notificationId, // Prevents duplicate notifications
           data: { actionUrl: event.actionUrl }, // Store for click handler
           requireInteraction: false, // Auto-dismiss after timeout
@@ -205,32 +176,54 @@ export function useNotificationObserver() {
 
         // Handle notification click: focus window and navigate if URL present
         if (notification) {
-          console.log('[NotificationObserver] ✅ Native notification shown successfully');
-          notification.addEventListener('click', () => {
+          // Store notification reference for cleanup
+          activeNotificationsRef.current.push(notification);
+          
+          // Click handler with improved URL validation
+          const clickHandler = () => {
             window.focus();
-            if (event.actionUrl?.startsWith('/')) {
-              const currentNavigate = navigateRef.current;
-              currentNavigate(event.actionUrl);
+            const actionUrl = event.actionUrl;
+            
+            if (actionUrl) {
+              // Same validation as toast action
+              const isValidInternalUrl = /^\/[a-zA-Z0-9\-_/]*$/.test(actionUrl);
+              
+              if (isValidInternalUrl) {
+                const currentNavigate = navigateRef.current;
+                currentNavigate(actionUrl);
+              } else {
+                console.warn('[NotificationObserver] Invalid actionUrl in notification click:', actionUrl);
+              }
+            }
+          };
+          
+          notification.addEventListener('click', clickHandler);
+          
+          // Auto-cleanup when notification closes
+          notification.addEventListener('close', () => {
+            const index = activeNotificationsRef.current.indexOf(notification);
+            if (index > -1) {
+              activeNotificationsRef.current.splice(index, 1);
             }
           });
-        } else {
-          console.warn('[NotificationObserver] ⚠️ Notification was null (creation failed)');
         }
-      } else {
-        console.log('[NotificationObserver] Native notification not shown (permission not granted or not supported)');
       }
 
       // TODO: Add multi-tab coordination to prevent notification spam
       // Could use BroadcastChannel API to signal other tabs that notification was shown
       // TODO: Add notification sound toggle in settings (play sound only if enabled)
       // TODO: Track notification click-through rate for analytics
-
-      console.log('✅ [NotificationObserver] Cache invalidated + Toast shown');
     });
 
     // Cleanup ONLY when component unmounts (MainLayout unmounts = logout/app close)
     return () => {
-      console.log('[NotificationObserver] 🔌 UNMOUNTING - Closing SSE connection');
+      // Close all active notifications to prevent memory leaks
+      activeNotificationsRef.current.forEach(notification => {
+        notification.close();
+      });
+      activeNotificationsRef.current = [];
+      
+      // Disconnect SSE
       unsubscribe();
       sseClient.disconnect();
     };

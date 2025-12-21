@@ -315,6 +315,7 @@
         "description": "Activa las notificaciones del navegador para estar al tanto de eventos importantes incluso cuando no estés en esta pestaña",
         "enable": "Activar",
         "dismiss": "Más tarde",
+        "close": "Cerrar",
         "blocked": "Las notificaciones están bloqueadas. Por favor, habilítalas en la configuración del navegador."
       },
       "settings": {
