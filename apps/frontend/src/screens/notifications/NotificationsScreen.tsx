@@ -136,7 +136,7 @@ export const NotificationsScreen: React.FC = () => {
   // ========================
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 max-w-full overflow-x-hidden">
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
@@ -159,75 +159,27 @@ export const NotificationsScreen: React.FC = () => {
         </div>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid gap-6 lg:grid-cols-4">
-        <Card>
-          <div className="p-6">
-            <BodyText size="small" weight="medium" className="text-muted-foreground">
-              {vm.t('notifications.stats.total')}
-            </BodyText>
-            <Heading2 size="headline" weight="bold" className="text-foreground">
-              {vm.data.totalCount}
-            </Heading2>
-            <BodyText size="small" className="text-muted-foreground mt-1">
-              {vm.t('notifications.stats.notifications')}
-            </BodyText>
-          </div>
-        </Card>
-        
-        <Card>
-          <div className="p-6">
-            <BodyText size="small" weight="medium" className="text-muted-foreground">
-              {vm.t('notifications.stats.unread')}
-            </BodyText>
-            <Heading2 size="headline" weight="bold" className="text-warning">
-              {vm.data.unreadCount}
-            </Heading2>
-            <BodyText size="small" className="text-muted-foreground mt-1">
-              {vm.t('notifications.stats.new')}
-            </BodyText>
-          </div>
-        </Card>
-        
-        {/* TODO: Sprint #11 - Implement critical count (requires backend filter/aggregation) */}
-        <Card>
-          <div className="p-6">
-            <BodyText size="small" weight="medium" className="text-muted-foreground">
-              {vm.t('notifications.stats.critical')}
-            </BodyText>
-            <Heading2 size="headline" weight="bold" className="text-destructive">
-              -
-            </Heading2>
-            <BodyText size="small" className="text-muted-foreground mt-1">
-              {vm.t('notifications.stats.requireAttention')}
-            </BodyText>
-          </div>
-        </Card>
-        
-        {/* TODO: Sprint #11 - Implement this week count (requires backend date filter) */}
-        <Card>
-          <div className="p-6">
-            <BodyText size="small" weight="medium" className="text-muted-foreground">
-              {vm.t('notifications.stats.thisWeek')}
-            </BodyText>
-            <Heading2 size="headline" weight="bold" className="text-info">
-              -
-            </Heading2>
-            <BodyText size="small" className="text-muted-foreground mt-1">
-              {vm.t('notifications.stats.notifications')}
-            </BodyText>
-          </div>
-        </Card>
-      </div>
-
-      <div className="grid gap-6 lg:grid-cols-3">
+      <div className="flex flex-col lg:grid lg:grid-cols-3 gap-6">
         {/* Notifications List */}
         <div className="lg:col-span-2 space-y-6">
           <Card>
-            <div className="p-6 border-b border-border">
-              <Heading2 size="large" weight="bold">
-                {vm.t('notifications.allNotifications')}
-              </Heading2>
+            <div className="p-6 border-b border-border flex items-center justify-start gap-6">
+              <div className="flex flex-row gap-2 items-center">
+                <Heading2 size="headline" weight="bold" className="text-warning">
+                  {vm.data.unreadCount}
+                </Heading2>
+                <BodyText size="regular" className="text-muted-foreground mt-1">
+                  {vm.t('notifications.stats.new')}
+                </BodyText>
+              </div>
+              <div className="flex flex-row gap-2 items-center">
+                <Heading2 size="headline" weight="bold" className="text-foreground">
+                  {vm.data.totalCount}
+                </Heading2>
+                <BodyText size="regular" className="text-muted-foreground mt-1">
+                  {vm.t('notifications.stats.total')}
+                </BodyText>
+              </div>
             </div>
             
             <div className="divide-y">

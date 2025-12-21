@@ -1,9 +1,10 @@
-﻿import React, { useMemo } from "react";
+﻿import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Heading1, Heading2, BodyText, Button, Card } from "@components/ui";
+import { Heading1, BodyText, Button, Card, CollapsibleSection } from "@components/ui";
 import { useMachineDetailsViewModel } from "../../viewModels/machines";
 import { useMachineTypeName } from "@hooks";
 import { useTranslation } from "react-i18next";
+import { Settings, Clock } from "lucide-react";
 
 const statusVariants: Record<string, string> = {
   ACTIVE: "bg-success/10 text-success",
@@ -32,6 +33,7 @@ export const MachineDetailsScreen: React.FC = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { machine, isLoading, isError, errorMessage, refetch } = useMachineDetailsViewModel(id);
+  const [imageError, setImageError] = useState(false);
   
   // Resolve machine type name
   const machineTypeName = useMachineTypeName(machine?.machineTypeId);
@@ -39,63 +41,186 @@ export const MachineDetailsScreen: React.FC = () => {
   const specs = machine?.specs;
   const location = machine?.location;
 
-  const infoItems = useMemo(() => ([
-    { label: "Marca", value: machine?.brand },
-    { label: "Modelo", value: machine?.modelName },
-    { label: "Tipo", value: machineTypeName ?? (machine?.machineTypeId ? 'Cargando...' : undefined) },
-    { label: "Nº Serie", value: machine?.serialNumber },
-    { label: "Fuente de energía", value: specs?.fuelType ? t(`machines.fuelTypes.${specs.fuelType}`) : undefined },
-    { label: "Nombre Referencia", value: machine?.nickname },
-    { label: "Año", value: specs?.year },
-    // {label: "Asignado a:", value: machine?.assignedTo },
-    // { label: "Horas de operación", value: specs?.operatingHours ? `${specs.operatingHours} hrs` : undefined },
-    // { label: "Ubicación actual", value: location?.siteName ?? location?.address },
-  ]), [machine, specs, location, machineTypeName, t]);
-
   return (
-    <div className="space-y-4">
-      <div className="flex justify-between items-center flex-wrap gap-4">
-        <div>
-          <Heading1 size="headline" className="tracking-tight text-foreground">
-            {machine ? (machine.nickname || `${machine.brand} ${machine.modelName}`) : `Máquina #${id ?? "—"}`}
-          </Heading1>
-          <BodyText className="text-muted-foreground">
-            Información completa y estado actual de la máquina
-          </BodyText>
-        </div>
-        <div className="flex gap-3 grow justify-end">
-          <Button variant="outline" size="default" disabled>
-            Editar Máquina
-          </Button>
-          <Button 
-            variant="filled" 
-            size="default" 
-            onPress={() => navigate(`/machines/${id}/quickcheck`)}
-          >
-            Quickcheck
-          </Button>
-        </div>
-      </div>
+    <div className="space-y-6">
+      {/* Hero Section - Image + Main Metadata + Actions */}
+      <Card className="overflow-hidden">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 p-3">
+          {/* Machine Photo */}
+          <div className="lg:col-span-1">
+            <div className="aspect-video rounded-lg overflow-hidden bg-muted flex items-center justify-center">
+              {isLoading ? (
+                <div className="w-full h-full bg-muted animate-pulse" />
+              ) : machine?.machinePhotoUrl && !imageError ? (
+                <img
+                  src={machine.machinePhotoUrl}
+                  alt={machine.nickname || `${machine.brand} ${machine.modelName}`}
+                  className="w-full h-full object-cover"
+                  onError={() => setImageError(true)}
+                />
+              ) : (
+                <div className="flex flex-col items-center gap-2 text-muted-foreground">
+                  <Settings className="w-16 h-16" />
+                  <BodyText size="small" className="text-muted-foreground">
+                    {t('machines.photo.notAvailable')}
+                  </BodyText>
+                </div>
+              )}
+            </div>
+          </div>
 
-      {isError && (
-        <div className="rounded-lg border border-destructive/20 bg-destructive/10 p-4">
-          <BodyText className="text-destructive font-medium">No pudimos cargar la máquina.</BodyText>
-          {errorMessage && <BodyText size="small" className="text-destructive/80">{errorMessage}</BodyText>}
-          <Button variant="ghost" size="sm" className="mt-2" onPress={() => refetch()}>
-            Reintentar
-          </Button>
+          {/* Main Metadata */}
+          <div className="lg:col-span-2 flex flex-col justify-between">
+            <div className="space-y-4">
+              <div>
+                <Heading1 size="headline" className="tracking-tight text-foreground">
+                  {machine ? `${machine.brand} ${machine.modelName}` : 'Información completa y estado actual de la máquina'}
+                </Heading1>
+                <BodyText className="text-muted-foreground">
+                  {machine ? (machine.nickname || `${machine.brand} ${machine.modelName}`) : `Máquina #${id ?? "—"}`}
+                </BodyText>
+                {machine ? <div className="mt-2"><StatusPill status={machine.status}/></div> : <div></div>}
+              </div>
+
+              {machine && (
+                <div className="space-y-3">
+                  
+                  {/* Critical Information Grid */}
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3 pt-2">
+                    <InfoItem label={t('machines.hero.brand')} value={machine.brand} />
+                    <InfoItem label={t('machines.hero.model')} value={machine.modelName} />
+                    <InfoItem label={t('machines.hero.serialNumber')} value={machine.serialNumber} />
+                    <InfoItem label={t('machines.hero.machineType')} value={machineTypeName ?? (machine.machineTypeId ? 'Cargando...' : undefined)} />
+                    <InfoItem label={t('machines.hero.nickname')} value={machine.nickname} />
+                    <InfoItem label={t('machines.hero.operatingHours')} value={specs?.operatingHours ? `${specs.operatingHours} hrs` : undefined} />
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex gap-3 mt-6 flex-wrap justify-end">
+              <Button variant="outline" size="default" disabled>
+                Editar Máquina
+              </Button>
+              <Button 
+                variant="filled" 
+                size="default" 
+                onPress={() => navigate(`/machines/${id}/quickcheck`)}
+              >
+                Quickcheck
+              </Button>
+            </div>
+          </div>
         </div>
+      </Card>
+
+      {/* Error State */}
+      {isError && (
+        <Card className="border-destructive/20 bg-destructive/5">
+          <div className="p-6">
+            <BodyText className="text-destructive font-medium">No pudimos cargar la máquina.</BodyText>
+            {errorMessage && <BodyText size="small" className="text-destructive/80 mt-1">{errorMessage}</BodyText>}
+            <Button variant="ghost" size="sm" className="mt-3" onPress={() => refetch()}>
+              Reintentar
+            </Button>
+          </div>
+        </Card>
       )}
 
+      {/* Main Grid - Collapsible Sections */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Card className="lg:col-span-2">
-          <div className="p-6">
-            <Heading2 size="large" weight="bold" className="mb-4">
-              Información General
-            </Heading2>
+        {/* Right Column - 1/3 width */}
+        <div className="space-y-6">
+          {/* Operation - Schedule, Assignment & Location */}
+          <CollapsibleSection 
+            title={t('machines.sections.operation')}
+            defaultExpanded={true}
+          >
+            {isLoading ? (
+              <div className="space-y-3">
+                {Array.from({ length: 5 }).map((_, idx) => (
+                  <div key={idx} className="h-4 bg-muted rounded" />
+                ))}
+              </div>
+            ) : (
+              <div className="space-y-4">
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    {/* Assignment */}
+                    <BodyText size="small" weight="medium" className="text-muted-foreground mb-1 flex items-center gap-1">
+                      {t('machines.labels.assignedTo')}
+                    </BodyText>
+                    <BodyText>{machine?.assignedTo}</BodyText>
+                  </div>
+                  <div>
+                    {/* Location */}
+                    <BodyText size="small" weight="medium" className="text-muted-foreground mb-1">
+                      {t('machines.labels.site')}
+                    </BodyText>
+                      <BodyText>{location?.siteName}</BodyText>
+                      {/* <InfoItem label={t('machines.labels.address')} value={location?.address} /> */}
+                  </div>
+                </div>
+
+                {/* Operating Schedule */}
+                {machine?.usageSchedule ? (
+                  <>
+                    {/* Hours */}
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <BodyText size="small" weight="medium" className="text-muted-foreground mb-1 flex items-center gap-1">
+                          <Clock className="w-3 h-3" />
+                          {t('machines.operation.dailyHours')}
+                        </BodyText>
+                        <BodyText>{machine.usageSchedule.dailyHours}h/día</BodyText>
+                      </div>
+                      <div>
+                        <BodyText size="small" weight="medium" className="text-muted-foreground mb-1">
+                          {t('machines.operation.weeklyHours')}
+                        </BodyText>
+                        <BodyText>{machine.usageSchedule.weeklyHours}h/sem</BodyText>
+                      </div>
+                    </div>
+                    {/* Operating Days */}
+                    <div>
+                      <BodyText size="small" weight="medium" className="text-muted-foreground mb-2">
+                        {t('machines.operation.operatingDays')}
+                      </BodyText>
+                      
+                      <div className="flex flex-wrap gap-2">
+                        {machine.usageSchedule.operatingDays.map((day) => (
+                          <span 
+                            key={day}
+                            className="px-3 py-1 text-xs font-medium bg-primary/10 text-primary rounded-full"
+                          >
+                            {t(`common.daysOfWeek.short.${day}`)}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                  </>
+                ) : (
+                  <BodyText size="small" className="text-muted-foreground">
+                    {t('machines.operation.notConfigured')}
+                  </BodyText>
+                )}
+              </div>
+            )}
+          </CollapsibleSection>
+        </div>
+        {/* Left Column - 2/3 width */}
+        <div className="lg:col-span-2 space-y-6">
+          {/* Technical Sheet - All machine information */}
+          <CollapsibleSection 
+            title={t('machines.sections.technicalSheet')}
+            defaultExpanded={true}
+          >
             {isLoading ? (
               <div className="grid grid-cols-2 gap-4">
-                {Array.from({ length: 6 }).map((_, idx) => (
+                {Array.from({ length: 10 }).map((_, idx) => (
                   <div key={idx} className="space-y-2">
                     <div className="h-3 bg-muted rounded w-1/3" />
                     <div className="h-4 bg-muted rounded" />
@@ -104,61 +229,32 @@ export const MachineDetailsScreen: React.FC = () => {
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {infoItems.map((item) => (
-                  <InfoItem key={item.label} label={item.label} value={item.value} />
-                ))}
+                <InfoItem label={t('machines.hero.brand')} value={machine?.brand} />
+                <InfoItem label={t('machines.hero.model')} value={machine?.modelName} />
+                <InfoItem label={t('machines.hero.serialNumber')} value={machine?.serialNumber} />
+                <InfoItem label={t('machines.hero.machineType')} value={machineTypeName ?? (machine?.machineTypeId ? 'Cargando...' : undefined)} />
+                <InfoItem label={t('machines.hero.nickname')} value={machine?.nickname} />
+                <InfoItem label={t('machines.hero.operatingHours')} value={specs?.operatingHours ? `${specs.operatingHours} hrs` : undefined} />
+                <InfoItem label={t('machines.labels.year')} value={specs?.year} />
+                <InfoItem label={t('machines.labels.fuelType')} value={specs?.fuelType ? t(`machines.fuelTypes.${specs.fuelType}`) : undefined} />
+                <InfoItem label={t('machines.labels.weight')} value={specs?.weight ? `${specs.weight} kg` : undefined} />
+                <InfoItem label={t('machines.labels.enginePower')} value={specs?.enginePower ? `${specs.enginePower} HP` : undefined} />
+                <InfoItem label={t('machines.labels.maxCapacity')} value={specs?.maxCapacity ? `${specs.maxCapacity} kg` : undefined} />
               </div>
             )}
-          </div>
-        </Card>
+          </CollapsibleSection>
+        </div>
 
-        <Card>
-          <div className="p-6 space-y-4">
-            <Heading2 size="large" weight="bold">
-              Estado Actual
-            </Heading2>
-            {isLoading ? (
-              <div className="space-y-3">
-                <div className="h-4 bg-muted rounded w-1/2" />
-                <div className="h-4 bg-muted rounded w-1/3" />
-                <div className="h-4 bg-muted rounded w-3/4" />
-              </div>
-            ) : (
-              <>
-              
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <BodyText size="small" weight="medium" className="text-muted-foreground mb-1">
-                      Estado Operacional
-                    </BodyText>
-                    {machine && <StatusPill status={machine.status} />}
-                  </div>
-                  <InfoItem label="Asignado a" value={machine?.assignedTo}/>
-                
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <InfoItem label="Horas de operación" value={specs?.operatingHours ? `${specs.operatingHours} hrs` : undefined} />
-                  <InfoItem label={"Ubicación Actual"} value={machine?.location?.siteName} />
-                </div>
-                
-                <InfoItem label="Actualizado" value={machine?.updatedAt ? new Date(machine.updatedAt).toLocaleString() : undefined} />
-                {/* TODO: integrar quickchecks/mantenimientos cuando backend exponga endpoints */}
-              </>
-            )}
-          </div>
-        </Card>
       </div>
 
-      <Card>
-        <div className="p-6">
-          <Heading2 size="large" weight="bold" className="mb-4">
-            Actividad Reciente
-          </Heading2>
-          <BodyText size="small" className="text-muted-foreground">
-            Próximamente mostraremos quickchecks y mantenimientos recientes de esta máquina.
-          </BodyText>
-        </div>
-      </Card>
+      {/* Recent Activity */}
+      <CollapsibleSection 
+        title={t('machines.sections.recentActivity')}
+      >
+        <BodyText size="small" className="text-muted-foreground">
+          Próximamente mostraremos quickchecks y mantenimientos recientes de esta máquina.
+        </BodyText>
+      </CollapsibleSection>
     </div>
   );
 };

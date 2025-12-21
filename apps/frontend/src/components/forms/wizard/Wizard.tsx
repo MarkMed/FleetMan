@@ -16,6 +16,7 @@ export function Wizard<T = any>({
   onStepChange,
   isSubmitting = false,
   onCancel,
+  timerLabel,
   className,
   showProgress = true,
 }: WizardProps<T>) {
@@ -116,6 +117,7 @@ export function Wizard<T = any>({
             onNext={nextStep}
             onSubmit={submitWizard}
             onCancel={onCancel}
+            timerLabel={timerLabel}
             className="mt-8"
           />
         </CardContent>

@@ -1,7 +1,9 @@
 ﻿import React from "react";
 import { FormProvider } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { Wizard } from "../../../components/forms/wizard";
 import { useMachineRegistrationViewModel } from "../../../viewModels/machines/MachineRegistrationViewModel";
+import { useRegistrationConfirmation } from "../../../hooks/useRegistrationConfirmation";
 import { MachineRegistrationData } from "@contracts";
 import { Button } from "../../../components/ui/Button";
 import { TextBlock, Skeleton } from "@components/ui";
@@ -10,6 +12,9 @@ import { TextBlock, Skeleton } from "@components/ui";
  * Pantalla principal para el registro de máquinas usando wizard multi-step + React Hook Form
  */
 export function MachineRegistrationScreen() {
+  const { t } = useTranslation();
+  const { openConfirmationModal } = useRegistrationConfirmation();
+  
   // ViewModel maneja toda la lógica
   const viewModel = useMachineRegistrationViewModel();
   const {
@@ -25,6 +30,16 @@ export function MachineRegistrationScreen() {
     machineTypesError,
     refetchMachineTypes,
   } = viewModel;
+
+  /**
+   * Wrapper that opens confirmation modal before actual submit.
+   * The TimerButton will call this function after the countdown completes.
+   */
+  const handleSubmitWithConfirmation = async (data: MachineRegistrationData) => {
+    await openConfirmationModal(async () => {
+      await handleWizardSubmit(data);
+    });
+  };
 
   return (
     <div className="max-w-4xl mx-auto p-6">
@@ -99,13 +114,14 @@ export function MachineRegistrationScreen() {
           <Wizard<MachineRegistrationData>
             steps={wizardSteps}
             initialData={form.getValues()}
-            onSubmit={handleWizardSubmit}
+            onSubmit={handleSubmitWithConfirmation}
             onStepChange={() => {
               // Force wizard to re-read form values from RHF
               forceUpdate();
             }}
             isSubmitting={isLoading}
             onCancel={handleCancel}
+            timerLabel={t('machines.registration.verificationTime')}
             className="bg-white shadow-lg rounded-lg"
             showProgress
           />

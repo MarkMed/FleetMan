@@ -54,6 +54,8 @@ export interface WizardProps<T = any> {
   isSubmitting?: boolean;
   /** Callback cuando se cancela el wizard */
   onCancel?: () => void;
+  /** Label del timer durante countdown en último step */
+  timerLabel?: string;
   /** Personalización de la UI */
   className?: string;
   /** Si mostrar el indicador de progreso */

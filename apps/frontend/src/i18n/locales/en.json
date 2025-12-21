@@ -4,6 +4,44 @@
       "title": "Session Expired",
       "description": "For security reasons, your session has expired. Please log in again to continue.",
       "action": "Log In"
+    },
+    "login": {
+      "title": "Login",
+      "subtitle": "Access your fleet management account",
+      "email": "Email",
+      "password": "Password",
+      "rememberMe": "Remember me",
+      "forgotPassword": "Forgot password?",
+      "loginButton": "Sign In",
+      "noAccount": "Don't have an account?",
+      "signUpLink": "Sign up here"
+    },
+    "register": {
+      "title": "Register",
+      "subtitle": "Create your fleet management account",
+      "name": "Full Name",
+      "email": "Email",
+      "password": "Password",
+      "confirmPassword": "Confirm Password",
+      "role": "Account Type",
+      "roleClient": "Client",
+      "roleProvider": "Service Provider",
+      "phone": "Phone Number",
+      "companyName": "Company Name",
+      "businessName": "Business Name",
+      "registerButton": "Create Account",
+      "hasAccount": "Already have an account?",
+      "signInLink": "Sign in here"
+    },
+    "errors": {
+      "invalidCredentials": "Invalid email or password",
+      "emailRequired": "Email is required",
+      "passwordRequired": "Password is required",
+      "passwordMinLength": "Password must be at least 8 characters",
+      "passwordMatch": "Passwords do not match",
+      "emailInvalid": "Please enter a valid email",
+      "nameRequired": "Name is required",
+      "roleRequired": "Please select an account type"
     }
   },
   "common": {
@@ -77,46 +115,6 @@
     "reports": "Reports",
     "settings": "Settings"
   },
-  "auth": {
-    "login": {
-      "title": "Login",
-      "subtitle": "Access your fleet management account",
-      "email": "Email",
-      "password": "Password",
-      "rememberMe": "Remember me",
-      "forgotPassword": "Forgot password?",
-      "loginButton": "Sign In",
-      "noAccount": "Don't have an account?",
-      "signUpLink": "Sign up here"
-    },
-    "register": {
-      "title": "Register",
-      "subtitle": "Create your fleet management account",
-      "name": "Full Name",
-      "email": "Email",
-      "password": "Password",
-      "confirmPassword": "Confirm Password",
-      "role": "Account Type",
-      "roleClient": "Client",
-      "roleProvider": "Service Provider",
-      "phone": "Phone Number",
-      "companyName": "Company Name",
-      "businessName": "Business Name",
-      "registerButton": "Create Account",
-      "hasAccount": "Already have an account?",
-      "signInLink": "Sign in here"
-    },
-    "errors": {
-      "invalidCredentials": "Invalid email or password",
-      "emailRequired": "Email is required",
-      "passwordRequired": "Password is required",
-      "passwordMinLength": "Password must be at least 8 characters",
-      "passwordMatch": "Passwords do not match",
-      "emailInvalid": "Please enter a valid email",
-      "nameRequired": "Name is required",
-      "roleRequired": "Please select an account type"
-    }
-  },
   "machines": {
     "title": "Machines",
     "addMachine": "Add Machine",
@@ -128,6 +126,40 @@
     "location": "Location",
     "status": "Status",
     "owner": "Owner",
+    "operation": {
+      "title": "Operation Schedule",
+      "dailyHours": "Daily hours",
+      "weeklyHours": "Weekly hours",
+      "operatingDays": "Operating days",
+      "notConfigured": "Not configured"
+    },
+    "photo": {
+      "notAvailable": "Image not available"
+    },
+    "hero": {
+      "brand": "Brand",
+      "model": "Model",
+      "serialNumber": "Serial Number",
+      "machineType": "Machine Type",
+      "nickname": "Reference Name",
+      "operatingHours": "Operating Hours"
+    },
+    "sections": {
+      "technicalSheet": "Technical Sheet",
+      "operation": "Operation",
+      "recentActivity": "Recent Activity"
+    },
+    "labels": {
+      "year": "Year",
+      "fuelType": "Fuel Type",
+      "weight": "Weight",
+      "enginePower": "Engine Power",
+      "maxCapacity": "Max Capacity",
+      "assignedTo": "Assigned To",
+      "site": "Site",
+      "address": "Address",
+      "lastUpdated": "Last Updated"
+    },
     "fuelTypes": {
       "ELECTRIC_LITHIUM": "Electric (Lithium)",
       "ELECTRIC_LEAD_ACID": "Electric (Lead Acid)",
@@ -153,6 +185,27 @@
       "inactive": "Inactive",
       "maintenance": "In Maintenance",
       "broken": "Broken"
+    },
+    "registration": {
+      "verificationTime": "Check your data!",
+      "confirmation": {
+        "title": "Confirm Registration",
+        "description": "Are you sure you want to register this machine? This action will create a new record in the system.",
+        "cancelButton": "Cancel",
+        "confirmButton": "Register Machine"
+      },
+      "success": {
+        "title": "Machine Registered",
+        "description": "Machine \"{{machineName}}\" was successfully registered."
+      },
+      "error": {
+        "title": "Registration Error",
+        "invalidData": "The entered data is not valid",
+        "invalidResponse": "Invalid response from server",
+        "noToken": "Authentication token not found. Please log in again.",
+        "unknown": "Unknown error while registering machine"
+      },
+      "loading": "Processing and redirecting..."
     }
   },
   "maintenance": {
@@ -273,7 +326,7 @@
       "assigned": "QuickCheck assigned to {{userName}} for machine {{machineName}}"
     },
     "machine": {
-      "created": "New machine {{machineName}} registered",
+      "created": "Machine Registered! {{machineType}} {{brand}} {{serialNumber}}",
       "updated": "Machine {{machineName}} updated",
       "deleted": "Machine {{machineName}} deleted",
       "statusChanged": "Machine {{machineName}} status changed to {{status}}",
@@ -324,7 +377,7 @@
       "assigned": "QuickCheck assigned to {{userName}} for machine {{machineName}}"
     },
     "machine": {
-      "created": "New machine {{machineName}} registered",
+      "created": "Machine Registered! {{machineType}} {{brand}} {{serialNumber}}",
       "updated": "Machine {{machineName}} updated",
       "deleted": "Machine {{machineName}} deleted",
       "statusChanged": "Machine {{machineName}} status changed to {{status}}",

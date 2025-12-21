@@ -4,6 +4,44 @@
       "title": "Sesión expirada",
       "description": "Por razones de seguridad, tu sesión ha expirado. Por favor, inicia sesión nuevamente para continuar.",
       "action": "Iniciar sesión"
+    },
+    "login": {
+      "title": "Iniciar Sesión",
+      "subtitle": "Accede a tu cuenta de gestión de flota",
+      "email": "Correo Electrónico",
+      "password": "Contraseña",
+      "rememberMe": "Recordarme",
+      "forgotPassword": "¿Olvidaste tu contraseña?",
+      "loginButton": "Iniciar Sesión",
+      "noAccount": "¿No tienes una cuenta?",
+      "signUpLink": "Regístrate aquí"
+    },
+    "register": {
+      "title": "Registrarse",
+      "subtitle": "Crea tu cuenta de gestión de flota",
+      "name": "Nombre Completo",
+      "email": "Correo Electrónico",
+      "password": "Contraseña",
+      "confirmPassword": "Confirmar Contraseña",
+      "role": "Tipo de Cuenta",
+      "roleClient": "Cliente",
+      "roleProvider": "Proveedor de Servicios",
+      "phone": "Número de Teléfono",
+      "companyName": "Nombre de la Empresa",
+      "businessName": "Nombre del Negocio",
+      "registerButton": "Crear Cuenta",
+      "hasAccount": "¿Ya tienes una cuenta?",
+      "signInLink": "Inicia sesión aquí"
+    },
+    "errors": {
+      "invalidCredentials": "Correo o contraseña inválidos",
+      "emailRequired": "El correo es requerido",
+      "passwordRequired": "La contraseña es requerida",
+      "passwordMinLength": "La contraseña debe tener al menos 8 caracteres",
+      "passwordMatch": "Las contraseñas no coinciden",
+      "emailInvalid": "Ingresa un correo válido",
+      "nameRequired": "El nombre es requerido",
+      "roleRequired": "Selecciona un tipo de cuenta"
     }
   },
   "common": {
@@ -77,46 +115,6 @@
     "reports": "Reportes",
     "settings": "Configuración"
   },
-  "auth": {
-    "login": {
-      "title": "Iniciar Sesión",
-      "subtitle": "Accede a tu cuenta de gestión de flota",
-      "email": "Correo Electrónico",
-      "password": "Contraseña",
-      "rememberMe": "Recordarme",
-      "forgotPassword": "¿Olvidaste tu contraseña?",
-      "loginButton": "Iniciar Sesión",
-      "noAccount": "¿No tienes una cuenta?",
-      "signUpLink": "Regístrate aquí"
-    },
-    "register": {
-      "title": "Registrarse",
-      "subtitle": "Crea tu cuenta de gestión de flota",
-      "name": "Nombre Completo",
-      "email": "Correo Electrónico",
-      "password": "Contraseña",
-      "confirmPassword": "Confirmar Contraseña",
-      "role": "Tipo de Cuenta",
-      "roleClient": "Cliente",
-      "roleProvider": "Proveedor de Servicios",
-      "phone": "Número de Teléfono",
-      "companyName": "Nombre de la Empresa",
-      "businessName": "Nombre del Negocio",
-      "registerButton": "Crear Cuenta",
-      "hasAccount": "¿Ya tienes una cuenta?",
-      "signInLink": "Inicia sesión aquí"
-    },
-    "errors": {
-      "invalidCredentials": "Correo o contraseña inválidos",
-      "emailRequired": "El correo es requerido",
-      "passwordRequired": "La contraseña es requerida",
-      "passwordMinLength": "La contraseña debe tener al menos 8 caracteres",
-      "passwordMatch": "Las contraseñas no coinciden",
-      "emailInvalid": "Ingresa un correo válido",
-      "nameRequired": "El nombre es requerido",
-      "roleRequired": "Selecciona un tipo de cuenta"
-    }
-  },
   "machines": {
     "title": "Máquinas",
     "addMachine": "Agregar Máquina",
@@ -128,6 +126,40 @@
     "location": "Ubicación",
     "status": "Estado",
     "owner": "Propietario",
+    "operation": {
+      "title": "Programación de Uso",
+      "dailyHours": "Horas diarias",
+      "weeklyHours": "Horas semanales",
+      "operatingDays": "Días operativos",
+      "notConfigured": "No configurado"
+    },
+    "photo": {
+      "notAvailable": "Imagen no disponible"
+    },
+    "hero": {
+      "brand": "Marca",
+      "model": "Modelo",
+      "serialNumber": "Nº Serie",
+      "machineType": "Tipo de Máquina",
+      "nickname": "Nombre de Referencia",
+      "operatingHours": "Horas de Uso"
+    },
+    "sections": {
+      "technicalSheet": "Ficha Técnica",
+      "operation": "Operación",
+      "recentActivity": "Actividad Reciente"
+    },
+    "labels": {
+      "year": "Año",
+      "fuelType": "Fuente de Energía",
+      "weight": "Peso",
+      "enginePower": "Potencia del Motor",
+      "maxCapacity": "Capacidad Máxima",
+      "assignedTo": "Asignado a",
+      "site": "Sitio",
+      "address": "Dirección",
+      "lastUpdated": "Última Actualización"
+    },
     "fuelTypes": {
       "ELECTRIC_LITHIUM": "Eléctrico (Litio)",
       "ELECTRIC_LEAD_ACID": "Eléctrico (Plomo Ácido)",
@@ -153,6 +185,27 @@
       "inactive": "Inactiva",
       "maintenance": "En Mantenimiento",
       "broken": "Averiada"
+    },
+    "registration": {
+      "verificationTime": "¡Verifica los datos!",
+      "confirmation": {
+        "title": "Confirmar Registro",
+        "description": "¿Estás seguro de que deseas registrar esta máquina? Esta acción creará un nuevo registro en el sistema.",
+        "cancelButton": "Cancelar",
+        "confirmButton": "Registrar Máquina"
+      },
+      "success": {
+        "title": "Máquina Registrada",
+        "description": "La máquina \"{{machineName}}\" fue registrada exitosamente."
+      },
+      "error": {
+        "title": "Error al Registrar",
+        "invalidData": "Los datos ingresados no son válidos",
+        "invalidResponse": "Respuesta inválida del servidor",
+        "noToken": "No se encontró token de autenticación. Por favor, inicia sesión nuevamente.",
+        "unknown": "Error desconocido al registrar la máquina"
+      },
+      "loading": "Procesando y redireccionando..."
     }
   },
   "maintenance": {
@@ -273,7 +326,7 @@
       "assigned": "QuickCheck asignado a {{userName}} para máquina {{machineName}}"
     },
     "machine": {
-      "created": "Nueva máquina {{machineName}} registrada",
+      "created": "¡Máquina Registrada! {{machineType}} {{brand}} {{serialNumber}}",
       "updated": "Máquina {{machineName}} actualizada",
       "deleted": "Máquina {{machineName}} eliminada",
       "statusChanged": "Estado de máquina {{machineName}} cambió a {{status}}",
@@ -324,7 +377,7 @@
       "assigned": "QuickCheck asignado a {{userName}} para máquina {{machineName}}"
     },
     "machine": {
-      "created": "Nueva máquina {{machineName}} registrada",
+      "created": "¡Máquina Registrada! {{machineType}} {{brand}} {{serialNumber}}",
       "updated": "Máquina {{machineName}} actualizada",
       "deleted": "Máquina {{machineName}} eliminada",
       "statusChanged": "Estado de máquina {{machineName}} cambió a {{status}}",
