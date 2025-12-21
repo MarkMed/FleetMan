@@ -1,6 +1,6 @@
 ﻿import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Heading1, Heading2, BodyText, Button, Card, CollapsibleSection } from "@components/ui";
+import { Heading1, BodyText, Button, Card, CollapsibleSection } from "@components/ui";
 import { useMachineDetailsViewModel } from "../../viewModels/machines";
 import { useMachineTypeName } from "@hooks";
 import { useTranslation } from "react-i18next";
