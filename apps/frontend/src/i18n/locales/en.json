@@ -305,7 +305,7 @@
       "assigned": "QuickCheck assigned to {{userName}} for machine {{machineName}}"
     },
     "machine": {
-      "created": "New machine {{machineName}} registered",
+      "created": "Machine Registered! {{machineType}} {{brand}} {{serialNumber}}",
       "updated": "Machine {{machineName}} updated",
       "deleted": "Machine {{machineName}} deleted",
       "statusChanged": "Machine {{machineName}} status changed to {{status}}",
@@ -356,7 +356,7 @@
       "assigned": "QuickCheck assigned to {{userName}} for machine {{machineName}}"
     },
     "machine": {
-      "created": "New machine {{machineName}} registered",
+      "created": "Machine Registered! {{machineType}} {{brand}} {{serialNumber}}",
       "updated": "Machine {{machineName}} updated",
       "deleted": "Machine {{machineName}} deleted",
       "statusChanged": "Machine {{machineName}} status changed to {{status}}",

@@ -305,7 +305,7 @@
       "assigned": "QuickCheck asignado a {{userName}} para máquina {{machineName}}"
     },
     "machine": {
-      "created": "Nueva máquina {{machineName}} registrada",
+      "created": "¡Máquina Registrada! {{machineType}} {{brand}} {{serialNumber}}",
       "updated": "Máquina {{machineName}} actualizada",
       "deleted": "Máquina {{machineName}} eliminada",
       "statusChanged": "Estado de máquina {{machineName}} cambió a {{status}}",
@@ -356,7 +356,7 @@
       "assigned": "QuickCheck asignado a {{userName}} para máquina {{machineName}}"
     },
     "machine": {
-      "created": "Nueva máquina {{machineName}} registrada",
+      "created": "¡Máquina Registrada! {{machineType}} {{brand}} {{serialNumber}}",
       "updated": "Máquina {{machineName}} actualizada",
       "deleted": "Máquina {{machineName}} eliminada",
       "statusChanged": "Estado de máquina {{machineName}} cambió a {{status}}",
