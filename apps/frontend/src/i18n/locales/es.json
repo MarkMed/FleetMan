@@ -126,6 +126,40 @@
     "location": "Ubicación",
     "status": "Estado",
     "owner": "Propietario",
+    "operation": {
+      "title": "Programación de Uso",
+      "dailyHours": "Horas diarias",
+      "weeklyHours": "Horas semanales",
+      "operatingDays": "Días operativos",
+      "notConfigured": "No configurado"
+    },
+    "photo": {
+      "notAvailable": "Imagen no disponible"
+    },
+    "hero": {
+      "brand": "Marca",
+      "model": "Modelo",
+      "serialNumber": "Nº Serie",
+      "machineType": "Tipo de Máquina",
+      "nickname": "Nombre de Referencia",
+      "operatingHours": "Horas de Uso"
+    },
+    "sections": {
+      "technicalSheet": "Ficha Técnica",
+      "operation": "Operación",
+      "recentActivity": "Actividad Reciente"
+    },
+    "labels": {
+      "year": "Año",
+      "fuelType": "Fuente de Energía",
+      "weight": "Peso",
+      "enginePower": "Potencia del Motor",
+      "maxCapacity": "Capacidad Máxima",
+      "assignedTo": "Asignado a",
+      "site": "Sitio",
+      "address": "Dirección",
+      "lastUpdated": "Última Actualización"
+    },
     "fuelTypes": {
       "ELECTRIC_LITHIUM": "Eléctrico (Litio)",
       "ELECTRIC_LEAD_ACID": "Eléctrico (Plomo Ácido)",

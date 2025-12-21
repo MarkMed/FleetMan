@@ -126,6 +126,40 @@
     "location": "Location",
     "status": "Status",
     "owner": "Owner",
+    "operation": {
+      "title": "Operation Schedule",
+      "dailyHours": "Daily hours",
+      "weeklyHours": "Weekly hours",
+      "operatingDays": "Operating days",
+      "notConfigured": "Not configured"
+    },
+    "photo": {
+      "notAvailable": "Image not available"
+    },
+    "hero": {
+      "brand": "Brand",
+      "model": "Model",
+      "serialNumber": "Serial Number",
+      "machineType": "Machine Type",
+      "nickname": "Reference Name",
+      "operatingHours": "Operating Hours"
+    },
+    "sections": {
+      "technicalSheet": "Technical Sheet",
+      "operation": "Operation",
+      "recentActivity": "Recent Activity"
+    },
+    "labels": {
+      "year": "Year",
+      "fuelType": "Fuel Type",
+      "weight": "Weight",
+      "enginePower": "Engine Power",
+      "maxCapacity": "Max Capacity",
+      "assignedTo": "Assigned To",
+      "site": "Site",
+      "address": "Address",
+      "lastUpdated": "Last Updated"
+    },
     "fuelTypes": {
       "ELECTRIC_LITHIUM": "Electric (Lithium)",
       "ELECTRIC_LEAD_ACID": "Electric (Lead Acid)",
