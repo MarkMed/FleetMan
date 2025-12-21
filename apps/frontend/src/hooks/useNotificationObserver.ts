@@ -133,8 +133,8 @@ export function useNotificationObserver() {
 
       // Build toast title based on sourceType
       const title = event.sourceType
-        ? currentT(`notification.types.${event.sourceType.toLowerCase()}`, event.sourceType)
-        : currentT('notification.new');
+        ? currentT(`notifications.types.${event.sourceType.toLowerCase()}`, event.sourceType)
+        : currentT('notifications.new');
 
       // Translate message with metadata for i18n interpolation
       const description = String(currentT(event.message, event.metadata || {}));
