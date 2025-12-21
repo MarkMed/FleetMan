@@ -184,7 +184,8 @@
       "active": "Active",
       "inactive": "Inactive",
       "maintenance": "In Maintenance",
-      "broken": "Broken"    },
+      "broken": "Broken"
+    },
     "registration": {
       "verificationTime": "Check your data!",
       "confirmation": {
