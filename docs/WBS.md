@@ -308,6 +308,16 @@ Integración completa de carga de imágenes con Cloudinary. Frontend: Componente
 		- PERT: Optimista 10hs, Probable 14hs, Pesimista 20hs
 		- MoSCoW: **Must Have**
 
+	- 3.7 **Compartir Acceso de Máquinas entre Usuarios** [Should Have].
+Sistema de permisos granulares para compartir datos de máquinas (read-only). Domain: Agregar entidad MachineAccess con campos {machineId, ownerId, sharedWithUserId, permissions: ['viewDetails', 'viewHistory', 'viewEvents'], sharedAt, expiresAt?, status: 'active'|'revoked'}. Backend: Endpoints POST /machines/:id/share (body: {targetUserId, permissions[]}), GET /machines/shared-with-me, DELETE /machines/:id/access/:accessId (revocar), middleware de autorización para verificar ownership o shared access en endpoints GET /machines/:id, GET /machines/:id/events, GET /machines/:id/history. Validar que usuario proveedor solo acceda a recursos compartidos específicamente. Frontend: Modal "Compartir Máquina" desde detalle de máquina con búsqueda de usuarios (por email/nombre), selector de permisos (checkboxes: Detalles, Historial, Eventos), lista de usuarios con acceso actual con opción de revocar, badge visual "Compartida" en máquinas compartidas, sección "Máquinas Compartidas Conmigo" en lista con indicador visual diferente. Notificación al usuario receptor cuando le comparten acceso.
+		- Horas estimadas: **16**hs
+		- Margen: ±**3.0**hs (P80)
+		- Incertidumbre: **Alta**
+		- Dependencias: 3.2, 4.3, 2.5, 8.2 (FS)
+		- Spike: **No**
+		- PERT: Optimista 12hs, Probable 16hs, Pesimista 22hs
+		- MoSCoW: **Should Have**
+
 4. **Mantenimiento & Eventos** (RF-007..RF-009)
 
 	- 4.1 **Crear recordatorios** (RF-007).
@@ -359,6 +369,16 @@ Emisión hacia la bandeja central de 8.x.
 		- Incertidumbre: **Baja**
 		- Dependencias: 5.2 (FS), SS con 8.1
 		- Spike: **No**
+
+	- 5.4 **Posponer Alertas de Mantenimiento** [Should Have].
+Funcionalidad para posponer temporalmente alertas sin afectar configuración base. Backend: Agregar campo postponedUntil (Date) a Alert model, endpoint PATCH /alerts/:alertId/postpone con body {postponeDays}, lógica para calcular fecha de reactivación (now + postponeDays), modificar scheduler para evaluar postponedUntil antes de disparar alerta (if currentDate < postponedUntil, skip trigger), mantener configuración original de intervalos (cada X horas de uso). Frontend: Modal de acciones en notificación de alerta con botones "Tomar Acción" y "Posponer", formulario posponer con input numérico para días (validación 1-365 días), confirmación con fecha calculada de reactivación, opciones de acción rápida (contactar proveedor, hacer QuickCheck, ver historial). UI debe mostrar estado "Pospuesta hasta [fecha]" en alertas postponidas. Historial de posposiciones para auditoría.
+		- Horas estimadas: **11**hs
+		- Margen: ±**2.0**hs (P80)
+		- Incertidumbre: **Media-Alta**
+		- Dependencias: 5.2, 5.3, 8.2 (FS)
+		- Spike: **No**
+		- PERT: Optimista 8hs, Probable 11hs, Pesimista 15hs
+		- MoSCoW: **Should Have**
 
 6. **QuickCheck** (RF-011, RF-017)
 
