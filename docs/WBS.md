@@ -328,13 +328,46 @@ CRUD recordatorios por máquina.
 		- Dependencias: 3.1 (FS)
 		- Spike: **No**
 
-	- 4.2 **Registrar evento** (RF-008).
-Alta de mantenimiento/incidente/falla/detención.
-		- Horas estimadas: **15**hs
-		- Margen: ±**3.0**hs (P80)
-		- Incertidumbre: **Media**
-		- Dependencias: 3.1 (FS)
+	- 4.2a **MachineEvent - Domain + Contracts + Persistence ** (RF-008).
+Infraestructura de datos para eventos de máquina (historial homemade). Domain: Entidades MachineEvent y MachineEventType YA existen (verificar machine-event.entity.ts y machine-event-type.entity.ts). MachineEvent usa typeId (string) referenciando a MachineEventType (patrón crowdsourcing similar a MachineType). Campos MachineEvent: {id, machineId, typeId, title, description, createdBy, createdAt, isSystemGenerated, metadata?}. NO usar enums hardcodeados (category, severity) - typeId da flexibilidad total. MachineEventType: {id, name, normalizedName, systemGenerated, createdBy?, timesUsed, isActive}. Modificar Machine model para agregar eventsHistory?: IMachineEvent[] como subdocumento. Extender IMachineRepository con métodos: addEvent(machineId, event), getMachineEvents(machineId, filters), searchEventTypes(query) para autocompletar. Contracts: Verificar/crear machine-event.contract.ts con schemas Zod (MachineEventSchema, CreateMachineEventRequestSchema sin category/severity, GetMachineEventsQuerySchema con filtros typeId/dateRange/search, EventTypeSchema para CRUD tipos). Persistence: Verificar/crear MachineEventSubSchema en machine.model.ts, implementar métodos en MachineRepository, índices compuestos para performance. Verificar MachineEventTypeSchema separado (colección independiente como MachineType).
+		- Horas estimadas: **5**hs
+		- Margen: ±**1.0**hs (P80)
+		- Incertidumbre: **Baja-Media**
+		- Dependencias: 3.1, 1.1, 1.2 (FS)
 		- Spike: **No**
+		- PERT: Optimista 3hs, Probable 5hs, Pesimista 7hs
+		- Patrón: MachineEvent subdocumento en Machine + MachineEventType entidad independiente (como MachineType)
+		- Nota: Entidades base YA existen, tarea enfocada en integración con Machine y contratos
+
+	- 4.2b **MachineEvent - Application Layer Backend** (RF-008).
+Lógica de negocio y API REST para eventos y tipos de eventos. Use Cases: Crear 5 casos modulares: (1) CreateMachineEventUseCase (validaciones ownership/shared-access, construir MachineEvent, invocar MachineRepository.addEvent), (2) GetMachineEventsUseCase (filtros typeId/dateRange/search + paginación), (3) CreateEventTypeUseCase (crear nuevo tipo si no existe, normalizar nombre para evitar duplicados, incrementar timesUsed), (4) SearchEventTypesUseCase (autocomplete para UI, búsqueda por nombre normalizado), (5) GetPopularEventTypesUseCase (tipos más usados para sugerencias). Controllers: (A) MachineEventController con 2 endpoints: POST /api/machines/:machineId/events (reportar evento manual, body: {typeId o typeName si es nuevo, title, description, metadata?}), GET /api/machines/:machineId/events?typeId&dateFrom&dateTo&search&page&limit (historial con filtros). (B) EventTypeController con 2 endpoints: GET /api/event-types/search?q=mantenimiento (autocomplete), GET /api/event-types/popular?limit=10 (sugerencias). Middleware autorización: Validar ownership (machine.ownerId === userId) o shared access con permissions 'viewEvents'. Integración notificaciones: Eventos user-created NO generan notificación automática (evitar spam), solo eventos sistemáticos críticos (QUICKCHECK_FAIL en 6.6) invocan AddNotificationUseCase. Validaciones Zod en controllers. DI con tsyringe. Result pattern para manejo errores.
+		- Horas estimadas: **6**hs
+		- Margen: ±**1.2**hs (P80)
+		- Incertidumbre: **Media**
+		- Dependencias: 4.2a, 8.2 (FS)
+		- Spike: **No**
+		- PERT: Optimista 4hs, Probable 6hs, Pesimista 9hs
+		- Nota: CRUD de MachineEventType es clave para crowdsourcing de tipos
+
+	- 4.2c **MachineEvent - Frontend UI - Historial y Reportar Eventos** (RF-008).
+Componentes visuales para historial y reporte de eventos. Componentes: EventHistoryScreen (página completa accesible desde MachineDetailScreen con breadcrumbs), EventList (lista con items), EventItem (card con preview: icono genérico por tipo sistema/manual, título, tipo de evento, timestamp relativo, badge "Automático"/"Manual", click expande modal detalle), EventDetailModal (modal con info completa: título, descripción full, tipo de evento, reportado por, createdAt, metadata renderizado como JSON pretty, botones acciones rápidas placeholder: "Contactar Proveedor", "Crear Tarea" - no funcionales), ReportEventModal (formulario: Autocomplete typeId con SearchEventTypesAPI (permite crear nuevo si no existe), input title, textarea description, textarea metadata JSON opcional con validación, botón "Reportar Evento"). Filtros simplificados: Select tipo de evento (cargado dinámicamente desde EventTypes), DateRangePicker, buscador texto (filtra por title/description client-side). Estados: loading skeleton, empty state ("No hay eventos registrados. Reporta el primero."), error con retry. Estilos Tailwind, responsive. NO lógica de API - solo UI con props mockeadas.
+		- Horas estimadas: **6**hs
+		- Margen: ±**1.2**hs (P80)
+		- Incertidumbre: **Media**
+		- Dependencias: 0.14, 3.2 (FS)
+		- Spike: **No**
+		- PERT: Optimista 4hs, Probable 6hs, Pesimista 8hs
+		- Nota: Autocomplete EventType es clave para UX crowdsourcing
+
+	- 4.2d **MachineEvent - Frontend Integration** (RF-008).
+Integración con API y lógica de estado. Service: Crear machineEventService.ts con métodos type-safe (getMachineEvents, createMachineEvent, getEventDetail). TanStack Query Hooks: useMachineEvents(machineId, filters) con refetchInterval: 60000 (polling cada 60s, menos frecuente que notificaciones), useCreateMachineEvent() mutation con invalidación cache + toast success. Integration: Conectar EventHistoryScreen con useMachineEvents, conectar ReportEventModal con useCreateMachineEvent, implementar filtros reactivos (URL query params sync), conectar EventDetailModal con data del item seleccionado. Navegación: Agregar botón "Ver Historial" en MachineDetailScreen que navega a /machines/:id/events, agregar botón "Reportar Evento" en MachineDetailScreen que abre ReportEventModal. Validaciones: Usar schemas Zod compartidos, manejo de errores con mensajes claros. Testing: Flujo completo reportar evento → API → BD → toast success → lista actualizada.
+		- Horas estimadas: **4**hs
+		- Margen: ±**0.8**hs (P80)
+		- Incertidumbre: **Baja-Media**
+		- Dependencias: 4.2b, 4.2c (FS)
+		- Spike: **No**
+		- PERT: Optimista 3hs, Probable 4hs, Pesimista 6hs
+		- Patrón: Similar a 8.4 (Notifications Integration)
 
 	- 4.3 **Historial unificado** (RF-009).
 Timeline consolidado de manttos, incidencias y quickchecks.
@@ -437,14 +470,14 @@ Capturar metadata del responsable al ejecutar QuickCheck para trazabilidad y aud
 		- PERT: Optimista 3hs, Probable 4hs, Pesimista 6hs
 		- **Tarea agrupada:** [1] QuickCheck tracking
 
-	- 6.6 **Aviso QuickCheck no aprobado** (RF-017) [Should-Have].
-Notificación de fallos: Integrar ExecuteQuickCheckUseCase con AddNotificationUseCase para generar notificación cuando QuickCheck resulta FAIL. Llamada directa a AddNotificationUseCase pasando {notificationType: 'warning', message, sourceId: quickCheckId, sourceType: 'QuickCheck'}. Registrar fallo en historial de máquina. Validar que Observer Pattern detecta notificación y dispara toast automáticamente. Testing end-to-end: QC fail → notificación en BD → visible en bandeja → toast disparado → badge actualizado. Email/SMS opcional si tiempo permite.
-		- Horas estimadas: **4**hs
-		- Margen: ±**0.8**hs (P80)
-		- Incertidumbre: **Media**
-		- Dependencias: 6.3, 8.2, 8.4 (FS)
+	- 6.6 **Aviso QuickCheck no aprobado + Evento Automático** (RF-017) [Should-Have].
+Doble integración: Notificaciones + Eventos de Máquina. Funcionalidad: Cuando ExecuteQuickCheckUseCase detecta resultado FAIL: (1) Crear/obtener MachineEventType sistemático "QuickCheck Desaprobado" (systemGenerated: true) si no existe. (2) Invocar CreateMachineEventUseCase para registrar evento automático {typeId: [QuickCheck Desaprobado], title: 'QuickCheck FAIL: [machine]', description: 'Detalle de items fallidos...', isSystemGenerated: true, createdBy: executorUserId, metadata: {quickCheckId, failedItems: [...], score, totalItems, technicianName}}. (3) Invocar AddNotificationUseCase para notificar owner {notificationType: 'warning', message: 'QuickCheck FAIL: [machine] tiene [N] items reprobados', actionUrl: '/machines/:id/quickchecks/:qcId', sourceType: 'QUICKCHECK'}. Validar Observer Pattern detecta notificación y dispara toast. Validar evento visible en historial de máquina con metadata completo. Testing e2e: QC fail → tipo evento creado/obtenido → evento + notificación guardados → toast disparado → historial actualizado. Manejo errores: Log si falla creación evento/notificación (NO bloquear flujo QC principal).
+		- Horas estimadas: **2**hs
+		- Margen: ±**0.5**hs (P80)
+		- Incertidumbre: **Baja**
+		- Dependencias: 6.3, 8.2, 8.4, 4.2b (FS)
 		- Spike: **No**
-		- PERT: Optimista 3hs, Probable 4hs, Pesimista 6hs
+		- PERT: Optimista 1.5hs, Probable 2hs, Pesimista 3hs
 
 7. **Repuestos** (RF-012..RF-014) [NiceToHave]
 

@@ -79,8 +79,8 @@ Distribución por categoría:
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
-| Documentación | 20.1 Reporte Académico (dominical) | 1 | 0.9 | 1.8 |
-| Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | 1 |
+| Documentación | 20.1 Reporte Académico del Sprint #1 | 1 | 0.9 | 1.8 |
+| Gestión | 20.2 Demo/UAT de Sprint #1 | 2 | 1.5 | 1 |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | 0.6 |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | 0 |
 | Desarrollo | 1.2 Esquemas DB (Mongoose + índices clave) | 5 | 5 | 0 |
@@ -122,8 +122,8 @@ Distribución por categoría:
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
-| Documentación | 20.1 Reporte Académico (dominical) | 1 | 0.9 | 6.8 |
-| Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | 1.1 |
+| Documentación | 20.1 Reporte Académico del Sprint #2 | 1 | 0.9 | 6.8 |
+| Gestión | 20.2 Demo/UAT de Sprint #2 | 2 | 1.5 | 1.1 |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | 1.9 |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | 0.9 |
 | Desarrollo | 0.11 Setup Backend Básico | 5 | 8 | 3.5 |
@@ -162,8 +162,8 @@ Distribución por categoría:
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
-| Documentación | 20.1 Reporte Académico (dominical) | 1 | 0.9 | 7.1 |
-| Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | 1.6 |
+| Documentación | 20.1 Reporte Académico del Sprint #3 | 1 | 0.9 | 7.1 |
+| Gestión | 20.2 Demo/UAT de Sprint #3 | 2 | 1.5 | 1.6 |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | 4.1 |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | 0.88 |
 | Desarrollo | 2.1 Registro de usuario (RF-001) | 5 | 10 | 12.9 |
@@ -203,8 +203,8 @@ Distribución por categoría:
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
-| Documentación | 20.1 Reporte Académico (dominical) | 1 | 0.9 | 6.6 |
-| Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | 0.9 |
+| Documentación | 20.1 Reporte Académico del Sprint #4 | 1 | 0.9 | 6.6 |
+| Gestión | 20.2 Demo/UAT de Sprint #4 | 2 | 1.5 | 0.9 |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | 1.2 |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | 0.5 |
 | Desarrollo | 3.1 Alta de máquina (RF-005) + ReactHookForms + Wizard Component | 5 | 16 | 23.8 |
@@ -241,8 +241,8 @@ Distribución por categoría:
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
-| Documentación | 20.1 Reporte Académico (dominical) | 1 | 5 | 5.8 |
-| Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | 0.9 |
+| Documentación | 20.1 Reporte Académico del Sprint #5 | 1 | 5 | 5.8 |
+| Gestión | 20.2 Demo/UAT de Sprint #5 | 2 | 1.5 | 0.9 |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | 2.9 |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | 0.75 |
 | Desarrollo | 16.11 Azure Deploy - Config práctica (Azure App Service) | 5 | 9 | 19.7 |
@@ -284,8 +284,8 @@ Distribución por categoría:
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
-| Documentación | 20.1 Reporte Académico (dominical) | 1 | 5 | 5.7 |
-| Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | 0 |
+| Documentación | 20.1 Reporte Académico del Sprint #6 | 1 | 5 | 5.7 |
+| Gestión | 20.2 Demo/UAT de Sprint #6 | 2 | 1.5 | 0 |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | 1.2 |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | 0.75 |
 | Desarrollo | 16.11 Azure Deploy - Config práctica (continuación) | 5 | 5 | 4.7 |
@@ -358,8 +358,8 @@ Distribución por categoría:
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
-| Documentación | 20.1 Reporte Académico (dominical) | 1 | 5 | 5.4 |
-| Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | 1.2 |
+| Documentación | 20.1 Reporte Académico del Sprint #7 | 1 | 5 | 5.4 |
+| Gestión | 20.2 Demo/UAT de Sprint #7 | 2 | 1.5 | 1.2 |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | 4.65 |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | 0 |
 | Desarrollo | 12.8 UI Polish (animaciones + reorder inputs) | 5 | 0.75 | 0.1 |
@@ -416,8 +416,8 @@ xychart-beta
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
-| Documentación | 20.1 Reporte Académico (dominical) | 1 | 5 | 5.3 |
-| Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | 1.45 |
+| Documentación | 20.1 Reporte Académico del Sprint #8 | 1 | 5 | 5.3 |
+| Gestión | 20.2 Demo/UAT de Sprint #8 | 2 | 1.5 | 1.45 |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | 2.15 |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | 1.1 |
 | Desarrollo | 8.1 Domain+Contracts+Persistence | 5 | 5 | 4.1 |
@@ -456,66 +456,79 @@ Distribución por categoría:
 
 ### **Sprint #10**: dom 21 dic → sáb 27 dic 2025
 
-**Objetivo:** 📅 Reporte Eventos + Eventos Automáticos - Sistema eventos básico sin features no solicitadas.
+**Objetivo:** � Sistema de Eventos de Máquina - Historial completo con eventos manuales/automáticos + tipos dinámicos crowdsourcing + integración QuickCheck.
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
-| Documentación | 20.1 Reporte Académico (dominical) | 1 | 5 | |
-| Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | |
+| Documentación | 20.1 Reporte Académico del Sprint #9 | 1 | 5 | |
+| Gestión | 20.2 Demo/UAT de Sprint #9 | 2 | 1.5 | |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | |
-| Desarrollo | 4.2 Registrar evento (RF-008) - Parte 2 | 5 | 5 | |
-| Desarrollo | 5.3 Hook a Centro de Notificaciones | 6 | 4 | |
-| Desarrollo | 8.2 UI lectura/estado | 7 | 7 | |
-| Desarrollo | 6.4 Aviso QuickCheck no aprobado (RF-017) | 8 | 6 | |
-| Desarrollo | 3.3 Edición con historial (RF-006) | 9 | 8 | |
+| Desarrollo | 4.2a Domain+Contracts+Persistence MachineEvent | 5 | 5 | |
+| Desarrollo | 4.2b Application Layer Backend MachineEvent | 6 | 6 | |
+| Desarrollo | 4.2c Frontend UI - Historial y Reportar | 7 | 6 | |
+| Desarrollo | 4.2d Frontend Integration MachineEvent | 8 | 4 | |
+| Desarrollo | 6.6 QuickCheck FAIL → Evento + Notificación | 9 | 2 | |
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales | Consumo |
 |:---:|:----------:|:-------:|
-| **33.8**hs | **7.85**hs | **23.2%** |
+| **31.8**hs | **0**hs | **0.0%** |
 
-Buffer reservado: **+1.2**hs
+Buffer reservado: **+3.2**hs
 Total con buffer: **35**hs
+
+```mermaid
+xychart-beta
+    title "Sprint #10: Horas Estimadas (azul) vs Reales (verde)"
+    x-axis ["20.1", "20.2", "20.3", "21.2", "4.2a", "4.2b", "4.2c", "4.2d", "6.6", "TOTAL"]
+    y-axis "Horas" 0 --> 35
+    line [5, 1.5, 1.3, 1, 5, 6, 6, 4, 2, 31.8]
+    line [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+```
 
 Distribución por categoría:
 | Documentación | Desarrollo | QA | Capacitación | Gestión |
 |:-------:|:----------:|:--:|:------------:|:-------------:|
-| **6**hs | **24**hs | **0**hs | **1**hs | **2.8**hs |
+| **5**hs | **23**hs | **0**hs | **1**hs | **2.8**hs |
 
 **Notas del Sprint:**
-- Sprint enfocado 100% en sistema de notificaciones con enfoque por capas
-- Arquitectura pragmática: Notification como subdocumento en User (no entidad independiente)
-- Use Cases modulares para facilitar testing y reutilización
-- Observer Pattern implementado con TanStack Query cache subscription (sin polling manual)
-- Integración real con QuickCheck (6.6) valida patrón end-to-end
-- Orden secuencial: Domain/Persistence → Application → UI → Integration → QuickCheck hook
-- Documentación crítica (8.5) facilita integración futura con Alertas y Eventos
-
-**Distribución semanal sugerida:**
-- **Dom 14 dic (planning):** 20.1 (5h) + 20.2 (1.5h) + 20.3 (1.3h) + 21.2 (1h) = 8.8hs [COMPLETADO 7.85hs]
-- **Lun 15 dic:** 8.1 Domain+Contracts+Persistence (5hs) = 5hs  
-- **Mar 16 dic:** 8.2 Application Layer Backend (5hs) = 5hs  
-- **Mié 17 dic:** Completar 8.2 (1h) + 8.3 Frontend UI (4hs) = 5hs  
-- **Jue 18 dic:** 8.4 Frontend Integration+Observer (5hs) = 5hs  
-- **Vie 19 dic:** 6.6 Integración QC→Notificaciones (4hs) + buffer (1h) = 5hs  
-- **Sáb 20 dic:** 8.5 Documentación (1h) + buffer (4hs) = 5hs  
-
-**Total:** 33.8hs planificadas + buffer +1.2hs
+- **Sprint enfocado 100% en sistema de eventos de máquina** siguiendo patrón exitoso de Notifications (Sprint #9)
+- **Arquitectura doble entidad:**
+  - `MachineEvent` subdocumento en Machine (instancias específicas)
+  - `MachineEventType` colección independiente (catálogo global crowdsourcing)
+- **Patrón crowdsourcing:** Usuarios crean tipos dinámicamente ("Mantenimiento", "Ruptura", etc.) sin enums hardcodeados
+- **Sin category ni severity:** Estructura simplificada, typeId da flexibilidad total
+- **Integración triple:** QuickCheck FAIL → MachineEventType creado → Evento guardado → Notificación enviada
+- **Orden secuencial crítico:** Domain/Persistence → Application (incluye CRUD EventTypes) → UI (con autocomplete) → Integration → QuickCheck hook
 
 **Fortalezas:**
-- ✅ Buffer positivo (+1.2hs)
-- ✅ Tareas bien acotadas (1-6hs cada una)
-- ✅ Dependencias lineales claras
-- ✅ Patrón documentado para futuros módulos
-- ✅ Testing end-to-end incorporado en 6.6
+- ✅ Entidades MachineEvent y MachineEventType **YA existen** (reducción de riesgo)
+- ✅ Patrón probado del Sprint #9 aplicado exitosamente
+- ✅ Crowdsourcing elimina necesidad de enums hardcodeados
+- ✅ Autocomplete inteligente con crear on-the-fly (UX fluida)
+- ✅ Metadata JSON flexible para casos especiales (QuickCheck score, items fallidos)
+
+**Riesgos y Mitigaciones:**
+- ⚠️ **Buffer negativo (-2.8hs):** Sprint apretado, requiere disciplina estricta
+- ⚠️ **Navidad (jue 25 dic):** Día festivo reduce capacidad efectiva a ~29hs (5 días × 5.8hs/día promedio)
+- ⚠️ **Crowdsourcing complejidad:** Autocomplete con crear tipo puede requerir debugging
+- ✅ **Mitigación:** Simplificar metadata en 6.6 si tiempo aprieta (solo quickCheckId + score)
+- ✅ **Descope opcional:** Si crítico, mover 6.6 a Sprint #11 (sistema funciona sin esta integración)
 
 **Consideraciones técnicas:**
-- TanStack Query refetchInterval: 30 segundos (balance tiempo real vs. carga)
-- react-hot-toast: toasts 5 segundos duration
-- Subdocumento User.notifications: suficiente para MVP (no requiere colección separada)
-- Observer valida detección automática sin recargas manuales
+- **MachineEventType.normalizedName:** "mantenimiento" = "Mantenimiento" (evita duplicados)
+- **MachineEventType.timesUsed:** Ordena autocomplete por popularidad
+- **Machine.eventsHistory:** Subdocumento array con índices compuestos para performance
+- **EventTypeAutocomplete:** Componente Combobox con `allowCreate={true}` (crear si no existe)
+- **QuickCheck integration:** Crear tipo sistemático "QuickCheck Desaprobado" solo primera vez, reutilizar después
+- **No notificaciones spam:** Eventos manuales NO generan notificación, solo eventos críticos del sistema
 
-**Riesgos:** Período navideño puede afectar productividad levemente.
+**Dependencias críticas:**
+1. 4.2a debe completarse antes de 4.2b (schemas necesarios para repositories)
+2. 4.2b debe completarse antes de 4.2c/4.2d (API necesaria para UI)
+3. 4.2c y 4.2d pueden paralelizarse parcialmente (UI mockear primero)
+4. 6.6 requiere 4.2b completo (CreateMachineEventUseCase + CreateEventTypeUseCase)
+
 
 ### **Sprint #11**: dom 28 dic → sáb 3 ene 2026
 
@@ -523,8 +536,8 @@ Distribución por categoría:
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
-| Documentación | 20.1 Reporte Académico (dominical) | 1 | 5 | |
-| Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | |
+| Documentación | 20.1 Reporte Académico del Sprint #10 | 1 | 5 | |
+| Gestión | 20.2 Demo/UAT de Sprint #10 | 2 | 1.5 | |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | |
 | Desarrollo | 4.3 Historial unificado (RF-009) | 5 | 15 | |
@@ -551,8 +564,8 @@ Distribución por categoría:
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
-| Documentación | 20.1 Reporte Académico (dominical) | 1 | 5 | |
-| Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | |
+| Documentación | 20.1 Reporte Académico del Sprint #11 | 1 | 5 | |
+| Gestión | 20.2 Demo/UAT de Sprint #11 | 2 | 1.5 | |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | |
 | QA | 13.3a Unit tests Backend | 5 | 12 | |
@@ -578,8 +591,8 @@ Distribución por categoría:
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
-| Documentación | 20.1 Reporte Académico (dominical) | 1 | 5 | |
-| Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | |
+| Documentación | 20.1 Reporte Académico del Sprint #12 | 1 | 5 | |
+| Gestión | 20.2 Demo/UAT de Sprint #12 | 2 | 1.5 | |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | |
 | QA | 13.3b Unit tests Frontend | 5 | 10 | |
@@ -604,8 +617,8 @@ Distribución por categoría:
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
-| Documentación | 20.1 Reporte Académico (dominical) | 1 | 5 | |
-| Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | |
+| Documentación | 20.1 Reporte Académico del Sprint #13 | 1 | 5 | |
+| Gestión | 20.2 Demo/UAT de Sprint #13 | 2 | 1.5 | |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | |
 | QA | 13.5 Sanitización manual por feature | 5 | 8 | |
@@ -634,8 +647,8 @@ Distribución por categoría:
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
-| Documentación | 20.1 Reporte Académico (dominical) | 1 | 5 | |
-| Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | |
+| Documentación | 20.1 Reporte Académico del Sprint #14 | 1 | 5 | |
+| Gestión | 20.2 Demo/UAT de Sprint #14 | 2 | 1.5 | |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | |
 | QA | 13.7 Triage & fix post-UAT | 5 | 10 | |
@@ -661,8 +674,8 @@ Distribución por categoría:
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
-| Documentación | 20.1 Reporte Académico (dominical) | 1 | 5 | |
-| Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | |
+| Documentación | 20.1 Reporte Académico del Sprint #15 | 1 | 5 | |
+| Gestión | 20.2 Demo/UAT de Sprint #15 | 2 | 1.5 | |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | |
 | Desarrollo | 7.1 Alta/edición repuesto (RF-012/014) [NiceToHave] | 5 | 8 | |
@@ -690,8 +703,8 @@ Distribución por categoría:
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
-| Documentación | 20.1 Reporte Académico (dominical) | 1 | 5 | |
-| Gestión | 20.2 Demo/UAT con cliente (dominical) | 2 | 1.5 | |
+| Documentación | 20.1 Reporte Académico del Sprint #16 | 1 | 5 | |
+| Gestión | 20.2 Demo/UAT de Sprint #16 | 2 | 1.5 | |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | |
 | Gestión | 21.21 Buffer de entrega final | 5 | 10 | |

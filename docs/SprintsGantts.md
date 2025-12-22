@@ -336,14 +336,15 @@ gantt
 
   %% Asumimos 5 h/día. Horas estimadas incluidas en el nombre.
 
-  20.1 Reporte Académico (0.9hs)               :t201, 2025-12-21, 1d
-  20.2 Demo/UAT con cliente (1.5hs)            :t202, 2025-12-21, 1d
+  20.2 Demo/UAT de Sprint #9 (1.5hs)           :t202, 2025-12-21, 1d
   20.3 Sprint Planning dominguero (1.3hs)      :t203, 2025-12-21, 1d
-  4.2 Registrar evento (RF-008) - Parte 2 (5hs) :t422, after t203, 1d
-  5.3 Hook a Centro de Notificaciones (4hs)    :t53, after t422, 1d
-  8.2 UI lectura/estado (7hs)                  :t82, after t53, 2d
-  6.4 Aviso QuickCheck no aprobado (RF-017) (6hs) :t64, after t82, 2d
-  3.3 Edición con historial (RF-006) (8hs)     :t33, after t64, 2d
+  20.1 Reporte Académico del Sprint #9 (5hs)    :t201, 2025-12-22, 1d
+  21.2 Tutorías (1hs)                          :t212, 2025-12-23, 1d
+  4.2a Domain+Contracts+Persistence (5hs)      :t42a, 2025-12-23, 1d
+  4.2b Application Layer Backend (6hs)         :t42b, after t42a, 1.2d
+  4.2c Frontend UI - Historial y Reportar (6hs) :t42c, after t42b, 1.2d
+  4.2d Frontend Integration (4hs)              :t42d, after t42c, 0.8d
+  6.6 QuickCheck FAIL → Evento + Notif (2hs)  :t66, after t42d, 0.4d
 
   section Hitos
   Cierre Sprint 10                             :milestone, s10, 2025-12-27, 1d
