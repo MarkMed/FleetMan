@@ -229,6 +229,16 @@ Guards/claims por rol en API y UI.
 		- Dependencias: 2.2 (FS)
 		- Spike: **No**
 
+	- 2.6 **Edición de Perfil de Usuario** [Should Have].
+Permitir a usuarios modificar su información personal. Frontend: Formulario de edición de perfil con campos editables (nombre, apellido, email, teléfono, empresa), validación en tiempo real con Zod, estados de loading/success/error, confirmación de cambios. Backend: Endpoint PATCH /users/:userId, validaciones (email único si cambió, formato de datos), middleware de autorización (usuario solo puede editar su propio perfil o admin puede editar cualquiera), actualización parcial (solo campos enviados), respuesta con usuario actualizado. Excluir cambio de contraseña (flujo separado en 2.4).
+		- Horas estimadas: **7**hs
+		- Margen: ±**1.3**hs (P80)
+		- Incertidumbre: **Media**
+		- Dependencias: 2.2, 2.5 (FS)
+		- Spike: **No**
+		- PERT: Optimista 5hs, Probable 7hs, Pesimista 10hs
+		- MoSCoW: **Should Have**
+
 3. **Maquinaria** (RF-005, RF-006)
 
 	- 3.1 **Alta de máquina (RF-005) + ReactHookForms + Wizard Component**.
@@ -277,6 +287,26 @@ Componente de acciones rápidas en Dashboard con overlay blur. Incluye: QuickChe
 		- Incertidumbre: **Media**
 		- Dependencias: 3.1, 0.10 (FS), SS con 4.2, 6.2, 7.1
 		- Spike: **No**
+
+	- 3.5 **Paginación de Lista de Máquinas** [Should Have].
+Implementación completa de paginación para escalabilidad. Backend: Verificar y ajustar endpoints GET /machines para soportar parámetros page, limit, total count en headers/metadata, optimización de queries con skip/limit. Frontend: Componente de paginación reutilizable con controles prev/next/pages, integración con lista de máquinas, gestión de estado de página actual, peticiones correctas con query params, estados de loading entre páginas.
+		- Horas estimadas: **8**hs
+		- Margen: ±**1.5**hs (P80)
+		- Incertidumbre: **Media**
+		- Dependencias: 3.2 (FS)
+		- Spike: **No**
+		- PERT: Optimista 6hs, Probable 8hs, Pesimista 11hs
+		- MoSCoW: **Should Have**
+
+	- 3.6 **Subida de Foto de Máquina** [Must Have].
+Integración completa de carga de imágenes con Cloudinary. Frontend: Componente PhotoUpload reutilizable con opciones para capturar desde cámara o seleccionar desde galería/archivos, preview de imagen antes de guardar, crop/resize básico (opcional), estados de loading/progress durante upload, manejo de errores (tamaño, formato). Backend: Verificar/implementar integración con Cloudinary SDK, endpoint para obtener signed upload URL o manejar upload directo, validaciones de formato (jpg, png, webp) y tamaño máximo (ej. 5MB), almacenar URL retornada por Cloudinary en machinePhotoUrl, manejo de eliminación de fotos antiguas. Integración con formularios de registro (3.1) y edición (3.3) de máquina.
+		- Horas estimadas: **14**hs
+		- Margen: ±**2.5**hs (P80)
+		- Incertidumbre: **Alta**
+		- Dependencias: 3.1, 3.2a (FS)
+		- Spike: **Sí** (Cloudinary setup y flow de upload)
+		- PERT: Optimista 10hs, Probable 14hs, Pesimista 20hs
+		- MoSCoW: **Must Have**
 
 4. **Mantenimiento & Eventos** (RF-007..RF-009)
 
