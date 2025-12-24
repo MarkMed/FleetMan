@@ -994,6 +994,15 @@ Planificación de la iteración con foco en ruta crítica.
 		- Dependencias: 20.2 (FS)
 		- Spike: **No**
 
+	- 20.4 **Informe de avance** (académico).
+Documento extenso que resume y explica todo lo realizado en un conjunto de semanas. Propósito 100% académico, describe progreso, decisiones técnicas, arquitectura implementada, lecciones aprendidas y próximos pasos del proyecto.
+		- Horas estimadas: **No aplica** (tarea ya realizada)
+		- Horas reales: **1.2**hs
+		- Margen: **No est.**
+		- Incertidumbre: **No est.**
+		- Dependencias: Cierre de período de múltiples sprints (FS)
+		- Spike: **No**
+
 21. **Pre-Proyecto / Anteproyecto**
 
 	- 21.1 **Talleres** (instancias de guía general).
