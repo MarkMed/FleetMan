@@ -67,11 +67,12 @@ export class MachineEvent {
   /**
    * Convierte la entidad a su representación de interfaz pública
    * Para uso en frontend y contratos
+   * NOTA: NO incluye machineId porque será embedded en Machine.eventsHistory[]
    */
   public toPublicInterface(): IMachineEvent {
     return {
       id: this.props.id,
-      machineId: this.props.machineId.getValue(),
+      // machineId: NO incluido (embedded en Machine)
       createdBy: this.props.createdBy.getValue(),
       typeId: this.props.typeId,
       title: this.props.title,

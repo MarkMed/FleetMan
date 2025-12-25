@@ -232,6 +232,58 @@ const machineSchema = new Schema<IMachineDocument>({
     }
   },
 
+  // 🆕 Sprint #10: Machine Events embedded as subdocuments (like QuickCheck pattern)
+  // Patrón: Embedded array (NO separate collection) para historial acotado ~300 eventos
+  eventsHistory: [{
+    typeId: {
+      type: String,
+      required: true,
+      ref: 'MachineEventType'
+    },
+    title: {
+      type: String,
+      required: true,
+      trim: true,
+      maxlength: 200
+    },
+    description: {
+      type: String,
+      trim: true,
+      maxlength: 2000
+    },
+    createdBy: {
+      type: String,
+      required: true,
+      ref: 'User'
+    },
+    isSystemGenerated: {
+      type: Boolean,
+      required: true,
+      default: false
+    },
+    metadata: {
+      additionalInfo: {
+        type: Schema.Types.Mixed,
+        default: {}
+      },
+      notes: {
+        type: String,
+        trim: true,
+        maxlength: 1000
+      }
+    },
+    createdAt: {
+      type: Date,
+      required: true,
+      default: Date.now
+    },
+    updatedAt: {
+      type: Date,
+      required: true,
+      default: Date.now
+    }
+  }],
+
   // QuickCheck records embedded as subdocuments
   quickChecks: [{
     result: {
@@ -308,6 +360,11 @@ machineSchema.index({ ownerId: 1, 'status.code': 1 });
 machineSchema.index({ assignedProviderId: 1, 'status.isOperational': 1 });
 machineSchema.index({ machineTypeId: 1, 'status.code': 1 });
 machineSchema.index({ brand: 1, modelName: 1 });
+
+// 🆕 Sprint #10: Indexes para queries de eventsHistory (embedded array)
+machineSchema.index({ 'eventsHistory.typeId': 1, 'eventsHistory.createdAt': -1 });
+machineSchema.index({ 'eventsHistory.isSystemGenerated': 1, 'eventsHistory.createdAt': -1 });
+machineSchema.index({ 'eventsHistory.createdBy': 1, 'eventsHistory.createdAt': -1 });
 
 // GeoSpatial index for location-based queries
 machineSchema.index({ 'location.coordinates': '2dsphere' });

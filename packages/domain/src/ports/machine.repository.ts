@@ -4,7 +4,7 @@ import { MachineId } from '../value-objects/machine-id.vo';
 import { UserId } from '../value-objects/user-id.vo';
 import { MachineTypeId } from '../value-objects/machine-type-id.vo';
 import { DomainError } from '../errors';
-import type { IQuickCheckRecord } from '../models/interfaces';
+import type { IQuickCheckRecord, IMachineEvent } from '../models/interfaces';
 
 /**
  * Puerto (interface) para persistencia de Machine
@@ -101,6 +101,75 @@ export interface IMachineRepository {
    * sin duplicar catálogos de ítems en base de datos
    */
   getLatestQuickCheck(machineId: MachineId): Promise<Result<IQuickCheckRecord | undefined, DomainError>>;
+
+  // ==========================================================================
+  // 🆕 Sprint #10: Machine Events Methods (Embedded Pattern)
+  // ==========================================================================
+
+  /**
+   * Agrega un evento al historial de la máquina
+   * Incrementa timesUsed del tipo de evento (fire-and-forget)
+   * 
+   * @param machineId - ID de la máquina
+   * @param eventData - Datos del evento a crear
+   * @returns Result con el evento creado o error
+   */
+  addEvent(
+    machineId: MachineId,
+    eventData: {
+      typeId: string;
+      title: string;
+      description?: string;
+      createdBy: string;
+      isSystemGenerated?: boolean;
+      metadata?: Record<string, any>;
+    }
+  ): Promise<Result<IMachineEvent, DomainError>>;
+
+  /**
+   * Obtiene historial de eventos con filtros y paginación
+   * Soporta búsqueda por typeId, fechas, isSystemGenerated, searchTerm
+   * 
+   * @param machineId - ID de la máquina
+   * @param filters - Filtros opcionales
+   * @returns Result con eventos paginados
+   */
+  getEventsHistory(
+    machineId: MachineId,
+    filters?: {
+      typeId?: string;
+      isSystemGenerated?: boolean;
+      startDate?: Date;
+      endDate?: Date;
+      searchTerm?: string;
+      page?: number;
+      limit?: number;
+    }
+  ): Promise<Result<{
+    items: IMachineEvent[];
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  }, DomainError>>;
+
+  /**
+   * Obtiene el último evento de una máquina
+   * Optimizado: Solo carga campo eventsHistory
+   * 
+   * @param machineId - ID de la máquina
+   * @returns Último evento o undefined si no hay historial
+   */
+  getLatestEvent(machineId: MachineId): Promise<Result<IMachineEvent | undefined, DomainError>>;
+
+  /**
+   * Cuenta eventos por tipo
+   * Útil para dashboard analytics
+   * 
+   * @param machineId - ID de la máquina
+   * @returns Map de typeId → count
+   */
+  countEventsByType(machineId: MachineId): Promise<Result<Map<string, number>, DomainError>>;
 
   // TODO: Métodos estratégicos para considerar:
   // findNearLocation(lat: number, lng: number, radiusKm: number): Promise<Machine[]>; // Geolocalización

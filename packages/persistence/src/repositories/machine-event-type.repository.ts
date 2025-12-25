@@ -15,6 +15,68 @@ import {
 export class MachineEventTypeRepository implements IMachineEventTypeRepository {
 
   /**
+   * Convierte documento Mongoose a entidad de dominio
+   * Pattern: Inline conversion (como MachineType, NO usa mapper separado)
+   */
+  private toEntity(doc: IMachineEventTypeDocument): Result<MachineEventType, DomainError> {
+    try {
+      const createProps = {
+        name: doc.name,
+        language: doc.languages[0], // Primer idioma para validación
+        languages: doc.languages,   // Array completo para reconstitución
+        createdBy: doc.createdBy || undefined
+      };
+
+      // Recreate entity usando factory method apropiado
+      const entityResult = doc.systemGenerated 
+        ? MachineEventType.createSystemType(createProps)
+        : MachineEventType.createUserType(createProps);
+
+      if (!entityResult.success) {
+        return err(entityResult.error);
+      }
+
+      const entity = entityResult.data;
+
+      // Parse createdBy si existe
+      let createdByUserId = null;
+      if (doc.createdBy) {
+        const userIdResult = UserId.create(doc.createdBy);
+        if (userIdResult.success) {
+          createdByUserId = userIdResult.data;
+        }
+      }
+
+      // Override propiedades que vienen de la DB (no del factory)
+      (entity as any).props = {
+        id: doc.id,
+        name: doc.name,
+        normalizedName: doc.normalizedName,
+        languages: doc.languages,
+        systemGenerated: doc.systemGenerated,
+        createdBy: createdByUserId,
+        createdAt: doc.createdAt,
+        timesUsed: doc.timesUsed,
+        isActive: doc.isActive
+      };
+
+      return ok(entity);
+    } catch (error: any) {
+      return err(DomainError.create('PERSISTENCE_ERROR', `Error converting document to entity: ${error.message}`));
+    }
+  }
+
+  /**
+   * Convierte array de documentos a entidades
+   */
+  private toEntityArray(docs: IMachineEventTypeDocument[]): MachineEventType[] {
+    return docs
+      .map(doc => this.toEntity(doc))
+      .filter(result => result.success)
+      .map(result => result.data as MachineEventType);
+  }
+
+  /**
    * Busca un tipo de evento por su ID
    */
   async findById(id: string): Promise<Result<MachineEventType, DomainError>> {
@@ -25,8 +87,7 @@ export class MachineEventTypeRepository implements IMachineEventTypeRepository {
         return err(DomainError.notFound(`MachineEventType with ID ${id} not found`));
       }
 
-      // TODO: Implement proper document to entity conversion
-      return err(DomainError.create('INCOMPLETE_IMPLEMENTATION', 'MachineEventTypeRepository.findById needs complete implementation'));
+      return this.toEntity(eventTypeDoc);
     } catch (error: any) {
       return err(DomainError.create('PERSISTENCE_ERROR', `Error finding machine event type by ID: ${error.message}`));
     }
@@ -34,17 +95,19 @@ export class MachineEventTypeRepository implements IMachineEventTypeRepository {
 
   /**
    * Busca un tipo de evento por nombre normalizado
+   * Útil para get-or-create pattern (evitar duplicados)
    */
   async findByNormalizedName(normalizedName: string): Promise<Result<MachineEventType, DomainError>> {
     try {
-      const eventTypeDoc = await MachineEventTypeModel.findOne({ normalizedName: normalizedName.toLowerCase() });
+      const eventTypeDoc = await MachineEventTypeModel.findOne({ 
+        normalizedName: normalizedName.toLowerCase() 
+      });
       
       if (!eventTypeDoc) {
         return err(DomainError.notFound(`MachineEventType with normalized name ${normalizedName} not found`));
       }
 
-      // TODO: Implement proper document to entity conversion
-      return err(DomainError.create('INCOMPLETE_IMPLEMENTATION', 'MachineEventTypeRepository.findByNormalizedName needs complete implementation'));
+      return this.toEntity(eventTypeDoc);
     } catch (error: any) {
       return err(DomainError.create('PERSISTENCE_ERROR', `Error finding machine event type by normalized name: ${error.message}`));
     }
@@ -83,81 +146,189 @@ export class MachineEventTypeRepository implements IMachineEventTypeRepository {
    * Obtiene todos los tipos de evento activos
    */
   async findAllActive(): Promise<MachineEventType[]> {
-    // TODO: Implement when document to entity conversion is ready
-    console.warn('MachineEventTypeRepository.findAllActive not fully implemented');
-    return [];
+    try {
+      const docs = await MachineEventTypeModel.find({ isActive: true })
+        .sort({ timesUsed: -1 }); // Más populares primero
+      
+      return this.toEntityArray(docs);
+    } catch (error) {
+      console.error('Error finding active machine event types:', error);
+      return [];
+    }
   }
 
   /**
    * Obtiene todos los tipos de evento (activos e inactivos)
    */
   async findAll(): Promise<MachineEventType[]> {
-    // TODO: Implement when document to entity conversion is ready
-    console.warn('MachineEventTypeRepository.findAll not fully implemented');
-    return [];
+    try {
+      const docs = await MachineEventTypeModel.find()
+        .sort({ timesUsed: -1 });
+      
+      return this.toEntityArray(docs);
+    } catch (error) {
+      console.error('Error finding all machine event types:', error);
+      return [];
+    }
   }
 
   /**
    * Busca tipos de evento generados por el sistema
    */
   async findSystemGenerated(): Promise<MachineEventType[]> {
-    // TODO: Implement when document to entity conversion is ready
-    console.warn('MachineEventTypeRepository.findSystemGenerated not fully implemented');
-    return [];
+    try {
+      const docs = await MachineEventTypeModel.find({ 
+        systemGenerated: true,
+        isActive: true 
+      }).sort({ name: 1 });
+      
+      return this.toEntityArray(docs);
+    } catch (error) {
+      console.error('Error finding system-generated event types:', error);
+      return [];
+    }
   }
 
   /**
    * Busca tipos de evento creados por usuarios
    */
   async findUserGenerated(): Promise<MachineEventType[]> {
-    // TODO: Implement when document to entity conversion is ready
-    console.warn('MachineEventTypeRepository.findUserGenerated not fully implemented');
-    return [];
+    try {
+      const docs = await MachineEventTypeModel.find({ 
+        systemGenerated: false,
+        isActive: true 
+      }).sort({ timesUsed: -1 });
+      
+      return this.toEntityArray(docs);
+    } catch (error) {
+      console.error('Error finding user-generated event types:', error);
+      return [];
+    }
   }
 
   /**
    * Busca tipos de evento por creador
    */
   async findByCreatedBy(userId: UserId): Promise<MachineEventType[]> {
-    // TODO: Implement when document to entity conversion is ready
-    console.warn('MachineEventTypeRepository.findByCreatedBy not fully implemented');
-    return [];
+    try {
+      const docs = await MachineEventTypeModel.find({ 
+        createdBy: userId.getValue(),
+        isActive: true 
+      }).sort({ timesUsed: -1 });
+      
+      return this.toEntityArray(docs);
+    } catch (error) {
+      console.error('Error finding event types by creator:', error);
+      return [];
+    }
   }
 
   /**
    * Obtiene tipos más usados (ordenados por timesUsed)
+   * Útil para sugerencias en UI (Quick Actions)
    */
   async findMostUsed(limit: number): Promise<MachineEventType[]> {
-    // TODO: Implement when document to entity conversion is ready
-    console.warn('MachineEventTypeRepository.findMostUsed not fully implemented');
-    return [];
+    try {
+      const docs = await MachineEventTypeModel.find({ isActive: true })
+        .sort({ timesUsed: -1 })
+        .limit(limit);
+      
+      return this.toEntityArray(docs);
+    } catch (error) {
+      console.error('Error finding most used event types:', error);
+      return [];
+    }
   }
 
   /**
    * Obtiene tipos activos ordenados por frecuencia de uso
    */
   async findActiveByUsageFrequency(limit: number = 50): Promise<MachineEventType[]> {
-    // TODO: Implement when document to entity conversion is ready
-    console.warn('MachineEventTypeRepository.findActiveByUsageFrequency not fully implemented');
-    return [];
+    try {
+      const docs = await MachineEventTypeModel.find({ isActive: true })
+        .sort({ timesUsed: -1, name: 1 })
+        .limit(limit);
+      
+      return this.toEntityArray(docs);
+    } catch (error) {
+      console.error('Error finding active event types by usage:', error);
+      return [];
+    }
   }
 
   /**
    * Busca tipos por propietario/creador
    */
   async findByOwnerId(ownerId: UserId): Promise<MachineEventType[]> {
-    // TODO: Implement when document to entity conversion is ready
-    console.warn('MachineEventTypeRepository.findByOwnerId not fully implemented');
-    return [];
+    try {
+      const docs = await MachineEventTypeModel.find({ 
+        createdBy: ownerId.getValue(),
+        isActive: true 
+      }).sort({ timesUsed: -1 });
+      
+      return this.toEntityArray(docs);
+    } catch (error) {
+      console.error('Error finding event types by owner:', error);
+      return [];
+    }
   }
 
   /**
    * Guarda un tipo de evento (crear o actualizar)
+   * Patrón: Upsert inteligente (como MachineType) - Si ya existe por normalizedName, retorna existente
+   * Esto previene duplicados cuando 2 usuarios crean "Mantenimiento" simultáneamente
    */
   async save(eventType: MachineEventType): Promise<Result<void, DomainError>> {
     try {
-      // TODO: Implement entity to document conversion and save logic
-      return err(DomainError.create('INCOMPLETE_IMPLEMENTATION', 'MachineEventTypeRepository.save needs complete implementation'));
+      const publicInterface = eventType.toPublicInterface();
+      
+      // Si tiene ID, es update
+      if (publicInterface.id && publicInterface.id.startsWith('mevt_type_')) {
+        const existingDoc = await MachineEventTypeModel.findById(publicInterface.id);
+        
+        if (existingDoc) {
+          // Update de documento existente (usar set para evitar readonly errors)
+          existingDoc.set({
+            name: publicInterface.name,
+            normalizedName: publicInterface.normalizedName,
+            timesUsed: publicInterface.timesUsed,
+            isActive: publicInterface.isActive
+          });
+          
+          await existingDoc.save();
+          return ok(undefined);
+        }
+      }
+      
+      // Es create - usar upsert por normalizedName (prevenir duplicados)
+      try {
+        await MachineEventTypeModel.create({
+          _id: publicInterface.id,
+          name: publicInterface.name,
+          normalizedName: publicInterface.normalizedName,
+          systemGenerated: publicInterface.systemGenerated,
+          createdBy: publicInterface.createdBy,
+          timesUsed: publicInterface.timesUsed,
+          isActive: publicInterface.isActive
+        });
+        
+        return ok(undefined);
+      } catch (createError: any) {
+        // Si hay duplicate key error (race condition), buscar el existente
+        if (createError.code === 11000) {
+          const existing = await MachineEventTypeModel.findOne({ 
+            normalizedName: publicInterface.normalizedName 
+          });
+          
+          if (existing) {
+            // Ya existe - actualizar entity con ID del existente
+            (eventType as any).props.id = existing.id;
+            return ok(undefined);
+          }
+        }
+        
+        throw createError;
+      }
     } catch (error: any) {
       return err(DomainError.create('PERSISTENCE_ERROR', `Error saving machine event type: ${error.message}`));
     }
@@ -182,32 +353,59 @@ export class MachineEventTypeRepository implements IMachineEventTypeRepository {
 
   /**
    * Incrementa el contador de uso
+   * Pattern: Fire-and-forget atomic operation (NO throw errors)
+   * Llamado después de crear un evento con este tipo
    */
   async incrementUsageCount(id: string): Promise<Result<void, DomainError>> {
     try {
       const result = await MachineEventTypeModel.findByIdAndUpdate(
         id,
-        { $inc: { usageCount: 1 } },
+        { $inc: { timesUsed: 1 } }, // ✅ Campo correcto
         { new: true }
       );
       
       if (!result) {
-        return err(DomainError.notFound(`MachineEventType with ID ${id} not found`));
+        // Fire-and-forget: log pero no fail
+        console.warn(`MachineEventType with ID ${id} not found for increment`);
+        return ok(undefined);
       }
       
       return ok(undefined);
     } catch (error: any) {
-      return err(DomainError.create('PERSISTENCE_ERROR', `Error incrementing usage count: ${error.message}`));
+      // Fire-and-forget: log pero no throw
+      console.error('Error incrementing usage count:', error);
+      return ok(undefined);
     }
   }
 
   /**
    * Busca tipos de evento por término de búsqueda
+   * Usado para autocomplete en UI (debounced)
    */
-  async searchByTerm(searchTerm: string): Promise<MachineEventType[]> {
-    // TODO: Implement when document to entity conversion is ready
-    console.warn('MachineEventTypeRepository.searchByTerm not fully implemented');
-    return [];
+  async searchByTerm(searchTerm: string, limit: number = 10): Promise<MachineEventType[]> {
+    try {
+      if (!searchTerm || searchTerm.trim().length === 0) {
+        // Sin término, retornar los más populares
+        return this.findMostUsed(limit);
+      }
+      
+      const regex = new RegExp(searchTerm, 'i'); // Case-insensitive
+      
+      const docs = await MachineEventTypeModel.find({
+        isActive: true,
+        $or: [
+          { name: regex },
+          { normalizedName: regex }
+        ]
+      })
+        .sort({ timesUsed: -1 }) // Más populares primero
+        .limit(limit);
+      
+      return this.toEntityArray(docs);
+    } catch (error) {
+      console.error('Error searching event types by term:', error);
+      return [];
+    }
   }
 
   /**
@@ -269,12 +467,24 @@ export class MachineEventTypeRepository implements IMachineEventTypeRepository {
         ];
       }
 
+      // Build sort
+      const sortField = options.sortBy || 'timesUsed';
+      const sortOrder = options.sortOrder === 'asc' ? 1 : -1;
+      const sort: any = { [sortField]: sortOrder };
+      
       // Get total count
       const total = await MachineEventTypeModel.countDocuments(query);
+      
+      // Get paginated documents
+      const docs = await MachineEventTypeModel.find(query)
+        .sort(sort)
+        .skip((options.page - 1) * options.limit)
+        .limit(options.limit);
+      
+      const items = this.toEntityArray(docs);
 
-      // TODO: Return empty results until document to entity conversion is implemented
       return {
-        items: [],
+        items,
         total,
         page: options.page,
         limit: options.limit,

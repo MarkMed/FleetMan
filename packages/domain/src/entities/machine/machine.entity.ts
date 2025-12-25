@@ -13,6 +13,7 @@ import {
 import { 
   IMachine, 
   IQuickCheckRecord,
+  IMachineEvent,
   IUsageSchedule
 } from '../../models/interfaces';
 // FuelType imported from models/index.ts (SSOT)
@@ -83,6 +84,7 @@ interface MachineProps {
   specs?: MachineSpecs;
   location?: MachineLocation;
   quickChecks: IQuickCheckRecord[]; // Historial de inspecciones (mutable)
+  eventsHistory: IMachineEvent[]; // 🆕 Sprint #10: Historial de eventos (mutable)
   createdAt: Date;
   updatedAt: Date;
 }
@@ -139,6 +141,7 @@ export class Machine {
         lastUpdated: this.props.location.lastUpdated
       } : undefined,
       quickChecks: this.props.quickChecks, // Real quickcheck history
+      eventsHistory: this.props.eventsHistory, // 🆕 Sprint #10: Real events history
       createdAt: this.props.createdAt,
       updatedAt: this.props.updatedAt
     };
@@ -223,6 +226,7 @@ export class Machine {
       specs: createProps.specs,
       location: createProps.location,
       quickChecks: [], // Initialize empty history
+      eventsHistory: [], // 🆕 Sprint #10: Initialize empty events
       createdAt: now,
       updatedAt: now,
     };
@@ -626,6 +630,60 @@ export class Machine {
     this.props.updatedAt = new Date();
 
     return ok(undefined);
+  }
+
+  /**
+   * Agrega un evento al historial de la máquina
+   * Patrón IDÉNTICO a addQuickCheckRecord (embedded array)
+   * 
+   * @param event - Evento a agregar
+   * @returns Result<void> exitoso o DomainError con validación
+   */
+  public addEvent(event: IMachineEvent): Result<void, DomainError> {
+    // Validación 1: No agregar eventos a máquina retirada
+    if (this.props.status.code === 'RETIRED') {
+      return err(DomainError.domainRule('Cannot add event to retired machine'));
+    }
+
+    // Validación 2: Campos obligatorios
+    if (!event.title || event.title.trim().length === 0) {
+      return err(DomainError.validation('Event title is required'));
+    }
+
+    if (event.title.trim().length > 200) {
+      return err(DomainError.validation('Event title cannot exceed 200 characters'));
+    }
+
+    if (event.description && event.description.trim().length > 2000) {
+      return err(DomainError.validation('Event description cannot exceed 2000 characters'));
+    }
+
+    if (!event.typeId || event.typeId.trim().length === 0) {
+      return err(DomainError.validation('Event type is required'));
+    }
+
+    if (!event.createdBy || event.createdBy.trim().length === 0) {
+      return err(DomainError.validation('Event creator is required'));
+    }
+
+    // Validación 3: Soft limit (300 events, warning pero no blocking)
+    if (this.props.eventsHistory.length >= 300) {
+      console.warn(`Machine ${this.id.getValue()} has ${this.props.eventsHistory.length} events (soft limit: 300)`);
+    }
+
+    // Agregar al historial (más recientes primero)
+    this.props.eventsHistory.unshift(event);
+    this.props.updatedAt = new Date();
+
+    return ok(undefined);
+  }
+
+  /**
+   * Obtiene el historial de eventos
+   * @returns Array inmutable de eventos (readonly)
+   */
+  public getEventsHistory(): readonly IMachineEvent[] {
+    return this.props.eventsHistory;
   }
 
   // =============================================================================

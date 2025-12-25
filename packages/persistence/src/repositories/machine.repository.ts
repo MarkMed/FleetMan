@@ -8,13 +8,15 @@ import {
   DomainError,
   ok,
   err,
-  type IQuickCheckRecord
+  type IQuickCheckRecord,
+  type IMachineEvent
 } from '@packages/domain';
 import { 
   MachineModel, 
-  type IMachineDocument
+  type IMachineDocument,
+  MachineEventTypeModel
 } from '../models';
-import { MachineMapper } from '../mappers';
+import { MachineMapper, MachineEventMapper } from '../mappers';
 import { type CreateQuickCheckRecord, type QuickCheckHistoryFilters } from '@packages/contracts';
 
 export class MachineRepository implements IMachineRepository {
@@ -477,4 +479,285 @@ export class MachineRepository implements IMachineRepository {
       return err(DomainError.create('PERSISTENCE_ERROR', `Error counting disapproved QuickChecks: ${error.message}`));
     }
   }
+
+  // ===========================================================================
+  // 🆕 Sprint #10: MACHINE EVENTS METHODS (Embedded Pattern, like QuickCheck)
+  // ===========================================================================
+
+  /**
+   * Agrega un evento al historial de la máquina
+   * Patrón IDÉNTICO a addQuickCheckRecord (embedded array)
+   * 
+   * @param machineId - ID de la máquina
+   * @param eventData - Datos del evento a crear
+   * @returns Result con el evento creado o error
+   */
+  async addEvent(
+    machineId: MachineId,
+    eventData: {
+      typeId: string;
+      title: string;
+      description?: string;
+      createdBy: string;
+      isSystemGenerated?: boolean;
+      metadata?: Record<string, any>;
+    }
+  ): Promise<Result<IMachineEvent, DomainError>> {
+    try {
+      // 1. Load machine entity (incluye validaciones del dominio)
+      const machineResult = await this.findById(machineId);
+      if (!machineResult.success) {
+        return err(machineResult.error);
+      }
+
+      const machine = machineResult.data;
+      if (!machine) {
+        return err(DomainError.notFound(`Machine with ID ${machineId.getValue()} not found`));
+      }
+
+      // 2. Create event con timestamps
+      const now = new Date();
+      const event: IMachineEvent = {
+        id: '', // Temporal (MongoDB asignará _id real al guardar)
+        typeId: eventData.typeId,
+        title: eventData.title,
+        description: eventData.description || '',
+        createdBy: eventData.createdBy,
+        isSystemGenerated: eventData.isSystemGenerated || false,
+        metadata: eventData.metadata ? {
+          additionalInfo: eventData.metadata,
+          notes: undefined
+        } : undefined,
+        createdAt: now,
+        updatedAt: now
+      };
+
+      // 3. Validate with domain logic (soft limit check + business rules)
+      const validationResult = machine.addEvent(event);
+      if (!validationResult.success) {
+        return err(validationResult.error);
+      }
+
+      // 4. Persist (save entity → MongoDB update)
+      const saveResult = await this.save(machine);
+      if (!saveResult.success) {
+        return err(saveResult.error);
+      }
+
+      // 5. Obtener el evento recién creado (tiene _id real ahora)
+      const updatedMachineDoc = await MachineModel.findById(machineId.getValue())
+        .select('eventsHistory')
+        .lean();
+
+      const createdEvent = updatedMachineDoc?.eventsHistory?.[0]; // Más reciente (unshift)
+      if (!createdEvent) {
+        return err(DomainError.create('PERSISTENCE_ERROR', 'Event was not persisted correctly'));
+      }
+
+      // 6. Increment event type usage (fire-and-forget, NO throw errors)
+      MachineEventTypeModel.findByIdAndUpdate(
+        eventData.typeId,
+        { $inc: { timesUsed: 1 } }
+      ).catch((err: any) => {
+        console.error('Failed to increment event type usage:', {
+          typeId: eventData.typeId,
+          error: err.message
+        });
+      });
+
+      // 7. Retornar evento mapeado
+      const mappedEvent = MachineEventMapper.toDomain(createdEvent as any);
+      return ok(mappedEvent);
+
+    } catch (error: any) {
+      console.error('Error adding machine event:', { 
+        machineId: machineId.getValue(), 
+        error: error.message 
+      });
+      return err(DomainError.create('PERSISTENCE_ERROR', `Failed to add event: ${error.message}`));
+    }
+  }
+
+  /**
+   * Obtiene historial de eventos con filtros y paginación
+   * Patrón IDÉNTICO a getQuickCheckHistory (aggregation pipeline)
+   * 
+   * @param machineId - ID de la máquina
+   * @param filters - Filtros opcionales (typeId, fechas, isSystemGenerated, searchTerm)
+   * @returns Result con eventos paginados
+   */
+  async getEventsHistory(
+    machineId: MachineId,
+    filters?: {
+      typeId?: string;
+      isSystemGenerated?: boolean;
+      startDate?: Date;
+      endDate?: Date;
+      searchTerm?: string;
+      page?: number;
+      limit?: number;
+    }
+  ): Promise<Result<{
+    items: IMachineEvent[];
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  }, DomainError>> {
+    try {
+      // Build match stage para máquina
+      const matchStage: any = { _id: machineId.getValue() };
+
+      // Build filters para eventos
+      const eventMatch: any = {};
+
+      if (filters?.typeId) {
+        eventMatch['eventsHistory.typeId'] = filters.typeId;
+      }
+
+      if (filters?.isSystemGenerated !== undefined) {
+        eventMatch['eventsHistory.isSystemGenerated'] = filters.isSystemGenerated;
+      }
+
+      if (filters?.startDate || filters?.endDate) {
+        eventMatch['eventsHistory.createdAt'] = {};
+        if (filters.startDate) {
+          eventMatch['eventsHistory.createdAt'].$gte = filters.startDate;
+        }
+        if (filters.endDate) {
+          eventMatch['eventsHistory.createdAt'].$lte = filters.endDate;
+        }
+      }
+
+      if (filters?.searchTerm) {
+        // Search en title y description
+        const searchRegex = new RegExp(filters.searchTerm, 'i');
+        eventMatch.$or = [
+          { 'eventsHistory.title': searchRegex },
+          { 'eventsHistory.description': searchRegex }
+        ];
+      }
+
+      // Pagination
+      const page = filters?.page || 1;
+      const limit = filters?.limit || 20;
+      const skip = (page - 1) * limit;
+
+      // Aggregation pipeline (como QuickCheck)
+      const pipeline: any[] = [
+        { $match: matchStage },
+        { $unwind: '$eventsHistory' }
+      ];
+
+      if (Object.keys(eventMatch).length > 0) {
+        pipeline.push({ $match: eventMatch });
+      }
+
+      // Sort by createdAt descending (most recent first)
+      pipeline.push({ $sort: { 'eventsHistory.createdAt': -1 } });
+
+      // Use $facet para obtener total count y datos paginados en una sola query
+      pipeline.push({
+        $facet: {
+          metadata: [{ $count: 'total' }],
+          data: [
+            { $skip: skip },
+            { $limit: limit },
+            { $replaceRoot: { newRoot: '$eventsHistory' } }
+          ]
+        }
+      });
+
+      const [result] = await MachineModel.aggregate(pipeline);
+
+      const total = result.metadata[0]?.total || 0;
+      const items = MachineEventMapper.toDomainArray(result.data);
+
+      return ok({
+        items,
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit)
+      });
+
+    } catch (error: any) {
+      console.error('Error getting events history:', { 
+        machineId: machineId.getValue(), 
+        error: error.message 
+      });
+      return err(DomainError.create('PERSISTENCE_ERROR', `Failed to get events: ${error.message}`));
+    }
+  }
+
+  /**
+   * Obtiene el último evento de una máquina
+   * Optimizado: Solo carga campo eventsHistory (no todo el documento)
+   * 
+   * @param machineId - ID de la máquina
+   * @returns Último evento o undefined si no hay historial
+   */
+  async getLatestEvent(machineId: MachineId): Promise<Result<IMachineEvent | undefined, DomainError>> {
+    try {
+      // OPTIMIZACIÓN: .select() solo carga eventsHistory, .lean() retorna POJO
+      const machineDoc = await MachineModel
+        .findById(machineId.getValue())
+        .select('eventsHistory')
+        .lean();
+
+      if (!machineDoc) {
+        return err(DomainError.notFound(`Machine with ID ${machineId.getValue()} not found`));
+      }
+
+      // Los eventos ya están ordenados por fecha DESC (más reciente primero)
+      const latest = machineDoc.eventsHistory?.[0];
+
+      if (!latest) {
+        return ok(undefined);
+      }
+
+      const mappedEvent = MachineEventMapper.toDomain(latest as any);
+      return ok(mappedEvent);
+
+    } catch (error: any) {
+      return err(DomainError.create('PERSISTENCE_ERROR', `Error getting latest event: ${error.message}`));
+    }
+  }
+
+  /**
+   * Cuenta eventos por tipo
+   * Útil para dashboard analytics
+   * 
+   * @param machineId - ID de la máquina
+   * @returns Map de typeId → count
+   */
+  async countEventsByType(machineId: MachineId): Promise<Result<Map<string, number>, DomainError>> {
+    try {
+      const result = await MachineModel.aggregate([
+        { $match: { _id: machineId.getValue() } },
+        { $unwind: '$eventsHistory' },
+        { $group: {
+          _id: '$eventsHistory.typeId',
+          count: { $sum: 1 }
+        }}
+      ]);
+
+      const countMap = new Map<string, number>();
+      for (const item of result) {
+        countMap.set(item._id, item.count);
+      }
+
+      return ok(countMap);
+    } catch (error: any) {
+      return err(DomainError.create('PERSISTENCE_ERROR', `Error counting events by type: ${error.message}`));
+    }
+  }
+
+  // TODO: Implementar método para obtener eventos de múltiples máquinas
+  // Razón: Dashboard de flota necesita ver eventos recientes de todas las máquinas
+  // Declaración: async getFleetEvents(ownerId: UserId, filters?: EventFilters): Promise<Result<IMachineEvent[], DomainError>>
+
+  // TODO: Implementar soft delete de eventos
+  // Razón: Permitir que usuarios "borren" eventos user-generated sin perder trazabilidad
+  // Declaración: async deleteEvent(machineId: MachineId, eventId: string): Promise<Result<void, DomainError>>
 }

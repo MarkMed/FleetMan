@@ -37,6 +37,16 @@ const machineEventTypeSchema = new Schema<IMachineEventTypeDocument>({
     lowercase: true
   },
   
+  languages: {
+    type: [String],
+    required: true,
+    default: ['es'],
+    validate: [
+      (arr: string[]) => arr.length > 0,
+      'Must have at least one language'
+    ]
+  },
+  
   systemGenerated: {
     type: Boolean,
     required: true,

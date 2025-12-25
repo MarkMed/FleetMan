@@ -140,6 +140,7 @@ export interface IMachine extends IBaseEntity {
     readonly lastUpdated: Date;
   };
   readonly quickChecks?: readonly IQuickCheckRecord[];
+  readonly eventsHistory?: readonly IMachineEvent[]; // 🆕 Sprint #10: Historial de eventos embebido (como quickChecks)
 }
 
 /**
@@ -154,9 +155,10 @@ export interface IMachineType {
 
 /**
  * Interface pública para MachineEvent
+ * NOTA: NO tiene machineId porque está embebido en Machine.eventsHistory[]
+ * Similar a IQuickCheckRecord que no tiene machineId
  */
 export interface IMachineEvent extends IBaseEntity {
-  readonly machineId: string;
   readonly createdBy: string;
   readonly typeId: string;
   readonly title: string;
@@ -174,6 +176,7 @@ export interface IMachineEvent extends IBaseEntity {
 export interface IMachineEventType extends IBaseEntity {
   readonly name: string;
   readonly normalizedName: string;
+  readonly languages: string[];      // Códigos ISO 639-1 (ej: ['es', 'en'])
   readonly systemGenerated: boolean;
   readonly createdBy?: string;
   readonly timesUsed: number;

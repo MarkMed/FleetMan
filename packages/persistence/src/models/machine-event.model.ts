@@ -20,13 +20,12 @@ export interface IMachineEventDocument extends Omit<IMachineEvent, 'id'>, Docume
 
 /**
  * MachineEvent Schema implementing IMachineEvent interface
+ * DEPRECATED: Events are now embedded in Machine.eventsHistory[] (NOT separate collection)
+ * This file is archived for reference but should not be used
  */
 const machineEventSchema = new Schema<IMachineEventDocument>({
-  machineId: {
-    type: String,
-    required: true,
-    ref: 'Machine'
-  },
+  // NOTA: NO tiene machineId porque está embedded en Machine
+  // machineId removed - embedded in Machine.eventsHistory[]
   
   createdBy: {
     type: String,

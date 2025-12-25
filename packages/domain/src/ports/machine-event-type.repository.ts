@@ -72,8 +72,9 @@ export interface IMachineEventTypeRepository {
 
   /**
    * Busca tipos de evento por término de búsqueda
+   * Para autocomplete en UI
    */
-  searchByTerm(searchTerm: string): Promise<MachineEventType[]>;
+  searchByTerm(searchTerm: string, limit?: number): Promise<MachineEventType[]>;
 
   /**
    * Cuenta cuántos eventos usan este tipo
