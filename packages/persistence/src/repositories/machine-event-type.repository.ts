@@ -337,6 +337,39 @@ export class MachineEventTypeRepository implements IMachineEventTypeRepository {
   }
 
   /**
+   * Actualiza un tipo de evento existente
+   * Pattern: Load → Modify (en dominio) → Save (este método)
+   */
+  async update(eventType: MachineEventType): Promise<Result<MachineEventType, DomainError>> {
+    try {
+      const publicInterface = eventType.toPublicInterface();
+
+      const updated = await MachineEventTypeModel.findByIdAndUpdate(
+        publicInterface.id,
+        {
+          name: publicInterface.name,
+          normalizedName: publicInterface.normalizedName,
+          languages: publicInterface.languages,
+          isActive: publicInterface.isActive,
+          timesUsed: publicInterface.timesUsed
+          // systemGenerated y createdAt son inmutables
+        },
+        { new: true, runValidators: true }
+      );
+
+      if (!updated) {
+        return err(DomainError.notFound(`MachineEventType with ID ${publicInterface.id} not found`));
+      }
+
+      // Retornar entidad actualizada
+      return this.toEntity(updated);
+
+    } catch (error: any) {
+      return err(DomainError.create('PERSISTENCE_ERROR', `Error updating machine event type: ${error.message}`));
+    }
+  }
+
+  /**
    * Incrementa el contador de uso
    * Pattern: Fire-and-forget atomic operation (NO throw errors)
    * Llamado después de crear un evento con este tipo

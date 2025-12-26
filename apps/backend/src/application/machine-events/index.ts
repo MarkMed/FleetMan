@@ -20,3 +20,4 @@ export { CreateMachineEventUseCase } from './create-machine-event.use-case';
 export { GetMachineEventsHistoryUseCase } from './get-machine-events-history.use-case';
 export { CreateMachineEventTypeUseCase } from './create-machine-event-type.use-case';
 export { SearchEventTypesUseCase } from './search-event-types.use-case';
+export { UpdateEventTypeUseCase } from './update-event-type.use-case';

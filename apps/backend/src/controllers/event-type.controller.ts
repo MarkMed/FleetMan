@@ -2,7 +2,8 @@ import { Response } from 'express';
 import { logger } from '../config/logger.config';
 import {
   CreateMachineEventTypeUseCase,
-  SearchEventTypesUseCase
+  SearchEventTypesUseCase,
+  UpdateEventTypeUseCase
 } from '../application/machine-events';
 import { MachineEventTypeRepository } from '@packages/persistence';
 import type { AuthenticatedRequest } from '../middlewares/auth.middleware';
@@ -31,11 +32,13 @@ import type { Request } from 'express';
 export class EventTypeController {
   private createTypeUseCase: CreateMachineEventTypeUseCase;
   private searchTypesUseCase: SearchEventTypesUseCase;
+  private updateTypeUseCase: UpdateEventTypeUseCase;
   private eventTypeRepository: MachineEventTypeRepository;
 
   constructor() {
     this.createTypeUseCase = new CreateMachineEventTypeUseCase();
     this.searchTypesUseCase = new SearchEventTypesUseCase();
+    this.updateTypeUseCase = new UpdateEventTypeUseCase();
     this.eventTypeRepository = new MachineEventTypeRepository();
   }
 
@@ -315,6 +318,85 @@ export class EventTypeController {
    *   // 6. Log auditoría
    * }
    */
+
+  /**
+   * PATCH /event-types/:id
+   * Actualizar tipo de evento existente
+   * 
+   * Body (validated by Zod):
+   * - isActive?: boolean (activar/desactivar)
+   * - languagesToAdd?: string[] (agregar idiomas)
+   * - languagesToRemove?: string[] (remover idiomas)
+   * 
+   * Authorization: Required (cualquier usuario autenticado)
+   * 
+   * Response:
+   * - 200: Type updated successfully
+   * - 400: Validation error (no updates provided, invalid languages, etc.)
+   * - 403: Cannot deactivate system-generated type
+   * - 404: Type not found
+   * - 500: Server error
+   */
+  async updateEventType(req: AuthenticatedRequest, res: Response): Promise<void> {
+    try {
+      const { id } = req.params;
+      const { isActive, languagesToAdd, languagesToRemove } = req.body;
+      const userId = req.user!.userId;
+
+      logger.info({ 
+        eventTypeId: id, 
+        isActive, 
+        languagesToAdd, 
+        languagesToRemove,
+        userId 
+      }, 'Updating machine event type');
+
+      const eventType = await this.updateTypeUseCase.execute(id, {
+        isActive,
+        languagesToAdd,
+        languagesToRemove
+      });
+
+      res.status(200).json({
+        success: true,
+        message: 'Event type updated successfully',
+        data: {
+          id: eventType.id,
+          name: eventType.name,
+          normalizedName: eventType.normalizedName,
+          languages: eventType.languages,
+          systemGenerated: eventType.systemGenerated,
+          isActive: eventType.isActive,
+          timesUsed: eventType.timesUsed
+        }
+      });
+
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      
+      logger.error({ 
+        error: errorMessage,
+        eventTypeId: req.params.id,
+        userId: req.user?.userId
+      }, 'Failed to update machine event type');
+
+      // Map domain errors to HTTP status codes
+      let statusCode = 500;
+      if (errorMessage.includes('not found')) {
+        statusCode = 404;
+      } else if (errorMessage.includes('system-generated') || errorMessage.includes('last language')) {
+        statusCode = 403;
+      } else if (errorMessage.includes('Language') || errorMessage.includes('At least one')) {
+        statusCode = 400;
+      }
+
+      res.status(statusCode).json({
+        success: false,
+        message: errorMessage,
+        error: 'EVENT_TYPE_UPDATE_FAILED'
+      });
+    }
+  }
 
   /**
    * TODO: POST /event-types/:id/translations - Agregar traducción

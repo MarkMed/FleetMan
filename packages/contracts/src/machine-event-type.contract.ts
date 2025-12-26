@@ -128,6 +128,28 @@ export const IncrementEventTypeUsageResponseSchema = z.object({
   timesUsed: z.number()
 });
 
+/**
+ * Schema para actualizar tipo de evento (PATCH genérico)
+ */
+export const UpdateEventTypeRequestSchema = z.object({
+  id: z.string(),
+  isActive: z.boolean().optional(),
+  languagesToAdd: z.array(z.string().length(2)).optional(),
+  languagesToRemove: z.array(z.string().length(2)).optional()
+}).refine(
+  (data) => {
+    // Al menos una operación debe estar presente
+    return data.isActive !== undefined || 
+           (data.languagesToAdd && data.languagesToAdd.length > 0) || 
+           (data.languagesToRemove && data.languagesToRemove.length > 0);
+  },
+  {
+    message: 'At least one update operation must be provided (isActive, languagesToAdd, or languagesToRemove)'
+  }
+);
+
+export const UpdateEventTypeResponseSchema = CreateMachineEventTypeResponseSchema;
+
 // =============================================================================
 // Type Inference (derivados automáticamente del dominio)
 // =============================================================================
@@ -155,3 +177,6 @@ export type ReactivateEventTypeResponse = z.infer<typeof ReactivateEventTypeResp
 
 export type IncrementEventTypeUsageRequest = z.infer<typeof IncrementEventTypeUsageRequestSchema>;
 export type IncrementEventTypeUsageResponse = z.infer<typeof IncrementEventTypeUsageResponseSchema>;
+
+export type UpdateEventTypeRequest = z.infer<typeof UpdateEventTypeRequestSchema>;
+export type UpdateEventTypeResponse = z.infer<typeof UpdateEventTypeResponseSchema>;

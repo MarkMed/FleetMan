@@ -74,6 +74,15 @@ export interface IMachineEventTypeRepository {
   delete(id: string): Promise<Result<void, DomainError>>;
 
   /**
+   * Actualiza un tipo de evento existente
+   * Persiste cambios realizados a la entidad (isActive, languages, etc.)
+   * 
+   * @param eventType Entidad MachineEventType con cambios aplicados
+   * @returns El MachineEventType actualizado
+   */
+  update(eventType: MachineEventType): Promise<Result<MachineEventType, DomainError>>;
+
+  /**
    * Incrementa el contador de uso
    */
   incrementUsageCount(id: string): Promise<Result<void, DomainError>>;

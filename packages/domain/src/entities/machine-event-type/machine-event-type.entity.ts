@@ -258,6 +258,29 @@ export class MachineEventType {
     return ok(undefined);
   }
 
+  /**
+   * Remueve un idioma del tipo de evento
+   * Business Rule: Debe tener al menos 1 idioma (no puede quedar vacío)
+   */
+  public removeLanguage(language: string): Result<void, DomainError> {
+    const lang = language.trim().toLowerCase();
+
+    // Validar que el idioma existe en el tipo
+    if (!this.props.languages.includes(lang)) {
+      return err(DomainError.domainRule(`Language '${lang}' not found in event type`));
+    }
+
+    // Business Rule: Al menos 1 idioma debe permanecer
+    if (this.props.languages.length === 1) {
+      return err(DomainError.domainRule('Cannot remove last language. Event type must have at least one language.'));
+    }
+
+    // Remover idioma del array
+    (this.props as any).languages = this.props.languages.filter(l => l !== lang);
+    
+    return ok(undefined);
+  }
+
   // TODO: Implementar búsqueda fuzzy para sugerencias UX
   // Razón: Cuando el usuario escriba "reparación" debe sugerir "Repair Completed"
   // Declaración: public static findSimilar(searchTerm: string, eventTypes: MachineEventType[]): MachineEventType[]

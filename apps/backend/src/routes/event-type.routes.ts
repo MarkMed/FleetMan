@@ -3,7 +3,10 @@ import { EventTypeController } from '../controllers/event-type.controller';
 import { authMiddleware } from '../middlewares/auth.middleware';
 import { requestSanitization } from '../middlewares/requestSanitization';
 import { z } from 'zod';
-import { CreateMachineEventTypeRequestSchema } from '@packages/contracts';
+import { 
+  CreateMachineEventTypeRequestSchema,
+  UpdateEventTypeRequestSchema
+} from '@packages/contracts';
 
 /**
  * Event Type Routes
@@ -16,10 +19,12 @@ import { CreateMachineEventTypeRequestSchema } from '@packages/contracts';
  * - GET    /event-types              - List types (paginated)
  * - GET    /event-types/search       - Search/autocomplete
  * - GET    /event-types/popular      - Most used types
+ * - PATCH  /event-types/:id          - Update type (activate/deactivate, add/remove languages)
  * 
  * Note:
- * - Search y Popular NO requieren autenticación (público para UX)
- * - Create requiere autenticación (cualquier user puede crear)
+ * - ⚠️ **Sprint #10**: Todos los endpoints requieren autenticación
+ * - Create y Update requieren autenticación (cualquier user puede ejecutar)
+ * - GET endpoints ahora requieren autenticación por seguridad de datos
  */
 
 const router = Router();
@@ -122,6 +127,7 @@ function validateBody(schema: z.ZodSchema) {
 router.get(
   '/search',
   requestSanitization,
+  authMiddleware,
   eventTypeController.searchEventTypes.bind(eventTypeController)
 );
 
@@ -134,8 +140,10 @@ router.get(
  *       Retorna tipos ordenados por popularidad (timesUsed descendente).
  *       Útil para sugerencias en UI cuando usuario no ha escrito nada.
  *       
- *       Endpoint público (NO requiere autenticación).
+ *       ⚠️ **CAMBIO Sprint #10**: Ahora requiere autenticación.
  *     tags: [Event Types]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: query
  *         name: limit
@@ -174,6 +182,7 @@ router.get(
 router.get(
   '/popular',
   requestSanitization,
+  authMiddleware,
   eventTypeController.getPopularEventTypes.bind(eventTypeController)
 );
 
@@ -185,8 +194,10 @@ router.get(
  *     description: |
  *       Lista completa de tipos con paginación y filtros.
  *       
- *       Endpoint público (NO requiere autenticación).
+ *       ⚠️ **CAMBIO Sprint #10**: Ahora requiere autenticación.
  *     tags: [Event Types]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: query
  *         name: page
@@ -246,6 +257,7 @@ router.get(
 router.get(
   '/',
   requestSanitization,
+  authMiddleware,
   eventTypeController.listEventTypes.bind(eventTypeController)
 );
 
@@ -326,6 +338,117 @@ router.post(
   authMiddleware,
   validateBody(CreateMachineEventTypeRequestSchema),
   eventTypeController.createEventType.bind(eventTypeController)
+);
+
+/**
+ * @swagger
+ * /event-types/{id}:
+ *   patch:
+ *     summary: Actualizar tipo de evento existente
+ *     description: |
+ *       Permite actualizar propiedades de un tipo de evento:
+ *       - Activar/Desactivar (soft delete)
+ *       - Agregar idiomas
+ *       - Remover idiomas
+ *       
+ *       Validaciones:
+ *       - NO se puede desactivar tipos system-generated
+ *       - NO se puede remover el último idioma
+ *       - Idiomas deben ser ISO 639-1 (2 letras)
+ *     tags: [Event Types]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID del tipo de evento
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               isActive:
+ *                 type: boolean
+ *                 description: Activar (true) o desactivar (false) el tipo
+ *                 example: false
+ *               languagesToAdd:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   minLength: 2
+ *                   maxLength: 2
+ *                 description: Idiomas a agregar (ISO 639-1)
+ *                 example: ["en", "pt"]
+ *               languagesToRemove:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   minLength: 2
+ *                   maxLength: 2
+ *                 description: Idiomas a remover (ISO 639-1)
+ *                 example: ["fr"]
+ *           examples:
+ *             deactivate:
+ *               summary: Desactivar tipo
+ *               value:
+ *                 isActive: false
+ *             addLanguages:
+ *               summary: Agregar idiomas
+ *               value:
+ *                 languagesToAdd: ["en", "pt"]
+ *             removeLanguage:
+ *               summary: Remover idioma
+ *               value:
+ *                 languagesToRemove: ["fr"]
+ *             combined:
+ *               summary: Operaciones combinadas
+ *               value:
+ *                 isActive: true
+ *                 languagesToAdd: ["de"]
+ *                 languagesToRemove: ["it"]
+ *     responses:
+ *       200:
+ *         description: Tipo actualizado exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                     name:
+ *                       type: string
+ *                     languages:
+ *                       type: array
+ *                       items:
+ *                         type: string
+ *                     isActive:
+ *                       type: boolean
+ *       400:
+ *         description: Error de validación (no updates, idiomas inválidos)
+ *       403:
+ *         description: No se puede desactivar tipo system-generated o remover último idioma
+ *       404:
+ *         description: Tipo no encontrado
+ */
+router.patch(
+  '/:id',
+  requestSanitization,
+  authMiddleware,
+  validateBody(UpdateEventTypeRequestSchema),
+  eventTypeController.updateEventType.bind(eventTypeController)
 );
 
 export default router;
