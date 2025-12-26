@@ -263,7 +263,7 @@ export class MachineEventTypeRepository implements IMachineEventTypeRepository {
     createdBy?: string
   ): Promise<Result<MachineEventType, DomainError>> {
     try {
-      const normalizedName = name.toLowerCase().trim().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, '_');
+      const normalizedName = name.toLowerCase().trim().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, '_'); // Todo: pasar a función compartida
       const normalizedLang = language.trim().toLowerCase();
 
       // Validaciones básicas

@@ -1,5 +1,6 @@
 import { MachineEventTypeRepository } from '@packages/persistence';
 import { logger } from '../config/logger.config';
+import { NOTIFICATION_MESSAGE_KEYS } from '../constants/notification-messages.constants';
 
 /**
  * Datos de seed para tipos de eventos de máquina
@@ -15,26 +16,37 @@ import { logger } from '../config/logger.config';
 const MACHINE_EVENT_TYPES_SEED = [
   // ===== TIPOS DE SISTEMA (Automáticos) =====
   // Generados por features del sistema (QuickCheck, Alertas, etc.)
-  // Usan claves i18n genéricas - el mensaje será renderizado por el sistema de i18n
+  // Usan constantes del archivo machine-event-type-keys.constants.ts
+  // Esto permite binding automático en use cases y evita typos
   // Languages: ['es', 'en'] indica disponibilidad para todos los idiomas soportados
   { 
-    name: 'machine.events.quickcheck.completed', 
+    name: NOTIFICATION_MESSAGE_KEYS.quickcheck.completed.approved, 
     languages: ['es', 'en'], 
     systemGenerated: true 
   },
   { 
-    name: 'machine.events.quickcheck.failed', 
+    name: NOTIFICATION_MESSAGE_KEYS.quickcheck.completed.disapproved, 
     languages: ['es', 'en'], 
     systemGenerated: true 
   },
   { 
-    name: 'machine.events.maintenance.scheduled', 
+    name: NOTIFICATION_MESSAGE_KEYS.maintenance.scheduled, 
     languages: ['es', 'en'], 
     systemGenerated: true 
   },
   { 
-    name: 'machine.events.maintenance.alert', 
+    name: NOTIFICATION_MESSAGE_KEYS.maintenance.reminder, 
     languages: ['es', 'en'], 
+    systemGenerated: true 
+  },
+  { 
+    name: NOTIFICATION_MESSAGE_KEYS.maintenance.cancelled, 
+    languages: ['es', 'en'],
+    systemGenerated: true 
+  },
+  { 
+    name: NOTIFICATION_MESSAGE_KEYS.maintenance.completed, 
+    languages: ['es', 'en'],
     systemGenerated: true 
   },
   

@@ -8,7 +8,6 @@ import { MachineRepository, MachineEventTypeRepository } from '@packages/persist
 import { logger } from '../../config/logger.config';
 import { type CreateQuickCheckRecord } from '@packages/contracts';
 import { AddNotificationUseCase } from '../notifications';
-import { CreateMachineEventTypeUseCase } from '../machine-events';
 import { NOTIFICATION_MESSAGE_KEYS } from '../../constants/notification-messages.constants';
 
 /**
@@ -36,13 +35,11 @@ export class AddQuickCheckUseCase {
   private machineRepository: MachineRepository;
   private addNotificationUseCase: AddNotificationUseCase;
   private eventTypeRepository: MachineEventTypeRepository;
-  private createEventTypeUseCase: CreateMachineEventTypeUseCase;
 
   constructor() {
     this.machineRepository = new MachineRepository();
     this.addNotificationUseCase = new AddNotificationUseCase();
     this.eventTypeRepository = new MachineEventTypeRepository();
-    this.createEventTypeUseCase = new CreateMachineEventTypeUseCase();
   }
 
   /**
@@ -284,19 +281,25 @@ export class AddQuickCheckUseCase {
     machinePublic: any
   ): Promise<string | null> {
     try {
-      // 1. Determinar tipo de evento según resultado
+      // 1. Determinar tipo de evento según resultado usando constantes
       const eventTypeKey = result === QUICK_CHECK_RESULTS[0] 
-        ? 'machine.events.quickcheck.completed'  // approved
-        : 'machine.events.quickcheck.failed';     // disapproved
+        ? NOTIFICATION_MESSAGE_KEYS.quickcheck.completed.approved  // approved
+        : NOTIFICATION_MESSAGE_KEYS.quickcheck.completed.disapproved;     // disapproved
 
-      // 2. Obtener o crear tipo de evento (sistema)
-      // NOTE: Estos tipos ya deberían existir desde seed, pero por si acaso
-      const eventType = await this.createEventTypeUseCase.execute(
-        eventTypeKey,
-        'system', // userId no relevante para tipos de sistema
-        'es',
-        true // systemGenerated
-      );
+      // 2. Buscar tipo de evento del sistema directamente (debe existir desde seed)
+      const normalizedKey = this.normalizeEventTypeKey(eventTypeKey);
+      const eventTypeResult = await this.eventTypeRepository.findByNormalizedName(normalizedKey);
+
+      if (!eventTypeResult.success) {
+        logger.warn({ 
+          eventTypeKey,
+          normalizedKey,
+          error: eventTypeResult.error.message
+        }, 'System event type not found - seed may not have run correctly');
+        return null; // Fire-and-forget: no crear eventos si el tipo no existe
+      }
+
+      const eventType = eventTypeResult.data;
 
       // 3. Preparar metadata completo para auditoría
       const machineName = machinePublic.nickname || machinePublic.serialNumber;
@@ -318,13 +321,11 @@ export class AddQuickCheckUseCase {
 
       // 4. Crear título descriptivo
       const title = result === QUICK_CHECK_RESULTS[0]
-        ? `QuickCheck Aprobado - ${machineName}`
-        : `QuickCheck Desaprobado - ${machineName} (${failedItemsCount} items fallidos)`;
+        ? NOTIFICATION_MESSAGE_KEYS.quickcheck.completed.approved
+        : NOTIFICATION_MESSAGE_KEYS.quickcheck.completed.disapproved;
 
       // 5. Crear descripción detallada
-      const description = result === QUICK_CHECK_RESULTS[0]
-        ? `QuickCheck ejecutado por ${responsibleName}. Todos los ítems inspeccionados están en orden.`
-        : `QuickCheck ejecutado por ${responsibleName}. ${failedItemsCount} de ${metadata.totalItems} ítems NO aprobados. Requiere atención.`;
+      const description = title + `.description`; // Usar key para i18n (agregar .description en front-end)
 
       // 6. Agregar evento a historial de máquina usando repositorio
       const addEventResult = await this.machineRepository.addEvent(machineId, {
@@ -366,5 +367,16 @@ export class AddQuickCheckUseCase {
       
       return null; // Retornar null si falla
     }
+  }
+
+  /**
+   * Normaliza event type key para búsqueda case-insensitive
+   * Debe coincidir con cómo el repositorio normaliza los nombres al guardar
+   * 
+   * @param key - Event type key (ej: MACHINE_EVENT_TYPE_KEYS.quickcheck.completed)
+   * @returns Key normalizada (lowercase + trim)
+   */
+  private normalizeEventTypeKey(key: string): string {
+    return key.toLowerCase().trim().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, '_');
   }
 }
