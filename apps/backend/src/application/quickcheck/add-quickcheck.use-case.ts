@@ -121,7 +121,7 @@ export class AddQuickCheckUseCase {
 
       // 3. Integración Sprint #9: Notificar al owner de la máquina
       // Fire-and-forget pattern: no bloquear si falla la notificación
-      this.notifyMachineOwner(machineId, quickCheckRecord.result, quickCheckRecord.responsibleName)
+      this.notifyMachineOwner(machineId, quickCheckRecord.result, quickCheckRecord.responsibleName, quickCheckRecord)
         .catch(error => {
           logger.warn({ 
             machineId,
@@ -153,11 +153,14 @@ export class AddQuickCheckUseCase {
    * 
    * @param machineId - ID of inspected machine
    * @param result - QuickCheck result (SSOT: QUICK_CHECK_RESULTS)
+   * @param responsibleName - Name of technician who executed the QuickCheck
+   * @param quickCheckRecord - Complete QuickCheck record for event creation
    */
   private async notifyMachineOwner(
     machineId: string,
     result: typeof QUICK_CHECK_RESULTS[number],
-    responsibleName: string
+    responsibleName: string,
+    quickCheckRecord: any
   ): Promise<void> {
     try {
       // 1. Get machine to extract ownerId
@@ -217,6 +220,10 @@ export class AddQuickCheckUseCase {
 
       logger.info({ 
         ownerId,
+        machineId,
+        result 
+      }, '🔔 QuickCheck notification sent successfully');
+
       // 5. Create automatic machine event (Sprint #10 integration)
       // Solo para resultados importantes (approved o disapproved), no para notInitiated
       if (result === QUICK_CHECK_RESULTS[0] || result === QUICK_CHECK_RESULTS[1]) {
@@ -224,7 +231,7 @@ export class AddQuickCheckUseCase {
           machineIdResult.data,
           result,
           responsibleName,
-          quickCheckAdded,
+          quickCheckRecord,
           machine.toPublicInterface()
         );
       }
@@ -309,7 +316,7 @@ export class AddQuickCheckUseCase {
 
       // 6. Agregar evento a historial de máquina
       await this.machineRepository.addEvent(machineId, {
-        typeId: eventType.id.getValue(),
+        typeId: eventType.id,
         title,
         description,
         createdBy: quickCheckData.executedById, // Usuario que ejecutó el QuickCheck
@@ -328,11 +335,7 @@ export class AddQuickCheckUseCase {
       logger.warn({ 
         machineId: machineId.getValue(),
         error: error instanceof Error ? error.message : 'Unknown error'
-      }, 'Failed to create machine event for QuickCheck-forget)
-      logger.warn({ 
-        machineId,
-        error: error instanceof Error ? error.message : 'Unknown error'
-      }, 'Failed to send QuickCheck notification');
+      }, 'Failed to create machine event for QuickCheck');
     }
   }
 }
