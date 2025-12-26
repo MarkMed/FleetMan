@@ -326,7 +326,7 @@ export class AddQuickCheckUseCase {
         ? `QuickCheck ejecutado por ${responsibleName}. Todos los ítems inspeccionados están en orden.`
         : `QuickCheck ejecutado por ${responsibleName}. ${failedItemsCount} de ${metadata.totalItems} ítems NO aprobados. Requiere atención.`;
 
-      // 6. Agregar evento a historial de máquina
+      // 6. Agregar evento a historial de máquina usando repositorio
       const addEventResult = await this.machineRepository.addEvent(machineId, {
         typeId: eventType.id,
         title,
@@ -337,10 +337,16 @@ export class AddQuickCheckUseCase {
       });
 
       // 7. Extraer eventId del resultado
-      // El subdocumento tiene un _id generado por MongoDB
-      const eventId = addEventResult.success && addEventResult.data?.id 
-        ? addEventResult.data.id 
-        : null;
+      // addEvent retorna Result<IMachineEvent> donde IMachineEvent tiene id
+      if (!addEventResult.success) {
+        logger.warn({ 
+          machineId: machineId.getValue(),
+          error: addEventResult.error.message
+        }, 'Failed to add event to machine');
+        return null;
+      }
+
+      const eventId = addEventResult.data.id;
 
       logger.info({ 
         machineId: machineId.getValue(),

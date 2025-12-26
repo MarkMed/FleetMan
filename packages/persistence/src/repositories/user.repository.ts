@@ -1,6 +1,7 @@
 import { 
   type IUserRepository,
   type IGetNotificationsResult,
+  type INotification,
   User,
   UserId,
   Result,
@@ -17,6 +18,12 @@ import {
   type IUserDocument
 } from '../models';
 import { NotificationMapper } from '../mappers/notification.mapper';
+
+/**
+ * Data structure for adding a notification to user's notifications array.
+ * Omits auto-generated fields (id, wasSeen, notificationDate) from INotification.
+ */
+type AddNotificationData = Omit<INotification, 'id' | 'wasSeen' | 'notificationDate'>;
 
 export class UserRepository implements IUserRepository {
 
@@ -287,13 +294,10 @@ export class UserRepository implements IUserRepository {
   /**
    * Adds a notification to the user's notifications array
    */
-  async addNotification(userId: UserId, notification: {
-    notificationType: NotificationType;
-    message: string;
-    actionUrl?: string;
-    sourceType?: NotificationSourceType;
-    metadata?: Record<string, any>;
-  }): Promise<Result<void, DomainError>> {
+  async addNotification(
+    userId: UserId,
+    notification: AddNotificationData
+  ): Promise<Result<void, DomainError>> {
     try {
       const result = await UserModel.findByIdAndUpdate(
         userId.getValue(),

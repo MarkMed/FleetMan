@@ -9,7 +9,8 @@ import {
   ok,
   err,
   type IQuickCheckRecord,
-  type IMachineEvent
+  type IMachineEvent,
+  type CreateMachineEventProps
 } from '@packages/domain';
 import { 
   MachineModel, 
@@ -18,6 +19,14 @@ import {
 } from '../models';
 import { MachineMapper, MachineEventMapper } from '../mappers';
 import { type CreateQuickCheckRecord, type QuickCheckHistoryFilters } from '@packages/contracts';
+
+/**
+ * Tipo para agregar evento (sin machineId porque se pasa por separado)
+ * Agrega isSystemGenerated como opcional (para eventos generados por el sistema)
+ */
+type AddMachineEventData = Omit<CreateMachineEventProps, 'machineId'> & {
+  isSystemGenerated?: boolean;
+};
 
 export class MachineRepository implements IMachineRepository {
 
@@ -486,75 +495,51 @@ export class MachineRepository implements IMachineRepository {
 
   /**
    * Agrega un evento al historial de la máquina
-   * Patrón IDÉNTICO a addQuickCheckRecord (embedded array)
+   * Patrón IDÉNTICO a addNotification (UserRepository) - $push directo a MongoDB
    * 
    * @param machineId - ID de la máquina
-   * @param eventData - Datos del evento a crear
+   * @param eventData - Datos del evento a crear (basado en CreateMachineEventProps)
    * @returns Result con el evento creado o error
    */
   async addEvent(
     machineId: MachineId,
-    eventData: {
-      typeId: string;
-      title: string;
-      description?: string;
-      createdBy: string;
-      isSystemGenerated?: boolean;
-      metadata?: Record<string, any>;
-    }
+    eventData: AddMachineEventData
   ): Promise<Result<IMachineEvent, DomainError>> {
     try {
-      // 1. Load machine entity (incluye validaciones del dominio)
-      const machineResult = await this.findById(machineId);
-      if (!machineResult.success) {
-        return err(machineResult.error);
-      }
+      const now = new Date();
+      
+      // $push directo a MongoDB (como notificaciones)
+      const result = await MachineModel.findByIdAndUpdate(
+        machineId.getValue(),
+        {
+          $push: {
+            eventsHistory: {
+              $each: [{
+                typeId: eventData.typeId,
+                title: eventData.title,
+                description: eventData.description || '',
+                createdBy: eventData.createdBy,
+                isSystemGenerated: eventData.isSystemGenerated || false,
+                metadata: eventData.metadata ? {
+                  additionalInfo: eventData.metadata,
+                  notes: undefined
+                } : undefined,
+                createdAt: now,
+                updatedAt: now
+              }],
+              $position: 0 // Agregar al principio (como unshift)
+            }
+          }
+        },
+        { new: true }
+      );
 
-      const machine = machineResult.data;
-      if (!machine) {
+      if (!result) {
         return err(DomainError.notFound(`Machine with ID ${machineId.getValue()} not found`));
       }
 
-      // 2. Create event con timestamps
-      const now = new Date();
-      const event: IMachineEvent = {
-        id: '', // Temporal (MongoDB asignará _id real al guardar)
-        typeId: eventData.typeId,
-        title: eventData.title,
-        description: eventData.description || '',
-        createdBy: eventData.createdBy,
-        isSystemGenerated: eventData.isSystemGenerated || false,
-        metadata: eventData.metadata ? {
-          additionalInfo: eventData.metadata,
-          notes: undefined
-        } : undefined,
-        createdAt: now,
-        updatedAt: now
-      };
 
-      // 3. Validate with domain logic (soft limit check + business rules)
-      const validationResult = machine.addEvent(event);
-      if (!validationResult.success) {
-        return err(validationResult.error);
-      }
-
-      // 4. Persist (save entity → MongoDB update)
-      const saveResult = await this.save(machine);
-      if (!saveResult.success) {
-        return err(saveResult.error);
-      }
-
-      // 5. Obtener el evento recién creado (tiene _id real ahora)
-      const updatedMachineDoc = await MachineModel.findById(machineId.getValue())
-        .select('eventsHistory')
-        .lean();
-
-      const createdEvent = updatedMachineDoc?.eventsHistory?.[0]; // Más reciente (unshift)
-      if (!createdEvent) {
-        return err(DomainError.create('PERSISTENCE_ERROR', 'Event was not persisted correctly'));
-      }
-
-      // 6. Increment event type usage (fire-and-forget, NO throw errors)
+      // Increment event type usage (fire-and-forget)
       MachineEventTypeModel.findByIdAndUpdate(
         eventData.typeId,
         { $inc: { timesUsed: 1 } }
@@ -565,8 +550,8 @@ export class MachineRepository implements IMachineRepository {
         });
       });
 
-      // 7. Retornar evento mapeado
-      const mappedEvent = MachineEventMapper.toDomain(createdEvent as any);
+      // Mapear a dominio
+      const mappedEvent = MachineEventMapper.toDomain(result as any);
       return ok(mappedEvent);
 
     } catch (error: any) {

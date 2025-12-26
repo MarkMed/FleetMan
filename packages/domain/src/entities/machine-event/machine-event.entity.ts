@@ -39,7 +39,7 @@ export interface CreateMachineEventProps {
   readonly typeId: string;             // ID del tipo de evento (MachineEventType)
   readonly title: string;              // Título descriptivo del evento
   readonly description: string;        // Descripción detallada
-  readonly metadata?: MachineEventMetadata; // Metadatos específicos del tipo
+  readonly metadata?: Record<string, any>
 }
 
 /**
