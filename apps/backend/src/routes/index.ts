@@ -5,6 +5,8 @@ import usersRoutes from './users.routes';
 import machineTypeRoutes from './machine-type.routes';
 import quickCheckRoutes from './quickcheck.routes';
 import notificationRoutes from './notification.routes';
+import machineEventRoutes from './machine-event.routes';
+import eventTypeRoutes from './event-type.routes';
 
 /**
  * Router principal de la API v1
@@ -29,6 +31,12 @@ router.use('/machines', quickCheckRoutes);
 
 // Notification routes (Sprint #9)
 router.use('/users', notificationRoutes);
+
+// Machine Events routes (Sprint #10) - Historial de eventos de máquina
+router.use('/machines', machineEventRoutes);
+
+// Event Types routes (Sprint #10) - CRUD de tipos de eventos (crowdsourcing)
+router.use('/event-types', eventTypeRoutes);
 
 // TODO: Agregar más rutas según se implementen los módulos
 // router.use('/maintenance', maintenanceRoutes);

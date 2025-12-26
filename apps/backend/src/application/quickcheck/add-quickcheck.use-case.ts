@@ -4,10 +4,11 @@ import {
   NOTIFICATION_SOURCE_TYPES,
   NOTIFICATION_TYPES 
 } from '@packages/domain';
-import { MachineRepository } from '@packages/persistence';
+import { MachineRepository, MachineEventTypeRepository } from '@packages/persistence';
 import { logger } from '../../config/logger.config';
 import { type CreateQuickCheckRecord } from '@packages/contracts';
 import { AddNotificationUseCase } from '../notifications';
+import { CreateMachineEventTypeUseCase } from '../machine-events';
 import { NOTIFICATION_MESSAGE_KEYS } from '../../constants/notification-messages.constants';
 
 /**
@@ -34,10 +35,14 @@ import { NOTIFICATION_MESSAGE_KEYS } from '../../constants/notification-messages
 export class AddQuickCheckUseCase {
   private machineRepository: MachineRepository;
   private addNotificationUseCase: AddNotificationUseCase;
+  private eventTypeRepository: MachineEventTypeRepository;
+  private createEventTypeUseCase: CreateMachineEventTypeUseCase;
 
   constructor() {
     this.machineRepository = new MachineRepository();
     this.addNotificationUseCase = new AddNotificationUseCase();
+    this.eventTypeRepository = new MachineEventTypeRepository();
+    this.createEventTypeUseCase = new CreateMachineEventTypeUseCase();
   }
 
   /**
@@ -212,12 +217,118 @@ export class AddQuickCheckUseCase {
 
       logger.info({ 
         ownerId,
-        machineId,
-        result 
-      }, '🔔 QuickCheck notification sent successfully');
+      // 5. Create automatic machine event (Sprint #10 integration)
+      // Solo para resultados importantes (approved o disapproved), no para notInitiated
+      if (result === QUICK_CHECK_RESULTS[0] || result === QUICK_CHECK_RESULTS[1]) {
+        await this.createMachineEventAuto(
+          machineIdResult.data,
+          result,
+          responsibleName,
+          quickCheckAdded,
+          machine.toPublicInterface()
+        );
+      }
 
     } catch (error) {
       // Log error but don't propagate (fire-and-forget)
+      logger.warn({ 
+        machineId,
+        error: error instanceof Error ? error.message : 'Unknown error'
+      }, 'Failed to send QuickCheck notification');
+    }
+  }
+
+  /**
+   * Crea evento automático de máquina cuando se completa un QuickCheck
+   * 
+   * Propósito:
+   * - Mantener historial unificado de eventos de máquina
+   * - QuickCheck completed genera evento automático en eventsHistory
+   * - NO genera notificación (ya se envió una arriba)
+   * 
+   * Patrón:
+   * - Fire-and-forget (no falla el QuickCheck si falla el evento)
+   * - Obtiene/crea tipo de evento sistemático
+   * - Metadata completo para auditoría
+   * 
+   * @param machineId - MachineId VO
+   * @param result - Resultado del QuickCheck ('approved' | 'disapproved')
+   * @param responsibleName - Nombre del técnico que ejecutó
+   * @param quickCheckData - Datos del QuickCheck agregado
+   * @param machinePublic - Interfaz pública de la máquina
+   */
+  private async createMachineEventAuto(
+    machineId: MachineId,
+    result: string,
+    responsibleName: string,
+    quickCheckData: any,
+    machinePublic: any
+  ): Promise<void> {
+    try {
+      // 1. Determinar tipo de evento según resultado
+      const eventTypeKey = result === QUICK_CHECK_RESULTS[0] 
+        ? 'machine.events.quickcheck.completed'  // approved
+        : 'machine.events.quickcheck.failed';     // disapproved
+
+      // 2. Obtener o crear tipo de evento (sistema)
+      // NOTE: Estos tipos ya deberían existir desde seed, pero por si acaso
+      const eventType = await this.createEventTypeUseCase.execute(
+        eventTypeKey,
+        'system', // userId no relevante para tipos de sistema
+        'es',
+        true // systemGenerated
+      );
+
+      // 3. Preparar metadata completo para auditoría
+      const machineName = machinePublic.nickname || machinePublic.serialNumber;
+      const failedItemsCount = quickCheckData.quickCheckItems?.filter(
+        (item: any) => item.result === 'disapproved'
+      ).length || 0;
+
+      const metadata = {
+        quickCheckId: quickCheckData.id,
+        result,
+        responsibleName,
+        responsibleWorkerId: quickCheckData.responsibleWorkerId,
+        executedById: quickCheckData.executedById,
+        totalItems: quickCheckData.quickCheckItems?.length || 0,
+        failedItems: failedItemsCount,
+        observations: quickCheckData.observations || null,
+        date: quickCheckData.date
+      };
+
+      // 4. Crear título descriptivo
+      const title = result === QUICK_CHECK_RESULTS[0]
+        ? `QuickCheck Aprobado - ${machineName}`
+        : `QuickCheck Desaprobado - ${machineName} (${failedItemsCount} items fallidos)`;
+
+      // 5. Crear descripción detallada
+      const description = result === QUICK_CHECK_RESULTS[0]
+        ? `QuickCheck ejecutado por ${responsibleName}. Todos los ítems inspeccionados están en orden.`
+        : `QuickCheck ejecutado por ${responsibleName}. ${failedItemsCount} de ${metadata.totalItems} ítems NO aprobados. Requiere atención.`;
+
+      // 6. Agregar evento a historial de máquina
+      await this.machineRepository.addEvent(machineId, {
+        typeId: eventType.id.getValue(),
+        title,
+        description,
+        createdBy: quickCheckData.executedById, // Usuario que ejecutó el QuickCheck
+        isSystemGenerated: true, // Evento automático
+        metadata
+      });
+
+      logger.info({ 
+        machineId: machineId.getValue(),
+        eventTypeKey,
+        result
+      }, '📝 Machine event created for QuickCheck completion');
+
+    } catch (error) {
+      // Log error pero no propagar (fire-and-forget)
+      logger.warn({ 
+        machineId: machineId.getValue(),
+        error: error instanceof Error ? error.message : 'Unknown error'
+      }, 'Failed to create machine event for QuickCheck-forget)
       logger.warn({ 
         machineId,
         error: error instanceof Error ? error.message : 'Unknown error'
