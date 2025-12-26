@@ -124,8 +124,7 @@ function testMachineEventTypeInterfaceMapping() {
   
   const eventTypeResult = MachineEventType.createUserType({
     name: 'Inspección de Seguridad',
-    language: 'es',
-    createdBy: 'admin-123'
+    language: 'es'
   });
 
   if (eventTypeResult.success) {

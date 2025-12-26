@@ -23,8 +23,7 @@ export class MachineEventTypeRepository implements IMachineEventTypeRepository {
       const createProps = {
         name: doc.name,
         language: doc.languages[0], // Primer idioma para validación
-        languages: doc.languages,   // Array completo para reconstitución
-        createdBy: doc.createdBy || undefined
+        languages: doc.languages    // Array completo para reconstitución
       };
 
       // Recreate entity usando factory method apropiado
@@ -38,15 +37,6 @@ export class MachineEventTypeRepository implements IMachineEventTypeRepository {
 
       const entity = entityResult.data;
 
-      // Parse createdBy si existe
-      let createdByUserId = null;
-      if (doc.createdBy) {
-        const userIdResult = UserId.create(doc.createdBy);
-        if (userIdResult.success) {
-          createdByUserId = userIdResult.data;
-        }
-      }
-
       // Override propiedades que vienen de la DB (no del factory)
       (entity as any).props = {
         id: doc.id,
@@ -54,7 +44,6 @@ export class MachineEventTypeRepository implements IMachineEventTypeRepository {
         normalizedName: doc.normalizedName,
         languages: doc.languages,
         systemGenerated: doc.systemGenerated,
-        createdBy: createdByUserId,
         createdAt: doc.createdAt,
         timesUsed: doc.timesUsed,
         isActive: doc.isActive
@@ -207,23 +196,6 @@ export class MachineEventTypeRepository implements IMachineEventTypeRepository {
   }
 
   /**
-   * Busca tipos de evento por creador
-   */
-  async findByCreatedBy(userId: UserId): Promise<MachineEventType[]> {
-    try {
-      const docs = await MachineEventTypeModel.find({ 
-        createdBy: userId.getValue(),
-        isActive: true 
-      }).sort({ timesUsed: -1 });
-      
-      return this.toEntityArray(docs);
-    } catch (error) {
-      console.error('Error finding event types by creator:', error);
-      return [];
-    }
-  }
-
-  /**
    * Obtiene tipos más usados (ordenados por timesUsed)
    * Útil para sugerencias en UI (Quick Actions)
    */
@@ -274,62 +246,75 @@ export class MachineEventTypeRepository implements IMachineEventTypeRepository {
   }
 
   /**
-   * Guarda un tipo de evento (crear o actualizar)
-   * Patrón: Upsert inteligente (como MachineType) - Si ya existe por normalizedName, retorna existente
-   * Esto previene duplicados cuando 2 usuarios crean "Mantenimiento" simultáneamente
+   * Guarda un tipo de evento de forma inteligente (patrón MachineType):
+   * - Si existe un registro con ese normalizedName, agrega el idioma si no está presente
+   * - Si no existe, crea un nuevo registro
+   * 
+   * @param name - Nombre del tipo de evento
+   * @param language - Código ISO 639-1 del idioma (2 letras)
+   * @param systemGenerated - Si es tipo generado por sistema (default: false)
+   * @param createdBy - ID del usuario que crea (opcional, null para tipos de sistema)
+   * @returns Promise<MachineEventType>
    */
-  async save(eventType: MachineEventType): Promise<Result<void, DomainError>> {
+  async save(
+    name: string,
+    language: string,
+    systemGenerated: boolean = false,
+    createdBy?: string
+  ): Promise<Result<MachineEventType, DomainError>> {
     try {
-      const publicInterface = eventType.toPublicInterface();
-      
-      // Si tiene ID, es update
-      if (publicInterface.id && publicInterface.id.startsWith('mevt_type_')) {
-        const existingDoc = await MachineEventTypeModel.findById(publicInterface.id);
-        
-        if (existingDoc) {
-          // Update de documento existente (usar set para evitar readonly errors)
-          existingDoc.set({
-            name: publicInterface.name,
-            normalizedName: publicInterface.normalizedName,
-            timesUsed: publicInterface.timesUsed,
-            isActive: publicInterface.isActive
-          });
-          
-          await existingDoc.save();
-          return ok(undefined);
-        }
+      const normalizedName = name.toLowerCase().trim().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, '_');
+      const normalizedLang = language.trim().toLowerCase();
+
+      // Validaciones básicas
+      if (name.trim().length < 2 || name.trim().length > 100) {
+        return err(DomainError.validation('Event type name must be between 2 and 100 characters'));
       }
-      
-      // Es create - usar upsert por normalizedName (prevenir duplicados)
-      try {
-        await MachineEventTypeModel.create({
-          _id: publicInterface.id,
-          name: publicInterface.name,
-          normalizedName: publicInterface.normalizedName,
-          systemGenerated: publicInterface.systemGenerated,
-          createdBy: publicInterface.createdBy,
-          timesUsed: publicInterface.timesUsed,
-          isActive: publicInterface.isActive
-        });
-        
-        return ok(undefined);
-      } catch (createError: any) {
-        // Si hay duplicate key error (race condition), buscar el existente
-        if (createError.code === 11000) {
-          const existing = await MachineEventTypeModel.findOne({ 
-            normalizedName: publicInterface.normalizedName 
-          });
-          
-          if (existing) {
-            // Ya existe - actualizar entity con ID del existente
-            (eventType as any).props.id = existing.id;
-            return ok(undefined);
-          }
-        }
-        
-        throw createError;
+      if (normalizedLang.length !== 2) {
+        return err(DomainError.validation('Language must be ISO 639-1 code (2 letters)'));
       }
+
+      // Buscar si existe (por normalizedName)
+      const existing = await MachineEventTypeModel.findOne({ normalizedName });
+
+      if (existing) {
+        // Existe: agregar idioma si no está presente
+        if (!existing.languages.includes(normalizedLang)) {
+          existing.languages.push(normalizedLang);
+          await existing.save();
+        }
+        return this.toEntity(existing);
+      }
+
+      // No existe: crear nuevo documento directamente con Mongoose
+      const newDoc = await MachineEventTypeModel.create({
+        name: name.trim(),
+        normalizedName,
+        languages: [normalizedLang],
+        systemGenerated,
+        createdBy: createdBy || null,
+        timesUsed: 0,
+        isActive: true
+      });
+
+      return this.toEntity(newDoc);
+
     } catch (error: any) {
+      // Si es error de duplicado (race condition), reintentar
+      if (error.code === 11000) {
+        const normalizedName = name.toLowerCase().trim().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, '_');
+        const existing = await MachineEventTypeModel.findOne({ normalizedName });
+        
+        if (existing) {
+          const normalizedLang = language.trim().toLowerCase();
+          if (!existing.languages.includes(normalizedLang)) {
+            existing.languages.push(normalizedLang);
+            await existing.save();
+          }
+          return this.toEntity(existing);
+        }
+      }
+      
       return err(DomainError.create('PERSISTENCE_ERROR', `Error saving machine event type: ${error.message}`));
     }
   }

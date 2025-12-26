@@ -23,8 +23,7 @@ export const CreateMachineEventTypeRequestSchema = z.object({
     .min(1, 'Event type name is required')
     .max(50, 'Event type name cannot exceed 50 characters'),
   language: z.string()
-    .length(2, 'Language code must be ISO 639-1 (2 letters)'),
-  createdBy: z.string().optional() // Solo para tipos creados por usuarios
+    .length(2, 'Language code must be ISO 639-1 (2 letters)')
 }) satisfies z.ZodType<CreateMachineEventTypeProps>;
 
 /**
@@ -36,7 +35,6 @@ export const CreateMachineEventTypeResponseSchema = z.object({
   normalizedName: z.string(),
   languages: z.array(z.string()), // Códigos ISO 639-1
   systemGenerated: z.boolean(),
-  createdBy: z.string().optional(),
   createdAt: z.string().datetime(),
   timesUsed: z.number(),
   isActive: z.boolean()

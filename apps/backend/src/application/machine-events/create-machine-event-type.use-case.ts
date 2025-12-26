@@ -55,71 +55,35 @@ export class CreateMachineEventTypeUseCase {
 
     try {
       // 1. Validar userId (solo para tipos user-generated)
-      let userIdVO = null;
       if (!systemGenerated) {
         const userIdResult = UserId.create(userId);
         if (!userIdResult.success) {
           throw new Error(`Invalid user ID format: ${userIdResult.error.message}`);
         }
-        userIdVO = userIdResult.data;
       }
 
-      // 2. Normalizar nombre para búsqueda case-insensitive
-      const normalizedName = name.toLowerCase().trim();
-
-      // 3. Verificar si tipo ya existe
-      const existingType = await this.eventTypeRepository.findByNormalizedName(normalizedName);
-
-      if (existingType.success) {
-        const eventType = existingType.data;
-        
-        // 3a. Tipo existe: Agregar idioma si no lo tiene
-        if (!eventType.languages.includes(language)) {
-          eventType.addLanguage(language);
-          
-          // Actualizar en BD (método save es upsert inteligente)
-          await this.eventTypeRepository.save(eventType);
-
-          logger.info({ 
-            eventTypeId: eventType.id,
-            language,
-            normalizedName
-          }, '🌐 Language added to existing event type');
-        } else {
-          logger.info({ 
-            eventTypeId: eventType.id,
-            normalizedName
-          }, '♻️ Event type already exists, reusing');
-        }
-
-        return eventType;
-      }
-
-      // 4. Tipo no existe: Crear nuevo (crowdsourcing)
-      const createResult = systemGenerated
-        ? MachineEventType.createSystemType({ name, language })
-        : MachineEventType.createUserType({ name, language, createdBy: userId });
-
-      if (!createResult.success) {
-        throw new Error(`Failed to create event type: ${createResult.error.message}`);
-      }
-
-      const newEventType = createResult.data;
-
-      // 5. Guardar en repositorio
-      const saveResult = await this.eventTypeRepository.save(newEventType);
+      // 2. Guardar directamente con el repositorio (crowdsourcing + get-or-create)
+      //    El repositorio se encarga de verificar si existe y agregar el idioma
+      const saveResult = await this.eventTypeRepository.save(
+        name,
+        language,
+        systemGenerated,
+        systemGenerated ? undefined : userId
+      );
 
       if (!saveResult.success) {
         throw new Error(`Failed to save event type: ${saveResult.error.message}`);
       }
 
+      const eventType = saveResult.data;
+
       logger.info({ 
-        eventTypeId: newEventType.id,
+        eventTypeId: eventType.id,
         name,
         systemGenerated
-      }, '🆕 New machine event type created (crowdsourcing)');
+      }, '✅ Machine event type created/updated (crowdsourcing)');
 
-      return newEventType;
+      return eventType;
 
     } catch (error) {
       logger.error({ 

@@ -19,7 +19,6 @@ import { IMachineEventType } from '../../models/interfaces';
 export interface CreateMachineEventTypeProps {
   readonly name: string;           // Nombre del tipo de evento (ej: "Limpieza profunda")
   readonly language: string;       // Código ISO 639-1 (ej: 'es', 'en')
-  readonly createdBy?: string;     // ID del usuario (si no es sistema)
   readonly languages?: string[];   // Para reconstitución desde persistencia
 }
 
@@ -32,7 +31,6 @@ interface MachineEventTypeProps {
   readonly normalizedName: string;  // Para búsquedas y comparaciones
   readonly languages: string[];     // Códigos ISO 639-1 (ej: ['es', 'en'])
   readonly systemGenerated: boolean;
-  readonly createdBy: UserId | null;
   readonly createdAt: Date;
   readonly timesUsed: number;      // Para ordenar por popularidad
   readonly isActive: boolean;      // Soft delete
@@ -56,7 +54,6 @@ export class MachineEventType {
       normalizedName: this.props.normalizedName,
       languages: [...this.props.languages], // Copia defensiva
       systemGenerated: this.props.systemGenerated,
-      createdBy: this.props.createdBy?.getValue(),
       timesUsed: this.props.timesUsed,
       isActive: this.props.isActive,
       createdAt: this.props.createdAt,
@@ -91,12 +88,11 @@ export class MachineEventType {
       : [createProps.language.trim().toLowerCase()];
     
     const props: MachineEventTypeProps = {
-      id: MachineEventType.generateId(),
+      id: '', // MongoDB generará el ObjectId
       name: createProps.name.trim(),
       normalizedName,
       languages: langs,
       systemGenerated: true,
-      createdBy: null,
       createdAt: new Date(),
       timesUsed: 0,
       isActive: true
@@ -114,19 +110,10 @@ export class MachineEventType {
       return err(validation.error);
     }
 
-    if (!createProps.createdBy) {
-      return err(DomainError.validation('User ID is required for user-created event types'));
-    }
-
     // Validar language
     const languageValidation = MachineEventType.validateLanguage(createProps.language);
     if (!languageValidation.success) {
       return err(languageValidation.error);
-    }
-
-    const userIdResult = UserId.create(createProps.createdBy);
-    if (!userIdResult.success) {
-      return err(userIdResult.error);
     }
 
     const normalizedName = MachineEventType.normalizeName(createProps.name);
@@ -137,12 +124,11 @@ export class MachineEventType {
       : [createProps.language.trim().toLowerCase()];
     
     const props: MachineEventTypeProps = {
-      id: MachineEventType.generateId(),
+      id: '', // MongoDB generará el ObjectId
       name: createProps.name.trim(),
       normalizedName,
       languages: langs,
       systemGenerated: false,
-      createdBy: userIdResult.data,
       createdAt: new Date(),
       timesUsed: 0,
       isActive: true
@@ -210,10 +196,6 @@ export class MachineEventType {
 
   get systemGenerated(): boolean {
     return this.props.systemGenerated;
-  }
-
-  get createdBy(): UserId | null {
-    return this.props.createdBy;
   }
 
   get createdAt(): Date {

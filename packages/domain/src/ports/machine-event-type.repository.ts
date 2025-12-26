@@ -45,19 +45,27 @@ export interface IMachineEventTypeRepository {
   findUserGenerated(): Promise<MachineEventType[]>;
 
   /**
-   * Busca tipos de evento por creador
-   */
-  findByCreatedBy(userId: UserId): Promise<MachineEventType[]>;
-
-  /**
    * Obtiene tipos más usados (ordenados por timesUsed)
    */
   findMostUsed(limit: number): Promise<MachineEventType[]>;
 
   /**
-   * Guarda un tipo de evento (crear o actualizar)
+   * Guarda un tipo de evento de forma inteligente:
+   * - Si existe un registro con ese nombre (case-insensitive), agrega el idioma si no está presente
+   * - Si no existe, crea un nuevo registro con el nombre y el idioma dado
+   * 
+   * @param name Nombre del tipo de evento
+   * @param language Código ISO 639-1 del idioma (ej: 'es', 'en')
+   * @param systemGenerated Si es un tipo generado por el sistema (default: false)
+   * @param createdBy ID del usuario creador (solo para tipos de usuario)
+   * @returns El MachineEventType guardado/actualizado
    */
-  save(eventType: MachineEventType): Promise<Result<void, DomainError>>;
+  save(
+    name: string,
+    language: string,
+    systemGenerated?: boolean,
+    createdBy?: string
+  ): Promise<Result<MachineEventType, DomainError>>;
 
   /**
    * Elimina físicamente un tipo de evento

@@ -202,49 +202,31 @@ export async function seedMachineEventTypesIfEmpty(): Promise<void> {
 
     for (const typeData of MACHINE_EVENT_TYPES_SEED) {
       try {
-        // Crear entidad de dominio según tipo
-        const createProps = {
-          name: typeData.name,
-          language: typeData.languages[0], // Primer idioma
-          languages: typeData.languages    // Array completo
-        };
-
-        let entityResult;
-        if (typeData.systemGenerated) {
-          const { MachineEventType } = await import('@packages/domain');
-          entityResult = MachineEventType.createSystemType(createProps);
-        } else {
-          const { MachineEventType } = await import('@packages/domain');
-          // Para tipos no-sistema en seed, creamos sin createdBy (será null)
-          // En producción, los usuarios crearán tipos con su ID
-          entityResult = MachineEventType.createSystemType(createProps);
-          if (entityResult.success) {
-            // Override systemGenerated después de crear
-            (entityResult.data as any).props.systemGenerated = false;
-          }
-        }
-
-        if (!entityResult.success) {
-          logger.error({ name: typeData.name, error: entityResult.error.message }, 'Failed to create event type entity');
-          continue;
-        }
-
-        // Guardar usando repositorio (maneja upsert automático)
-        const saveResult = await repository.save(entityResult.data);
+        // El repositorio maneja la lógica de crear o actualizar (patrón MachineType)
+        await repository.save(
+          typeData.name,
+          typeData.languages[0],
+          typeData.systemGenerated
+        );
         
-        if (saveResult.success) {
-          created++;
-          
-          // Log discreto solo en desarrollo
-          if (process.env.NODE_ENV === 'development') {
-            logger.debug({ 
-              name: typeData.name, 
-              languages: typeData.languages,
-              systemGenerated: typeData.systemGenerated 
-            }, 'MachineEventType created');
-          }
-        } else {
-          logger.error({ name: typeData.name, error: saveResult.error.message }, 'Failed to save event type');
+        // Agregar idiomas adicionales si existen
+        for (let i = 1; i < typeData.languages.length; i++) {
+          await repository.save(
+            typeData.name,
+            typeData.languages[i],
+            typeData.systemGenerated
+          );
+        }
+        
+        created++;
+        
+        // Log discreto solo en desarrollo
+        if (process.env.NODE_ENV === 'development') {
+          logger.debug({ 
+            name: typeData.name, 
+            languages: typeData.languages,
+            systemGenerated: typeData.systemGenerated 
+          }, 'MachineEventType created');
         }
       } catch (error: any) {
         logger.error({ name: typeData.name, error: error.message }, 'Failed to seed MachineEventType');

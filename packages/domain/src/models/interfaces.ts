@@ -178,7 +178,6 @@ export interface IMachineEventType extends IBaseEntity {
   readonly normalizedName: string;
   readonly languages: string[];      // Códigos ISO 639-1 (ej: ['es', 'en'])
   readonly systemGenerated: boolean;
-  readonly createdBy?: string;
   readonly timesUsed: number;
   readonly isActive: boolean;
 }

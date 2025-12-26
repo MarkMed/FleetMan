@@ -12,6 +12,8 @@ import { type IMachineEventType } from '@packages/domain';
 export interface IMachineEventTypeDocument extends Omit<IMachineEventType, 'id'>, Document {
   _id: Types.ObjectId;
   id: string; // Virtual getter from _id
+  name: string; // Re-declaramos explícitamente
+  languages: string[]; // Re-declaramos explícitamente
 }
 
 // =============================================================================
@@ -40,7 +42,7 @@ const machineEventTypeSchema = new Schema<IMachineEventTypeDocument>({
   languages: {
     type: [String],
     required: true,
-    default: ['es'],
+    default: [],
     validate: [
       (arr: string[]) => arr.length > 0,
       'Must have at least one language'
@@ -51,12 +53,6 @@ const machineEventTypeSchema = new Schema<IMachineEventTypeDocument>({
     type: Boolean,
     required: true,
     default: false
-  },
-  
-  createdBy: {
-    type: String,
-    ref: 'User',
-    sparse: true
   },
   
   timesUsed: {
@@ -76,9 +72,9 @@ const machineEventTypeSchema = new Schema<IMachineEventTypeDocument>({
   collection: 'machine_event_types'
 });
 
-// Virtual for id
-machineEventTypeSchema.virtual('id').get(function(this: IMachineEventTypeDocument) {
-  return this._id.toHexString();
+// Virtual para id
+machineEventTypeSchema.virtual('id').get(function (this: IMachineEventTypeDocument) {
+  return (this as any)._id.toHexString();
 });
 
 // Ensure virtual fields are serialized
@@ -93,7 +89,6 @@ machineEventTypeSchema.set('toJSON', {
 
 // Indexes for performance
 machineEventTypeSchema.index({ systemGenerated: 1, isActive: 1 });
-machineEventTypeSchema.index({ createdBy: 1, isActive: 1 });
 machineEventTypeSchema.index({ timesUsed: -1, isActive: 1 }); // Most used types first
 machineEventTypeSchema.index({ isActive: 1, timesUsed: -1 });
 
