@@ -1,4 +1,4 @@
-import { apiClient } from './apiClient';
+import { apiClient, handleApiResponse } from './apiClient';
 import { API_ENDPOINTS } from '../../constants';
 
 /**
@@ -162,6 +162,30 @@ class MachineEventService {
   /**
    * Get paginated event history for a machine
    * 
+   * IMPORTANT: Query Params Serialization Strategy
+   * -----------------------------------------------
+   * URL query params are ALWAYS strings (per HTTP spec).
+   * Backend MUST use z.coerce.number() for numeric params to auto-convert.
+   * 
+   * If backend validation fails with "Expected number, received string":
+   * 
+   * Solution 1 (RECOMMENDED): Fix backend validation schema
+   * ```ts
+   * // In backend controller/route validation:
+   * page: z.coerce.number().int().positive().default(1),
+   * limit: z.coerce.number().int().positive().max(100).default(20)
+   * ```
+   * 
+   * Solution 2: Update apiClient to support non-string params
+   * - Change buildUrl signature to accept Record<string, any>
+   * - Serialize numbers/booleans appropriately
+   * - More complex but maintains type safety
+   * 
+   * Solution 3 (NOT RECOMMENDED): Use POST with JSON body
+   * - Breaks RESTful conventions for list operations
+   * - Disables HTTP caching
+   * - Harder to debug (no URL visibility)
+   * 
    * @param machineId - Machine UUID
    * @param query - Filters, pagination, sorting
    * @returns Paginated list of events
@@ -186,18 +210,20 @@ class MachineEventService {
       if (query.startDate) params.startDate = query.startDate;
       if (query.endDate) params.endDate = query.endDate;
       if (query.searchTerm) params.searchTerm = query.searchTerm;
-      if (query.page) params.page = String(query.page);
-      if (query.limit) params.limit = String(query.limit);
+      // Keep page and limit as numbers in params - axios/fetch will serialize correctly
+      if (query.page !== undefined) params.page = String(query.page);
+      if (query.limit !== undefined) params.limit = String(query.limit);
       if (query.sortBy) params.sortBy = query.sortBy;
       if (query.sortOrder) params.sortOrder = query.sortOrder;
     }
 
-    const response = await apiClient.get<GetEventsResponse>(
+    const response = await apiClient.get<{ success: boolean; message?: string; data: GetEventsResponse }>(
       API_ENDPOINTS.MACHINE_EVENTS(machineId),
       params
     );
 
-    return response.data!;
+    const processed = handleApiResponse(response);
+    return (processed as any).data ?? processed;
   }
 
   /**
@@ -224,12 +250,13 @@ class MachineEventService {
    * ```
    */
   async createEvent(machineId: string, payload: CreateEventRequest): Promise<CreateEventResponse> {
-    const response = await apiClient.post<CreateEventResponse>(
+    const response = await apiClient.post<{ success: boolean; message?: string; data: CreateEventResponse }>(
       API_ENDPOINTS.MACHINE_EVENTS(machineId),
       payload
     );
 
-    return response.data!;
+    const processed = handleApiResponse(response);
+    return (processed as any).data ?? processed;
   }
 
   /**
@@ -256,12 +283,14 @@ class MachineEventService {
     if (query.limit) params.limit = String(query.limit);
     if (query.includeSystem !== undefined) params.includeSystem = String(query.includeSystem);
 
-    const response = await apiClient.get<{ types: EventType[] }>(
+    const response = await apiClient.get<{ success: boolean; message?: string; data: { types: EventType[] } }>(
       '/event-types/search',
       params
     );
 
-    return response.data!.types;
+    const processed = handleApiResponse(response);
+    const data = (processed as any).data ?? processed;
+    return data.types;
   }
 
   /**
@@ -284,12 +313,14 @@ class MachineEventService {
       limit: String(limit),
     };
 
-    const response = await apiClient.get<{ types: EventType[] }>(
+    const response = await apiClient.get<{ success: boolean; message?: string; data: { types: EventType[] } }>(
       '/event-types/popular',
       params
     );
 
-    return response.data!.types;
+    const processed = handleApiResponse(response);
+    const data = (processed as any).data ?? processed;
+    return data.types;
   }
 
   /**
@@ -315,12 +346,13 @@ class MachineEventService {
    * ```
    */
   async createEventType(payload: CreateEventTypeRequest): Promise<EventType> {
-    const response = await apiClient.post<EventType>(
+    const response = await apiClient.post<{ success: boolean; message?: string; data: EventType }>(
       '/event-types',
       payload
     );
 
-    return response.data!;
+    const processed = handleApiResponse(response);
+    return (processed as any).data ?? processed;
   }
 
   // TODO: Strategic feature - Delete event (only manual events by creator)

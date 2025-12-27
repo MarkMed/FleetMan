@@ -88,6 +88,8 @@
     "uses": "uses",
     "retry": "Retry",
     "description": "Description",
+    "expand": "Expand",
+    "collapse": "Collapse",
     "daysOfWeek": {
       "full": {
         "SUN": "Sunday",
@@ -251,7 +253,33 @@
       "showing": "Showing {{count}} of {{total}} events",
       "noTypeFound": "No event type found for \"{{term}}\"",
       "createNewType": "Create \"{{term}}\"",
-      "startTyping": "Start typing to search or create event types"
+      "startTyping": "Start typing to search or create event types",
+      "form": {
+        "titlePlaceholder": "e.g., Oil leak detected in main engine",
+        "descriptionPlaceholder": "Detailed description of the event...",
+        "metadataPlaceholder": "{\"temperature\": 85, \"pressure\": 120}",
+        "metadataHint": "Optional: Add additional information in JSON format"
+      },
+      "systemEvents": {
+        "quickcheck": {
+          "completed": {
+            "approved": "QuickCheck Approved",
+            "approved.description": "Quick inspection completed successfully. All items passed the review.",
+            "disapproved": "QuickCheck Disapproved",
+            "disapproved.description": "Quick inspection detected issues. Immediate attention required."
+          }
+        },
+        "maintenance": {
+          "scheduled": "Maintenance Scheduled",
+          "scheduled.description": "A new preventive maintenance has been scheduled for this machine.",
+          "reminder": "Maintenance Reminder",
+          "reminder.description": "Reminder: Scheduled maintenance is approaching. Prepare the necessary resources.",
+          "cancelled": "Maintenance Cancelled",
+          "cancelled.description": "The scheduled maintenance has been cancelled. Check the new schedule.",
+          "completed": "Maintenance Completed",
+          "completed.description": "Maintenance has been completed successfully. The machine is ready to operate."
+        }
+      }
     }
   },
   "maintenance": {

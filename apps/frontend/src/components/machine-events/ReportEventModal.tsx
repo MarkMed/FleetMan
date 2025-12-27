@@ -161,7 +161,7 @@ export const ReportEventModal: React.FC<ReportEventModalProps> = ({
             value={watch('title')}
             onChangeText={(text) => setValue('title', text)}
             error={errors.title?.message}
-            placeholder="e.g., Oil leak detected in main engine"
+            placeholder={t('machines.events.form.titlePlaceholder')}
             disabled={isSubmitting}
           />
           {errors.title && (
@@ -183,7 +183,7 @@ export const ReportEventModal: React.FC<ReportEventModalProps> = ({
             id="description"
             {...register('description')}
             rows={4}
-            placeholder="Detailed description of the event..."
+            placeholder={t('machines.events.form.descriptionPlaceholder')}
             disabled={isSubmitting}
           />
           {errors.description && (
@@ -205,7 +205,7 @@ export const ReportEventModal: React.FC<ReportEventModalProps> = ({
             id="metadata"
             {...register('metadata')}
             rows={3}
-            placeholder='{"temperature": 85, "pressure": 120}'
+            placeholder={t('machines.events.form.metadataPlaceholder')}
             disabled={isSubmitting}
           />
           {errors.metadata && (
@@ -214,7 +214,7 @@ export const ReportEventModal: React.FC<ReportEventModalProps> = ({
             </p>
           )}
           <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-            Optional: Add additional information in JSON format
+            {t('machines.events.form.metadataHint')}
           </p>
         </div>
 

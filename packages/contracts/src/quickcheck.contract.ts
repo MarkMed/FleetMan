@@ -84,8 +84,8 @@ export const QuickCheckHistoryFiltersSchema = z.object({
   dateFrom: z.coerce.date().optional(),
   dateTo: z.coerce.date().optional(),
   executedById: z.string().optional(),
-  limit: z.number().int().min(1).max(100).default(20),
-  skip: z.number().int().min(0).default(0)
+  limit: z.coerce.number().int().min(1).max(100).default(20), // Query param numérico
+  skip: z.coerce.number().int().min(0).default(0) // Query param numérico
 });
 
 export type QuickCheckHistoryFilters = z.infer<typeof QuickCheckHistoryFiltersSchema>;

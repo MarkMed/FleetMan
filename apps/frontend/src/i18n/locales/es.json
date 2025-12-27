@@ -88,6 +88,8 @@
     "uses": "usos",
     "retry": "Reintentar",
     "description": "Descripción",
+    "expand": "Expandir",
+    "collapse": "Colapsar",
     "daysOfWeek": {
       "full": {
         "SUN": "Domingo",
@@ -251,7 +253,33 @@
       "showing": "Mostrando {{count}} de {{total}} eventos",
       "noTypeFound": "No se encontró tipo de evento para \"{{term}}\"",
       "createNewType": "Crear \"{{term}}\"",
-      "startTyping": "Comienza a escribir para buscar o crear tipos de evento"
+      "startTyping": "Comienza a escribir para buscar o crear tipos de evento",
+      "form": {
+        "titlePlaceholder": "Ej: Fuga de aceite detectada en motor principal",
+        "descriptionPlaceholder": "Descripción detallada del evento...",
+        "metadataPlaceholder": "{\"temperatura\": 85, \"presion\": 120}",
+        "metadataHint": "Opcional: Información adicional en formato JSON"
+      },
+      "systemEvents": {
+        "quickcheck": {
+          "completed": {
+            "approved": "QuickCheck Aprobado",
+            "approved.description": "La inspección rápida fue completada exitosamente. Todos los ítems pasaron la revisión.",
+            "disapproved": "QuickCheck Reprobado",
+            "disapproved.description": "La inspección rápida detectó problemas. Se requiere atención inmediata."
+          }
+        },
+        "maintenance": {
+          "scheduled": "Mantenimiento Programado",
+          "scheduled.description": "Se ha programado un nuevo mantenimiento preventivo para esta máquina.",
+          "reminder": "Recordatorio de Mantenimiento",
+          "reminder.description": "Recordatorio: El mantenimiento programado se acerca. Prepara los recursos necesarios.",
+          "cancelled": "Mantenimiento Cancelado",
+          "cancelled.description": "El mantenimiento programado ha sido cancelado. Verifica el nuevo cronograma.",
+          "completed": "Mantenimiento Completado",
+          "completed.description": "El mantenimiento ha sido completado exitosamente. La máquina está lista para operar."
+        }
+      }
     }
   },
   "maintenance": {

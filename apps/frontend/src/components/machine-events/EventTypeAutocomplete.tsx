@@ -1,9 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { Search, Plus, Check } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { useDebounce } from '@hooks/useDebounce';
 import {
-  useEventTypes,
   usePopularEventTypes,
   useCreateEventType,
 } from '@hooks/useMachineEvents';
@@ -20,14 +18,17 @@ interface EventTypeAutocompleteProps {
 /**
  * Autocomplete input for event type selection with crowdsourcing
  *
- * Features:
- * - Search existing event types with debounced search
- * - Display popular types when input is empty
+ * Optimized approach:
+ * - Load all event types once on mount (top 100)
+ * - Filter locally as user types (no API calls per keystroke)
+ * - Display popular types (top 10) when input is empty
  * - Create new event type on-the-fly (crowdsourcing)
  * - Keyboard navigation (Arrow Up/Down, Enter, Escape)
  * - Click outside to close dropdown
  *
  * Pattern: Get-or-Create (backend handles deduplication)
+ *
+ * Performance: Single API call on mount vs multiple calls per keystroke
  *
  * @example
  * <EventTypeAutocomplete
@@ -47,16 +48,16 @@ export const EventTypeAutocomplete: React.FC<EventTypeAutocompleteProps> = ({
   const [searchTerm, setSearchTerm] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const debouncedSearch = useDebounce(searchTerm, 300);
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Queries
+  // Load all event types once (top 100 most used)
   const {
-    data: searchResults = [],
-    isLoading: isSearching,
-  } = useEventTypes(debouncedSearch);
+    data: allEventTypes = [],
+    isLoading: isLoadingAllTypes,
+  } = usePopularEventTypes(100);
 
+  // Load popular types for empty state (top 10)
   const {
     data: popularTypes = [],
     isLoading: isLoadingPopular,
@@ -64,12 +65,22 @@ export const EventTypeAutocomplete: React.FC<EventTypeAutocompleteProps> = ({
 
   const createTypeMutation = useCreateEventType();
 
-  // Display search results if searching, otherwise popular types
-  const displayedTypes = debouncedSearch.length > 0 ? searchResults : popularTypes;
-  const isLoading = debouncedSearch.length > 0 ? isSearching : isLoadingPopular;
+  // Filter types locally based on search term
+  const filteredTypes = useMemo(() => {
+    if (!searchTerm.trim()) return popularTypes;
+    
+    const lowerSearch = searchTerm.toLowerCase().trim();
+    return allEventTypes
+      .filter(type => type.name.toLowerCase().includes(lowerSearch))
+      .slice(0, 20); // Limit to 20 results for performance
+  }, [searchTerm, allEventTypes, popularTypes]);
 
-  // Selected type display name
-  const selectedType = displayedTypes.find((type) => type.id === value);
+  const displayedTypes = filteredTypes;
+  const isLoading = searchTerm.trim() ? isLoadingAllTypes : isLoadingPopular;
+
+  // Selected type display name (search in all types, not just displayed)
+  const selectedType = allEventTypes.find((type) => type.id === value) || 
+                        popularTypes.find((type) => type.id === value);
   const displayValue = selectedType?.name || '';
 
   // Close dropdown when clicking outside
@@ -262,8 +273,44 @@ export const EventTypeAutocomplete: React.FC<EventTypeAutocompleteProps> = ({
         </div>
       )}
 
-      {/* TODO: Add recently used types section */}
-      {/* TODO: Add category/tags for event types */}
+      {/* 
+        TODO: Características estratégicas futuras
+        
+        1. Recently Used Types Section
+           - Mostrar últimos 5 tipos usados por el usuario
+           - Almacenar en localStorage con timestamp
+           - Útil para reportes frecuentes del mismo tipo
+           
+        2. Categories/Tags for Event Types
+           - Agrupar tipos por categoría (Mantenimiento, Falla, Inspección, etc)
+           - Filtro visual por categoría con iconos/colores
+           - Backend: Agregar campo "category" en EventType model
+           
+        3. Favorites/Pinned Types
+           - Permitir al usuario marcar tipos favoritos
+           - Mostrar sección de favoritos al inicio del dropdown
+           - Sincronizar con backend (user preferences)
+           
+        4. Multi-language Smart Search
+           - Buscar en múltiples idiomas simultáneamente
+           - Ej: "oil" encuentra "aceite" y "oil leak"
+           - Backend: Usar normalizedName para matching cross-language
+           
+        5. Type Suggestions Based on Machine Type
+           - Mostrar tipos relevantes según el tipo de máquina
+           - Ej: Excavadora → "Hydraulic leak", "Track wear"
+           - Backend: Tabla de relación MachineType → EventType (popularity)
+           
+        6. Rich Type Descriptions
+           - Tooltip con descripción completa del tipo de evento
+           - Incluir ejemplos de cuándo usar cada tipo
+           - Backend: Agregar campo "description" y "examples" en EventType
+           
+        7. Type Usage Analytics
+           - Mostrar tendencia de uso (↑ ↓) al lado del usage count
+           - Destacar tipos "trending" en la última semana
+           - Backend: Agregar timestamps de uso en EventType_UsageHistory
+      */}
     </div>
   );
 };

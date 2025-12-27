@@ -53,8 +53,8 @@ export const GetMachineEventTypeResponseSchema = CreateMachineEventTypeResponseS
  * Schema para listar tipos de eventos (usando types comunes)
  */
 export const ListMachineEventTypesRequestSchema = PaginationSchema.extend({
-  systemGenerated: z.boolean().optional(), // Filtrar por tipos del sistema o usuarios
-  isActive: z.boolean().default(true),
+  systemGenerated: z.coerce.boolean().optional(), // Filtrar por tipos del sistema o usuarios (query param)
+  isActive: z.coerce.boolean().default(true), // Query param llega como "true"/"false"
   search: z.string().optional(), // Buscar por nombre
   sortBy: z.enum(['name', 'timesUsed', 'createdAt']).default('timesUsed'), // Ordenar por popularidad por defecto
   sortOrder: SortOrderSchema.default('desc')
@@ -68,8 +68,8 @@ export const ListMachineEventTypesResponseSchema = BasePaginatedResponseSchema.e
  * Schema para obtener tipos más populares
  */
 export const GetPopularEventTypesRequestSchema = z.object({
-  limit: z.number().min(1).max(50).default(10),
-  isActive: z.boolean().default(true)
+  limit: z.coerce.number().min(1).max(50).default(10), // Query param numérico
+  isActive: z.coerce.boolean().default(true) // Query param boolean
 });
 
 export const GetPopularEventTypesResponseSchema = z.object({
@@ -81,8 +81,8 @@ export const GetPopularEventTypesResponseSchema = z.object({
  */
 export const SearchSimilarEventTypesRequestSchema = z.object({
   searchTerm: z.string().min(1, 'Search term is required'),
-  limit: z.number().min(1).max(20).default(5),
-  isActive: z.boolean().default(true)
+  limit: z.coerce.number().min(1).max(20).default(5), // Query param numérico
+  isActive: z.coerce.boolean().default(true) // Query param boolean
 });
 
 export const SearchSimilarEventTypesResponseSchema = z.object({

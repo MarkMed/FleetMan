@@ -79,7 +79,7 @@ export function useMachineEventsViewModel(machineId: string | undefined) {
   // ========================
   // DERIVED STATE
   // ========================
-  
+  console.log('MachineEventsViewModel - data:', data);
   const events = data?.events || [];
   const pagination = data?.pagination || { total: 0, page: 1, limit: 20, totalPages: 0 };
   const hasMore = pagination.page < pagination.totalPages;

@@ -33,6 +33,43 @@ export function EventDetailModal({ event, onClose }: EventDetailModalProps) {
 
   if (!event) return null;
 
+  /**
+   * Helper: Traduce título/descripción de eventos del sistema
+   * 
+   * NOTA: El backend ya incluye .description en las keys de descripción,
+   * por ejemplo: "notification.quickcheck.completed.approved.description"
+   * No necesitamos agregar el sufijo aquí.
+   * 
+   * @param text - Texto que puede ser key o texto libre (puede ser undefined)
+   * @returns Texto traducido o texto original
+   */
+  const getTranslatedText = (text: string | undefined): string => {
+    // Si no hay texto, retornar string vacío
+    if (!text) return '';
+    
+    // Si el evento es del sistema y el texto parece una key de i18n
+    if (event.isSystemGenerated && text.startsWith('notification.')) {
+      // Convertir key de backend a key de frontend
+      // Backend: "notification.quickcheck.completed.approved"
+      // Frontend: "machines.events.systemEvents.quickcheck.completed.approved"
+      const frontendKey = text.replace('notification.', 'machines.events.systemEvents.');
+      
+      // Intentar traducir
+      const translated = t(frontendKey, { defaultValue: '' });
+      
+      // Si la traducción existe, usarla
+      if (translated && translated !== frontendKey) {
+        return translated;
+      }
+    }
+    
+    // Retornar texto original si no es evento del sistema o no tiene traducción
+    return text;
+  };
+
+  const displayTitle = getTranslatedText(event.title);
+  const displayDescription = getTranslatedText(event.description);
+
   const formattedDate = new Date(event.createdAt).toLocaleString('es-ES', {
     year: 'numeric',
     month: 'long',
@@ -48,7 +85,7 @@ export function EventDetailModal({ event, onClose }: EventDetailModalProps) {
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1 min-w-0">
             <Heading2 size="headline" className="text-foreground mb-2">
-              {event.title}
+              {displayTitle}
             </Heading2>
             
             {/* System/Manual Badge */}
@@ -76,7 +113,7 @@ export function EventDetailModal({ event, onClose }: EventDetailModalProps) {
         {/* Description */}
         <Card className="p-4 bg-muted/30">
           <BodyText className="text-foreground whitespace-pre-wrap">
-            {event.description}
+            {displayDescription}
           </BodyText>
         </Card>
 

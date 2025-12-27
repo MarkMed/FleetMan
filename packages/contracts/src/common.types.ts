@@ -13,10 +13,13 @@ export const SortOrderSchema = z.enum(['asc', 'desc']);
 
 /**
  * Schema común para paginación
+ * 
+ * Usa z.coerce para convertir automáticamente query params (strings) a números.
+ * Ejemplo: ?page=1&limit=20 → { page: 1, limit: 20 }
  */
 export const PaginationSchema = z.object({
-  page: z.number().min(1).default(1),
-  limit: z.number().min(1).max(100).default(20)
+  page: z.coerce.number().min(1).default(1),
+  limit: z.coerce.number().min(1).max(100).default(20)
 });
 
 /**
