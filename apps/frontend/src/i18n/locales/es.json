@@ -85,6 +85,9 @@
     "register": "Registrarse",
     "notSpecified": "No especificado",
     "imageLoadError": "Error al cargar la imagen",
+    "uses": "usos",
+    "retry": "Reintentar",
+    "description": "Descripción",
     "daysOfWeek": {
       "full": {
         "SUN": "Domingo",
@@ -206,6 +209,49 @@
         "unknown": "Error desconocido al registrar la máquina"
       },
       "loading": "Procesando y redireccionando..."
+    },
+    "events": {
+      "title": "Historial de Eventos",
+      "subtitle": "Registro completo de eventos manuales y generados por el sistema",
+      "reportEvent": "Reportar Evento",
+      "systemGenerated": "Generado por Sistema",
+      "manualReport": "Reporte Manual",
+      "createdAt": "Fecha de creación",
+      "reportedBy": "Reportado por",
+      "metadata": "Información adicional",
+      "stats": {
+        "total": "Total de Eventos",
+        "manual": "Eventos Manuales",
+        "system": "Eventos del Sistema"
+      },
+      "filters": {
+        "title": "Filtros",
+        "all": "Todos",
+        "manual": "Manuales",
+        "system": "Sistema",
+        "search": "Buscar",
+        "searchPlaceholder": "Buscar en título o descripción...",
+        "startDate": "Fecha desde",
+        "endDate": "Fecha hasta",
+        "sortBy": "Ordenar por",
+        "sortByDate": "Fecha",
+        "sortByTitle": "Título",
+        "sortOrder": "Orden",
+        "newest": "Más recientes",
+        "oldest": "Más antiguos",
+        "selectType": "Filtrar por tipo"
+      },
+      "empty": {
+        "title": "No hay eventos registrados",
+        "description": "Aún no se han reportado eventos para esta máquina. Usa el botón \"Reportar Evento\" para agregar el primero."
+      },
+      "error": {
+        "fetchFailed": "Error al cargar el historial de eventos"
+      },
+      "showing": "Mostrando {{count}} de {{total}} eventos",
+      "noTypeFound": "No se encontró tipo de evento para \"{{term}}\"",
+      "createNewType": "Crear \"{{term}}\"",
+      "startTyping": "Comienza a escribir para buscar o crear tipos de evento"
     }
   },
   "maintenance": {

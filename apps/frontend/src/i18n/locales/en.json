@@ -85,6 +85,9 @@
     "register": "Register",
     "notSpecified": "Not specified",
     "imageLoadError": "Failed to load image",
+    "uses": "uses",
+    "retry": "Retry",
+    "description": "Description",
     "daysOfWeek": {
       "full": {
         "SUN": "Sunday",
@@ -206,6 +209,49 @@
         "unknown": "Unknown error while registering machine"
       },
       "loading": "Processing and redirecting..."
+    },
+    "events": {
+      "title": "Event History",
+      "subtitle": "Complete record of manual and system-generated events",
+      "reportEvent": "Report Event",
+      "systemGenerated": "System Generated",
+      "manualReport": "Manual Report",
+      "createdAt": "Created at",
+      "reportedBy": "Reported by",
+      "metadata": "Additional information",
+      "stats": {
+        "total": "Total Events",
+        "manual": "Manual Events",
+        "system": "System Events"
+      },
+      "filters": {
+        "title": "Filters",
+        "all": "All",
+        "manual": "Manual",
+        "system": "System",
+        "search": "Search",
+        "searchPlaceholder": "Search in title or description...",
+        "startDate": "Start date",
+        "endDate": "End date",
+        "sortBy": "Sort by",
+        "sortByDate": "Date",
+        "sortByTitle": "Title",
+        "sortOrder": "Order",
+        "newest": "Newest",
+        "oldest": "Oldest",
+        "selectType": "Filter by type"
+      },
+      "empty": {
+        "title": "No events recorded",
+        "description": "No events have been reported for this machine yet. Use the \"Report Event\" button to add the first one."
+      },
+      "error": {
+        "fetchFailed": "Error loading event history"
+      },
+      "showing": "Showing {{count}} of {{total}} events",
+      "noTypeFound": "No event type found for \"{{term}}\"",
+      "createNewType": "Create \"{{term}}\"",
+      "startTyping": "Start typing to search or create event types"
     }
   },
   "maintenance": {
