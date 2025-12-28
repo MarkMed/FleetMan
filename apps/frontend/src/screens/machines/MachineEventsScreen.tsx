@@ -163,6 +163,10 @@ export function MachineEventsScreen() {
         machineId={machineId!}
         onClose={vm.actions.handleCloseReportModal}
         createEventMutation={vm.mutations.createEvent}
+        eventTypes={vm.data.eventTypes}
+        isLoadingEventTypes={vm.state.isLoadingEventTypes}
+        onCreateEventType={vm.actions.handleCreateEventType}
+        isCreatingEventType={vm.mutations.createEventType.isPending}
       />
     </div>
   );

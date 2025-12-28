@@ -9,9 +9,9 @@ import { Modal } from '../ui/Modal';
 import { InputField } from '../ui/InputField';
 import { Button } from '../ui/Button';
 import { Textarea } from '../ui/Textarea';
-import { EventTypeAutocomplete } from '@components/machine-events/EventTypeAutocomplete';
+import { EventTypeSelect } from '@components/machine-events/EventTypeSelect';
 import type { UseMutationResult } from '@tanstack/react-query';
-import type { CreateEventRequest } from '@services/api/machineEventService';
+import type { CreateEventRequest, EventType } from '@services/api/machineEventService';
 
 // Validation schema for manual event report
 const reportEventSchema = z.object({
@@ -49,17 +49,26 @@ interface ReportEventModalProps {
     CreateEventRequest,
     unknown
   >;
+  /** Tipos de eventos precargados (desde ViewModel) */
+  eventTypes: EventType[];
+  /** Loading state de tipos */
+  isLoadingEventTypes?: boolean;
+  /** Callback para crear nuevo tipo (crowdsourcing) */
+  onCreateEventType: (name: string) => Promise<EventType>;
+  /** Si está creando un nuevo tipo */
+  isCreatingEventType?: boolean;
 }
 
 /**
  * Modal for reporting manual machine events
  *
  * Features:
- * - Event type selection with autocomplete
+ * - Event type selection con dropdown (sin API calls por keystroke)
  * - Title and description inputs
  * - Optional metadata (JSON)
  * - Form validation with Zod
  * - Loading state during submission
+ * - Crowdsourcing: Crear nuevo tipo on-the-fly
  *
  * @example
  * <ReportEventModal
@@ -67,6 +76,10 @@ interface ReportEventModalProps {
  *   onClose={handleCloseReportModal}
  *   machineId={machineId}
  *   createEventMutation={mutations.createEvent}
+ *   eventTypes={data.eventTypes}
+ *   isLoadingEventTypes={state.isLoadingEventTypes}
+ *   onCreateEventType={actions.handleCreateEventType}
+ *   isCreatingEventType={mutations.createEventType.isLoading}
  * />
  */
 export const ReportEventModal: React.FC<ReportEventModalProps> = ({
@@ -74,6 +87,10 @@ export const ReportEventModal: React.FC<ReportEventModalProps> = ({
   onClose,
   machineId,
   createEventMutation,
+  eventTypes,
+  isLoadingEventTypes = false,
+  onCreateEventType,
+  isCreatingEventType = false,
 }) => {
   const { t } = useTranslation();
   const {
@@ -101,16 +118,34 @@ export const ReportEventModal: React.FC<ReportEventModalProps> = ({
   };
 
   const onSubmit = async (data: ReportEventFormData) => {
+    console.log('[ReportEventModal.onSubmit] Form data received:', data);
+    
+    const payload = {
+      typeId: data.typeId,
+      title: data.title,
+      description: data.description,
+      metadata: data.metadata,
+    };
+    
+    console.log('[ReportEventModal.onSubmit] Payload to send:', payload);
+    console.log('[ReportEventModal.onSubmit] Machine ID:', machineId);
+    
+    // Validate typeId is present
+    if (!payload.typeId) {
+      console.error('[ReportEventModal.onSubmit] ERROR: typeId is missing!');
+      return;
+    }
+    
     try {
-      await createEventMutation.mutateAsync({
-        typeId: data.typeId,
-        title: data.title,
-        description: data.description,
-        metadata: data.metadata,
-      });
+      console.log('[ReportEventModal.onSubmit] Calling createEventMutation.mutateAsync...');
+      
+      const result = await createEventMutation.mutateAsync(payload);
+      
+      console.log('[ReportEventModal.onSubmit] Event created successfully:', result);
+      
       handleClose();
     } catch (error) {
-      console.error('Error reporting event:', error);
+      console.error('[ReportEventModal.onSubmit] Error reporting event:', error);
       // Error is handled by mutation's onError callback in ViewModel
     }
   };
@@ -130,22 +165,21 @@ export const ReportEventModal: React.FC<ReportEventModalProps> = ({
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        {/* Event Type Autocomplete */}
+        {/* Event Type Select (sin API calls por keystroke) */}
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             {t('machines.events.filters.selectType')} *
           </label>
-          <EventTypeAutocomplete
+          <EventTypeSelect
             value={selectedTypeId}
             onChange={(typeId: string) => setValue('typeId', typeId)}
             error={errors.typeId?.message}
             placeholder={t('machines.events.filters.search')}
+            eventTypes={eventTypes}
+            isLoadingTypes={isLoadingEventTypes}
+            onCreateType={onCreateEventType}
+            isCreatingType={isCreatingEventType}
           />
-          {errors.typeId && (
-            <p className="mt-1 text-sm text-red-600 dark:text-red-400">
-              {errors.typeId.message}
-            </p>
-          )}
         </div>
 
         {/* Title Input */}

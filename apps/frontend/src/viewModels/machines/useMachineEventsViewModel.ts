@@ -1,6 +1,11 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useMachineEvents, useCreateMachineEvent } from '@hooks/useMachineEvents';
+import { 
+  useMachineEvents, 
+  useCreateMachineEvent,
+  usePopularEventTypes,
+  useCreateEventType,
+} from '@hooks/useMachineEvents';
 import type { MachineEvent, GetEventsQuery } from '@services/api/machineEventService';
 
 /**
@@ -75,6 +80,26 @@ export function useMachineEventsViewModel(machineId: string | undefined) {
   
   const { data, isLoading, error, refetch } = useMachineEvents(machineId, filters);
   const createEventMutation = useCreateMachineEvent(machineId);
+
+  // OPTIMIZACIÓN: Precargar tipos de eventos al montar (1 llamada API única)
+  // Los tipos se pasan a los componentes hijos (EventTypeSelect)
+  // No hay llamadas API por keystroke durante búsqueda
+  // Filtra automáticamente los tipos generados por el sistema
+  const { 
+    data: eventTypes = [], 
+    isLoading: isLoadingEventTypes,
+    error: eventTypesError,
+  } = usePopularEventTypes(100, false); // false = solo tipos creados por usuarios
+
+  const createEventTypeMutation = useCreateEventType();
+
+  // DEBUG: Log event types state
+  console.log('[useMachineEventsViewModel] Event Types State:', {
+    eventTypesCount: eventTypes.length,
+    isLoadingEventTypes,
+    eventTypesError,
+    sampleTypes: eventTypes.slice(0, 3).map(t => ({ id: t.id, name: t.name })),
+  });
 
   // ========================
   // DERIVED STATE
@@ -183,6 +208,25 @@ export function useMachineEventsViewModel(machineId: string | undefined) {
     refetch();
   };
 
+  /**
+   * Handle create new event type (crowdsourcing)
+   * Auto-asigna el nuevo tipo creado
+   * @param name - Nombre del nuevo tipo
+   * @returns Nuevo tipo creado
+   */
+  const handleCreateEventType = async (name: string) => {
+    console.log('[useMachineEventsViewModel.handleCreateEventType] Creating type:', name);
+    
+    const newType = await createEventTypeMutation.mutateAsync({
+      name: name.trim(),
+      language: 'es', // TODO: Use i18n.language if needed
+    });
+    
+    console.log('[useMachineEventsViewModel.handleCreateEventType] Type created/found:', newType);
+    
+    return newType;
+  };
+
   // TODO: Strategic feature - Delete event (only manual events by creator)
   // const handleDeleteEvent = async (eventId: string) => {
   //   if (!window.confirm(t('machines.events.confirmDelete'))) return;
@@ -238,6 +282,7 @@ export function useMachineEventsViewModel(machineId: string | undefined) {
       selectedEvent,
       isReportModalOpen,
       isEmpty,
+      isLoadingEventTypes,
     },
     
     // Data
@@ -248,6 +293,7 @@ export function useMachineEventsViewModel(machineId: string | undefined) {
       totalCount,
       manualCount,
       systemCount,
+      eventTypes, // Tipos precargados para EventTypeSelect
     },
     
     // Actions
@@ -261,6 +307,7 @@ export function useMachineEventsViewModel(machineId: string | undefined) {
       handleOpenReportModal,
       handleCloseReportModal,
       handleRetry,
+      handleCreateEventType, // Crear nuevo tipo (crowdsourcing)
       // handleDeleteEvent, // TODO
       // handleExport, // TODO
     },
@@ -268,6 +315,7 @@ export function useMachineEventsViewModel(machineId: string | undefined) {
     // Mutations (expose for ReportEventModal)
     mutations: {
       createEvent: createEventMutation,
+      createEventType: createEventTypeMutation,
     },
     
     // i18n

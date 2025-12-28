@@ -55,6 +55,16 @@ export const API_ENDPOINTS = {
   EVENTS: '/events',
   EVENT: (id: string) => `/events/${id}`,
   
+  // Event Types (Machine Event Types - Crowdsourcing catalog)
+  EVENT_TYPES_POPULAR: '/event-types/popular',
+  EVENT_TYPES_SEARCH: '/event-types/search',
+  EVENT_TYPES: '/event-types',
+  EVENT_TYPE: (id: string) => `/event-types/${id}`,
+  // TODO: Endpoints estratégicos futuros
+  // EVENT_TYPES_BY_CATEGORY: (category: string) => `/event-types/category/${category}`,
+  // EVENT_TYPES_FAVORITES: (userId: string) => `/users/${userId}/favorite-event-types`,
+  // EVENT_TYPES_RECENT: (userId: string) => `/users/${userId}/recent-event-types`,
+  
   // QuickCheck
   QUICKCHECKS: '/quickchecks',
   QUICKCHECK: (id: string) => `/quickchecks/${id}`,
@@ -171,6 +181,11 @@ export const QUERY_KEYS = {
   
   // Events
   EVENTS: ['events'],
+  
+  // Event Types (Machine Event Types catalog)
+  EVENT_TYPES: ['eventTypes'],
+  EVENT_TYPES_POPULAR: (limit: number) => ['eventTypes', 'popular', limit],
+  EVENT_TYPES_SEARCH: (query: string) => ['eventTypes', 'search', query],
   
   // QuickChecks
   QUICKCHECKS: ['quickchecks'],

@@ -250,13 +250,22 @@ class MachineEventService {
    * ```
    */
   async createEvent(machineId: string, payload: CreateEventRequest): Promise<CreateEventResponse> {
+    console.log('[machineEventService.createEvent] Creating event for machine:', machineId);
+    console.log('[machineEventService.createEvent] Payload:', payload);
+
     const response = await apiClient.post<{ success: boolean; message?: string; data: CreateEventResponse }>(
       API_ENDPOINTS.MACHINE_EVENTS(machineId),
       payload
     );
 
+    console.log('[machineEventService.createEvent] Raw response:', response);
+
     const processed = handleApiResponse(response);
-    return (processed as any).data ?? processed;
+    const result = (processed as any).data ?? processed;
+    
+    console.log('[machineEventService.createEvent] Event created:', result);
+    
+    return result;
   }
 
   /**
@@ -284,43 +293,60 @@ class MachineEventService {
     if (query.includeSystem !== undefined) params.includeSystem = String(query.includeSystem);
 
     const response = await apiClient.get<{ success: boolean; message?: string; data: { types: EventType[] } }>(
-      '/event-types/search',
+      API_ENDPOINTS.EVENT_TYPES_SEARCH,
       params
     );
 
+    console.log('[machineEventService.searchEventTypes] Raw response:', response);
+
     const processed = handleApiResponse(response);
     const data = (processed as any).data ?? processed;
-    return data.types;
+    
+    console.log('[machineEventService.searchEventTypes] Found types:', data.types?.length || 0);
+    
+    // Fallback: React Query requiere que no se retorne undefined
+    return data.types || [];
   }
 
   /**
-   * Get most popular event types (for quick selection UI)
+   * Get event types (catalog)
    * 
-   * Returns types ordered by usage count (timesUsed DESC).
-   * Useful for showing "common event types" in UI.
+   * Returns event types with optional filters.
+   * By default filters out system-generated types.
    * 
-   * @param limit - Max results (default: 20)
-   * @returns List of popular event types
+   * @param limit - Max results (default: 100)
+   * @param systemGenerated - Include system types (default: false)
+   * @returns List of event types
    * 
    * @example
    * ```tsx
-   * const popular = await machineEventService.getPopularEventTypes(10);
-   * // Display as quick selection buttons in UI
+   * // Get user-created types only
+   * const types = await machineEventService.getPopularEventTypes(100);
    * ```
    */
-  async getPopularEventTypes(limit: number = 20): Promise<EventType[]> {
+  async getPopularEventTypes(limit: number = 100, systemGenerated: boolean = false): Promise<EventType[]> {
     const params: Record<string, string> = {
       limit: String(limit),
+      systemGenerated: String(systemGenerated),
     };
 
+    console.log('[machineEventService.getPopularEventTypes] Fetching event types, params:', params);
+
     const response = await apiClient.get<{ success: boolean; message?: string; data: { types: EventType[] } }>(
-      '/event-types/popular',
+      API_ENDPOINTS.EVENT_TYPES,
       params
     );
 
+    console.log('[machineEventService.getPopularEventTypes] Raw response:', response);
+
     const processed = handleApiResponse(response);
     const data = (processed as any).data ?? processed;
-    return data.types;
+    
+    console.log('[machineEventService.getPopularEventTypes] Processed data:', data);
+    console.log('[machineEventService.getPopularEventTypes] Returning types:', data.types?.length || 0, 'types');
+    
+    // Fallback: React Query requiere que no se retorne undefined
+    return data.types || [];
   }
 
   /**
@@ -346,13 +372,21 @@ class MachineEventService {
    * ```
    */
   async createEventType(payload: CreateEventTypeRequest): Promise<EventType> {
+    console.log('[machineEventService.createEventType] Creating type:', payload);
+
     const response = await apiClient.post<{ success: boolean; message?: string; data: EventType }>(
-      '/event-types',
+      API_ENDPOINTS.EVENT_TYPES,
       payload
     );
 
+    console.log('[machineEventService.createEventType] Raw response:', response);
+
     const processed = handleApiResponse(response);
-    return (processed as any).data ?? processed;
+    const data = (processed as any).data ?? processed;
+    
+    console.log('[machineEventService.createEventType] Created/found type:', data);
+    
+    return data;
   }
 
   // TODO: Strategic feature - Delete event (only manual events by creator)

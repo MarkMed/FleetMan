@@ -76,7 +76,7 @@ export const useMachineEvents = (machineId: string | undefined, filters?: GetEve
  */
 export const useEventTypes = (searchTerm: string | undefined, options?: { limit?: number; includeSystem?: boolean }) => {
   return useQuery({
-    queryKey: ['eventTypes', 'search', searchTerm, options],
+    queryKey: QUERY_KEYS.EVENT_TYPES_SEARCH(searchTerm || ''),
     queryFn: () => {
       if (!searchTerm || searchTerm.length < 1) {
         // Return empty array for empty search (don't call API)
@@ -95,31 +95,29 @@ export const useEventTypes = (searchTerm: string | undefined, options?: { limit?
 };
 
 /**
- * Hook: Get popular event types (for quick selection UI)
+ * Hook: Get event types (for dropdown selection UI)
  * 
- * Returns most-used event types ordered by usage count.
- * Useful for showing common types as quick selection buttons.
+ * Returns event types, by default filtering out system-generated types.
+ * Useful for showing user-created types in dropdowns.
  * 
- * @param limit - Max results (default: 20)
+ * @param limit - Max results (default: 100)
+ * @param systemGenerated - Include system types (default: false)
  * 
  * @example
  * ```tsx
- * const { data: popularTypes } = usePopularEventTypes(10);
+ * const { data: eventTypes } = usePopularEventTypes(100);
  * 
- * <div className="popular-types">
- *   {popularTypes?.map(type => (
- *     <Button key={type.id} onClick={() => selectType(type.id)}>
- *       {type.name}
- *     </Button>
- *   ))}
- * </div>
+ * <EventTypeSelect
+ *   eventTypes={eventTypes}
+ *   onChange={handleSelect}
+ * />
  * ```
  */
-export const usePopularEventTypes = (limit: number = 20) => {
+export const usePopularEventTypes = (limit: number = 100, systemGenerated: boolean = false) => {
   return useQuery({
-    queryKey: ['eventTypes', 'popular', limit],
-    queryFn: () => machineEventService.getPopularEventTypes(limit),
-    staleTime: 60 * 60 * 1000, // 1 hour (popularity changes slowly)
+    queryKey: [...QUERY_KEYS.EVENT_TYPES, 'list', limit, systemGenerated],
+    queryFn: () => machineEventService.getPopularEventTypes(limit, systemGenerated),
+    staleTime: 60 * 60 * 1000, // 1 hour (types are relatively stable)
     gcTime: 2 * 60 * 60 * 1000, // 2 hours cache
   });
 };
@@ -208,11 +206,8 @@ export const useCreateEventType = () => {
     mutationFn: (payload: { name: string; language?: string }) =>
       machineEventService.createEventType(payload),
     onSuccess: (newType) => {
-      // Invalidate all event type searches (new type available)
-      queryClient.invalidateQueries({ queryKey: ['eventTypes', 'search'] });
-      
-      // Invalidate popular types (usage count may change)
-      queryClient.invalidateQueries({ queryKey: ['eventTypes', 'popular'] });
+      // Invalidate all event type queries (new type available)
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.EVENT_TYPES });
 
       console.log('[useCreateEventType] Created/found event type:', newType.name);
     },
