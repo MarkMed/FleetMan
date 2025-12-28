@@ -64,6 +64,7 @@ export function EventItem({ event, onClick }: EventItemProps) {
         "notification.",
         "machines.events.systemEvents."
       );
+      console.log('original title:', title, 'converted to frontend key:', frontendKey);
 
       // Intentar traducir
       const translated = t(frontendKey, { defaultValue: "" });

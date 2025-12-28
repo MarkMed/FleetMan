@@ -419,9 +419,9 @@
     },
     "quickcheck": {
       "completed": {
-        "approved": "QuickCheck completado: Máquina {{machineName}} aprobada por {{userName}}",
-        "disapproved": "QuickCheck completado: Máquina {{machineName}} reprobada por {{userName}}",
-        "notInitiated": "QuickCheck completado: Máquina {{machineName}} no iniciada por {{userName}}"
+        "approved": "QuickCheck completado: Máquina {{machineName}} aprobada por {{responsibleName}}",
+        "disapproved": "QuickCheck completado: Máquina {{machineName}} reprobada por {{responsibleName}}",
+        "notInitiated": "QuickCheck completado: Máquina {{machineName}} no iniciada por {{responsibleName}}"
       },
       "created": "Nuevo QuickCheck creado para máquina {{machineName}}",
       "assigned": "QuickCheck asignado a {{userName}} para máquina {{machineName}}"
@@ -470,9 +470,9 @@
   "notification": {
     "quickcheck": {
       "completed": {
-        "approved": "QuickCheck completado: Máquina {{machineName}} aprobada por {{userName}}",
-        "disapproved": "QuickCheck completado: Máquina {{machineName}} reprobada por {{userName}}",
-        "notInitiated": "QuickCheck completado: Máquina {{machineName}} no iniciada por {{userName}}"
+        "approved": "QuickCheck completado: Máquina {{machineName}} aprobada por {{responsibleName}}",
+        "disapproved": "QuickCheck completado: Máquina {{machineName}} reprobada por {{responsibleName}}",
+        "notInitiated": "QuickCheck completado: Máquina {{machineName}} no iniciada por {{responsibleName}}"
       },
       "created": "Nuevo QuickCheck creado para máquina {{machineName}}",
       "assigned": "QuickCheck asignado a {{userName}} para máquina {{machineName}}"

@@ -112,6 +112,7 @@ class SSEClient {
 
         try {
           const notificationEvent: NotificationEventData = JSON.parse(event.data);
+          console.log('📨 [SSE] Event received:', notificationEvent);
           console.log('📬 [SSE] Notification received:', {
             id: notificationEvent.notificationId,
             notificationType: notificationEvent.notificationType,

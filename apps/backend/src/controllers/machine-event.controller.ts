@@ -73,7 +73,9 @@ export class MachineEventController {
       const result = await this.createEventUseCase.execute(
         machineId,
         userId,
-        eventData
+        eventData,
+        undefined, // actionUrl - usar default
+        false // isSystemGenerated - eventos manuales reportados por usuarios
       );
 
       res.status(201).json({
