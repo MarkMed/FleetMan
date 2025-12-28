@@ -99,25 +99,29 @@ export const MachineDetailsScreen: React.FC = () => {
             </div>
 
             {/* Action Buttons */}
-            <div className="flex gap-3 mt-6 flex-wrap justify-end">
-              <Button variant="outline" size="default" disabled>
-                Editar Máquina
-              </Button>
-              <Button 
-                variant="outline" 
-                size="default" 
-                onPress={() => navigate(`/machines/${id}/events`)}
-                icon={<History className="w-4 h-4" />}
-              >
-                {t('machines.actions.viewEventHistory')}
-              </Button>
-              <Button 
-                variant="filled" 
-                size="default" 
-                onPress={() => navigate(`/machines/${id}/quickcheck`)}
-              >
-                Quickcheck
-              </Button>
+            <div className="flex gap-3 mt-6 flex-wrap justify-between">
+              <div>
+                <Button variant="outline" size="default" disabled>
+                  Editar Máquina
+                </Button>
+              </div>
+              <div className="flex-grow flex justify-end gap-3">
+                <Button 
+                  variant="outline" 
+                  size="default" 
+                  onPress={() => navigate(`/machines/${id}/events`)}
+                  // icon={<History className="w-4 h-4" />}
+                >
+                  {t('machines.actions.viewEventHistory')}
+                </Button>
+                <Button 
+                  variant="filled" 
+                  size="default" 
+                  onPress={() => navigate(`/machines/${id}/quickcheck`)}
+                >
+                  Quickcheck
+                </Button>
+              </div>
             </div>
           </div>
         </div>
