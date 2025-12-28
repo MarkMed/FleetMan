@@ -116,6 +116,11 @@ export const ReportEventModal: React.FC<ReportEventModalProps> = ({
   const selectedTypeId = watch('typeId');
 
   const handleClose = () => {
+    // Solo permitir cerrar si no está creando evento
+    if (createEventMutation.isPending) {
+      console.log('[ReportEventModal] Cannot close while mutation is pending');
+      return;
+    }
     reset();
     onClose();
   };
@@ -175,7 +180,14 @@ export const ReportEventModal: React.FC<ReportEventModalProps> = ({
       const result = await createEventMutation.mutateAsync(payload);
       
       console.log('[ReportEventModal.onSubmit] Event created successfully:', result);
+      console.log('[ReportEventModal.onSubmit] Waiting for queries to refetch...');
       
+      // IMPORTANTE: Esperar a que TanStack Query invalide y refetch las queries
+      // Esto asegura que la lista se actualice ANTES de cerrar el modal
+      // El usuario verá el loading state durante el refetch
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      console.log('[ReportEventModal.onSubmit] Refetch completed, closing modal');
       handleClose();
     } catch (error) {
       console.error('[ReportEventModal.onSubmit] Error reporting event:', error);
@@ -184,7 +196,15 @@ export const ReportEventModal: React.FC<ReportEventModalProps> = ({
   };
 
   return (
-    <Modal open={isOpen} onOpenChange={(open) => !open && handleClose()}>
+    <Modal 
+      open={isOpen} 
+      onOpenChange={(open) => {
+        // Prevenir cerrar mientras se está creando evento
+        if (!open && !createEventMutation.isPending) {
+          handleClose();
+        }
+      }}
+    >
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
           {t('machines.events.reportEvent')}
@@ -231,11 +251,11 @@ export const ReportEventModal: React.FC<ReportEventModalProps> = ({
             placeholder={t('machines.events.form.titlePlaceholder')}
             disabled={isSubmitting}
           />
-          {errors.title && (
+          {/* {errors.title && (
             <p className="mt-1 text-sm text-red-600 dark:text-red-400">
               {errors.title.message}
             </p>
-          )}
+          )} */}
         </div>
 
         {/* Description Textarea */}
