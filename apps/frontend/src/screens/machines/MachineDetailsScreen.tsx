@@ -4,7 +4,7 @@ import { Heading1, BodyText, Button, Card, CollapsibleSection } from "@component
 import { useMachineDetailsViewModel } from "../../viewModels/machines";
 import { useMachineTypeName } from "@hooks";
 import { useTranslation } from "react-i18next";
-import { Settings, Clock } from "lucide-react";
+import { Settings, Clock, History } from "lucide-react";
 
 const statusVariants: Record<string, string> = {
   ACTIVE: "bg-success/10 text-success",
@@ -102,6 +102,14 @@ export const MachineDetailsScreen: React.FC = () => {
             <div className="flex gap-3 mt-6 flex-wrap justify-end">
               <Button variant="outline" size="default" disabled>
                 Editar Máquina
+              </Button>
+              <Button 
+                variant="outline" 
+                size="default" 
+                onPress={() => navigate(`/machines/${id}/events`)}
+                icon={<History className="w-4 h-4" />}
+              >
+                {t('machines.actions.viewEventHistory')}
               </Button>
               <Button 
                 variant="filled" 

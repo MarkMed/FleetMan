@@ -132,6 +132,9 @@
     "location": "Ubicación",
     "status": "Estado",
     "owner": "Propietario",
+    "actions": {
+      "viewEventHistory": "Ver Historial"
+    },
     "operation": {
       "title": "Programación de Uso",
       "dailyHours": "Horas diarias",
@@ -252,6 +255,8 @@
         "fetchFailed": "Error al cargar el historial de eventos"
       },
       "showing": "Mostrando {{count}} de {{total}} eventos",
+      "filtered": "({{loaded}} eventos cargados en memoria)",
+      "loadMore": "Cargar {{count}} eventos más",
       "noTypeFound": "No se encontró tipo de evento para \"{{term}}\"",
       "createNewType": "Crear \"{{term}}\"",
       "startTyping": "Comienza a escribir para buscar o crear tipos de evento",

@@ -87,7 +87,12 @@ export function MachineEventsScreen() {
             {vm.t('machines.events.stats.total')}
           </BodyText>
           <Heading1 size="headline" className="text-foreground">
-            {vm.data.totalCount}
+            {vm.data.totalLoadedCount}
+            {vm.data.hasMore && (
+              <span className="text-sm text-muted-foreground ml-2">
+                / {vm.data.totalBackendCount}
+              </span>
+            )}
           </Heading1>
         </Card>
 
@@ -126,14 +131,18 @@ export function MachineEventsScreen() {
         />
 
         {/* Load More Button */}
-        {vm.data.hasMore && !vm.state.isLoading && (
+        {vm.data.hasMore && !vm.state.isFirstPageLoading && (
           <div className="mt-6 text-center">
             <Button
               variant="outline"
               onPress={vm.actions.handleLoadMore}
-              disabled={vm.state.isLoading}
+              disabled={vm.state.isLoadingMore}
+              loading={vm.state.isLoadingMore}
             >
-              {vm.t('common.loadMore')}
+              {vm.state.isLoadingMore 
+                ? vm.t('common.loading') 
+                : vm.t('machines.events.loadMore', { count: 30 })
+              }
             </Button>
           </div>
         )}
@@ -143,10 +152,17 @@ export function MachineEventsScreen() {
           <div className="mt-4 text-center">
             <BodyText size="small" className="text-muted-foreground">
               {vm.t('machines.events.showing', {
-                count: vm.data.events.length,
-                total: vm.data.totalCount,
+                count: vm.data.filteredCount,
+                total: vm.data.totalBackendCount,
               })}
             </BodyText>
+            {vm.data.filteredCount < vm.data.totalLoadedCount && (
+              <BodyText size="small" className="text-muted-foreground">
+                {vm.t('machines.events.filtered', {
+                  loaded: vm.data.totalLoadedCount,
+                })}
+              </BodyText>
+            )}
           </div>
         )}
       </Card>

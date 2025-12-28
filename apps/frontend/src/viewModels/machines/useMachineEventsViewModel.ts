@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { 
   useMachineEvents, 
@@ -6,6 +6,7 @@ import {
   usePopularEventTypes,
   useCreateEventType,
 } from '@hooks/useMachineEvents';
+import { useDebounce } from '@hooks/useDebounce';
 import type { MachineEvent, GetEventsQuery } from '@services/api/machineEventService';
 
 /**
@@ -59,26 +60,49 @@ export function useMachineEventsViewModel(machineId: string | undefined) {
   // STATE MANAGEMENT
   // ========================
   
-  const [filters, setFilters] = useState<GetEventsQuery>({
-    page: 1,
-    limit: 20,
-    typeId: undefined,
-    isSystemGenerated: undefined,
-    startDate: undefined,
-    endDate: undefined,
-    searchTerm: undefined,
-    sortBy: 'createdAt',
-    sortOrder: 'desc',
+  // Acumulador de eventos cargados (estrategia híbrida)
+  const [allLoadedEvents, setAllLoadedEvents] = useState<MachineEvent[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [hasMoreInBackend, setHasMoreInBackend] = useState(true);
+  
+  // Filtros locales (quick filters - instantáneos)
+  const [localFilters, setLocalFilters] = useState({
+    isSystemGenerated: undefined as boolean | undefined,
+    typeId: undefined as string | undefined,
+  });
+  
+  // Filtros backend (búsqueda, date range - requieren API call)
+  const [backendFilters, setBackendFilters] = useState({
+    searchTerm: undefined as string | undefined,
+    startDate: undefined as string | undefined,
+    endDate: undefined as string | undefined,
+    sortBy: 'createdAt' as 'createdAt' | 'title' | 'typeId',
+    sortOrder: 'desc' as 'asc' | 'desc',
   });
   
   const [selectedEvent, setSelectedEvent] = useState<MachineEvent | null>(null);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+  
+  // Debounce search para evitar llamadas API excesivas
+  const debouncedSearchTerm = useDebounce(backendFilters.searchTerm, 500);
 
   // ========================
-  // DATA FETCHING
+  // DATA FETCHING (BACKEND)
   // ========================
   
-  const { data, isLoading, error, refetch } = useMachineEvents(machineId, filters);
+  // Solo fetch con backend filters (search, date range, sort)
+  // Quick filters (isSystemGenerated, typeId) se aplican localmente
+  const { data, isLoading, error, refetch } = useMachineEvents(machineId, {
+    page: currentPage,
+    limit: 30, // 30 eventos por página para balance UX/performance
+    searchTerm: debouncedSearchTerm,
+    startDate: backendFilters.startDate,
+    endDate: backendFilters.endDate,
+    sortBy: backendFilters.sortBy,
+    sortOrder: backendFilters.sortOrder,
+    // NO incluimos isSystemGenerated ni typeId (filtrado local)
+  });
+  
   const createEventMutation = useCreateMachineEvent(machineId);
 
   // OPTIMIZACIÓN: Precargar tipos de eventos al montar (1 llamada API única)
@@ -100,76 +124,247 @@ export function useMachineEventsViewModel(machineId: string | undefined) {
     eventTypesError,
     sampleTypes: eventTypes.slice(0, 3).map(t => ({ id: t.id, name: t.name })),
   });
+  
+  // ========================
+  // ACUMULACIÓN DE EVENTOS
+  // ========================
+  
+  // Acumular eventos cuando llega nueva data del backend
+  useEffect(() => {
+    if (data?.events && data.events.length > 0) {
+      setAllLoadedEvents(prev => {
+        // Evitar duplicados usando Set con IDs
+        const existingIds = new Set(prev.map(e => e.id));
+        const newEvents = data.events.filter(e => !existingIds.has(e.id));
+        
+        console.log('[useMachineEventsViewModel] Acumulando eventos:', {
+          prevCount: prev.length,
+          newCount: newEvents.length,
+          totalAfter: prev.length + newEvents.length,
+          page: data.pagination.page,
+        });
+        
+        return [...prev, ...newEvents];
+      });
+      
+      // Actualizar flag de "hay más eventos en backend"
+      setHasMoreInBackend(data.pagination.page < data.pagination.totalPages);
+    }
+  }, [data]);
+  
+  // Reset acumulador cuando cambia machineId o backend filters (search, date)
+  useEffect(() => {
+    console.log('[useMachineEventsViewModel] Resetting accumulator:', {
+      machineId,
+      searchTerm: debouncedSearchTerm,
+      startDate: backendFilters.startDate,
+      endDate: backendFilters.endDate,
+    });
+    
+    setAllLoadedEvents([]);
+    setCurrentPage(1);
+    setHasMoreInBackend(true);
+  }, [machineId, debouncedSearchTerm, backendFilters.startDate, backendFilters.endDate]);
 
+  // ========================
+  // FILTRADO LOCAL (QUICK FILTERS)
+  // ========================
+  
+  // Aplicar filtros locales sobre eventos acumulados (instantáneo, sin API call)
+  const filteredEvents = useMemo(() => {
+    console.log('[useMachineEventsViewModel] Aplicando filtros locales:', localFilters);
+    
+    return allLoadedEvents.filter(event => {
+      // Filtro: Sistema vs Manual
+      if (localFilters.isSystemGenerated !== undefined) {
+        if (event.isSystemGenerated !== localFilters.isSystemGenerated) {
+          return false;
+        }
+      }
+      
+      // Filtro: Tipo de evento específico
+      if (localFilters.typeId) {
+        if (event.typeId !== localFilters.typeId) {
+          return false;
+        }
+      }
+      
+      // TODO: Strategic feature - Filtros adicionales locales
+      // - Filtrar por createdBy (eventos del usuario actual)
+      // - Filtrar por rango de fechas aproximado (si ya está en memoria)
+      // - Filtrar por tags/labels (si se implementa metadata estructurada)
+      
+      return true;
+    });
+  }, [allLoadedEvents, localFilters]);
+  
+  // Aplicar sorting local (sobre eventos ya filtrados)
+  const sortedEvents = useMemo(() => {
+    const sorted = [...filteredEvents];
+    
+    sorted.sort((a, b) => {
+      let comparison = 0;
+      
+      if (backendFilters.sortBy === 'createdAt') {
+        comparison = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+      } else if (backendFilters.sortBy === 'title') {
+        comparison = a.title.localeCompare(b.title);
+      } else if (backendFilters.sortBy === 'typeId') {
+        comparison = a.typeId.localeCompare(b.typeId);
+      }
+      
+      return backendFilters.sortOrder === 'desc' ? -comparison : comparison;
+    });
+    
+    return sorted;
+  }, [filteredEvents, backendFilters.sortBy, backendFilters.sortOrder]);
+  
   // ========================
   // DERIVED STATE
   // ========================
-  console.log('MachineEventsViewModel - data:', data);
-  const events = data?.events || [];
-  const pagination = data?.pagination || { total: 0, page: 1, limit: 20, totalPages: 0 };
-  const hasMore = pagination.page < pagination.totalPages;
-  const isEmpty = events.length === 0 && !isLoading;
-  const isFirstPageLoading = isLoading && filters.page === 1;
-
-  // Compute stats
-  const totalCount = pagination.total;
-  const manualCount = events.filter(e => !e.isSystemGenerated).length;
-  const systemCount = events.filter(e => e.isSystemGenerated).length;
+  
+  const events = sortedEvents; // Eventos finales (acumulados + filtrados + ordenados)
+  const pagination = data?.pagination || { total: 0, page: currentPage, limit: 30, totalPages: 0 };
+  const isEmpty = events.length === 0 && !isLoading && allLoadedEvents.length === 0;
+  const isFirstPageLoading = isLoading && currentPage === 1;
+  
+  // Compute stats sobre TODOS los eventos cargados (no filtrados)
+  // Esto da contexto al usuario de cuántos eventos hay en total
+  const totalLoadedCount = allLoadedEvents.length;
+  const totalBackendCount = pagination.total;
+  const manualCount = allLoadedEvents.filter(e => !e.isSystemGenerated).length;
+  const systemCount = allLoadedEvents.filter(e => e.isSystemGenerated).length;
+  
+  // Mostrar "Cargar Más" si:
+  // 1. Hay más en backend, O
+  // 2. Hay eventos filtrados que no se muestran (edge case raro)
+  const showLoadMore = hasMoreInBackend;
+  
+  console.log('[useMachineEventsViewModel] Estado actual:', {
+    totalLoadedCount,
+    totalBackendCount,
+    filteredCount: events.length,
+    hasMoreInBackend,
+    showLoadMore,
+    currentPage,
+  });
 
   // ========================
   // BUSINESS LOGIC ACTIONS
   // ========================
   
   /**
-   * Handle filter change: update filters and reset pagination
+   * Handle quick filter change (local, instantáneo)
+   * Se aplica sobre eventos ya cargados sin llamar al backend
+   * @param key - Filter key (isSystemGenerated, typeId)
+   * @param value - Filter value
+   */
+  const handleQuickFilterChange = (key: 'isSystemGenerated' | 'typeId', value: any) => {
+    console.log('[useMachineEventsViewModel] Quick filter change:', { key, value });
+    setLocalFilters(prev => ({
+      ...prev,
+      [key]: value,
+    }));
+  };
+  
+  /**
+   * Handle backend filter change (search, date range, sort)
+   * Resetea acumulador y hace nueva llamada al backend
    * @param key - Filter key
    * @param value - Filter value
    */
-  const handleFilterChange = (key: keyof GetEventsQuery, value: any) => {
-    setFilters((prev: GetEventsQuery) => ({
+  const handleBackendFilterChange = (
+    key: 'searchTerm' | 'startDate' | 'endDate' | 'sortBy' | 'sortOrder',
+    value: any
+  ) => {
+    console.log('[useMachineEventsViewModel] Backend filter change:', { key, value });
+    setBackendFilters(prev => ({
       ...prev,
       [key]: value,
-      page: 1, // Reset to page 1 when filters change
     }));
+    // Reset se hace automáticamente en useEffect que detecta cambios en backendFilters
   };
 
   /**
-   * Handle multiple filters at once (for UI convenience)
+   * Handle filter change: update filters and reset pagination
+   * DEPRECATED: Usar handleQuickFilterChange o handleBackendFilterChange
+   * Mantenido por compatibilidad
+   */
+  const handleFilterChange = (key: keyof GetEventsQuery, value: any) => {
+    console.warn('[useMachineEventsViewModel] handleFilterChange is deprecated, use handleQuickFilterChange or handleBackendFilterChange');
+    handleFiltersChange({ [key]: value });
+  };
+
+  /**
+   * Handle multiple filters at once (para compatibilidad con EventFilters)
+   * Detecta automáticamente si son quick filters o backend filters
    * @param newFilters - Partial filter object
    */
   const handleFiltersChange = (newFilters: Partial<GetEventsQuery>) => {
-    setFilters((prev: GetEventsQuery) => ({
-      ...prev,
-      ...newFilters,
-      page: 1, // Reset to page 1
-    }));
+    console.log('[useMachineEventsViewModel] handleFiltersChange:', newFilters);
+    
+    // Separar quick filters de backend filters
+    const quickFilters: Partial<typeof localFilters> = {};
+    const backFilters: Partial<typeof backendFilters> = {};
+    
+    if ('isSystemGenerated' in newFilters) {
+      quickFilters.isSystemGenerated = newFilters.isSystemGenerated;
+    }
+    if ('typeId' in newFilters) {
+      quickFilters.typeId = newFilters.typeId;
+    }
+    if ('searchTerm' in newFilters) {
+      backFilters.searchTerm = newFilters.searchTerm;
+    }
+    if ('startDate' in newFilters) {
+      backFilters.startDate = newFilters.startDate;
+    }
+    if ('endDate' in newFilters) {
+      backFilters.endDate = newFilters.endDate;
+    }
+    if ('sortBy' in newFilters) {
+      backFilters.sortBy = newFilters.sortBy as any;
+    }
+    if ('sortOrder' in newFilters) {
+      backFilters.sortOrder = newFilters.sortOrder as any;
+    }
+    
+    // Aplicar cambios
+    if (Object.keys(quickFilters).length > 0) {
+      setLocalFilters(prev => ({ ...prev, ...quickFilters }));
+    }
+    if (Object.keys(backFilters).length > 0) {
+      setBackendFilters(prev => ({ ...prev, ...backFilters }));
+    }
   };
 
   /**
    * Clear all filters (reset to defaults)
    */
   const handleClearFilters = () => {
-    setFilters({
-      page: 1,
-      limit: 20,
-      typeId: undefined,
+    console.log('[useMachineEventsViewModel] Clearing all filters');
+    setLocalFilters({
       isSystemGenerated: undefined,
+      typeId: undefined,
+    });
+    setBackendFilters({
+      searchTerm: undefined,
       startDate: undefined,
       endDate: undefined,
-      searchTerm: undefined,
       sortBy: 'createdAt',
       sortOrder: 'desc',
     });
   };
 
   /**
-   * Handle load more action: increment page number
+   * Handle load more action: incrementa página para fetch siguiente batch
+   * Los nuevos eventos se acumulan automáticamente en useEffect
    */
   const handleLoadMore = () => {
-    setFilters((prev: GetEventsQuery) => ({
-      ...prev,
-      page: prev.page! + 1,
-    }));
+    if (!isLoading && hasMoreInBackend) {
+      console.log('[useMachineEventsViewModel] Loading more events, page:', currentPage + 1);
+      setCurrentPage(prev => prev + 1);
+    }
   };
 
   /**
@@ -275,7 +470,13 @@ export function useMachineEventsViewModel(machineId: string | undefined) {
   return {
     // State
     state: {
-      filters,
+      // Filtros expuestos para compatibilidad con EventFilters
+      filters: {
+        ...localFilters,
+        ...backendFilters,
+        page: currentPage,
+        limit: 30,
+      } as GetEventsQuery,
       isLoading,
       isFirstPageLoading,
       error,
@@ -283,17 +484,29 @@ export function useMachineEventsViewModel(machineId: string | undefined) {
       isReportModalOpen,
       isEmpty,
       isLoadingEventTypes,
+      // Nuevo: flags para UX del botón "Cargar Más"
+      isLoadingMore: isLoading && currentPage > 1,
+      hasMoreInBackend,
+      showLoadMore,
     },
     
     // Data
     data: {
-      events,
+      events, // Eventos finales (acumulados + filtrados + ordenados)
+      allLoadedEvents, // Todos los eventos cargados (sin filtrar)
+      filteredCount: events.length,
+      totalLoadedCount, // Total de eventos en memoria
+      totalBackendCount, // Total de eventos en backend
       pagination,
-      hasMore,
-      totalCount,
+      hasMore: showLoadMore,
+      totalCount: totalBackendCount,
       manualCount,
       systemCount,
       eventTypes, // Tipos precargados para EventTypeSelect
+      // TODO: Strategic - Agregar stats avanzadas
+      // eventsByType: Map<string, number> - Distribución por tipo
+      // eventsByMonth: Array<{month: string, count: number}> - Timeline
+      // topEventTypes: Array<{typeId: string, name: string, count: number}> - Top 5
     },
     
     // Actions

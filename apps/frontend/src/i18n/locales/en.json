@@ -132,6 +132,9 @@
     "location": "Location",
     "status": "Status",
     "owner": "Owner",
+    "actions": {
+      "viewEventHistory": "View History"
+    },
     "operation": {
       "title": "Operation Schedule",
       "dailyHours": "Daily hours",
@@ -252,6 +255,8 @@
         "fetchFailed": "Error loading event history"
       },
       "showing": "Showing {{count}} of {{total}} events",
+      "filtered": "({{loaded}} events loaded in memory)",
+      "loadMore": "Load {{count}} more events",
       "noTypeFound": "No event type found for \"{{term}}\"",
       "createNewType": "Create \"{{term}}\"",
       "startTyping": "Start typing to search or create event types",
