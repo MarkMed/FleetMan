@@ -142,17 +142,17 @@ export function GlobalModal() {
   const getSizeClasses = () => {
     switch (config.size) {
       case 'sm':
-        return 'max-w-sm';
+        return 'max-w-[95vw]';
       case 'md':
-        return 'max-w-lg';
+        return 'max-w-[95vw]';
       case 'lg':
-        return 'max-w-2xl';
+        return 'max-w-[95vw]';
       case 'xl':
-        return 'max-w-4xl';
+        return 'max-w-[95vw]';
       case 'full':
         return 'max-w-[95vw] max-h-[95vh]';
       default:
-        return 'max-w-lg';
+        return 'max-w-[95vw]';
     }
   };
 

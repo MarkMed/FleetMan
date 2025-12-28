@@ -59,8 +59,8 @@ export function MachineEventsScreen() {
   return (
     <div className="space-y-3 max-w-full overflow-x-hidden">
       {/* Header with Stats */}
-      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
-        <div>
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-4">
+        <div> 
           <Heading1 size="headline" className="tracking-tight text-foreground">
             {vm.t('machines.events.title')}
           </Heading1>
@@ -68,16 +68,18 @@ export function MachineEventsScreen() {
             {vm.t('machines.events.subtitle')}
           </BodyText>
         </div>
+        <div className='flex flex-row w-full justify-end'>
+          {/* Report Event Button */}
+          <Button
+            variant="filled"
+            onPress={vm.actions.handleOpenReportModal}
+            className="shrink-0"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            {vm.t('machines.events.reportEvent')}
+          </Button>
 
-        {/* Report Event Button */}
-        <Button
-          variant="filled"
-          onPress={vm.actions.handleOpenReportModal}
-          className="shrink-0"
-        >
-          <Plus className="h-4 w-4 mr-2" />
-          {vm.t('machines.events.reportEvent')}
-        </Button>
+        </div>
       </div>
 
       {/* Stats Cards */}

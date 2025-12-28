@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { 
   useMachineEvents, 
@@ -64,6 +64,9 @@ export function useMachineEventsViewModel(machineId: string | undefined) {
   const [allLoadedEvents, setAllLoadedEvents] = useState<MachineEvent[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [hasMoreInBackend, setHasMoreInBackend] = useState(true);
+  
+  // Ref para skipear reset en primer montaje
+  const isInitialMount = useRef(true);
   
   // Filtros locales (quick filters - instantáneos)
   const [localFilters, setLocalFilters] = useState({
@@ -154,6 +157,12 @@ export function useMachineEventsViewModel(machineId: string | undefined) {
   
   // Reset acumulador cuando cambia machineId o backend filters (search, date)
   useEffect(() => {
+    // Skip reset en el primer montaje (evita limpiar eventos iniciales)
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+    
     console.log('[useMachineEventsViewModel] Resetting accumulator:', {
       machineId,
       searchTerm: debouncedSearchTerm,
