@@ -88,6 +88,13 @@ export function useMachineEventsViewModel(machineId: string | undefined) {
   
   // Debounce search para evitar llamadas API excesivas
   const debouncedSearchTerm = useDebounce(backendFilters.searchTerm, 500);
+  
+  // Refs para trackear valores previos (evitar reset en inicialización)
+  // IMPORTANTE: Declaradas DESPUÉS de debouncedSearchTerm y backendFilters
+  const prevMachineId = useRef(machineId);
+  const prevSearchTerm = useRef(debouncedSearchTerm);
+  const prevStartDate = useRef(backendFilters.startDate);
+  const prevEndDate = useRef(backendFilters.endDate);
 
   // ========================
   // DATA FETCHING (BACKEND)
@@ -160,19 +167,38 @@ export function useMachineEventsViewModel(machineId: string | undefined) {
     // Skip reset en el primer montaje (evita limpiar eventos iniciales)
     if (isInitialMount.current) {
       isInitialMount.current = false;
+      prevMachineId.current = machineId;
+      prevSearchTerm.current = debouncedSearchTerm;
+      prevStartDate.current = backendFilters.startDate;
+      prevEndDate.current = backendFilters.endDate;
       return;
     }
     
-    console.log('[useMachineEventsViewModel] Resetting accumulator:', {
-      machineId,
-      searchTerm: debouncedSearchTerm,
-      startDate: backendFilters.startDate,
-      endDate: backendFilters.endDate,
-    });
+    // Solo resetear si hay un cambio REAL (no undefined → valor)
+    const hasRealChange = 
+      (prevMachineId.current !== undefined && prevMachineId.current !== machineId) ||
+      (prevSearchTerm.current !== undefined && prevSearchTerm.current !== debouncedSearchTerm) ||
+      (prevStartDate.current !== undefined && prevStartDate.current !== backendFilters.startDate) ||
+      (prevEndDate.current !== undefined && prevEndDate.current !== backendFilters.endDate);
     
-    setAllLoadedEvents([]);
-    setCurrentPage(1);
-    setHasMoreInBackend(true);
+    if (hasRealChange) {
+      console.log('[useMachineEventsViewModel] Resetting accumulator:', {
+        machineId,
+        searchTerm: debouncedSearchTerm,
+        startDate: backendFilters.startDate,
+        endDate: backendFilters.endDate,
+      });
+      
+      setAllLoadedEvents([]);
+      setCurrentPage(1);
+      setHasMoreInBackend(true);
+    }
+    
+    // Actualizar refs con valores actuales
+    prevMachineId.current = machineId;
+    prevSearchTerm.current = debouncedSearchTerm;
+    prevStartDate.current = backendFilters.startDate;
+    prevEndDate.current = backendFilters.endDate;
   }, [machineId, debouncedSearchTerm, backendFilters.startDate, backendFilters.endDate]);
 
   // ========================
