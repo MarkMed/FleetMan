@@ -1,5 +1,6 @@
 import { apiClient, handleApiResponse } from './apiClient';
 import { API_ENDPOINTS } from '../../constants';
+import type { CreateMachineEventRequest } from '@packages/contracts';
 
 /**
  * Machine Event Service
@@ -249,7 +250,7 @@ class MachineEventService {
    * });
    * ```
    */
-  async createEvent(machineId: string, payload: CreateEventRequest): Promise<CreateEventResponse> {
+  async createEvent(machineId: string, payload: CreateMachineEventRequest): Promise<CreateEventResponse> {
     console.log('[machineEventService.createEvent] Creating event for machine:', machineId);
     console.log('[machineEventService.createEvent] Payload:', payload);
 

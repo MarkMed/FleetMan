@@ -80,33 +80,41 @@ export function EventDetailModal({ event, onClose }: EventDetailModalProps) {
 
   return (
     <Modal open={!!event} onOpenChange={(open) => !open && onClose()}>
-      <div className="space-y-4">
+      <div className="space-y-2">
         {/* Header */}
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1 min-w-0">
-            <Heading2 size="headline" className="text-foreground mb-2">
+            {/* Timestamp */}
+            <div className=''>
+              <div className="flex items-center gap-2 text-muted-foreground text-sm mb-1">
+                <Calendar className="h-4 w-4" />
+                {/* <span>{t('machines.events.createdAt')}</span> */}
+                <BodyText className="">{formattedDate}</BodyText>
+              </div>
+              {/* System/Manual Badge */}
+              <div className={cn(
+                'inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium',
+                event.isSystemGenerated
+                  ? 'bg-info/10 text-info'
+                  : 'bg-success/10 text-success'
+              )}>
+                {event.isSystemGenerated ? (
+                  <>
+                    <Cpu className="h-4 w-4" />
+                    <span>{t('machines.events.systemGenerated')}</span>
+                  </>
+                ) : (
+                  <>
+                    <User className="h-4 w-4" />
+                    <span>{t('machines.events.manualReport')}</span>
+                  </>
+                )}
+              </div>
+            </div>
+            <Heading2 size="headline" className="text-foreground mt-4">
               {displayTitle}
             </Heading2>
             
-            {/* System/Manual Badge */}
-            <div className={cn(
-              'inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium',
-              event.isSystemGenerated
-                ? 'bg-info/10 text-info'
-                : 'bg-success/10 text-success'
-            )}>
-              {event.isSystemGenerated ? (
-                <>
-                  <Cpu className="h-4 w-4" />
-                  <span>{t('machines.events.systemGenerated')}</span>
-                </>
-              ) : (
-                <>
-                  <User className="h-4 w-4" />
-                  <span>{t('machines.events.manualReport')}</span>
-                </>
-              )}
-            </div>
           </div>
         </div>
 
@@ -117,19 +125,10 @@ export function EventDetailModal({ event, onClose }: EventDetailModalProps) {
           </BodyText>
         </Card>
 
-        {/* Metadata Grid */}
-        <div className="grid grid-cols-2 gap-4">
-          {/* Timestamp */}
-          <div>
-            <div className="flex items-center gap-2 text-muted-foreground text-sm mb-1">
-              <Calendar className="h-4 w-4" />
-              <span>{t('machines.events.createdAt')}</span>
-            </div>
-            <BodyText className="font-medium">{formattedDate}</BodyText>
-          </div>
+        {/* Metadata Grid */}          
 
-          {/* Creator (if manual) */}
-          {!event.isSystemGenerated && event.creator && (
+          {/* Creator (if manual) deactivated for now */}
+          {/* {!event.isSystemGenerated && event.creator && (
             <div>
               <div className="flex items-center gap-2 text-muted-foreground text-sm mb-1">
                 <User className="h-4 w-4" />
@@ -137,11 +136,10 @@ export function EventDetailModal({ event, onClose }: EventDetailModalProps) {
               </div>
               <BodyText className="font-medium">{event.creator.name}</BodyText>
             </div>
-          )}
-        </div>
+          )} */}
 
-        {/* Metadata JSON (if present) */}
-        {event.metadata && Object.keys(event.metadata).length > 0 && (
+        {/* Metadata JSON (if present) deactivated for now */}
+        {/* {event.metadata && Object.keys(event.metadata).length > 0 &&  (
           <div>
             <div className="flex items-center gap-2 text-muted-foreground text-sm mb-2">
               <FileJson className="h-4 w-4" />
@@ -153,7 +151,7 @@ export function EventDetailModal({ event, onClose }: EventDetailModalProps) {
               </pre>
             </Card>
           </div>
-        )}
+        )} */}
 
         {/* Actions */}
         <div className="flex justify-end gap-2 pt-4 border-t">

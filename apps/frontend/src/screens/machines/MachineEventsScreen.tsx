@@ -57,7 +57,7 @@ export function MachineEventsScreen() {
   // Main Render
   // ========================
   return (
-    <div className="space-y-6 max-w-full overflow-x-hidden">
+    <div className="space-y-3 max-w-full overflow-x-hidden">
       {/* Header with Stats */}
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
         <div>
@@ -95,7 +95,7 @@ export function MachineEventsScreen() {
           <BodyText size="small" className="text-muted-foreground mb-1">
             {vm.t('machines.events.stats.manual')}
           </BodyText>
-          <Heading1 size="headline" className="text-success">
+          <Heading1 size="headline" className="text-warning">
             {vm.data.manualCount}
           </Heading1>
         </Card>
@@ -118,7 +118,7 @@ export function MachineEventsScreen() {
       />
 
       {/* Events List */}
-      <Card className="p-6">
+      <Card className="p-4">
         <EventsList
           events={vm.data.events}
           onEventClick={vm.actions.handleEventClick}

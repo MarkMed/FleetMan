@@ -33,6 +33,15 @@ interface EventItemProps {
   onClick: () => void;
 }
 
+const badgeStyles = {
+  system: "bg-info/10 text-info",
+  manual: "bg-warning/10 text-warning",
+};
+const borderStyles = {
+  system: "border-l-info",
+  manual: "border-l-warning",
+};
+
 export function EventItem({ event, onClick }: EventItemProps) {
   const { t } = useTranslation();
 
@@ -120,17 +129,17 @@ export function EventItem({ event, onClick }: EventItemProps) {
       className={cn(
         "p-4 cursor-pointer transition-all hover:shadow-md hover:border-primary/50",
         "border-l-4",
-        event.isSystemGenerated ? "border-l-info" : "border-l-success"
+        event.isSystemGenerated ? borderStyles.system : borderStyles.manual
       )}
       onClick={onClick}
     >
-      <div className="space-y-1">
+      <div className="">
         {/* Header: Type badge + Title */}
         <div className="flex items-start justify-between gap-3">
           {/* Timestamp */}
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            <Calendar className="h-3 w-3" />
-            <span>{formattedDate}</span>
+            <Calendar className="h-4 w-4" />
+            <BodyText size="regular">{formattedDate}</BodyText>
           </div>
 
           {/* System/Manual Badge */}
@@ -138,8 +147,8 @@ export function EventItem({ event, onClick }: EventItemProps) {
             className={cn(
               "flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium shrink-0",
               event.isSystemGenerated
-                ? "bg-info/10 text-info"
-                : "bg-success/10 text-success"
+                ? badgeStyles.system
+                : badgeStyles.manual
             )}
           >
             {event.isSystemGenerated ? (
@@ -155,9 +164,11 @@ export function EventItem({ event, onClick }: EventItemProps) {
             )}
           </div>
         </div>
-        <div className="flex-1 min-w-0">
+
+        {/* Title */} 
+        <div className="flex-1 min-w-0 mt-2">
           <Heading3
-            size="regular"
+            size="medium"
             className="font-semibold text-foreground truncate"
           >
             {displayTitle}
@@ -166,7 +177,7 @@ export function EventItem({ event, onClick }: EventItemProps) {
 
         {/* Description (truncated) */}
         {truncatedDescription && (
-          <BodyText size="small" className="text-muted-foreground line-clamp-2">
+          <BodyText size="regular" className="text-muted-foreground line-clamp-2">
             {truncatedDescription}
           </BodyText>
         )}

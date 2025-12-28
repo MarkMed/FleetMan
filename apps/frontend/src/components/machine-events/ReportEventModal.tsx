@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '@store/AuthProvider';
 
 import { Modal } from '../ui/Modal';
 import { InputField } from '../ui/InputField';
@@ -11,7 +12,8 @@ import { Button } from '../ui/Button';
 import { Textarea } from '../ui/Textarea';
 import { EventTypeSelect } from '@components/machine-events/EventTypeSelect';
 import type { UseMutationResult } from '@tanstack/react-query';
-import type { CreateEventRequest, EventType } from '@services/api/machineEventService';
+import type { EventType } from '@services/api/machineEventService';
+import type { CreateMachineEventRequest } from '@packages/contracts';
 
 // Validation schema for manual event report
 const reportEventSchema = z.object({
@@ -46,7 +48,7 @@ interface ReportEventModalProps {
   createEventMutation: UseMutationResult<
     unknown,
     Error,
-    CreateEventRequest,
+    CreateMachineEventRequest,
     unknown
   >;
   /** Tipos de eventos precargados (desde ViewModel) */
@@ -93,6 +95,7 @@ export const ReportEventModal: React.FC<ReportEventModalProps> = ({
   isCreatingEventType = false,
 }) => {
   const { t } = useTranslation();
+  const { user } = useAuth();
   const {
     register,
     handleSubmit,
@@ -120,17 +123,47 @@ export const ReportEventModal: React.FC<ReportEventModalProps> = ({
   const onSubmit = async (data: ReportEventFormData) => {
     console.log('[ReportEventModal.onSubmit] Form data received:', data);
     
-    const payload = {
+    // Validate user is authenticated
+    if (!user?.id) {
+      console.error('[ReportEventModal.onSubmit] ERROR: User not authenticated!');
+      return;
+    }
+    
+    // Build payload using CreateMachineEventRequest (SSOT from @packages/contracts)
+    // This ensures type-safety and contract compliance with backend API
+    const payload: CreateMachineEventRequest = {
+      machineId: machineId,
+      createdBy: user.id,
       typeId: data.typeId,
       title: data.title,
-      description: data.description,
-      metadata: data.metadata,
+      description: data.description || '',
+      metadata: data.metadata ? { additionalInfo: data.metadata } : undefined,
     };
+    
+    // TODO: Strategic Improvements for payload construction
+    // 1. Validate payload with Zod schema before sending:
+    //    - Add: const validatedPayload = CreateMachineEventRequestSchema.parse(payload);
+    //    - Benefits: Catch contract violations before API call, better error messages
+    //
+    // 2. Transform/sanitize data if needed:
+    //    - Trim whitespace: title: data.title.trim()
+    //    - Remove empty strings: description: data.description?.trim() || ''
+    //    - Normalize metadata: Remove null/undefined values from metadata object
+    //
+    // 3. Add payload versioning for API evolution:
+    //    - Add: version: '1.0' field for future backward compatibility
+    //    - Backend can handle multiple versions gracefully
+    //
+    // 4. Include client context (useful for analytics/debugging):
+    //    - source: 'web-app' | 'mobile-app'
+    //    - userAgent: navigator.userAgent (for support tickets)
+    //    - timestamp: new Date().toISOString() (client-side timestamp)
     
     console.log('[ReportEventModal.onSubmit] Payload to send:', payload);
     console.log('[ReportEventModal.onSubmit] Machine ID:', machineId);
+    console.log('[ReportEventModal.onSubmit] Created By:', user.id);
     
-    // Validate typeId is present
+    // Validate typeId is present (TypeScript already enforces this via CreateMachineEventRequest)
     if (!payload.typeId) {
       console.error('[ReportEventModal.onSubmit] ERROR: typeId is missing!');
       return;
@@ -156,20 +189,17 @@ export const ReportEventModal: React.FC<ReportEventModalProps> = ({
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
           {t('machines.events.reportEvent')}
         </h2>
-        <button
-          onClick={handleClose}
-          className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
-        >
-          <X className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-        </button>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {/* Event Type Select (sin API calls por keystroke) */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            {t('machines.events.filters.selectType')} *
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            {t('machines.events.form.eventType')} *
           </label>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">
+            {t('machines.events.form.eventTypeHint')}
+          </p>
           <EventTypeSelect
             value={selectedTypeId}
             onChange={(typeId: string) => setValue('typeId', typeId)}
@@ -186,10 +216,13 @@ export const ReportEventModal: React.FC<ReportEventModalProps> = ({
         <div>
           <label
             htmlFor="title"
-            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
           >
-            {t('machines.events.title')} *
+            {t('machines.events.form.eventTitle')} *
           </label>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">
+            {t('machines.events.form.eventTitleHint')}
+          </p>
           <InputField
             id="title"
             value={watch('title')}
@@ -215,7 +248,8 @@ export const ReportEventModal: React.FC<ReportEventModalProps> = ({
           </label>
           <Textarea
             id="description"
-            {...register('description')}
+            value={watch('description')}
+            onChangeText={(text) => setValue('description', text)}
             rows={4}
             placeholder={t('machines.events.form.descriptionPlaceholder')}
             disabled={isSubmitting}
@@ -227,8 +261,25 @@ export const ReportEventModal: React.FC<ReportEventModalProps> = ({
           )}
         </div>
 
-        {/* Metadata JSON Input */}
-        <div>
+        {/* TODO: Metadata JSON Input (Advanced Feature)
+         * Purpose: Allow users to attach structured data to events
+         * Use cases:
+         *   - Maintenance events: { partNumber: 'MOT-12345', cost: 5000, supplier: 'ACME Corp' }
+         *   - Inspection events: { inspector: 'John Doe', certificationId: 'CERT-2025-001' }
+         *   - Repair events: { technicianId: 'TECH-42', hoursWorked: 3.5, warrantyStatus: 'covered' }
+         *   - Failure events: { errorCode: 'ERR-404', severity: 'critical', downtime: 120 }
+         * Implementation considerations:
+         *   - Currently hidden to avoid user confusion
+         *   - System events already use metadata internally (see machine-event.entity.ts)
+         *   - Consider exposing via:
+         *     a) Advanced mode toggle
+         *     b) Event type-specific templates with predefined fields
+         *     c) Admin-only configuration
+         *   - Add JSON schema validation per event type category
+         *   - Consider structured form builder instead of raw JSON textarea
+         *   - Add autocomplete for common metadata keys based on event type
+         */}
+        {/* <div>
           <label
             htmlFor="metadata"
             className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
@@ -237,7 +288,8 @@ export const ReportEventModal: React.FC<ReportEventModalProps> = ({
           </label>
           <Textarea
             id="metadata"
-            {...register('metadata')}
+            value={watch('metadata')}
+            onChangeText={(text) => setValue('metadata', text)}
             rows={3}
             placeholder={t('machines.events.form.metadataPlaceholder')}
             disabled={isSubmitting}
@@ -250,7 +302,7 @@ export const ReportEventModal: React.FC<ReportEventModalProps> = ({
           <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
             {t('machines.events.form.metadataHint')}
           </p>
-        </div>
+        </div> */}
 
         {/* Action Buttons */}
         <div className="flex justify-end gap-3 pt-4">

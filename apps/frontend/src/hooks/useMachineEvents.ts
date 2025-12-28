@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { machineEventService, type GetEventsQuery } from '@services/api/machineEventService';
 import { QUERY_KEYS } from '@constants';
+import type { CreateMachineEventRequest } from '@packages/contracts';
 
 export type { GetEventsQuery };
 
@@ -161,7 +162,7 @@ export const useCreateMachineEvent = (machineId: string | undefined) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (payload: { typeId: string; title: string; description?: string; metadata?: Record<string, any> }) => {
+    mutationFn: (payload: CreateMachineEventRequest) => {
       if (!machineId) {
         throw new Error('machineId is required for creating event');
       }

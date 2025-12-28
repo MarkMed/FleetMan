@@ -256,6 +256,10 @@
       "createNewType": "Create \"{{term}}\"",
       "startTyping": "Start typing to search or create event types",
       "form": {
+        "eventType": "Event Type",
+        "eventTypeHint": "Select what type of event occurred or create a new one",
+        "eventTitle": "Title",
+        "eventTitleHint": "Brief and descriptive summary of the event",
         "titlePlaceholder": "e.g., Oil leak detected in main engine",
         "descriptionPlaceholder": "Detailed description of the event...",
         "metadataPlaceholder": "{\"temperature\": 85, \"pressure\": 120}",
