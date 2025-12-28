@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import { machineEventService, type GetEventsQuery } from '@services/api/machineEventService';
 import { QUERY_KEYS } from '@constants';
 
@@ -98,6 +99,7 @@ export const useEventTypes = (searchTerm: string | undefined, options?: { limit?
  * Hook: Get event types (for dropdown selection UI)
  * 
  * Returns event types, by default filtering out system-generated types.
+ * Automatically filters by current app language.
  * Useful for showing user-created types in dropdowns.
  * 
  * @param limit - Max results (default: 100)
@@ -114,9 +116,12 @@ export const useEventTypes = (searchTerm: string | undefined, options?: { limit?
  * ```
  */
 export const usePopularEventTypes = (limit: number = 100, systemGenerated: boolean = false) => {
+  const { i18n } = useTranslation();
+  const currentLanguage = i18n.language; // 'es' | 'en'
+
   return useQuery({
-    queryKey: [...QUERY_KEYS.EVENT_TYPES, 'list', limit, systemGenerated],
-    queryFn: () => machineEventService.getPopularEventTypes(limit, systemGenerated),
+    queryKey: [...QUERY_KEYS.EVENT_TYPES, 'list', limit, systemGenerated, currentLanguage],
+    queryFn: () => machineEventService.getPopularEventTypes(limit, systemGenerated, currentLanguage),
     staleTime: 60 * 60 * 1000, // 1 hour (types are relatively stable)
     gcTime: 2 * 60 * 60 * 1000, // 2 hours cache
   });

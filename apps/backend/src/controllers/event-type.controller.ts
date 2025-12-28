@@ -227,15 +227,17 @@ export class EventTypeController {
                             : req.query.systemGenerated === 'false' ? false 
                             : undefined;
       const onlyActive = req.query.onlyActive !== 'false';
+      const language = req.query.language as string | undefined;
 
-      logger.debug({ page, limit, systemGenerated, onlyActive }, 'Listing event types');
+      logger.debug({ page, limit, systemGenerated, onlyActive, language }, 'Listing event types');
 
       const result = await this.eventTypeRepository.findPaginated({
         page,
         limit,
         filter: {
           systemGenerated,
-          isActive: onlyActive ? true : undefined
+          isActive: onlyActive ? true : undefined,
+          language
         }
       });
 

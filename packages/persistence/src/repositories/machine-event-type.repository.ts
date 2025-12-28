@@ -452,6 +452,7 @@ export class MachineEventTypeRepository implements IMachineEventTypeRepository {
       systemGenerated?: boolean;
       createdBy?: string;
       searchTerm?: string;
+      language?: string;
     };
     sortBy?: 'name' | 'timesUsed' | 'createdAt' | 'systemGenerated';
     sortOrder?: 'asc' | 'desc';
@@ -478,6 +479,11 @@ export class MachineEventTypeRepository implements IMachineEventTypeRepository {
         query.createdBy = options.filter.createdBy;
       }
       
+      if (options.filter?.language) {
+        // Filtrar tipos que incluyan el idioma especificado en su array de languages
+        query.languages = { $in: [options.filter.language] };
+      }
+      
       if (options.filter?.searchTerm) {
         query.$or = [
           { name: { $regex: options.filter.searchTerm, $options: 'i' } },
@@ -489,6 +495,10 @@ export class MachineEventTypeRepository implements IMachineEventTypeRepository {
       const sortField = options.sortBy || 'timesUsed';
       const sortOrder = options.sortOrder === 'asc' ? 1 : -1;
       const sort: any = { [sortField]: sortOrder };
+      
+      // DEBUG: Log query para verificar filtros
+      console.log('[MachineEventTypeRepository.findPaginated] Query:', JSON.stringify(query, null, 2));
+      console.log('[MachineEventTypeRepository.findPaginated] Sort:', sort);
       
       // Get total count
       const total = await MachineEventTypeModel.countDocuments(query);

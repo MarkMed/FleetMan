@@ -316,19 +316,28 @@ class MachineEventService {
    * 
    * @param limit - Max results (default: 100)
    * @param systemGenerated - Include system types (default: false)
+   * @param language - Filter by language (e.g., 'es', 'en')
    * @returns List of event types
    * 
    * @example
    * ```tsx
-   * // Get user-created types only
-   * const types = await machineEventService.getPopularEventTypes(100);
+   * // Get user-created types only for Spanish
+   * const types = await machineEventService.getPopularEventTypes(100, false, 'es');
    * ```
    */
-  async getPopularEventTypes(limit: number = 100, systemGenerated: boolean = false): Promise<EventType[]> {
+  async getPopularEventTypes(
+    limit: number = 100, 
+    systemGenerated: boolean = false,
+    language?: string
+  ): Promise<EventType[]> {
     const params: Record<string, string> = {
       limit: String(limit),
       systemGenerated: String(systemGenerated),
     };
+
+    if (language) {
+      params.language = language;
+    }
 
     console.log('[machineEventService.getPopularEventTypes] Fetching event types, params:', params);
 
