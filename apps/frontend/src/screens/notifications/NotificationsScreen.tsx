@@ -73,11 +73,23 @@ const formatTimeAgo = (date: Date): string => {
   return `Hace ${diffDays} días`;
 };
 
+
 export const NotificationsScreen: React.FC = () => {
   // ========================
   // ViewModel Integration
   // ========================
   const vm = useNotificationsViewModel();
+
+  const getDescription = (notification: any): string => {
+    let descriptionResult = '';
+
+    if(notification.message.includes(' ')){
+      return notification.message;
+    }
+    descriptionResult = String(vm.t(notification.message, notification.metadata || {}));
+
+    return descriptionResult;
+  }
 
   // ========================
   // Loading State
@@ -240,7 +252,7 @@ export const NotificationsScreen: React.FC = () => {
                         <div className="flex items-center gap-2 mb-1">
                           <div className="flex items-start flex-col gap-2">
                             <h4 className="font-medium text-foreground">
-                              {String(vm.t(notification.message, notification.metadata || {}))}
+                             {String(notification.metadata.machineName)} - {getDescription(notification)}
                             </h4>
                             <div className="flex items-center gap-2">
                               <span className={`text-xs ${styles.badge} px-2 py-1 rounded`}>
