@@ -232,7 +232,9 @@ export class AddQuickCheckUseCase {
           description,
           metadata
         },
-        actionUrl // Pasar actionUrl custom para la notificación
+        actionUrl, // Pasar actionUrl custom para la notificación
+        true, // isSystemGenerated - QuickCheck es automático
+        NOTIFICATION_SOURCE_TYPES[0] // 'QUICKCHECK' como sourceType
       );
 
       logger.info({ 

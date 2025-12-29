@@ -1,4 +1,4 @@
-import { MachineId, UserId, NOTIFICATION_TYPES, NOTIFICATION_SOURCE_TYPES } from '@packages/domain';
+import { MachineId, UserId, NOTIFICATION_TYPES, type NotificationSourceType, NOTIFICATION_SOURCE_TYPES } from '@packages/domain';
 import { MachineRepository, MachineEventTypeRepository } from '@packages/persistence';
 import { logger } from '../../config/logger.config';
 import { type CreateMachineEventRequest } from '@packages/contracts';
@@ -55,7 +55,8 @@ export class CreateMachineEventUseCase {
     userId: string,
     request: CreateMachineEventRequest,
     actionUrl?: string,
-    isSystemGenerated = true
+    isSystemGenerated = true,
+    sourceType: NotificationSourceType = NOTIFICATION_SOURCE_TYPES[1] // 'EVENT' por defecto
   ): Promise<{
     eventId: string;
     machineId: string;
@@ -138,7 +139,8 @@ export class CreateMachineEventUseCase {
         machineName,
         actionUrl,
         responsibleName,
-        responsibleWorkerId
+        responsibleWorkerId,
+        sourceType
       ).catch(error => {
         logger.warn({ 
           machineId,
@@ -190,7 +192,8 @@ export class CreateMachineEventUseCase {
     machineName: string,
     customActionUrl?: string,
     responsibleName?: string,
-    responsibleWorkerId?: string
+    responsibleWorkerId?: string,
+    sourceType: NotificationSourceType = 'EVENT'
   ): Promise<void> {
     try {
       // actionUrl: usar custom si se provee, sino default a evento específico
@@ -200,7 +203,7 @@ export class CreateMachineEventUseCase {
         notificationType: NOTIFICATION_TYPES[3], // 'info' por defecto
         message: eventTitle, // Usar título del evento como mensaje
         actionUrl,
-        sourceType: NOTIFICATION_SOURCE_TYPES[1], // 'EVENT'
+        sourceType,
         metadata: {
           machineName,
           eventTitle,

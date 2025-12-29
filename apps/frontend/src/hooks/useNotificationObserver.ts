@@ -114,7 +114,7 @@ export function useNotificationObserver() {
       const title = event.sourceType
         ? currentT(`notifications.types.${event.sourceType.toLowerCase()}`, event.sourceType)
         : currentT('notifications.new');
-
+      console.log("!!Notification Event", event, title);
       // Translate message with metadata for i18n interpolation
       const description = String(currentT(event.message, event.metadata || {}));
 

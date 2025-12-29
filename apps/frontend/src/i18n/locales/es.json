@@ -410,18 +410,18 @@
     },
     "new": "Nueva notificación",
     "types": {
-      "quickcheck": "QuickCheck",
+      "quickcheck": "QuickCheck Completado",
       "machine": "Máquina",
-      "event": "Evento",
+      "event": "Evento Reportado",
       "maintenance": "Mantenimiento",
       "user": "Usuario",
       "system": "Sistema"
     },
     "quickcheck": {
       "completed": {
-        "approved": "QuickCheck completado: Máquina {{machineName}} aprobada por {{responsibleName}}",
-        "disapproved": "QuickCheck completado: Máquina {{machineName}} reprobada por {{responsibleName}}",
-        "notInitiated": "QuickCheck completado: Máquina {{machineName}} no iniciada por {{responsibleName}}"
+        "approved": "Máquina {{machineName}} aprobada por {{responsibleName}}",
+        "disapproved": "Máquina {{machineName}} reprobada por {{responsibleName}}",
+        "notInitiated": "Máquina {{machineName}} no iniciada por {{responsibleName}}"
       },
       "created": "Nuevo QuickCheck creado para máquina {{machineName}}",
       "assigned": "QuickCheck asignado a {{userName}} para máquina {{machineName}}"
@@ -470,9 +470,9 @@
   "notification": {
     "quickcheck": {
       "completed": {
-        "approved": "QuickCheck completado: Máquina {{machineName}} aprobada por {{responsibleName}}",
-        "disapproved": "QuickCheck completado: Máquina {{machineName}} reprobada por {{responsibleName}}",
-        "notInitiated": "QuickCheck completado: Máquina {{machineName}} no iniciada por {{responsibleName}}"
+        "approved": "Máquina {{machineName}} aprobada por {{responsibleName}}",
+        "disapproved": "Máquina {{machineName}} reprobada por {{responsibleName}}",
+        "notInitiated": "Máquina {{machineName}} no iniciada por {{responsibleName}}"
       },
       "created": "Nuevo QuickCheck creado para máquina {{machineName}}",
       "assigned": "QuickCheck asignado a {{userName}} para máquina {{machineName}}"
