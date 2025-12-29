@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal, Button, BodyText, Heading2, Card } from '@components/ui';
-import { Calendar, User, Cpu, FileJson } from 'lucide-react';
+import { Calendar, User, Cpu } from 'lucide-react';
 import { cn } from '@utils/cn';
 import type { MachineEvent } from '@services/api/machineEventService';
 

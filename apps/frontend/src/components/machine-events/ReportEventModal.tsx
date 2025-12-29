@@ -1,5 +1,4 @@
 import React from 'react';
-import { X } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -97,7 +96,6 @@ export const ReportEventModal: React.FC<ReportEventModalProps> = ({
   const { t } = useTranslation();
   const { user } = useAuth();
   const {
-    register,
     handleSubmit,
     setValue,
     watch,

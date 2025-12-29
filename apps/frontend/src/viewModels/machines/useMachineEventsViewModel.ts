@@ -287,38 +287,6 @@ export function useMachineEventsViewModel(machineId: string | undefined) {
   // ========================
   // BUSINESS LOGIC ACTIONS
   // ========================
-  
-  /**
-   * Handle quick filter change (local, instantáneo)
-   * Se aplica sobre eventos ya cargados sin llamar al backend
-   * @param key - Filter key (isSystemGenerated, typeId)
-   * @param value - Filter value
-   */
-  const handleQuickFilterChange = (key: 'isSystemGenerated' | 'typeId', value: any) => {
-    console.log('[useMachineEventsViewModel] Quick filter change:', { key, value });
-    setLocalFilters(prev => ({
-      ...prev,
-      [key]: value,
-    }));
-  };
-  
-  /**
-   * Handle backend filter change (search, date range, sort)
-   * Resetea acumulador y hace nueva llamada al backend
-   * @param key - Filter key
-   * @param value - Filter value
-   */
-  const handleBackendFilterChange = (
-    key: 'searchTerm' | 'startDate' | 'endDate' | 'sortBy' | 'sortOrder',
-    value: any
-  ) => {
-    console.log('[useMachineEventsViewModel] Backend filter change:', { key, value });
-    setBackendFilters(prev => ({
-      ...prev,
-      [key]: value,
-    }));
-    // Reset se hace automáticamente en useEffect que detecta cambios en backendFilters
-  };
 
   /**
    * Handle filter change: update filters and reset pagination

@@ -1,4 +1,4 @@
-import { MachineId, UserId, MachineEventType, NOTIFICATION_TYPES, NOTIFICATION_SOURCE_TYPES } from '@packages/domain';
+import { MachineId, UserId, NOTIFICATION_TYPES, NOTIFICATION_SOURCE_TYPES } from '@packages/domain';
 import { MachineRepository, MachineEventTypeRepository } from '@packages/persistence';
 import { logger } from '../../config/logger.config';
 import { type CreateMachineEventRequest } from '@packages/contracts';
