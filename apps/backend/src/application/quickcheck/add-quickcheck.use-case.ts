@@ -2,13 +2,14 @@ import {
   MachineId, 
   QUICK_CHECK_RESULTS, 
   NOTIFICATION_SOURCE_TYPES,
-  NOTIFICATION_TYPES 
+  NOTIFICATION_TYPES,
+  type IQuickCheckRecord
 } from '@packages/domain';
-import { MachineRepository } from '@packages/persistence';
+import { MachineRepository, MachineEventTypeRepository } from '@packages/persistence';
 import { logger } from '../../config/logger.config';
 import { type CreateQuickCheckRecord } from '@packages/contracts';
-import { AddNotificationUseCase } from '../notifications';
-import { NOTIFICATION_MESSAGE_KEYS } from '../../constants/notification-messages.constants';
+import { CreateMachineEventUseCase } from '../machine-events';
+import { NOTIFICATION_MESSAGE_KEYS} from '../../constants/notification-messages.constants';
 
 /**
  * Use Case: Agregar registro de QuickCheck a una máquina
@@ -33,11 +34,13 @@ import { NOTIFICATION_MESSAGE_KEYS } from '../../constants/notification-messages
  */
 export class AddQuickCheckUseCase {
   private machineRepository: MachineRepository;
-  private addNotificationUseCase: AddNotificationUseCase;
+  private createMachineEventUseCase: CreateMachineEventUseCase;
+  private eventTypeRepository: MachineEventTypeRepository;
 
   constructor() {
     this.machineRepository = new MachineRepository();
-    this.addNotificationUseCase = new AddNotificationUseCase();
+    this.createMachineEventUseCase = new CreateMachineEventUseCase();
+    this.eventTypeRepository = new MachineEventTypeRepository();
   }
 
   /**
@@ -60,7 +63,7 @@ export class AddQuickCheckUseCase {
     userId: string
   ): Promise<{
     machineId: string;
-    quickCheckAdded: any;
+    quickCheckAdded: IQuickCheckRecord;
     totalQuickChecks: number;
   }> {
     logger.info({ 
@@ -114,14 +117,16 @@ export class AddQuickCheckUseCase {
         result: quickCheckRecord.result
       }, '✅ QuickCheck added successfully');
 
-      // 3. Integración Sprint #9: Notificar al owner de la máquina
-      // Fire-and-forget pattern: no bloquear si falla la notificación
-      this.notifyMachineOwner(machineId, quickCheckRecord.result, quickCheckRecord.responsibleName)
+      // 3. Integración Sprint #10: Crear evento automático
+      // El evento se encarga de notificar al owner automáticamente
+      // Fire-and-forget pattern: no bloquear si falla la creación
+      // ORDEN CORRECTO: QuickCheck save → Event creation (which notifies)
+      this.createEventForQuickCheck(machineId, quickCheckRecord.result, quickCheckRecord)
         .catch(error => {
           logger.warn({ 
             machineId,
             error: error instanceof Error ? error.message : 'Unknown error'
-          }, '⚠️ Failed to send QuickCheck notification (non-blocking)');
+          }, '⚠️ Failed to create event for QuickCheck (non-blocking)');
         });
 
       return {
@@ -142,86 +147,105 @@ export class AddQuickCheckUseCase {
   }
 
   /**
-   * Notifies machine owner about completed QuickCheck
+   * Crea evento automático para QuickCheck completado
+   * El use case de eventos se encarga de notificar al owner automáticamente
    * Fire-and-forget: errors don't block main operation
-   * Sprint #9 - QuickCheck → Notifications Integration
+   * 
+   * FLUJO SIMPLIFICADO (Sprint #10 refactor):
+   * 1. QuickCheck se guarda en DB
+   * 2. Se llama a CreateMachineEventUseCase.execute()
+   * 3. El use case crea evento Y notifica automáticamente
    * 
    * @param machineId - ID of inspected machine
    * @param result - QuickCheck result (SSOT: QUICK_CHECK_RESULTS)
+   * @param quickCheckRecord - Complete QuickCheck record for event creation
    */
-  private async notifyMachineOwner(
+  private async createEventForQuickCheck(
     machineId: string,
     result: typeof QUICK_CHECK_RESULTS[number],
-    responsibleName: string
+    quickCheckRecord: IQuickCheckRecord
   ): Promise<void> {
     try {
-      // 1. Get machine to extract ownerId
-      const machineIdResult = MachineId.create(machineId);
-      if (!machineIdResult.success) {
-        logger.error({ machineId }, 'Invalid machineId format for notification');
+      // Solo crear eventos para approved/disapproved (no para notInitiated)
+      if (result !== QUICK_CHECK_RESULTS[0] && result !== QUICK_CHECK_RESULTS[1]) {
+        logger.debug({ machineId, result }, 'Skipping event creation for notInitiated QuickCheck');
         return;
       }
 
-      const machineResult = await this.machineRepository.findById(machineIdResult.data);
-      if (!machineResult.success) {
-        logger.error({ machineId }, 'Machine not found for notification');
-        return;
+      // 1. Determinar event type key según resultado
+      const eventTypeKey = result === QUICK_CHECK_RESULTS[0] 
+        ? NOTIFICATION_MESSAGE_KEYS.quickcheck.completed.approved  // approved
+        : NOTIFICATION_MESSAGE_KEYS.quickcheck.completed.disapproved;     // disapproved
+
+      // 2. Buscar tipo de evento del sistema para obtener typeId
+      const normalizedKey = eventTypeKey.toLowerCase().trim().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, '_');
+      console.log('!!Creating event for QuickCheck with type key:', eventTypeKey, 'normalized as:', normalizedKey);
+      const eventTypeResult = await this.eventTypeRepository.findByNormalizedName(normalizedKey);
+
+      if (!eventTypeResult.success) {
+        logger.warn({ 
+          eventTypeKey,
+          normalizedKey
+        }, 'System event type not found - seed may not have run correctly');
+        return; // Fire-and-forget: no crear eventos si el tipo no existe
       }
 
-      const machine = machineResult.data;
-      const ownerId = machine.toPublicInterface().ownerId;
+      const eventType = eventTypeResult.data;
 
-      // 2. Map QuickCheck result to notification type and message (SSOT)
-      const RESULT_TO_NOTIFICATION_MAP = {
-        [QUICK_CHECK_RESULTS[0]]: { // 'approved'
-          type: NOTIFICATION_TYPES[0], // 'success'
-          message: NOTIFICATION_MESSAGE_KEYS.quickcheck.completed.approved
-        },
-        [QUICK_CHECK_RESULTS[1]]: { // 'disapproved'
-          type: NOTIFICATION_TYPES[1], // 'warning'
-          message: NOTIFICATION_MESSAGE_KEYS.quickcheck.completed.disapproved
-        },
-        [QUICK_CHECK_RESULTS[2]]: { // 'notInitiated'
-          type: NOTIFICATION_TYPES[3], // 'info'
-          message: NOTIFICATION_MESSAGE_KEYS.quickcheck.completed.notInitiated
+      // 3. Preparar metadata completo para auditoría
+      const failedItemsCount = quickCheckRecord.quickCheckItems?.filter(
+        (item: any) => item.result === 'disapproved'
+      ).length || 0;
+
+      const metadata = {
+        additionalInfo: {
+          result,
+          responsibleName: quickCheckRecord.responsibleName,
+          responsibleWorkerId: quickCheckRecord.responsibleWorkerId,
+          executedById: quickCheckRecord.executedById,
+          totalItems: quickCheckRecord.quickCheckItems?.length || 0,
+          failedItems: failedItemsCount,
+          observations: quickCheckRecord.observations || null,
+          date: quickCheckRecord.date
         }
       };
 
-      const notificationConfig = RESULT_TO_NOTIFICATION_MAP[result];
-      if (!notificationConfig) {
-        logger.warn({ result }, 'Unknown QuickCheck result, skipping notification');
-        return;
-      }
+      // 4. Crear título y descripción usando keys de notificación
+      const title = result === QUICK_CHECK_RESULTS[0]
+        ? NOTIFICATION_MESSAGE_KEYS.quickcheck.completed.approved
+        : NOTIFICATION_MESSAGE_KEYS.quickcheck.completed.disapproved;
 
-      // 3. Extract metadata for i18next interpolation
-      const machinePublic = machine.toPublicInterface();
-      const machineName = machinePublic.nickname || machinePublic.serialNumber;
-      
-      // 4. Send notification to owner (SSOT: NOTIFICATION_SOURCE_TYPES)
-      // Message is an i18n key that will be translated in frontend
-      await this.addNotificationUseCase.execute(ownerId, {
-        notificationType: notificationConfig.type,
-        message: notificationConfig.message,
-        actionUrl: `/machines/${machineId}/quickcheck/history`,
-        sourceType: NOTIFICATION_SOURCE_TYPES[0], // 'QUICKCHECK'
-        metadata: {
-          machineName,
-          userName: responsibleName
-        }
-      });
+      const description = title + `.description`; // i18n key para descripción detallada
+
+      // 5. actionUrl dinámico apuntando al historial de QuickCheck
+      const actionUrl = `/machines/${machineId}/quickcheck/history`;
+
+      // 6. Llamar a CreateMachineEventUseCase (el cual notifica automáticamente)
+      await this.createMachineEventUseCase.execute(
+        machineId,
+        quickCheckRecord.executedById, // userId del técnico que ejecutó
+        {
+          machineId, // Requerido por el schema
+          createdBy: quickCheckRecord.executedById, // Requerido por el schema
+          typeId: eventType.id,
+          title,
+          description,
+          metadata
+        },
+        actionUrl // Pasar actionUrl custom para la notificación
+      );
 
       logger.info({ 
-        ownerId,
         machineId,
-        result 
-      }, '🔔 QuickCheck notification sent successfully');
+        result
+      }, '📝 Event created for QuickCheck (notification sent automatically)');
 
     } catch (error) {
-      // Log error but don't propagate (fire-and-forget)
+      // Log error pero no propagar (fire-and-forget)
       logger.warn({ 
         machineId,
         error: error instanceof Error ? error.message : 'Unknown error'
-      }, 'Failed to send QuickCheck notification');
+      }, 'Failed to create event for QuickCheck');
     }
   }
 }

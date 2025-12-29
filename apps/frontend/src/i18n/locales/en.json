@@ -53,6 +53,7 @@
     "edit": "Edit",
     "delete": "Delete",
     "create": "Create",
+    "creating": "Creating...",
     "update": "Update",
     "search": "Search",
     "filter": "Filter",
@@ -85,6 +86,11 @@
     "register": "Register",
     "notSpecified": "Not specified",
     "imageLoadError": "Failed to load image",
+    "uses": "uses",
+    "retry": "Retry",
+    "description": "Description",
+    "expand": "Expand",
+    "collapse": "Collapse",
     "daysOfWeek": {
       "full": {
         "SUN": "Sunday",
@@ -126,6 +132,9 @@
     "location": "Location",
     "status": "Status",
     "owner": "Owner",
+    "actions": {
+      "viewEventHistory": "View History"
+    },
     "operation": {
       "title": "Operation Schedule",
       "dailyHours": "Daily hours",
@@ -206,6 +215,81 @@
         "unknown": "Unknown error while registering machine"
       },
       "loading": "Processing and redirecting..."
+    },
+    "events": {
+      "title": "Event History",
+      "subtitle": "Complete record of manual and system-generated events",
+      "reportEvent": "Report Event",
+      "systemGenerated": "System Generated",
+      "manualReport": "Manual Report",
+      "createdAt": "Created at",
+      "reportedBy": "Reported by",
+      "metadata": "Additional information",
+      "stats": {
+        "total": "Total Events",
+        "manual": "Manual Events",
+        "system": "System Events"
+      },
+      "filters": {
+        "title": "Filters",
+        "all": "All",
+        "manual": "Manual",
+        "system": "System",
+        "search": "Search",
+        "searchPlaceholder": "Search in title or description...",
+        "startDate": "Start date",
+        "endDate": "End date",
+        "sortBy": "Sort by",
+        "sortByDate": "Date",
+        "sortByTitle": "Title",
+        "sortOrder": "Order",
+        "newest": "Newest",
+        "oldest": "Oldest",
+        "selectType": "Filter by type"
+      },
+      "empty": {
+        "title": "No events recorded",
+        "description": "No events have been reported for this machine yet. Use the \"Report Event\" button to add the first one."
+      },
+      "error": {
+        "fetchFailed": "Error loading event history"
+      },
+      "showing": "Showing {{count}} of {{total}} events",
+      "filtered": "({{loaded}} events loaded in memory)",
+      "loadMore": "Load {{count}} more events",
+      "noTypeFound": "No event type found for \"{{term}}\"",
+      "createNewType": "Create \"{{term}}\"",
+      "startTyping": "Start typing to search or create event types",
+      "form": {
+        "eventType": "Event Type",
+        "eventTypeHint": "Select what type of event occurred or create a new one",
+        "eventTitle": "Title",
+        "eventTitleHint": "Brief and descriptive summary of the event",
+        "titlePlaceholder": "e.g., Oil leak detected in main engine",
+        "descriptionPlaceholder": "Detailed description of the event...",
+        "metadataPlaceholder": "{\"temperature\": 85, \"pressure\": 120}",
+        "metadataHint": "Optional: Add additional information in JSON format"
+      },
+      "systemEvents": {
+        "quickcheck": {
+          "completed": {
+            "approved": "QuickCheck Approved",
+            "approved.description": "Quick inspection completed successfully. All items passed the review.",
+            "disapproved": "QuickCheck Disapproved",
+            "disapproved.description": "Quick inspection detected issues. Immediate attention required."
+          }
+        },
+        "maintenance": {
+          "scheduled": "Maintenance Scheduled",
+          "scheduled.description": "A new preventive maintenance has been scheduled for this machine.",
+          "reminder": "Maintenance Reminder",
+          "reminder.description": "Reminder: Scheduled maintenance is approaching. Prepare the necessary resources.",
+          "cancelled": "Maintenance Cancelled",
+          "cancelled.description": "The scheduled maintenance has been cancelled. Check the new schedule.",
+          "completed": "Maintenance Completed",
+          "completed.description": "Maintenance has been completed successfully. The machine is ready to operate."
+        }
+      }
     }
   },
   "maintenance": {
@@ -335,9 +419,9 @@
     },
     "quickcheck": {
       "completed": {
-        "approved": "QuickCheck completed: Machine {{machineName}} approved by {{userName}}",
-        "disapproved": "QuickCheck completed: Machine {{machineName}} disapproved by {{userName}}",
-        "notInitiated": "QuickCheck completed: Machine {{machineName}} not initiated by {{userName}}"
+        "approved": "QuickCheck completed: Machine {{machineName}} approved by {{responsibleName}}",
+        "disapproved": "QuickCheck completed: Machine {{machineName}} disapproved by {{responsibleName}}",
+        "notInitiated": "QuickCheck completed: Machine {{machineName}} not initiated by {{responsibleName}}"
       },
       "created": "New QuickCheck created for machine {{machineName}}",
       "assigned": "QuickCheck assigned to {{userName}} for machine {{machineName}}"
@@ -386,9 +470,9 @@
   "notification": {
     "quickcheck": {
       "completed": {
-        "approved": "QuickCheck completed: Machine {{machineName}} approved by {{userName}}",
-        "disapproved": "QuickCheck completed: Machine {{machineName}} disapproved by {{userName}}",
-        "notInitiated": "QuickCheck completed: Machine {{machineName}} not initiated by {{userName}}"
+        "approved": "QuickCheck completed: Machine {{machineName}} approved by {{responsibleName}}",
+        "disapproved": "QuickCheck completed: Machine {{machineName}} disapproved by {{responsibleName}}",
+        "notInitiated": "QuickCheck completed: Machine {{machineName}} not initiated by {{responsibleName}}"
       },
       "created": "New QuickCheck created for machine {{machineName}}",
       "assigned": "QuickCheck assigned to {{userName}} for machine {{machineName}}"

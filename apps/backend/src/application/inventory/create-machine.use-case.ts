@@ -99,7 +99,7 @@ export class CreateMachineUseCase {
       try {
         const ownerId = machine.ownerId.getValue();
         const machineName = machine.nickname || machine.serialNumber.getValue();
-        const machineTypeName = machineType.name; // Ya disponible de validación anterior (línea 42)
+        const machineTypeName = machineType.name; // Ya disponible de validación anterior (línea 38)
 
         await this.addNotificationUseCase.execute(ownerId, {
           notificationType: NOTIFICATION_TYPES[0], // 'success'

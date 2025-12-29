@@ -465,16 +465,15 @@ Distribución por categoría:
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | 1.4 |
 | Documentación | 20.4 Informe de avance (académico) | 4 | — | 1.2 |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 5 | 1 | 0.6 |
-| Desarrollo | 4.2a Domain+Contracts+Persistence MachineEvent | 6 | 5 | |
-| Desarrollo | 4.2b Application Layer Backend MachineEvent | 7 | 6 | |
-| Desarrollo | 4.2c Frontend UI - Historial y Reportar | 8 | 6 | |
-| Desarrollo | 4.2d Frontend Integration MachineEvent | 9 | 4 | |
-| Desarrollo | 6.6 QuickCheck FAIL → Evento + Notificación | 10 | 2 | |
+| Desarrollo | 4.2a Domain+Contracts+Persistence MachineEvent | 6 | 5 | 4.1 |
+| Desarrollo | 4.2b Application Layer Backend MachineEvent | 7 | 6 | 7.2 |
+| Desarrollo | 4.2c Frontend UI - Historial y Reportar | 8 | 6 | 6.9 |
+| Desarrollo | 4.2d Frontend Integration MachineEvent | 9 | 4 | 3.6 |
+| Desarrollo | 6.6 QuickCheck FAIL → Evento + Notificación | 10 | 2 | 3.3 |
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales | Consumo |
 |:---:|:----------:|:-------:|
-| **31.8**hs | **9.5**hs | **29.9%** |
-
+| **31.8**hs | **34.6**hs | **108.8%** |
 Buffer reservado: **+3.2**hs
 Total con buffer: **35**hs
 
@@ -484,13 +483,13 @@ xychart-beta
     x-axis ["20.1", "20.2", "20.3", "20.4", "21.2", "4.2a", "4.2b", "4.2c", "4.2d", "6.6", "TOTAL"]
     y-axis "Horas" 0 --> 35
     line [5, 1.5, 1.3, 0, 1, 5, 6, 6, 4, 2, 31.8]
-    line [5.2, 1.1, 1.4, 1.2, 0.6, 0, 0, 0, 0, 0, 9.5]
+    line [5.2, 1.1, 1.4, 1.2, 0.6, 4.1, 7.2, 6.9, 3.6, 3.3, 34.6]
 ```
 
 Distribución por categoría:
 | Documentación | Desarrollo | QA | Capacitación | Gestión |
 |:-------:|:----------:|:--:|:------------:|:-------------:|
-| **5**hs (est) / **6.4**hs (real) | **23**hs | **0**hs | **1**hs (est) / **0.6**hs (real) | **2.8**hs (est) / **2.5**hs (real) |
+| **5**hs (est) / **6.4**hs (real) | **23**hs (est) / **25.1**hs (real) | **0**hs | **1**hs (est) / **0.6**hs (real) | **2.8**hs (est) / **2.5**hs (real) |
 
 **Notas del Sprint:**
 - **Sprint enfocado 100% en sistema de eventos de máquina** siguiendo patrón exitoso de Notifications (Sprint #9)

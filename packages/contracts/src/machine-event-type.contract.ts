@@ -22,7 +22,8 @@ export const CreateMachineEventTypeRequestSchema = z.object({
   name: z.string()
     .min(1, 'Event type name is required')
     .max(50, 'Event type name cannot exceed 50 characters'),
-  createdBy: z.string().optional() // Solo para tipos creados por usuarios
+  language: z.string()
+    .length(2, 'Language code must be ISO 639-1 (2 letters)')
 }) satisfies z.ZodType<CreateMachineEventTypeProps>;
 
 /**
@@ -32,8 +33,8 @@ export const CreateMachineEventTypeResponseSchema = z.object({
   id: z.string(),
   name: z.string(),
   normalizedName: z.string(),
+  languages: z.array(z.string()), // Códigos ISO 639-1
   systemGenerated: z.boolean(),
-  createdBy: z.string().optional(),
   createdAt: z.string().datetime(),
   timesUsed: z.number(),
   isActive: z.boolean()
@@ -52,8 +53,8 @@ export const GetMachineEventTypeResponseSchema = CreateMachineEventTypeResponseS
  * Schema para listar tipos de eventos (usando types comunes)
  */
 export const ListMachineEventTypesRequestSchema = PaginationSchema.extend({
-  systemGenerated: z.boolean().optional(), // Filtrar por tipos del sistema o usuarios
-  isActive: z.boolean().default(true),
+  systemGenerated: z.coerce.boolean().optional(), // Filtrar por tipos del sistema o usuarios (query param)
+  isActive: z.coerce.boolean().default(true), // Query param llega como "true"/"false"
   search: z.string().optional(), // Buscar por nombre
   sortBy: z.enum(['name', 'timesUsed', 'createdAt']).default('timesUsed'), // Ordenar por popularidad por defecto
   sortOrder: SortOrderSchema.default('desc')
@@ -67,8 +68,8 @@ export const ListMachineEventTypesResponseSchema = BasePaginatedResponseSchema.e
  * Schema para obtener tipos más populares
  */
 export const GetPopularEventTypesRequestSchema = z.object({
-  limit: z.number().min(1).max(50).default(10),
-  isActive: z.boolean().default(true)
+  limit: z.coerce.number().min(1).max(50).default(10), // Query param numérico
+  isActive: z.coerce.boolean().default(true) // Query param boolean
 });
 
 export const GetPopularEventTypesResponseSchema = z.object({
@@ -80,8 +81,8 @@ export const GetPopularEventTypesResponseSchema = z.object({
  */
 export const SearchSimilarEventTypesRequestSchema = z.object({
   searchTerm: z.string().min(1, 'Search term is required'),
-  limit: z.number().min(1).max(20).default(5),
-  isActive: z.boolean().default(true)
+  limit: z.coerce.number().min(1).max(20).default(5), // Query param numérico
+  isActive: z.coerce.boolean().default(true) // Query param boolean
 });
 
 export const SearchSimilarEventTypesResponseSchema = z.object({
@@ -127,6 +128,28 @@ export const IncrementEventTypeUsageResponseSchema = z.object({
   timesUsed: z.number()
 });
 
+/**
+ * Schema para actualizar tipo de evento (PATCH genérico)
+ */
+export const UpdateEventTypeRequestSchema = z.object({
+  id: z.string(),
+  isActive: z.boolean().optional(),
+  languagesToAdd: z.array(z.string().length(2)).optional(),
+  languagesToRemove: z.array(z.string().length(2)).optional()
+}).refine(
+  (data) => {
+    // Al menos una operación debe estar presente
+    return data.isActive !== undefined || 
+           (data.languagesToAdd && data.languagesToAdd.length > 0) || 
+           (data.languagesToRemove && data.languagesToRemove.length > 0);
+  },
+  {
+    message: 'At least one update operation must be provided (isActive, languagesToAdd, or languagesToRemove)'
+  }
+);
+
+export const UpdateEventTypeResponseSchema = CreateMachineEventTypeResponseSchema;
+
 // =============================================================================
 // Type Inference (derivados automáticamente del dominio)
 // =============================================================================
@@ -154,3 +177,6 @@ export type ReactivateEventTypeResponse = z.infer<typeof ReactivateEventTypeResp
 
 export type IncrementEventTypeUsageRequest = z.infer<typeof IncrementEventTypeUsageRequestSchema>;
 export type IncrementEventTypeUsageResponse = z.infer<typeof IncrementEventTypeUsageResponseSchema>;
+
+export type UpdateEventTypeRequest = z.infer<typeof UpdateEventTypeRequestSchema>;
+export type UpdateEventTypeResponse = z.infer<typeof UpdateEventTypeResponseSchema>;

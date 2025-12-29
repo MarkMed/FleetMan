@@ -12,6 +12,7 @@ import { requestSanitization } from './middlewares/requestSanitization';
 import routes from './routes';
 import { connectDatabase } from './config/database.config';
 import { seedMachineTypesIfEmpty } from './scripts/seed-machine-types';
+import { seedMachineEventTypesIfEmpty } from './scripts/seed-machine-event-types';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -112,9 +113,14 @@ app.get('/api', (req, res) => {
     // 1. Conectar con DB
     await connectDatabase();
     
-    // 2. Seed automático - Poblar MachineTypes si DB está vacía
-    // IMPORTANTE: Solo se ejecuta si count de MachineTypes === 0
+    // 2. Seed automático - Poblar datos iniciales si DB está vacía
+    // IMPORTANTE: Solo se ejecuta si count de registros === 0
     // En reinicios subsecuentes, detecta registros existentes y skipea
+    
+    // 2a. Seed de MachineEventTypes (PRIMERO - tipos de eventos de máquina)
+    await seedMachineEventTypesIfEmpty();
+    
+    // 2b. Seed de MachineTypes (tipos de máquina)
     await seedMachineTypesIfEmpty();
     
     // 3. Iniciar servidor HTTP

@@ -89,7 +89,7 @@ export const GetUserResponseSchema = CreateUserResponseSchema;
 export const UpdateUserRequestSchema = z.object({
   id: z.string(),
   profile: UserProfileSchema.partial().optional(),
-  isActive: z.boolean().optional()
+  isActive: z.coerce.boolean().optional() // Puede venir como query o body param
 });
 
 export const UpdateUserResponseSchema = CreateUserResponseSchema;
@@ -100,7 +100,7 @@ export const UpdateUserResponseSchema = CreateUserResponseSchema;
 export const ListUsersRequestSchema = PaginationSchema.extend({
   type: UserTypeSchema.optional(),
   search: z.string().optional(),
-  isActive: z.boolean().optional()
+  isActive: z.coerce.boolean().optional() // Query param llega como "true"/"false"
 });
 
 export const ListUsersResponseSchema = BasePaginatedResponseSchema.extend({

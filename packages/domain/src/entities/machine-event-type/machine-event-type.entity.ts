@@ -18,7 +18,8 @@ import { IMachineEventType } from '../../models/interfaces';
  */
 export interface CreateMachineEventTypeProps {
   readonly name: string;           // Nombre del tipo de evento (ej: "Limpieza profunda")
-  readonly createdBy?: string;     // ID del usuario (si no es sistema)
+  readonly language: string;       // Código ISO 639-1 (ej: 'es', 'en')
+  readonly languages?: string[];   // Para reconstitución desde persistencia
 }
 
 /**
@@ -28,8 +29,8 @@ interface MachineEventTypeProps {
   readonly id: string;
   readonly name: string;
   readonly normalizedName: string;  // Para búsquedas y comparaciones
+  readonly languages: string[];     // Códigos ISO 639-1 (ej: ['es', 'en'])
   readonly systemGenerated: boolean;
-  readonly createdBy: UserId | null;
   readonly createdAt: Date;
   readonly timesUsed: number;      // Para ordenar por popularidad
   readonly isActive: boolean;      // Soft delete
@@ -51,8 +52,8 @@ export class MachineEventType {
       id: this.props.id,
       name: this.props.name,
       normalizedName: this.props.normalizedName,
+      languages: [...this.props.languages], // Copia defensiva
       systemGenerated: this.props.systemGenerated,
-      createdBy: this.props.createdBy?.getValue(),
       timesUsed: this.props.timesUsed,
       isActive: this.props.isActive,
       createdAt: this.props.createdAt,
@@ -73,14 +74,25 @@ export class MachineEventType {
       return err(validation.error);
     }
 
+    // Validar language
+    const languageValidation = MachineEventType.validateLanguage(createProps.language);
+    if (!languageValidation.success) {
+      return err(languageValidation.error);
+    }
+
     const normalizedName = MachineEventType.normalizeName(createProps.name);
     
+    // Si se proveen languages (reconstitución), se usan; si no, se inicializa con el idioma dado
+    const langs = createProps.languages && createProps.languages.length > 0
+      ? [...new Set(createProps.languages.map(l => l.trim().toLowerCase()))]
+      : [createProps.language.trim().toLowerCase()];
+    
     const props: MachineEventTypeProps = {
-      id: MachineEventType.generateId(),
+      id: '', // MongoDB generará el ObjectId
       name: createProps.name.trim(),
       normalizedName,
+      languages: langs,
       systemGenerated: true,
-      createdBy: null,
       createdAt: new Date(),
       timesUsed: 0,
       isActive: true
@@ -98,23 +110,25 @@ export class MachineEventType {
       return err(validation.error);
     }
 
-    if (!createProps.createdBy) {
-      return err(DomainError.validation('User ID is required for user-created event types'));
-    }
-
-    const userIdResult = UserId.create(createProps.createdBy);
-    if (!userIdResult.success) {
-      return err(userIdResult.error);
+    // Validar language
+    const languageValidation = MachineEventType.validateLanguage(createProps.language);
+    if (!languageValidation.success) {
+      return err(languageValidation.error);
     }
 
     const normalizedName = MachineEventType.normalizeName(createProps.name);
     
+    // Si se proveen languages (reconstitución), se usan; si no, se inicializa con el idioma dado
+    const langs = createProps.languages && createProps.languages.length > 0
+      ? [...new Set(createProps.languages.map(l => l.trim().toLowerCase()))]
+      : [createProps.language.trim().toLowerCase()];
+    
     const props: MachineEventTypeProps = {
-      id: MachineEventType.generateId(),
+      id: '', // MongoDB generará el ObjectId
       name: createProps.name.trim(),
       normalizedName,
+      languages: langs,
       systemGenerated: false,
-      createdBy: userIdResult.data,
       createdAt: new Date(),
       timesUsed: 0,
       isActive: true
@@ -136,6 +150,13 @@ export class MachineEventType {
       return err(DomainError.validation('Event type name cannot exceed 50 characters'));
     }
 
+    return ok(undefined);
+  }
+
+  private static validateLanguage(language: string): Result<void, DomainError> {
+    if (!language || language.trim().length !== 2) {
+      return err(DomainError.validation('Language code is required and must be ISO 639-1 (2 letters)'));
+    }
     return ok(undefined);
   }
 
@@ -169,12 +190,12 @@ export class MachineEventType {
     return this.props.normalizedName;
   }
 
-  get systemGenerated(): boolean {
-    return this.props.systemGenerated;
+  get languages(): string[] {
+    return [...this.props.languages]; // Copia defensiva
   }
 
-  get createdBy(): UserId | null {
-    return this.props.createdBy;
+  get systemGenerated(): boolean {
+    return this.props.systemGenerated;
   }
 
   get createdAt(): Date {
@@ -217,6 +238,47 @@ export class MachineEventType {
    */
   public reactivate(): void {
     (this.props as any).isActive = true;
+  }
+
+  /**
+   * Agrega un idioma si no existe
+   * Estrategia: Permite que los tipos de evento evolucionen orgánicamente con nuevos idiomas
+   */
+  public addLanguage(language: string): Result<void, DomainError> {
+    const validation = MachineEventType.validateLanguage(language);
+    if (!validation.success) {
+      return err(validation.error);
+    }
+
+    const lang = language.trim().toLowerCase();
+    if (!this.props.languages.includes(lang)) {
+      (this.props as any).languages = [...this.props.languages, lang];
+    }
+    
+    return ok(undefined);
+  }
+
+  /**
+   * Remueve un idioma del tipo de evento
+   * Business Rule: Debe tener al menos 1 idioma (no puede quedar vacío)
+   */
+  public removeLanguage(language: string): Result<void, DomainError> {
+    const lang = language.trim().toLowerCase();
+
+    // Validar que el idioma existe en el tipo
+    if (!this.props.languages.includes(lang)) {
+      return err(DomainError.domainRule(`Language '${lang}' not found in event type`));
+    }
+
+    // Business Rule: Al menos 1 idioma debe permanecer
+    if (this.props.languages.length === 1) {
+      return err(DomainError.domainRule('Cannot remove last language. Event type must have at least one language.'));
+    }
+
+    // Remover idioma del array
+    (this.props as any).languages = this.props.languages.filter(l => l !== lang);
+    
+    return ok(undefined);
   }
 
   // TODO: Implementar búsqueda fuzzy para sugerencias UX

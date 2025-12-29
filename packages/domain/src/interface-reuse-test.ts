@@ -109,7 +109,7 @@ function testMachineEventInterfaceMapping() {
     
     console.log('✅ MachineEvent entity successfully converts to IMachineEvent');
     console.log('   - Title:', publicInterface.title);
-    console.log('   - Machine ID:', publicInterface.machineId);
+    console.log('   - Type ID:', publicInterface.typeId);
     console.log('   - System generated:', publicInterface.isSystemGenerated);
     
     return true;
@@ -124,7 +124,7 @@ function testMachineEventTypeInterfaceMapping() {
   
   const eventTypeResult = MachineEventType.createUserType({
     name: 'Inspección de Seguridad',
-    createdBy: 'admin-123'
+    language: 'es'
   });
 
   if (eventTypeResult.success) {

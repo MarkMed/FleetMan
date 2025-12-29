@@ -70,7 +70,7 @@ export const ListMachineEventsRequestSchema = PaginationSchema.extend({
   machineId: z.string().optional(),
   typeId: z.string().optional(),
   createdBy: z.string().optional(),
-  isSystemGenerated: z.boolean().optional(),
+  isSystemGenerated: z.coerce.boolean().optional(), // Query params llegan como "true"/"false" strings
   fromDate: z.string().datetime().optional(),
   toDate: z.string().datetime().optional(),
   search: z.string().optional(), // Buscar en título y descripción
@@ -87,8 +87,8 @@ export const ListMachineEventsResponseSchema = BasePaginatedResponseSchema.exten
  */
 export const GetMachineEventHistoryRequestSchema = z.object({
   machineId: z.string(),
-  page: z.number().min(1).default(1),
-  limit: z.number().min(1).max(100).default(20),
+  page: z.coerce.number().min(1).default(1),
+  limit: z.coerce.number().min(1).max(100).default(20),
   typeId: z.string().optional(),
   fromDate: z.string().datetime().optional(),
   toDate: z.string().datetime().optional()

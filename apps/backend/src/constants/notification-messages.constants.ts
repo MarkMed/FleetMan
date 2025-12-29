@@ -1,18 +1,21 @@
 /**
- * Claves de i18n para mensajes de notificaciones
+ * Claves de i18n para mensajes de notificaciones y tipos de eventos
  * 
- * Estas claves se utilizan en las notificaciones del backend y deben
- * corresponder con las traducciones definidas en el frontend.
+ * Este archivo consolida:
+ * 1. Notification messages (keys i18n para el frontend)
+ * 2. Machine event types (identificadores de tipos de eventos del sistema)
  * 
- * Estructura: notification.<source>.<action>.<detail>
+ * SSOT (Single Source of Truth) para todas las claves relacionadas con
+ * notificaciones y eventos de máquinas.
  * 
  * @example
- * // Backend guarda la key
+ * // Notificación
  * message: NOTIFICATION_MESSAGE_KEYS.quickcheck.completed.approved
  * 
- * // Frontend traduce con i18n
- * t(notification.message, { machineName, userName, etc })
+ * // Event Type
+ * name: MACHINE_EVENT_TYPE_KEYS.quickcheck.completed
  */
+
 
 export const NOTIFICATION_MESSAGE_KEYS = {
   quickcheck: {
