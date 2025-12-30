@@ -320,13 +320,66 @@ Sistema de permisos granulares para compartir datos de máquinas (read-only). Do
 
 4. **Mantenimiento & Eventos** (RF-007..RF-009)
 
-	- 4.1 **Crear recordatorios** (RF-007).
-CRUD recordatorios por máquina.
-		- Horas estimadas: **9**hs
-		- Margen: ±**1.8**hs (P80)
-		- Incertidumbre: **Media**
-		- Dependencias: 3.1 (FS)
+	- 4.1a **MaintenanceAlarm - Domain + Contracts + Persistence** (RF-007).
+Infraestructura de datos para alarmas de mantenimiento programado. Domain: Crear entidad MaintenanceAlarm como subdocumento de Machine (patrón igual a MachineEvent y Notification). Campos MaintenanceAlarm: {id, name, description?, targetOperatingHours, isActive, createdBy, createdAt, lastTriggeredAt?, timesTriggered}. Modificar Machine model para agregar maintenanceAlarms?: IMaintenanceAlarm[] como subdocumento array. Verificar existencia de machine.operatingHours (número acumulado de horas de uso), agregar si no existe. Extender IMachineRepository con métodos: addMaintenanceAlarm, getMaintenanceAlarms, updateMaintenanceAlarm, deleteMaintenanceAlarm (soft delete con isActive:false). Contracts: Crear maintenance-alarm.contract.ts con schemas Zod (MaintenanceAlarmSchema, CreateMaintenanceAlarmRequestSchema, UpdateMaintenanceAlarmRequestSchema, GetMaintenanceAlarmsResponseSchema). Persistence: Crear MaintenanceAlarmSubSchema en machine.model.ts como subdocumento embedded, implementar métodos CRUD en MachineRepository, índices para queries eficientes. Mapper: Crear maintenance-alarm.mapper.ts para conversión Document ↔ Domain.
+		- Horas estimadas: **6**hs
+		- Margen: ±**1.2**hs (P80)
+		- Incertidumbre: **Baja-Media**
+		- Dependencias: 3.1, 3.2a, 1.1, 1.2 (FS)
 		- Spike: **No**
+		- PERT: Optimista 4hs, Probable 6hs, Pesimista 8hs
+		- Patrón: Subdocumento en Machine, NO entidad independiente (como MachineEvent, no como MachineEventType)
+		- Nota: Requiere usageSchedule ya implementado en 3.2a para calcular horas diarias
+
+	- 4.1b **MaintenanceAlarm - Application Layer Backend** (RF-007).
+Lógica de negocio y API REST para alarmas de mantenimiento. Use Cases: Crear 4 casos modulares: (1) CreateMaintenanceAlarmUseCase (validaciones ownership, targetOperatingHours > 0, construir MaintenanceAlarm, invocar MachineRepository.addMaintenanceAlarm), (2) GetMaintenanceAlarmsUseCase (obtener lista de alarmas de una máquina, filtrar por isActive opcional), (3) UpdateMaintenanceAlarmUseCase (validaciones ownership, actualizar subdocumento específico), (4) DeleteMaintenanceAlarmUseCase (soft delete marcando isActive: false). Controllers: MaintenanceAlarmController con 4 endpoints: POST /api/machines/:machineId/maintenance-alarms (crear alarma), GET /api/machines/:machineId/maintenance-alarms?onlyActive=true (listar), PATCH /api/machines/:machineId/maintenance-alarms/:alarmId (actualizar), DELETE /api/machines/:machineId/maintenance-alarms/:alarmId (desactivar). Middleware autorización: Validar ownership (machine.ownerId === userId). Validaciones Zod en controllers. DI con tsyringe. Result pattern para manejo errores. NO implementar lógica de disparo aquí (eso va en 4.1c CronJob).
+		- Horas estimadas: **5**hs
+		- Margen: ±**1.0**hs (P80)
+		- Incertidumbre: **Media**
+		- Dependencias: 4.1a (FS)
+		- Spike: **No**
+		- PERT: Optimista 4hs, Probable 5hs, Pesimista 7hs
+		- Nota: CRUD básico, sin lógica de scheduling
+
+	- 4.1c **MaintenanceAlarm - Use Cases de Automatización** (RF-007 + RF-010).
+Lógica de negocio pura para actualización automática de horas y disparo de alarmas. Use Cases: (1) UpdateMachinesOperatingHoursUseCase: Query máquinas ACTIVE con usageSchedule definido, por cada máquina verificar si hoy es día operativo (check usageSchedule.operatingDays.includes(currentDay)), si sí sumar usageSchedule.dailyHours a machine.operatingHours, actualizar en BD vía MachineRepository, retornar {updated: number, skipped: number, errors: Error[]}. (2) CheckMaintenanceAlarmsUseCase: Query máquinas con maintenanceAlarms donde isActive === true, por cada alarma verificar si machine.operatingHours >= alarm.targetOperatingHours, si sí disparar secuencia: (a) Crear MachineEvent usando CreateMachineEventUseCase (typeId: 'Mantenimiento Requerido' sistemático, metadata: {alarmId, alarmName, targetHours, currentHours, triggeredAt}), (b) Notificar AL OWNER ÚNICAMENTE: const machine = await machineRepo.findById(machineId); await addNotificationUseCase.execute({userId: machine.ownerId, notification: {notificationType: 'warning', message: `⚠️ Mantenimiento requerido: ${machine.name} alcanzó ${alarm.targetOperatingHours} horas`, sourceId: alarm.id, sourceType: 'MAINTENANCE_ALARM'}}), (c) Actualizar alarma: lastTriggeredAt = now, timesTriggered++, opcional isActive = false. Retornar {alarmsTriggered: number, notificationsSent: number, errors: Error[]}. Testing: Unitario con mocks de repositorios, validar que notificación va SOLO a machine.ownerId.
+		- Horas estimadas: **5**hs
+		- Margen: ±**1.0**hs (P80)
+		- Incertidumbre: **Media**
+		- Dependencias: 4.1a, 4.1b, 4.2b (CreateMachineEventUseCase), 8.2 (AddNotificationUseCase), 3.2a (FS)
+		- Spike: **No**
+		- PERT: Optimista 4hs, Probable 5hs, Pesimista 7hs
+		- Nota: CRÍTICO - Lógica de negocio donde se garantiza notificación solo al dueño
+
+	- 4.1d **MaintenanceAlarm - CronJob Scheduler & Orquestación** (RF-007 + RF-010).
+Infraestructura de scheduling para ejecutar automáticamente los Use Cases. Setup node-cron: Archivo apps/backend/src/services/cron/maintenance-cron.service.ts, schedule configurable vía ENV (CRON_MAINTENANCE_SCHEDULE: desarrollo '*/10 * * * *' cada 10min, producción '0 2 * * *' diario 2am). Orquestación secuencial: (1) Ejecutar UpdateMachinesOperatingHoursUseCase primero, (2) Si paso 1 exitoso ejecutar CheckMaintenanceAlarmsUseCase después. Logging estructurado: timestamps inicio/fin, métricas (máquinas actualizadas, alarmas disparadas), level INFO para éxito, ERROR para fallos sin detener cron. Registrar en app startup: cron.schedule(process.env.CRON_MAINTENANCE_SCHEDULE, () => cronService.execute()). Testing: Script manual para invocar cronService.execute() sin esperar schedule, verificar logs con datos mockeados.
+		- Horas estimadas: **3**hs
+		- Margen: ±**0.6**hs (P80)
+		- Incertidumbre: **Baja-Media**
+		- Dependencias: 4.1c (Use Cases listos) (FS)
+		- Spike: **No**
+		- PERT: Optimista 2hs, Probable 3hs, Pesimista 5hs
+		- Nota: Orquestador simple, complejidad está en 4.1c
+
+	- 4.1e **MaintenanceAlarm - Frontend UI** (RF-007).
+Componentes visuales para gestión de alarmas de mantenimiento. Componentes: MaintenanceAlarmsListScreen (página principal desde MachineDetailScreen), AlarmCard (nombre, descripción, target hours, veces disparada, badges Activa/Inactiva, botones Ver/Editar/Desactivar), AlarmDetailModal (popup con info completa: historial de disparos, última vez, metadata), CreateEditAlarmScreen (página formulario con inputs: name required max 100, description optional max 500, targetOperatingHours required number > 0, isActive toggle default true, validaciones React Hook Form + Zod), ConfirmationModal (resumen datos, '¿Estás seguro?', botones Cancelar/Confirmar). Navegación: Desde MachineDetailScreen botón/tab 'Alarmas de Mantenimiento' → /machines/:id/maintenance-alarms. Filtros: Activas/Todas. Estados: loading skeleton, empty state 'No hay alarmas programadas. Crea la primera.', error con retry. Estilos Tailwind, responsive. NO lógica de API - solo UI con props mockeadas.
+		- Horas estimadas: **6**hs
+		- Margen: ±**1.2**hs (P80)
+		- Incertidumbre: **Media**
+		- Dependencias: 0.14, 3.2 (FS)
+		- Spike: **No**
+		- PERT: Optimista 4hs, Probable 6hs, Pesimista 8hs
+		- Patrón: Similar a 4.2c (MachineEvent UI) y 8.3 (Notification UI)
+
+	- 4.1f **MaintenanceAlarm - Frontend Integration** (RF-007).
+Integración con API y gestión de estado. Service: Crear maintenanceAlarmService.ts con métodos type-safe (getMachineAlarms, createAlarm, updateAlarm, deleteAlarm). TanStack Query Hooks: useMachineAlarms(machineId) con refetch on focus, useCreateAlarm(machineId) mutation con invalidación cache + toast, useUpdateAlarm(machineId) mutation, useDeleteAlarm(machineId) mutation. Integration: Conectar MaintenanceAlarmsListScreen con useMachineAlarms, conectar CreateEditAlarmScreen con create/update mutations, implementar filtros reactivos, conectar AlarmDetailModal con data seleccionada. Forms: React Hook Form + Zod validation alineado con contracts, estados loading/error/success, toast notifications. Navegación: Integrar botón en MachineDetailScreen. Testing: Flujo completo crear → API → BD → toast → lista actualizada → editar → desactivar.
+		- Horas estimadas: **4**hs
+		- Margen: ±**0.8**hs (P80)
+		- Incertidumbre: **Baja-Media**
+		- Dependencias: 4.1b, 4.1e (FS)
+		- Spike: **No**
+		- PERT: Optimista 3hs, Probable 4hs, Pesimista 6hs
+		- Patrón: Similar a 4.2d (MachineEvent Integration) y 8.4 (Notification Integration)
 
 	- 4.2a **MachineEvent - Domain + Contracts + Persistence ** (RF-008).
 Infraestructura de datos para eventos de máquina (historial homemade). Domain: Entidades MachineEvent y MachineEventType YA existen (verificar machine-event.entity.ts y machine-event-type.entity.ts). MachineEvent usa typeId (string) referenciando a MachineEventType (patrón crowdsourcing similar a MachineType). Campos MachineEvent: {id, machineId, typeId, title, description, createdBy, createdAt, isSystemGenerated, metadata?}. NO usar enums hardcodeados (category, severity) - typeId da flexibilidad total. MachineEventType: {id, name, normalizedName, systemGenerated, createdBy?, timesUsed, isActive}. Modificar Machine model para agregar eventsHistory?: IMachineEvent[] como subdocumento. Extender IMachineRepository con métodos: addEvent(machineId, event), getMachineEvents(machineId, filters), searchEventTypes(query) para autocompletar. Contracts: Verificar/crear machine-event.contract.ts con schemas Zod (MachineEventSchema, CreateMachineEventRequestSchema sin category/severity, GetMachineEventsQuerySchema con filtros typeId/dateRange/search, EventTypeSchema para CRUD tipos). Persistence: Verificar/crear MachineEventSubSchema en machine.model.ts, implementar métodos en MachineRepository, índices compuestos para performance. Verificar MachineEventTypeSchema separado (colección independiente como MachineType).

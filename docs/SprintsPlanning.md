@@ -532,35 +532,80 @@ Distribución por categoría:
 
 ### **Sprint #11**: dom 28 dic → sáb 3 ene 2026
 
-**Objetivo:** ⚙️ Full Mantenimiento - Feature completa sin cosas no solicitadas.
+**Objetivo:** 🔧 Sistema de Mantenimientos Programados - Alarmas automáticas basadas en horas de uso con CronJob + integración con Eventos y Notificaciones.
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
 | Documentación | 20.1 Reporte Académico del Sprint #10 | 1 | 5 | |
-| Gestión | 20.2 Demo/UAT de Sprint #10 | 2 | 1.5 | |
+| Gestión | 20.2 Demo/UAT de Sprint #10 | 2 | 1.5 | 1.2 |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
-| Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | |
-| Desarrollo | 4.3 Historial unificado (RF-009) | 5 | 15 | |
-| Desarrollo | 9.1 Datos de contacto por distribuidor | 6 | 5 | |
-| Desarrollo | 9.2 Acciones de contacto (tel:, mailto:, wa.me) | 7 | 5 | |
+| Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | 1 |
+| Desarrollo | 4.1a Domain+Contracts+Persistence MaintenanceAlarm | 5 | 6 | |
+| Desarrollo | 4.1b Application Layer Backend MaintenanceAlarm | 6 | 5 | |
+| Desarrollo | 4.1c Use Cases Automatización (actualizar horas + disparar) | 7 | 5 | |
+| Desarrollo | 4.1d CronJob Scheduler & Orquestación | 8 | 3 | |
+| Desarrollo | 4.1e Frontend UI MaintenanceAlarm | 9 | 6 | |
+| Desarrollo | 4.1f Frontend Integration MaintenanceAlarm | 10 | 4 | |
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales | Consumo |
 |:---:|:----------:|:-------:|
-| **33.8**hs | **0**hs | **0.0%** |
+| **37.8**hs | **0**hs | **0.0%** |
 
-Buffer reservado: **1.2**hs
+Buffer reservado: **-2.8**hs ⚠️
 Total con buffer: **35**hs
 
 Distribución por categoría:
 | Documentación | Desarrollo | QA | Capacitación | Gestión |
 |:-------:|:----------:|:--:|:------------:|:-------------:|
-| **5**hs | **25**hs | **0**hs | **1**hs | **2.8**hs |
+| **5**hs | **29**hs | **0**hs | **1**hs | **2.8**hs |
 
-**Riesgos:** Período de fiestas navideñas puede impactar disponibilidad.
+**Notas del Sprint:**
+- **Sprint enfocado 100% en mantenimientos programados** siguiendo patrón exitoso de Sprints #9 (Notifications) y #10 (Events)
+- **Arquitectura subdocumento:** MaintenanceAlarm embedded en Machine (NO entidad independiente)
+- **Separación lógica:** Use Cases (4.1c) = lógica de negocio pura, CronJob (4.1d) = orquestador/scheduler
+- **Notificaciones al owner:** La lógica en 4.1c garantiza que SOLO machine.ownerId recibe notificación
+- **Integración triple:** Alarma triggereada → MachineEvent creado → Notification enviada (sistemas ya implementados)
+- **Orden secuencial:** Domain/Persistence → Application (CRUD) → Use Cases (automatización) → CronJob (scheduler) → UI → Integration
+
+**Fortalezas:**
+- ✅ Patrón subdocumento probado en Sprints #9 y #10
+- ✅ Reutilización de MachineEvent y Notification (no reinventar rueda)
+- ✅ usageSchedule ya implementado en Sprint #8 (3.2a)
+- ✅ CronJob configurable para testing rápido en desarrollo
+- ✅ Flujo completo automatizado sin intervención manual
+
+**Riesgos y Mitigaciones:**
+- ⚠️ **Buffer negativo (-1.8hs):** Sprint ajustado, requiere disciplina
+- ⚠️ **Año Nuevo (mié 1 ene):** Día festivo reduce capacidad efectiva a ~30hs
+- ⚠️ **CronJob complejidad:** Primera implementación de scheduled tasks, puede requerir debugging
+- ⚠️ **Testing del Cron:** Difícil probar automatización en timeframes cortos
+- ✅ **Mitigación:** Variable ENV para schedule flexible (10 min en dev, diario en prod)
+- ✅ **Mitigación:** Script manual para simular ejecución del cron sin esperar
+- ✅ **Descope opcional:** Si crítico, implementar CRUD manual (4.1a-4.1e) y defer CronJob (4.1c) a Sprint #12
+
+**Consideraciones técnicas:**
+- **machine.operatingHours:** Contador acumulado de horas totales de uso (sumar dailyHours cada día operativo)
+- **usageSchedule.operatingDays:** Array de días ['MONDAY', 'TUESDAY', ...] para saber cuándo sumar horas
+- **alarm.targetOperatingHours:** Umbral que dispara la alarma (ej: 500hs para cambio de aceite)
+- **CronJob schedule:** ENV variable CRON_MAINTENANCE_SCHEDULE para configurar frecuencia
+- **Idempotencia:** Cron debe ser tolerante a reinicios (no duplicar operaciones)
+- **Event → Notification:** Flujo automático ya implementado en Sprint #10 (6.6)
+
+**Dependencias críticas:**
+1. 4.1a debe completarse antes de 4.1b (schemas necesarios para repositories)
+2. 4.1b debe completarse antes de 4.1c (Use Cases CRUD necesarios)
+3. 4.1c debe completarse antes de 4.1d (Use Cases de automatización necesarios para el cron)
+4. 4.1d puede desarrollarse en paralelo con 4.1e (CronJob y UI son independientes)
+5. 4.1e debe completarse antes de 4.1f (componentes necesarios para integration)
+6. 4.1c requiere 3.2a completo (usageSchedule debe existir en Machine)
+7. 4.1c requiere 4.2b completo (CreateMachineEventUseCase necesario para disparar eventos)
+8. 4.1c requiere 8.2 completo (AddNotificationUseCase necesario para notificar al owner)
+
+**Riesgos:** Período de fiestas navideñas (Año Nuevo) puede impactar disponibilidad. CronJob es funcionalidad nueva que requiere testing cuidadoso.
 
 ### **Sprint #12**: dom 4 ene → sáb 10 ene 2026
 
-**Objetivo:** 💬 Full Comunicaciones - Listado usuarios + gestión contactos + chat sencillo.
+**Objetivo:** � Historial Unificado + Comunicaciones Básicas - Timeline consolidado y contacto con proveedores.
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
@@ -568,10 +613,9 @@ Distribución por categoría:
 | Gestión | 20.2 Demo/UAT de Sprint #11 | 2 | 1.5 | |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | |
-| QA | 13.3a Unit tests Backend | 5 | 12 | |
-| QA | 13.4 Datos de prueba (semillas y factories) | 6 | 4 | |
-| Desarrollo | 16.2 Semillas demo (usar 1.4) | 7 | 3 | |
-| QA | 12.3 Pruebas visuales móviles/desktop | 8 | 5 | |
+| Desarrollo | 4.3 Historial unificado (RF-009) | 5 | 15 | |
+| Desarrollo | 9.1 Datos de contacto por distribuidor | 6 | 5 | |
+| Desarrollo | 9.2 Acciones de contacto (tel:, mailto:, wa.me) | 7 | 5 | |
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales | Consumo |
 |:---:|:----------:|:-------:|

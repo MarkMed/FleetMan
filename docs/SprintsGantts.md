@@ -84,7 +84,7 @@ gantt
   %% Asumimos 5 h/día. Horas estimadas incluidas en el nombre.
 
   20.1 Reporte Académico (0.9hs)               :t201, 2025-10-26, 1d
-  20.2 Demo/UAT con cliente (1.5hs)            :t202, 2025-10-26, 1d
+  20.2 Demo/UAT de Sprint #1 (1.5hs)           :t202, 2025-10-26, 1d
   20.3 Sprint Planning dominguero (1.3hs)      :t203, 2025-10-26, 1d
   0.6 User Journey mapping (flujos clave) (6hs) :t06, after t203, 2d
   1.3 DTOs + Zod (contratos compartidos) (7hs) :t13, after t06, 2d
@@ -109,7 +109,7 @@ gantt
   %% Asumimos 5 h/día. Horas estimadas incluidas en el nombre.
 
   20.1 Reporte Académico (0.9hs)               :t201, 2025-11-02, 1d
-  20.2 Demo/UAT con cliente (1.5hs)            :t202, 2025-11-02, 1d
+  20.2 Demo/UAT de Sprint #2 (1.5hs)           :t202, 2025-11-02, 1d
   20.3 Sprint Planning dominguero (1.3hs)      :t203, 2025-11-02, 1d
   0.11 Setup Backend Básico (8hs)              :t011, after t203, 2d
   0.13 Setup Frontend Básico (8hs)             :t013, after t011, 2d
@@ -133,7 +133,7 @@ gantt
   %% Asumimos 5 h/día. Horas estimadas incluidas en el nombre.
 
   20.1 Reporte Académico (0.9hs)               :t201, 2025-11-09, 1d
-  20.2 Demo/UAT con cliente (1.5hs)            :t202, 2025-11-09, 1d
+  20.2 Demo/UAT de Sprint #3 (1.5hs)           :t202, 2025-11-09, 1d
   20.3 Sprint Planning dominguero (1.3hs)      :t203, 2025-11-09, 1d
   21.2 Tutorías (guía con tutor asignado) (1hs) :t212, 2025-11-09, 1d
   2.1 Registro de usuario (RF-001) (10hs)      :t21, after t203, 2d
@@ -161,7 +161,7 @@ gantt
   %% Asumimos 5 h/día. Horas estimadas incluidas en el nombre.
 
   20.1 Reporte Académico (0.9hs)               :t201, 2025-11-16, 1d
-  20.2 Demo/UAT con cliente (1.5hs)            :t202, 2025-11-16, 1d
+  20.2 Demo/UAT de Sprint #4 (1.5hs)           :t202, 2025-11-16, 1d
   20.3 Sprint Planning dominguero (1.3hs)      :t203, 2025-11-16, 1d
   3.1 Alta de máquina + ReactHookForms + Wizard Component (16hs) :t31, after t203, 4d
   21.2 Tutorías (guía con tutor asignado) (1hs) :t212, 2025-11-18, 1d
@@ -188,7 +188,7 @@ gantt
   %% ⚠️ Sprint ligeramente sobrecargado (40.8hs vs 35hs objetivo).
 
   20.1 Reporte Académico (5hs)                 :t201, 2025-11-23, 1d
-  20.2 Demo/UAT con cliente (1.5hs)            :t202, 2025-11-23, 1d
+  20.2 Demo/UAT de Sprint #5 (1.5hs)           :t202, 2025-11-23, 1d
   20.3 Sprint Planning dominguero (1.3hs)      :t203, 2025-11-23, 1d
   21.2 Tutorías (guía con tutor asignado) (1hs) :t212, 2025-11-24, 1d
   16.11 Azure Deploy - Config práctica (9hs)   :t1611, 2025-11-24, 2d
@@ -223,7 +223,7 @@ gantt
   %% Asumimos 5 h/día. Horas estimadas incluidas en el nombre.
 
   20.1 Reporte Académico (5hs)                  :t201, 2025-11-30, 1d
-  20.2 Demo/UAT con cliente (1.5hs)             :t202, 2025-11-30, 1d
+  20.2 Demo/UAT de Sprint #6 (1.5hs)            :t202, 2025-11-30, 1d
   20.3 Sprint Planning dominguero (1.3hs)       :t203, 2025-11-30, 1d
   21.2 Tutorías (1hs)                           :t212, 2025-12-01, 1d
   6.1 Domain + Persistence (4.5hs)              :t61, 2025-12-02, 1d
@@ -254,7 +254,7 @@ gantt
 
   section Domingo (Overhead)
   20.1 Reporte Académico (5hs)                 :t201, 2025-12-07, 1d
-  20.2 Demo/UAT (1.5hs)                        :t202, 2025-12-07, 1d
+  20.2 Demo/UAT de Sprint #7 (1.5hs)           :t202, 2025-12-07, 1d
   20.3 Sprint Planning (1.3hs)                 :t203, 2025-12-08, 1d
   21.2 Tutorías (1hs)                          :t212, 2025-12-08, 1d
 
@@ -294,7 +294,7 @@ gantt
   %% Sprint enfocado 100% en sistema de notificaciones con arquitectura por capas
 
   section Domingo (Overhead)
-  20.2 Demo/UAT con cliente (1.5hs)            :t202, 2025-12-14, 1d
+  20.2 Demo/UAT de Sprint #8 (1.5hs)           :t202, 2025-12-14, 1d
   20.3 Sprint Planning dominguero (1.3hs)      :t203, 2025-12-14, 1d
   20.1 Reporte Académico (5hs)                 :t201, 2025-12-15, 1d
   21.2 Tutorías (1hs)                          :t212, 2025-12-15, 1d
@@ -356,18 +356,22 @@ gantt
 
 ```mermaid
 gantt
-  title Sprint 11 (2025-12-28 → 2026-01-03)
+  title Sprint 11 (2025-12-28 → 2026-01-03) - Mantenimientos Programados
   dateFormat  YYYY-MM-DD
   axisFormat  %d
 
   %% Asumimos 5 h/día. Horas estimadas incluidas en el nombre.
 
-  20.1 Reporte Académico (0.9hs)               :t201, 2025-12-28, 1d
-  20.2 Demo/UAT con cliente (1.5hs)            :t202, 2025-12-28, 1d
+  20.2 Demo/UAT de Sprint #10 (1.5hs)          :t202, 2025-12-28, 1d
   20.3 Sprint Planning dominguero (1.3hs)      :t203, 2025-12-28, 1d
-  4.3 Historial unificado (RF-009) (15hs)      :t43, after t203, 3d
-  9.1 Datos de contacto por distribuidor (5hs) :t91, after t43, 1d
-  9.2 Acciones de contacto (tel, mailto, wa.me) (5hs) :t92, after t91, 1d
+  20.1 Reporte Académico (5hs)                 :t201, 2025-12-29, 1d
+  21.2 Tutorías (1hs)                          :t212, 2025-12-29, 1d
+  4.1a Domain+Contracts+Persistence (6hs)      :t41a, 2025-12-30, 1d
+  4.1d CronJob Scheduler (3hs)                 :t41d, 2025-12-31, 0.6d
+  4.1b Application Layer Backend (5hs)         :t41b, 2026-01-01, 1d
+  4.1c Use Cases Automatización (5hs)          :t41c, 2026-01-01, 1d
+  4.1e Frontend UI (6hs)                       :t41e, 2026-01-02, 1.2d
+  4.1f Frontend Integration (4hs)              :t41f, 2026-01-02, 0.8d
 
   section Hitos
   Cierre Sprint 11                             :milestone, s11, 2026-01-03, 1d
@@ -386,7 +390,7 @@ gantt
   %% Asumimos 5 h/día. Horas estimadas incluidas en el nombre.
 
   20.1 Reporte Académico (0.9hs)               :t201, 2026-01-04, 1d
-  20.2 Demo/UAT con cliente (1.5hs)            :t202, 2026-01-04, 1d
+  20.2 Demo/UAT de Sprint #11 (1.5hs)          :t202, 2026-01-04, 1d
   20.3 Sprint Planning dominguero (1.3hs)      :t203, 2026-01-04, 1d
   13.3a Unit tests Backend (12hs)              :t133a, after t203, 3d
   13.4 Datos de prueba (semillas y factories) (4hs) :t134, after t133a, 1d
@@ -410,7 +414,7 @@ gantt
   %% Asumimos 5 h/día. Horas estimadas incluidas en el nombre.
 
   20.1 Reporte Académico (0.9hs)               :t201, 2026-01-11, 1d
-  20.2 Demo/UAT con cliente (1.5hs)            :t202, 2026-01-11, 1d
+  20.2 Demo/UAT de Sprint #12 (1.5hs)          :t202, 2026-01-11, 1d
   20.3 Sprint Planning dominguero (1.3hs)      :t203, 2026-01-11, 1d
   13.3b Unit tests Frontend (10hs)             :t133b, after t203, 2d
   16.1 Build & deploy demo (front estático + API) (8hs) :t161, after t133b, 2d
@@ -433,7 +437,7 @@ gantt
   %% Asumimos 5 h/día. Horas estimadas incluidas en el nombre.
 
   20.1 Reporte Académico (0.9hs)               :t201, 2026-01-18, 1d
-  20.2 Demo/UAT con cliente (1.5hs)            :t202, 2026-01-18, 1d
+  20.2 Demo/UAT de Sprint #13 (1.5hs)          :t202, 2026-01-18, 1d
   20.3 Sprint Planning dominguero (1.3hs)      :t203, 2026-01-18, 1d
   13.5 Sanitización manual por feature (8hs)   :t135, after t203, 2d
   13.8 Smoke E2E de flujos críticos (6hs)      :t138, after t135, 2d
@@ -458,7 +462,7 @@ gantt
   %% Asumimos 5 h/día. Horas estimadas incluidas en el nombre.
 
   20.1 Reporte Académico (0.9hs)               :t201, 2026-01-25, 1d
-  20.2 Demo/UAT con cliente (1.5hs)            :t202, 2026-01-25, 1d
+  20.2 Demo/UAT de Sprint #14 (1.5hs)          :t202, 2026-01-25, 1d
   20.3 Sprint Planning dominguero (1.3hs)      :t203, 2026-01-25, 1d
   13.7 Triage & fix post-UAT (10hs)            :t137, after t203, 2d
   13.9 Gestión de defectos (6hs)               :t139, after t137, 2d
@@ -482,7 +486,7 @@ gantt
   %% Asumimos 5 h/día. Horas estimadas incluidas en el nombre.
 
   20.1 Reporte Académico (0.9hs)               :t201, 2026-02-01, 1d
-  20.2 Demo/UAT con cliente (1.5hs)            :t202, 2026-02-01, 1d
+  20.2 Demo/UAT de Sprint #15 (1.5hs)          :t202, 2026-02-01, 1d
   20.3 Sprint Planning dominguero (1.3hs)      :t203, 2026-02-01, 1d
   7.1 Alta/edición repuesto (RF-012/014) (8hs) :t71, after t203, 2d
   7.2 Listado por máquina (RF-013) (6hs)       :t72, after t71, 2d
@@ -506,7 +510,7 @@ gantt
   %% Asumimos 5 h/día. Horas estimadas incluidas en el nombre.
 
   20.1 Reporte Académico (0.9hs)               :t201, 2026-02-08, 1d
-  20.2 Demo/UAT con cliente (1.5hs)            :t202, 2026-02-08, 1d
+  20.2 Demo/UAT de Sprint #16 (1.5hs)          :t202, 2026-02-08, 1d
   20.3 Sprint Planning dominguero (1.3hs)      :t203, 2026-02-08, 1d
   21.21 Buffer de entrega final (10hs)         :t2121, after t203, 2d
 
