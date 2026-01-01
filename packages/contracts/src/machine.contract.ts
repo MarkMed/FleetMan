@@ -1,6 +1,8 @@
 import { z } from 'zod';
 import { SortOrderSchema, PaginationSchema, BasePaginatedResponseSchema, SearchSchema } from './common.types';
 import { DayOfWeek } from '@packages/domain';
+import { MachineEventSchema } from './machine-event.contract';
+import { MaintenanceAlarmSchema } from './maintenance-alarm.contract';
 
 // =============================================================================
 // REAL DRY APPROACH: Re-export de types del dominio
@@ -61,7 +63,7 @@ export const MachineSpecsSchema = z.object({
   enginePower: z.number().positive().optional(),
   maxCapacity: z.number().positive().optional(),
   fuelType: FuelTypeSchema.optional(),
-  year: z.number().int().min(1900).max(new Date().getFullYear() + 1).optional(),
+  year: z.number().int().min(1900).max(new Date().getFullYear() + 2).optional(),
   weight: z.number().positive().optional(),
   operatingHours: z.number().min(0).optional()
 }) satisfies z.ZodType<MachineSpecs>;
@@ -169,7 +171,10 @@ export const CreateMachineResponseSchema = z.object({
   specs: MachineSpecsSchema.nullable(),
   location: MachineLocationSchema.nullable(),
   createdAt: z.string().datetime(),
-  updatedAt: z.string().datetime()
+  updatedAt: z.string().datetime(),
+  // Sprint #10 & #11: Subdocument arrays (optional - only included when queried)
+  eventsHistory: z.array(MachineEventSchema).optional(),
+  maintenanceAlarms: z.array(MaintenanceAlarmSchema).optional()
 });
 
 /**
@@ -182,30 +187,62 @@ export const GetMachineRequestSchema = z.object({
 export const GetMachineResponseSchema = CreateMachineResponseSchema;
 
 /**
- * Schema para actualizar máquina
+ * Schema para actualizar máquina (PATCH)
+ * Todos los campos son opcionales - solo actualiza lo que viene
+ * El `id` NO está aquí - viene como parámetro de ruta (URL param)
  */
 export const UpdateMachineRequestSchema = z.object({
-  id: z.string(),
-  specs: MachineSpecsSchema.optional(),
-  location: MachineLocationSchema.optional(),
-  nickname: z.string().max(100).optional(),
-  status: MachineStatusCodeSchema.optional(),
+  // Basic info
+  brand: z.string().min(1).max(100).trim().optional(),
+  modelName: z.string().min(1).max(100).trim().optional(),
+  nickname: z.string().max(100).trim().optional(),
+  
+  // Assignment
   assignedTo: z.string()
     .max(100, 'Assigned to name cannot exceed 100 characters')
     .trim()
     .optional(),
-  usageSchedule: UsageScheduleSchema.optional(),
-  // Photo URL - permite string vacío O URL válida
+  assignedProviderId: z.string().optional().nullable(),
+  
+  // Photo URL - permite null, string vacío O URL válida
   machinePhotoUrl: z.string()
     .trim()
     .max(500, 'Photo URL cannot exceed 500 characters')
     .refine(
-      (val) => val === '' || z.string().url().safeParse(val).success,
+      (val) => val === null || val === '' || z.string().url().safeParse(val).success,
       { message: 'Invalid photo URL format' }
     )
     .optional()
-    .or(z.literal(''))
-});
+    .nullable(),
+  
+  // Specs (nested partial - usar dot notation para evitar reemplazar todo el objeto)
+  specs: z.object({
+    enginePower: z.number().positive().optional(),
+    maxCapacity: z.number().positive().optional(),
+    fuelType: FuelTypeSchema.optional(),
+    year: z.number().int().min(1900).max(new Date().getFullYear() + 2).optional(),
+    weight: z.number().positive().optional(),
+    operatingHours: z.number().min(0).optional() // Para cronjob (no desde frontend típicamente)
+  }).partial().strict().optional(),
+  
+  // Location (nested partial)
+  location: z.object({
+    siteName: z.string().optional(),
+    address: z.string().optional(),
+    coordinates: z.object({
+      latitude: z.number().min(-90).max(90),
+      longitude: z.number().min(-180).max(180)
+    }).optional()
+  }).partial().strict().optional(),
+  
+  // Usage schedule
+  usageSchedule: UsageScheduleSchema.optional(),
+  
+  // Status - Comentado porque cambios de estado deberían tener endpoint específico
+  // Con validaciones FSM (finite state machine) en Use Case dedicado
+  // status: MachineStatusCodeSchema.optional()
+  
+}).strict(); // Previene campos no definidos
 
 export const UpdateMachineResponseSchema = CreateMachineResponseSchema;
 

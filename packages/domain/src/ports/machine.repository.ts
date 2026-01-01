@@ -4,7 +4,7 @@ import { MachineId } from '../value-objects/machine-id.vo';
 import { UserId } from '../value-objects/user-id.vo';
 import { MachineTypeId } from '../value-objects/machine-type-id.vo';
 import { DomainError } from '../errors';
-import type { IQuickCheckRecord, IMachineEvent } from '../models/interfaces';
+import type { IQuickCheckRecord, IMachineEvent, IMaintenanceAlarm } from '../models/interfaces';
 
 /**
  * Puerto (interface) para persistencia de Machine
@@ -60,6 +60,28 @@ export interface IMachineRepository {
    * Guarda una máquina (crear o actualizar)
    */
   save(machine: Machine): Promise<Result<void, DomainError>>;
+
+  /**
+   * Actualiza campos específicos de una máquina sin cargar entity completa
+   * 
+   * Método genérico para updates parciales. No contiene lógica de negocio.
+   * Los Use Cases deciden QUÉ actualizar y con QUÉ validaciones.
+   * 
+   * ⚠️ IMPORTANTE: Para nested objects, usar dot notation para evitar reemplazar todo:
+   * - update(id, { brand: "X" }) → OK (campo top-level)
+   * - update(id, { 'specs.operatingHours': 500 }) → OK (dot notation, solo actualiza ese campo)
+   * - update(id, { specs: { operatingHours: 500 } }) → ⚠️ REEMPLAZA todo specs (borra otros campos)
+   * 
+   * Use Cases deben usar flattenToDotNotation() para nested objects.
+   * 
+   * @param machineId - ID de la máquina
+   * @param updates - Objeto con campos a actualizar (usar dot notation para nested)
+   * @returns Promise<Result<Machine>> - Retorna la máquina actualizada
+   */
+  update(
+    machineId: MachineId,
+    updates: Record<string, any>
+  ): Promise<Result<Machine, DomainError>>;
 
   /**
    * Elimina físicamente una máquina
@@ -170,6 +192,93 @@ export interface IMachineRepository {
    * @returns Map de typeId → count
    */
   countEventsByType(machineId: MachineId): Promise<Result<Map<string, number>, DomainError>>;
+
+  // ==========================================================================
+  // 🆕 Sprint #11: Maintenance Alarms Methods (Embedded Pattern)
+  // ==========================================================================
+
+  /**
+   * Agrega una alarma de mantenimiento a la máquina
+   * Patrón $push idéntico a addEvent y addNotification
+   * 
+   * @param machineId - ID de la máquina
+   * @param alarmData - Datos de la alarma a crear
+   * @returns Result con la alarma creada o error
+   */
+  addMaintenanceAlarm(
+    machineId: MachineId,
+    alarmData: {
+      title: string;
+      description?: string;
+      relatedParts: string[];
+      intervalHours: number;
+      createdBy: string;
+    }
+  ): Promise<Result<IMaintenanceAlarm, DomainError>>;
+
+  /**
+   * Obtiene todas las alarmas de mantenimiento de una máquina
+   * Soporta filtrado por estado activo/inactivo
+   * 
+   * @param machineId - ID de la máquina
+   * @param filters - Filtros opcionales
+   * @returns Result con array de alarmas
+   */
+  getMaintenanceAlarms(
+    machineId: MachineId,
+    filters?: {
+      onlyActive?: boolean;
+    }
+  ): Promise<Result<IMaintenanceAlarm[], DomainError>>;
+
+  /**
+   * Actualiza una alarma de mantenimiento específica
+   * Usa arrayFilters para actualizar subdocumento específico por ID
+   * 
+   * @param machineId - ID de la máquina
+   * @param alarmId - ID de la alarma (subdocument _id)
+   * @param updates - Campos a actualizar (partial update)
+   * @returns Result void o error
+   */
+  updateMaintenanceAlarm(
+    machineId: MachineId,
+    alarmId: string,
+    updates: {
+      title?: string;
+      description?: string;
+      relatedParts?: string[];
+      intervalHours?: number;
+      isActive?: boolean;
+    }
+  ): Promise<Result<void, DomainError>>;
+
+  /**
+   * Elimina (soft delete) una alarma de mantenimiento
+   * Marca isActive = false en lugar de eliminar físicamente
+   * 
+   * @param machineId - ID de la máquina
+   * @param alarmId - ID de la alarma (subdocument _id)
+   * @returns Result void o error
+   */
+  deleteMaintenanceAlarm(
+    machineId: MachineId,
+    alarmId: string
+  ): Promise<Result<void, DomainError>>;
+
+  /**
+   * Actualiza tracking fields cuando alarma se dispara
+   * Uso interno: Invocado por cronjob cuando se cumple condición
+   * 
+   * @param machineId - ID de la máquina
+   * @param alarmId - ID de la alarma (subdocument _id)
+   * @param currentOperatingHours - Horas acumuladas actuales de la máquina
+   * @returns Result void o error
+   */
+  triggerMaintenanceAlarm(
+    machineId: MachineId,
+    alarmId: string,
+    currentOperatingHours: number
+  ): Promise<Result<void, DomainError>>;
 
   // TODO: Métodos estratégicos para considerar:
   // findNearLocation(lat: number, lng: number, radiusKm: number): Promise<Machine[]>; // Geolocalización

@@ -7,6 +7,7 @@
 export * from './machine.mapper';
 export * from './notification.mapper';
 export * from './machine-event.mapper'; // 🆕 Sprint #10: Subdocument mapper
+export * from './maintenance-alarm.mapper'; // 🆕 Sprint #11: Subdocument mapper
 
 // TODO: Implement remaining domain mappers:
 // export * from './user.mapper';

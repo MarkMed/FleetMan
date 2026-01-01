@@ -10,6 +10,7 @@ import {
   err,
   type IQuickCheckRecord,
   type IMachineEvent,
+  type IMaintenanceAlarm,
   type CreateMachineEventProps
 } from '@packages/domain';
 import { 
@@ -17,8 +18,9 @@ import {
   type IMachineDocument,
   MachineEventTypeModel
 } from '../models';
-import { MachineMapper, MachineEventMapper } from '../mappers';
+import { MachineMapper, MachineEventMapper, MaintenanceAlarmMapper } from '../mappers';
 import { type CreateQuickCheckRecord, type QuickCheckHistoryFilters } from '@packages/contracts';
+import { logger } from '../utils/logger';
 
 /**
  * Tipo para agregar evento (sin machineId porque se pasa por separado)
@@ -81,8 +83,8 @@ export class MachineRepository implements IMachineRepository {
     try {
       const count = await MachineModel.countDocuments({ serialNumber: serialNumber.toUpperCase() });
       return count > 0;
-    } catch (error) {
-      console.error('Error checking serial number existence:', error);
+    } catch (error: any) {
+      logger.error({ error: error.message }, 'Error checking serial number existence');
       return false;
     }
   }
@@ -194,6 +196,94 @@ export class MachineRepository implements IMachineRepository {
         return err(DomainError.create('DUPLICATE_KEY', 'Serial number already exists'));
       }
       return err(DomainError.create('PERSISTENCE_ERROR', `Error saving machine: ${error.message}`));
+    }
+  }
+
+  /**
+   * Actualiza campos específicos de una máquina sin cargar entity completa
+   * 
+   * PRINCIPIO DE EXPERTO:
+   * - Repository = Experto en persistencia (CÓMO guardar en DB)
+   * - Use Case = Experto en negocio (QUÉ actualizar, validaciones)
+   * 
+   * ⚠️ IMPORTANTE - Nested Objects:
+   * $set con objetos nested REEMPLAZA el objeto completo, NO hace merge.
+   * Para updates parciales de nested objects, usar dot notation:
+   * 
+   * ❌ INCORRECTO: { specs: { operatingHours: 500 } } → Borra enginePower, fuelType, etc.
+   * ✅ CORRECTO:   { 'specs.operatingHours': 500 } → Solo actualiza ese campo
+   * 
+   * Use Cases deben usar flattenToDotNotation() para nested objects.
+   * 
+   * 🚧 LIMITACIÓN ACTUAL (MVP):
+   * flattenToDotNotation() solo soporta MERGE. No permite borrar campos nested.
+   * Si necesitas REEMPLAZAR un objeto nested completo (borrar campos), 
+   * usar directamente el objeto sin flatten (consciente del riesgo de pérdida de datos).
+   * Ver: apps/backend/src/utils/flatten-to-dot-notation.ts para detalles.
+   * POST-MVP: Agregar modo 'replace' al utility.
+   * 
+   * @param machineId - ID de la máquina
+   * @param updates - Objeto con campos a actualizar (usar dot notation para nested)
+   * @returns Result<Machine> - Retorna la máquina actualizada
+   * 
+   * Ejemplos:
+   * - update(id, { brand: "NewBrand" }) → OK (campo top-level)
+   * - update(id, { 'specs.operatingHours': 500 }) → OK (dot notation)
+   * - update(id, { brand: "X", 'location.city': "NY" }) → OK (mixto)
+   */
+  async update(
+    machineId: MachineId,
+    updates: Record<string, any>
+  ): Promise<Result<Machine, DomainError>> {
+    try {
+      // Validar que hay algo que actualizar
+      if (!updates || Object.keys(updates).length === 0) {
+        return err(DomainError.create('VALIDATION_ERROR', 'No fields to update'));
+      }
+
+      // Mongoose hace merge automático - NO necesitamos lógica especial
+      const doc = await MachineModel.findByIdAndUpdate(
+        machineId.getValue(),
+        { 
+          $set: {
+            ...updates,
+            updatedAt: new Date()
+          }
+        },
+        { 
+          new: true,
+          runValidators: true // Ejecuta validaciones de Mongoose schema
+        }
+      );
+
+      if (!doc) {
+        return err(DomainError.notFound(`Machine with ID ${machineId.getValue()} not found`));
+      }
+
+      // Mappear documento actualizado a entidad de dominio
+      const machine = MachineMapper.toEntity(doc);
+      if (!machine) {
+        return err(DomainError.create('MAPPING_ERROR', 'Failed to map updated machine to entity'));
+      }
+
+      return ok(machine);
+
+    } catch (error: any) {
+      // Errores de validación Mongoose
+      if (error.name === 'ValidationError') {
+        const messages = Object.values(error.errors)
+          .map((e: any) => e.message)
+          .join(', ');
+        return err(DomainError.create('VALIDATION_ERROR', messages));
+      }
+      
+      // Error de duplicado (ej: serialNumber único)
+      if (error.code === 11000) {
+        const field = Object.keys(error.keyPattern || {})[0] || 'field';
+        return err(DomainError.create('DUPLICATE_ERROR', `${field} already exists`));
+      }
+      
+      return err(DomainError.create('PERSISTENCE_ERROR', `Failed to update machine: ${error.message}`));
     }
   }
 
@@ -544,21 +634,26 @@ export class MachineRepository implements IMachineRepository {
         eventData.typeId,
         { $inc: { timesUsed: 1 } }
       ).catch((err: any) => {
-        console.error('Failed to increment event type usage:', {
+        logger.error({
           typeId: eventData.typeId,
           error: err.message
-        });
+        }, 'Failed to increment event type usage');
       });
 
-      // Mapear a dominio
-      const mappedEvent = MachineEventMapper.toDomain(result as any);
+      // Mapear el evento creado (posición 0 porque usamos $position: 0 en línea 612)
+      const createdEvent = result.eventsHistory?.[0];
+      if (!createdEvent) {
+        return err(DomainError.create('PERSISTENCE_ERROR', 'Event was not persisted correctly'));
+      }
+      
+      const mappedEvent = MachineEventMapper.toDomain(createdEvent as any);
       return ok(mappedEvent);
 
     } catch (error: any) {
-      console.error('Error adding machine event:', { 
+      logger.error({ 
         machineId: machineId.getValue(), 
         error: error.message 
-      });
+      }, 'Error adding machine event');
       return err(DomainError.create('PERSISTENCE_ERROR', `Failed to add event: ${error.message}`));
     }
   }
@@ -745,4 +840,236 @@ export class MachineRepository implements IMachineRepository {
   // TODO: Implementar soft delete de eventos
   // Razón: Permitir que usuarios "borren" eventos user-generated sin perder trazabilidad
   // Declaración: async deleteEvent(machineId: MachineId, eventId: string): Promise<Result<void, DomainError>>
+
+  // ==========================================================================
+  // 🆕 Sprint #11: Maintenance Alarms Methods (Embedded Pattern)
+  // ==========================================================================
+
+  /**
+   * Agrega una alarma de mantenimiento a la máquina
+   * Patrón $push idéntico a addEvent y addNotification
+   */
+  async addMaintenanceAlarm(
+    machineId: MachineId,
+    alarmData: {
+      title: string;
+      description?: string;
+      relatedParts: string[];
+      intervalHours: number;
+      createdBy: string;
+    }
+  ): Promise<Result<IMaintenanceAlarm, DomainError>> {
+    try {
+      const now = new Date();
+
+      const result = await MachineModel.findByIdAndUpdate(
+        machineId.getValue(),
+        {
+          $push: {
+            maintenanceAlarms: {
+              title: alarmData.title,
+              description: alarmData.description,
+              relatedParts: alarmData.relatedParts,
+              intervalHours: alarmData.intervalHours,
+              isActive: true, // Default value
+              createdBy: alarmData.createdBy,
+              timesTriggered: 0,
+              createdAt: now,
+              updatedAt: now
+            }
+          }
+        },
+        { new: true }
+      );
+
+      if (!result) {
+        return err(DomainError.notFound(`Machine with ID ${machineId.getValue()} not found`));
+      }
+
+      // Get the last added alarm (newest - se agrega al final del array)
+      const alarms = result.maintenanceAlarms || [];
+      if (alarms.length === 0) {
+        return err(DomainError.create('PERSISTENCE_ERROR', 'Failed to retrieve created alarm'));
+      }
+      const createdAlarm = alarms[alarms.length - 1];
+      
+      // Mapear usando MaintenanceAlarmMapper (DRY principle)
+      const mappedAlarm = MaintenanceAlarmMapper.toDomain(createdAlarm as any);
+      return ok(mappedAlarm);
+    } catch (error: any) {
+      logger.error({
+        machineId: machineId.getValue(),
+        error: error.message
+      }, 'Error adding maintenance alarm');
+      return err(DomainError.create('PERSISTENCE_ERROR', `Failed to add maintenance alarm: ${error.message}`));
+    }
+  }
+
+  /**
+   * Obtiene alarmas de mantenimiento con filtros
+   */
+  async getMaintenanceAlarms(
+    machineId: MachineId,
+    filters?: { onlyActive?: boolean }
+  ): Promise<Result<IMaintenanceAlarm[], DomainError>> {
+    try {
+      const machine = await MachineModel.findById(machineId.getValue()).select('maintenanceAlarms');
+      
+      if (!machine) {
+        return err(DomainError.notFound(`Machine with ID ${machineId.getValue()} not found`));
+      }
+
+      let alarms = machine.maintenanceAlarms || [];
+      
+      if (filters?.onlyActive) {
+        alarms = alarms.filter(a => a.isActive);
+      }
+
+      // Mapear usando MaintenanceAlarmMapper (DRY principle)
+      const mappedAlarms = MaintenanceAlarmMapper.toDomainArray(alarms as any);
+      return ok(mappedAlarms);
+    } catch (error: any) {
+      logger.error({
+        machineId: machineId.getValue(),
+        error: error.message
+      }, 'Error getting maintenance alarms');
+      return err(DomainError.create('PERSISTENCE_ERROR', `Failed to get maintenance alarms: ${error.message}`));
+    }
+  }
+
+  /**
+   * Actualiza una alarma específica
+   * Usa arrayFilters para actualizar subdocumento específico
+   */
+  async updateMaintenanceAlarm(
+    machineId: MachineId,
+    alarmId: string,
+    updates: {
+      title?: string;
+      description?: string;
+      relatedParts?: string[];
+      intervalHours?: number;
+      isActive?: boolean;
+    }
+  ): Promise<Result<void, DomainError>> {
+    // TODO: Refactorizar para retornar IMaintenanceAlarm actualizada usando MaintenanceAlarmMapper
+    // Razón: Útil para controllers que necesiten confirmar el cambio al usuario con el objeto actualizado
+    // Declaración: Promise<Result<IMaintenanceAlarm, DomainError>>
+    // Cambio: En lugar de solo verificar alarmExists, hacer const updatedAlarm = result.maintenanceAlarms?.find(...) y return ok(MaintenanceAlarmMapper.toDomain(updatedAlarm))
+    
+    try {
+      const updateFields: any = {};
+      
+      if (updates.title !== undefined) {
+        updateFields['maintenanceAlarms.$[alarm].title'] = updates.title;
+      }
+      if (updates.description !== undefined) {
+        updateFields['maintenanceAlarms.$[alarm].description'] = updates.description;
+      }
+      if (updates.relatedParts !== undefined) {
+        updateFields['maintenanceAlarms.$[alarm].relatedParts'] = updates.relatedParts;
+      }
+      if (updates.intervalHours !== undefined) {
+        updateFields['maintenanceAlarms.$[alarm].intervalHours'] = updates.intervalHours;
+      }
+      if (updates.isActive !== undefined) {
+        updateFields['maintenanceAlarms.$[alarm].isActive'] = updates.isActive;
+      }
+
+      // Always update updatedAt timestamp
+      updateFields['maintenanceAlarms.$[alarm].updatedAt'] = new Date();
+
+      const result = await MachineModel.findOneAndUpdate(
+        { _id: machineId.getValue() },
+        { $set: updateFields },
+        {
+          arrayFilters: [{ 'alarm._id': alarmId }],
+          new: true
+        }
+      );
+
+      if (!result) {
+        return err(DomainError.notFound(`Machine with ID ${machineId.getValue()} not found`));
+      }
+
+      // Verify alarm was updated (exists in array)
+      const alarmExists = result.maintenanceAlarms?.some((a: any) => a._id.toString() === alarmId);
+      if (!alarmExists) {
+        return err(DomainError.notFound(`Maintenance alarm with ID ${alarmId} not found in machine`));
+      }
+
+      return ok(undefined);
+    } catch (error: any) {
+      logger.error({
+        machineId: machineId.getValue(),
+        alarmId,
+        error: error.message
+      }, 'Error updating maintenance alarm');
+      return err(DomainError.create('PERSISTENCE_ERROR', `Failed to update maintenance alarm: ${error.message}`));
+    }
+  }
+
+  /**
+   * Soft delete de alarma (marca isActive = false)
+   */
+  async deleteMaintenanceAlarm(
+    machineId: MachineId,
+    alarmId: string
+  ): Promise<Result<void, DomainError>> {
+    return this.updateMaintenanceAlarm(machineId, alarmId, { isActive: false });
+  }
+
+  /**
+   * Actualiza tracking fields cuando alarma se dispara
+   * Usado por cronjob
+   */
+  async triggerMaintenanceAlarm(
+    machineId: MachineId,
+    alarmId: string,
+    currentOperatingHours: number
+  ): Promise<Result<void, DomainError>> {
+    try {
+      const result = await MachineModel.findOneAndUpdate(
+        { _id: machineId.getValue() },
+        {
+          $set: {
+            'maintenanceAlarms.$[alarm].lastTriggeredAt': new Date(),
+            'maintenanceAlarms.$[alarm].lastTriggeredHours': currentOperatingHours,
+            'maintenanceAlarms.$[alarm].updatedAt': new Date()
+          },
+          $inc: {
+            'maintenanceAlarms.$[alarm].timesTriggered': 1
+          }
+        },
+        {
+          arrayFilters: [{ 'alarm._id': alarmId }],
+          new: true
+        }
+      );
+
+      if (!result) {
+        return err(DomainError.notFound(`Machine with ID ${machineId.getValue()} not found`));
+      }
+
+      return ok(undefined);
+    } catch (error: any) {
+      console.error('Error triggering maintenance alarm:', {
+        machineId: machineId.getValue(),
+        alarmId,
+        currentOperatingHours,
+        error: error.message
+      });
+      return err(DomainError.create('PERSISTENCE_ERROR', `Failed to trigger maintenance alarm: ${error.message}`));
+    }
+  }
+
+  // TODO: Implementar método para obtener alarmas próximas a dispararse
+  // Razón: Dashboard preventivo - mostrar alarmas que están cerca de cumplir su intervalo
+  // Declaración: async getUpcomingAlarms(machineId: MachineId, hoursThreshold: number): Promise<Result<IMaintenanceAlarm[], DomainError>>
+  // Lógica: currentOperatingHours >= (lastTriggeredHours + intervalHours - hoursThreshold)
+
+  // TODO: Implementar método para resetear alarma después de mantenimiento completado
+  // Razón: Usuario completa mantenimiento → resetear lastTriggeredHours manualmente (no esperar al cronjob)
+  // Declaración: async resetMaintenanceAlarm(machineId: MachineId, alarmId: string): Promise<Result<void, DomainError>>
+  // Lógica: Actualizar lastTriggeredAt a ahora, lastTriggeredHours a specs.operatingHours actual
 }
