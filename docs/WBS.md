@@ -422,6 +422,58 @@ Integración con API y lógica de estado. Service: Crear machineEventService.ts 
 		- PERT: Optimista 3hs, Probable 4hs, Pesimista 6hs
 		- Patrón: Similar a 8.4 (Notifications Integration)
 
+	- 4.2e **Optimización de almacenamiento - Eventos** (NFR).
+Limitación automática de eventos por máquina y configurabilidad de registro.
+		- **Objetivo**: Evitar crecimiento ilimitado de `Machine.eventsHistory[]` que afecta 
+		performance y almacenamiento. Implementar límite configurable (~100 eventos/máquina) con 
+		eliminación FIFO automática y permitir al usuario configurar qué tipos de eventos 
+		automáticos desea registrar.
+		
+		- **Alcance**:
+			- **Backend - Domain/Persistence**:
+				- Agregar campo en `Machine`: `eventHistoryLimit` (número, default 100)
+				- Agregar en `User`: `eventTypePreferences` (array de typeIds a ignorar)
+				- Middleware Mongoose pre-save: verificar límite y eliminar eventos más antiguos (FIFO)
+			- **Backend - Application Layer**:
+				- Modificar `CreateMachineEventUseCase`:
+					- Verificar `user.eventTypePreferences` antes de crear evento automático
+					- Si typeId está en lista de ignorados Y es isSystemGenerated=true → NO crear
+				- Nuevo `UpdateEventPreferencesUseCase`:
+					- Endpoint: PATCH `/users/me/event-preferences`
+					- Body: `{ ignoredEventTypeIds: string[] }`
+					- Validación: verificar que typeIds existan
+			- **Frontend - UI**:
+				- Sección en Configuración/Ajustes: "Gestión de Eventos Automáticos"
+				- Lista de tipos de eventos del sistema con toggle on/off
+				- Warning: "Desactivar registro puede afectar historial y notificaciones"
+			- **Frontend - Integration**:
+				- Hook: `useEventPreferences()` con GET/UPDATE mutations
+				- Indicador visual en EventHistoryScreen: "Mostrando últimos X eventos (límite: 100)"
+		
+		- **Descripción Funcional**:
+			1. **Límite Automático**: Cuando `Machine.eventsHistory.length > eventHistoryLimit`, 
+			el middleware elimina los eventos más antiguos (ordenados por `createdAt`) antes de 
+			guardar. Hard delete (no soft delete) porque datos históricos antiguos no son críticos.
+			2. **Configurabilidad por Usuario**: Usuario puede marcar ciertos tipos de eventos 
+			automáticos como "no registrar" (ej: "Inicio de operación diaria", "Fin de turno"). 
+			Solo aplica a eventos con `isSystemGenerated=true`.
+			3. **Preservación de Eventos Críticos**: Eventos manuales (creados por usuario) NUNCA 
+			se ignoran por preferencias (solo por límite FIFO).
+		
+		- **Consideraciones de Optimización**:
+			- **Performance**: Middleware eficiente usando Mongoose `$slice` en queries
+			- **Migración**: Script para aplicar límite a máquinas existentes (eliminar eventos viejos)
+			- **Testing**: Unit tests con mocks, verificar orden FIFO, verificar preferencias
+			- **Documentación**: Actualizar docs/machine-events-system-architecture.md
+		
+		- Horas estimadas: **8**hs
+		- Margen: ±**1.5**hs (P80)
+		- Incertidumbre: **Media**
+		- Dependencias: 4.2a, 4.2b (FS) - Requiere sistema base implementado
+		- Spike: **No**
+		- Sprint tentativo: **Sprint #14 o #15** (Post-MVP, NFR)
+		- PERT: Optimista 6hs, Probable 8hs, Pesimista 11hs
+
 	- 4.3 **Historial unificado** (RF-009).
 Timeline consolidado de manttos, incidencias y quickchecks.
 		- Horas estimadas: **15**hs
@@ -596,6 +648,68 @@ Documentar patrón de integración para futuros módulos: Cómo llamar AddNotifi
 		- Dependencias: 8.2 (FS)
 		- Spike: **No**
 		- PERT: Optimista 0.5hs, Probable 1hs, Pesimista 1.5hs
+
+	- 8.6 **Optimización de almacenamiento - Notificaciones** (NFR).
+Limitación automática de notificaciones por usuario y capacidad de eliminación manual.
+		- **Objetivo**: Evitar crecimiento ilimitado de `User.notifications[]` que afecta 
+		performance y almacenamiento. Implementar límite configurable (~50-100 
+		notificaciones/usuario) con eliminación FIFO automática y permitir eliminación manual 
+		por parte del usuario.
+		
+		- **Alcance**:
+			- **Backend - Domain/Persistence**:
+				- Agregar campo en `User`: `notificationLimit` (número, default 100)
+				- Middleware Mongoose pre-save: verificar límite y eliminar notificaciones más 
+				antiguas vistas (`wasSeen=true`) primero, luego las más antiguas en general (FIFO)
+				- Método en UserRepository: `deleteNotification(userId, notificationId)`
+			- **Backend - Application Layer**:
+				- Modificar `AddNotificationUseCase`:
+					- Antes de agregar: verificar si se alcanzó límite
+					- Priorizar eliminación de notificaciones vistas antes que no vistas
+				- Nuevo `DeleteNotificationUseCase`:
+					- Endpoint: DELETE `/users/me/notifications/{notificationId}`
+					- Validación: verificar que notificación pertenezca al usuario
+					- Uso: eliminación manual por el usuario
+				- Nuevo `DeleteAllSeenNotificationsUseCase`:
+					- Endpoint: DELETE `/users/me/notifications/seen`
+					- Elimina todas las notificaciones con `wasSeen=true`
+					- Botón "Limpiar leídas" en UI
+		
+			- **Frontend - UI**:
+				- Botón de eliminación individual en `NotificationItem` (ícono X o trash)
+				- Botón "Limpiar todas las leídas" en header de `NotificationList`
+				- Confirmación modal para "Limpiar todas"
+				- Indicador visual: "Mostrando X de máximo Y notificaciones"
+			
+			- **Frontend - Integration**:
+				- Mutation: `useDeleteNotification()` con optimistic update
+				- Mutation: `useDeleteAllSeenNotifications()` con invalidación de cache
+				- Toast de confirmación: "Notificación eliminada" / "X notificaciones eliminadas"
+		
+		- **Descripción Funcional**:
+			1. **Límite Automático con Prioridad**: Cuando `User.notifications.length > 
+			notificationLimit`, el middleware elimina primero notificaciones VISTAS más antiguas, 
+			luego NO vistas más antiguas si aún hace falta. Esto preserva notificaciones recientes 
+			y no leídas.
+			2. **Eliminación Manual**: Usuario puede eliminar notificaciones individuales (botón X) 
+			o todas las leídas a la vez (botón "Limpiar leídas"). Útil para mantener lista limpia.
+			3. **Hard Delete**: No soft delete porque notificaciones antiguas no son críticas 
+			(solo alertas puntuales).
+		
+		- **Consideraciones de Optimización**:
+			- **Performance**: Middleware eficiente, ordenar por `notificationDate`
+			- **Migración**: Script para aplicar límite a usuarios existentes (eliminar notificaciones antiguas)
+			- **UX**: Optimistic updates para eliminación instantánea en UI
+			- **Testing**: Unit tests verificando prioridad de eliminación (vistas primero)
+			- **Documentación**: Actualizar docs/Real-time-Notification-System.md
+		
+		- Horas estimadas: **7**hs
+		- Margen: ±**1.5**hs (P80)
+		- Incertidumbre: **Media**
+		- Dependencias: 8.1, 8.2, 8.3 (FS) - Requiere sistema base implementado
+		- Spike: **No**
+		- Sprint tentativo: **Sprint #14 o #15** (Post-MVP, NFR)
+		- PERT: Optimista 5hs, Probable 7hs, Pesimista 10hs
 
 9. **Comunicación entre Usuarios** (RF-015)
 
