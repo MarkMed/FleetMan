@@ -1,4 +1,4 @@
-import { Machine, MachineId } from '@packages/domain';
+import { Machine, MachineId, IMachine } from '@packages/domain';
 import { MachineRepository } from '@packages/persistence';
 import { logger } from '../../config/logger.config';
 
@@ -17,13 +17,13 @@ export class GetMachineUseCase {
    * @param machineId - ID de la máquina
    * @param requestingUserId - ID del usuario que solicita (para verificar ownership)
    * @param userType - Tipo de usuario (CLIENT, PROVIDER)
-   * @returns Promise con la máquina encontrada
+   * @returns Promise<IMachine> - Interface ligera de la máquina
    */
   async execute(
     machineId: string, 
     requestingUserId: string,
     userType: string
-  ): Promise<Machine> {
+  ): Promise<IMachine> {
     logger.info({ machineId, requestingUserId }, 'Getting machine by ID');
 
     try {
@@ -49,7 +49,9 @@ export class GetMachineUseCase {
       }
 
       logger.info({ machineId }, 'Machine retrieved successfully');
-      return machine;
+      
+      // Convertir entity a interface ligera (DTO pattern)
+      return machine.toPublicInterface();
 
     } catch (error) {
       logger.error({ 

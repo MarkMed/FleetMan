@@ -1,4 +1,4 @@
-import { Machine, UserId } from '@packages/domain';
+import { Machine, UserId, IMachine } from '@packages/domain';
 import { MachineRepository } from '@packages/persistence';
 import { logger } from '../../config/logger.config';
 import { ListMachinesRequest } from '@packages/contracts';
@@ -25,7 +25,7 @@ export class ListMachinesUseCase {
     requestingUserId: string,
     userType: string
   ): Promise<{
-    items: Machine[];
+    items: IMachine[];
     total: number;
     page: number;
     limit: number;
@@ -74,7 +74,11 @@ export class ListMachinesUseCase {
         returned: result.items.length
       }, 'Machines listed successfully');
 
-      return result;
+      // Convertir entities a interfaces ligeras (DTO pattern)
+      return {
+        ...result,
+        items: result.items.map(machine => machine.toPublicInterface())
+      };
 
     } catch (error) {
       logger.error({ 

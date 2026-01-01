@@ -284,6 +284,71 @@ const machineSchema = new Schema<IMachineDocument>({
     }
   }],
 
+  // 🆕 Sprint #11: Maintenance Alarms embedded as subdocuments (like QuickCheck/Events pattern)
+  // Patrón: Embedded array (NO separate collection) para alarmas programadas
+  maintenanceAlarms: [{
+    title: {
+      type: String,
+      required: true,
+      trim: true,
+      maxlength: 100
+    },
+    description: {
+      type: String,
+      trim: true,
+      maxlength: 500
+    },
+    relatedParts: {
+      type: [String],
+      required: true,
+      default: [],
+      validate: {
+        validator: function(arr: string[]) {
+          return arr.every(part => typeof part === 'string' && part.trim().length > 0);
+        },
+        message: 'All related parts must be non-empty strings'
+      }
+    },
+    intervalHours: {
+      type: Number,
+      required: true,
+      min: 1
+    },
+    isActive: {
+      type: Boolean,
+      required: true,
+      default: true
+    },
+    createdBy: {
+      type: String,
+      required: true,
+      ref: 'User'
+    },
+    lastTriggeredAt: {
+      type: Date
+    },
+    lastTriggeredHours: {
+      type: Number,
+      min: 0
+    },
+    timesTriggered: {
+      type: Number,
+      required: true,
+      default: 0,
+      min: 0
+    },
+    createdAt: {
+      type: Date,
+      required: true,
+      default: Date.now
+    },
+    updatedAt: {
+      type: Date,
+      required: true,
+      default: Date.now
+    }
+  }],
+
   // QuickCheck records embedded as subdocuments
   quickChecks: [{
     result: {

@@ -8,7 +8,7 @@ import {
   DeleteMachineUseCase
 } from '../application/inventory';
 import type { AuthenticatedRequest } from '../middlewares/auth.middleware';
-import { Machine } from '@packages/domain';
+import { Machine, IMachine } from '@packages/domain';
 import type { CreateMachineResponse } from '@packages/contracts';
 
 /**
@@ -38,9 +38,10 @@ export class MachineController {
   /**
    * Helper para convertir entidad de dominio a DTO de respuesta
    * Tipado fuerte: TypeScript nos forzará a incluir todos los campos del contrato
+   * Acepta tanto Machine entity (para CreateMachine) como IMachine (resto de use cases)
    */
-  private toResponse(machine: Machine): CreateMachineResponse {
-    const publicInterface = machine.toPublicInterface();
+  private toResponse(machine: Machine | IMachine): CreateMachineResponse {
+    const publicInterface = machine instanceof Machine ? machine.toPublicInterface() : machine;
     return {
       id: publicInterface.id,
       serialNumber: publicInterface.serialNumber,
@@ -157,7 +158,7 @@ export class MachineController {
       res.status(200).json({
         success: true,
         message: 'Machine retrieved successfully',
-        data: this.toResponse(machine)
+        data: this.toResponse(machine) // machine ya es IMachine
       });
 
     } catch (error) {
@@ -213,7 +214,7 @@ export class MachineController {
         success: true,
         message: 'Machines retrieved successfully',
         data: {
-          machines: result.items.map(m => this.toResponse(m)),
+          machines: result.items.map(m => this.toResponse(m)), // items ya son IMachine[]
           pagination: {
             total: result.total,
             page: result.page,
@@ -261,7 +262,7 @@ export class MachineController {
       res.status(200).json({
         success: true,
         message: 'Machine updated successfully',
-        data: this.toResponse(machine)
+        data: this.toResponse(machine) // machine ya es IMachine
       });
 
     } catch (error) {

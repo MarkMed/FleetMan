@@ -24,6 +24,22 @@ export const MachineEventMetadataSchema = z.object({
 }) satisfies z.ZodType<MachineEventMetadata>;
 
 /**
+ * Schema standalone para Machine Event (para reutilización)
+ * Similar a MaintenanceAlarmSchema - representa el evento completo
+ */
+export const MachineEventSchema = z.object({
+  id: z.string(),
+  typeId: z.string(),
+  title: z.string(),
+  description: z.string(),
+  createdBy: z.string(),
+  isSystemGenerated: z.boolean(),
+  metadata: MachineEventMetadataSchema.optional(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date()
+});
+
+/**
  * Schema para crear evento basado en CreateMachineEventProps del dominio
  */
 export const CreateMachineEventRequestSchema = z.object({
@@ -41,6 +57,10 @@ export const CreateMachineEventRequestSchema = z.object({
 
 /**
  * Schema de respuesta con información completa del evento
+ * NOTA: Difiere de MachineEventSchema en:
+ * - Incluye machineId (útil en responses para identificar contexto)
+ * - Usa z.string().datetime() en lugar de z.coerce.date() (HTTP serialization)
+ * - Incluye updatedAt implícito en el objeto (no en schema por simplicidad)
  */
 export const CreateMachineEventResponseSchema = z.object({
   id: z.string(),
