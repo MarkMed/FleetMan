@@ -79,7 +79,7 @@ export class MaintenanceAlarmMapper {
     return {
       title: alarm.title!,
       description: alarm.description,
-      relatedParts: alarm.relatedParts ? [...alarm.relatedParts] : [], // Spread to convert readonly → mutable
+      relatedParts: alarm.relatedParts ? [...alarm.relatedParts] : [], // Cast readonly to mutable for Mongoose
       intervalHours: alarm.intervalHours!,
       isActive: alarm.isActive !== undefined ? alarm.isActive : true,
       createdBy: alarm.createdBy!,

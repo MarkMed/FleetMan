@@ -4,6 +4,21 @@
  * Esto previene que Mongoose reemplace objetos nested completos,
  * permitiendo updates parciales sin pérdida de datos.
  * 
+ * ⚠️ LIMITACIÓN ACTUAL (MVP):
+ * Solo soporta modo MERGE. No permite REPLACE de objetos completos.
+ * 
+ * Problema:
+ * - Si quieres borrar un campo nested, NO es posible con flatten
+ * - Ejemplo: { location: { city: 'NY' } } NO borrará location.coordinates
+ * - El campo original location.coordinates PERSISTIRÁ en la DB
+ * 
+ * Solución POST-MVP:
+ * - Agregar parámetro mode: 'merge' | 'replace'
+ * - Permitir Use Cases decidir si merge o replace completo
+ * - Requiere lógica adicional para detectar qué campos borrar
+ * 
+ * Para MVP: Suficiente con merge (caso de uso actual: actualizar campos específicos)
+ * 
  * @example
  * Input:  { specs: { operatingHours: 500 } }
  * Output: { 'specs.operatingHours': 500 }

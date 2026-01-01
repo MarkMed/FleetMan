@@ -20,6 +20,7 @@ import {
 } from '../models';
 import { MachineMapper, MachineEventMapper, MaintenanceAlarmMapper } from '../mappers';
 import { type CreateQuickCheckRecord, type QuickCheckHistoryFilters } from '@packages/contracts';
+import { logger } from '../utils/logger';
 
 /**
  * Tipo para agregar evento (sin machineId porque se pasa por separado)
@@ -82,8 +83,8 @@ export class MachineRepository implements IMachineRepository {
     try {
       const count = await MachineModel.countDocuments({ serialNumber: serialNumber.toUpperCase() });
       return count > 0;
-    } catch (error) {
-      console.error('Error checking serial number existence:', error);
+    } catch (error: any) {
+      logger.error({ error: error.message }, 'Error checking serial number existence');
       return false;
     }
   }
@@ -213,6 +214,13 @@ export class MachineRepository implements IMachineRepository {
    * ✅ CORRECTO:   { 'specs.operatingHours': 500 } → Solo actualiza ese campo
    * 
    * Use Cases deben usar flattenToDotNotation() para nested objects.
+   * 
+   * 🚧 LIMITACIÓN ACTUAL (MVP):
+   * flattenToDotNotation() solo soporta MERGE. No permite borrar campos nested.
+   * Si necesitas REEMPLAZAR un objeto nested completo (borrar campos), 
+   * usar directamente el objeto sin flatten (consciente del riesgo de pérdida de datos).
+   * Ver: apps/backend/src/utils/flatten-to-dot-notation.ts para detalles.
+   * POST-MVP: Agregar modo 'replace' al utility.
    * 
    * @param machineId - ID de la máquina
    * @param updates - Objeto con campos a actualizar (usar dot notation para nested)
@@ -626,13 +634,13 @@ export class MachineRepository implements IMachineRepository {
         eventData.typeId,
         { $inc: { timesUsed: 1 } }
       ).catch((err: any) => {
-        console.error('Failed to increment event type usage:', {
+        logger.error({
           typeId: eventData.typeId,
           error: err.message
-        });
+        }, 'Failed to increment event type usage');
       });
 
-      // Mapear el evento creado (posición 0 porque usamos $position: 0)
+      // Mapear el evento creado (posición 0 porque usamos $position: 0 en línea 612)
       const createdEvent = result.eventsHistory?.[0];
       if (!createdEvent) {
         return err(DomainError.create('PERSISTENCE_ERROR', 'Event was not persisted correctly'));
@@ -642,10 +650,10 @@ export class MachineRepository implements IMachineRepository {
       return ok(mappedEvent);
 
     } catch (error: any) {
-      console.error('Error adding machine event:', { 
+      logger.error({ 
         machineId: machineId.getValue(), 
         error: error.message 
-      });
+      }, 'Error adding machine event');
       return err(DomainError.create('PERSISTENCE_ERROR', `Failed to add event: ${error.message}`));
     }
   }
@@ -889,10 +897,10 @@ export class MachineRepository implements IMachineRepository {
       const mappedAlarm = MaintenanceAlarmMapper.toDomain(createdAlarm as any);
       return ok(mappedAlarm);
     } catch (error: any) {
-      console.error('Error adding maintenance alarm:', {
+      logger.error({
         machineId: machineId.getValue(),
         error: error.message
-      });
+      }, 'Error adding maintenance alarm');
       return err(DomainError.create('PERSISTENCE_ERROR', `Failed to add maintenance alarm: ${error.message}`));
     }
   }
@@ -921,10 +929,10 @@ export class MachineRepository implements IMachineRepository {
       const mappedAlarms = MaintenanceAlarmMapper.toDomainArray(alarms as any);
       return ok(mappedAlarms);
     } catch (error: any) {
-      console.error('Error getting maintenance alarms:', {
+      logger.error({
         machineId: machineId.getValue(),
         error: error.message
-      });
+      }, 'Error getting maintenance alarms');
       return err(DomainError.create('PERSISTENCE_ERROR', `Failed to get maintenance alarms: ${error.message}`));
     }
   }
@@ -992,11 +1000,11 @@ export class MachineRepository implements IMachineRepository {
 
       return ok(undefined);
     } catch (error: any) {
-      console.error('Error updating maintenance alarm:', {
+      logger.error({
         machineId: machineId.getValue(),
         alarmId,
         error: error.message
-      });
+      }, 'Error updating maintenance alarm');
       return err(DomainError.create('PERSISTENCE_ERROR', `Failed to update maintenance alarm: ${error.message}`));
     }
   }

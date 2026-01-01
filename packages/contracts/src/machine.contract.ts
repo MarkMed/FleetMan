@@ -204,18 +204,18 @@ export const UpdateMachineRequestSchema = z.object({
     .optional(),
   assignedProviderId: z.string().optional().nullable(),
   
-  // Photo URL - permite string vacío O URL válida
+  // Photo URL - permite null, string vacío O URL válida
   machinePhotoUrl: z.string()
     .trim()
     .max(500, 'Photo URL cannot exceed 500 characters')
     .refine(
-      (val) => !val || val === '' || z.string().url().safeParse(val).success,
+      (val) => val === null || val === '' || z.string().url().safeParse(val).success,
       { message: 'Invalid photo URL format' }
     )
     .optional()
     .nullable(),
   
-  // Specs (nested partial - Mongoose hace merge automático)
+  // Specs (nested partial - usar dot notation para evitar reemplazar todo el objeto)
   specs: z.object({
     enginePower: z.number().positive().optional(),
     maxCapacity: z.number().positive().optional(),
@@ -223,7 +223,7 @@ export const UpdateMachineRequestSchema = z.object({
     year: z.number().int().min(1900).max(new Date().getFullYear() + 2).optional(),
     weight: z.number().positive().optional(),
     operatingHours: z.number().min(0).optional() // Para cronjob (no desde frontend típicamente)
-  }).partial().optional(),
+  }).partial().strict().optional(),
   
   // Location (nested partial)
   location: z.object({
@@ -233,7 +233,7 @@ export const UpdateMachineRequestSchema = z.object({
       latitude: z.number().min(-90).max(90),
       longitude: z.number().min(-180).max(180)
     }).optional()
-  }).partial().optional(),
+  }).partial().strict().optional(),
   
   // Usage schedule
   usageSchedule: UsageScheduleSchema.optional(),

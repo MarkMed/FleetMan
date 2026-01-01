@@ -60,7 +60,8 @@ export class UpdateOperatingHoursUseCase {
       const machine = machineResult.data;
 
       // Calcular nuevas horas (lógica de negocio)
-      const currentHours = machine.specs?.operatingHours || 0;
+      // Usar nullish coalescing (??) para distinguir 0 de undefined
+      const currentHours = machine.specs?.operatingHours ?? 0;
       const newTotalHours = currentHours + hoursToAdd;
 
       logger.info(
