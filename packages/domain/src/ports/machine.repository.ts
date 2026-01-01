@@ -67,13 +67,16 @@ export interface IMachineRepository {
    * Método genérico para updates parciales. No contiene lógica de negocio.
    * Los Use Cases deciden QUÉ actualizar y con QUÉ validaciones.
    * 
-   * Mongoose $set hace merge automático:
-   * - update(id, { specs: { operatingHours: 500 } }) → Solo actualiza ese campo
-   * - update(id, { brand: "X", nickname: "Y" }) → Actualiza ambos
+   * ⚠️ IMPORTANTE: Para nested objects, usar dot notation para evitar reemplazar todo:
+   * - update(id, { brand: "X" }) → OK (campo top-level)
+   * - update(id, { 'specs.operatingHours': 500 }) → OK (dot notation, solo actualiza ese campo)
+   * - update(id, { specs: { operatingHours: 500 } }) → ⚠️ REEMPLAZA todo specs (borra otros campos)
+   * 
+   * Use Cases deben usar flattenToDotNotation() para nested objects.
    * 
    * @param machineId - ID de la máquina
-   * @param updates - Objeto con campos a actualizar (cualquier estructura válida)
-   * @returns Result<Machine> - Retorna la máquina actualizada
+   * @param updates - Objeto con campos a actualizar (usar dot notation para nested)
+   * @returns Promise<Result<Machine>> - Retorna la máquina actualizada
    */
   update(
     machineId: MachineId,

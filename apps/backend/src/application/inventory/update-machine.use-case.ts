@@ -1,7 +1,8 @@
-import { MachineId, Machine, IMachine } from '@packages/domain';
+import { MachineId, IMachine } from '@packages/domain';
 import { MachineRepository } from '@packages/persistence';
 import { logger } from '../../config/logger.config';
 import { UpdateMachineRequest } from '@packages/contracts';
+import { flattenToDotNotation } from '../../utils/flatten-to-dot-notation';
 
 /**
  * Use Case para actualizar una máquina existente
@@ -71,12 +72,12 @@ export class UpdateMachineUseCase {
       // Photo
       if (request.machinePhotoUrl !== undefined) updates.machinePhotoUrl = request.machinePhotoUrl;
 
-      // Specs (nested - Mongoose hace merge automático)
+      // Specs (nested - usar dot notation para evitar reemplazar todo el objeto)
       if (request.specs) {
         updates.specs = request.specs;
       }
 
-      // Location (nested)
+      // Location (nested - usar dot notation para evitar reemplazar todo el objeto)
       if (request.location) {
         updates.location = request.location;
       }
@@ -91,8 +92,12 @@ export class UpdateMachineUseCase {
         throw new Error('No fields to update');
       }
 
+      // Convertir nested objects a dot notation para evitar reemplazar objetos completos
+      // Ejemplo: { specs: { operatingHours: 500 } } → { 'specs.operatingHours': 500 }
+      const flattenedUpdates = flattenToDotNotation(updates);
+
       // Delegar update al repo (sin lógica, solo persistencia)
-      const updateResult = await this.machineRepository.update(idResult.data, updates);
+      const updateResult = await this.machineRepository.update(idResult.data, flattenedUpdates);
       if (!updateResult.success) {
         throw new Error(updateResult.error.message);
       }

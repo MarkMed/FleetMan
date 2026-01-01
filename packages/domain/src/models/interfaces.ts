@@ -231,6 +231,7 @@ export interface IMaintenanceAlarm {
   readonly isActive: boolean; // Permite desactivar sin eliminar
   readonly createdBy: string; // userId - Trazabilidad
   readonly createdAt: Date; // Timestamp de creación
+  readonly updatedAt: Date; // Timestamp de última actualización
   readonly lastTriggeredAt?: Date; // Última vez que se disparó la alarma
   readonly lastTriggeredHours?: number; // operatingHours cuando se disparó (base para próximo trigger)
   readonly timesTriggered: number; // Contador de veces disparadas

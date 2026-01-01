@@ -30,6 +30,7 @@ export interface IMaintenanceAlarmSubdoc {
   isActive: boolean;
   createdBy: string;
   createdAt: Date;
+  updatedAt: Date;
   lastTriggeredAt?: Date;
   lastTriggeredHours?: number;
   timesTriggered: number;
@@ -54,6 +55,7 @@ export class MaintenanceAlarmMapper {
       isActive: doc.isActive,
       createdBy: doc.createdBy,
       createdAt: doc.createdAt,
+      updatedAt: doc.updatedAt,
       lastTriggeredAt: doc.lastTriggeredAt,
       lastTriggeredHours: doc.lastTriggeredHours,
       timesTriggered: doc.timesTriggered

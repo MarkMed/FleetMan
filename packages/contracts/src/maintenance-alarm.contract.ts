@@ -18,7 +18,8 @@ export const MaintenanceAlarmSchema = z.object({
   intervalHours: z.number().int().min(1),
   isActive: z.boolean(),
   createdBy: z.string(),
-  createdAt: z.coerce.date(), // coerce para parsear strings de fecha
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
   lastTriggeredAt: z.coerce.date().optional(),
   lastTriggeredHours: z.number().int().min(0).optional(),
   timesTriggered: z.number().int().min(0)
@@ -41,8 +42,8 @@ export const CreateMaintenanceAlarmRequestSchema = z.object({
       .min(1, 'Part name cannot be empty')
       .trim()
   )
-    .min(0, 'Related parts array cannot be null')
-    .max(50, 'Too many parts (max 50)'),
+    .max(50, 'Too many parts (max 50)')
+    .default([]),
   intervalHours: z.number()
     .int('Interval must be an integer')
     .min(1, 'Interval must be at least 1 hour')

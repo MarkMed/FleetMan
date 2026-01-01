@@ -205,17 +205,23 @@ export class MachineRepository implements IMachineRepository {
    * - Repository = Experto en persistencia (CÓMO guardar en DB)
    * - Use Case = Experto en negocio (QUÉ actualizar, validaciones)
    * 
-   * Este método es GENÉRICO - no contiene lógica de negocio.
-   * Solo delega a Mongoose que hace merge automático con $set.
+   * ⚠️ IMPORTANTE - Nested Objects:
+   * $set con objetos nested REEMPLAZA el objeto completo, NO hace merge.
+   * Para updates parciales de nested objects, usar dot notation:
+   * 
+   * ❌ INCORRECTO: { specs: { operatingHours: 500 } } → Borra enginePower, fuelType, etc.
+   * ✅ CORRECTO:   { 'specs.operatingHours': 500 } → Solo actualiza ese campo
+   * 
+   * Use Cases deben usar flattenToDotNotation() para nested objects.
    * 
    * @param machineId - ID de la máquina
-   * @param updates - Objeto con campos a actualizar (Mongoose hace merge automático)
-   * @returns Result<void>
+   * @param updates - Objeto con campos a actualizar (usar dot notation para nested)
+   * @returns Result<Machine> - Retorna la máquina actualizada
    * 
    * Ejemplos:
-   * - update(id, { brand: "NewBrand" })
-   * - update(id, { specs: { operatingHours: 500 } }) → Solo actualiza ese campo
-   * - update(id, { brand: "X", location: { city: "NY" } })
+   * - update(id, { brand: "NewBrand" }) → OK (campo top-level)
+   * - update(id, { 'specs.operatingHours': 500 }) → OK (dot notation)
+   * - update(id, { brand: "X", 'location.city': "NY" }) → OK (mixto)
    */
   async update(
     machineId: MachineId,
@@ -979,7 +985,7 @@ export class MachineRepository implements IMachineRepository {
       }
 
       // Verify alarm was updated (exists in array)
-      const alarmExists = result.maintenanceAlarms?.some((a: any) => a._id.toHexString() === alarmId);
+      const alarmExists = result.maintenanceAlarms?.some((a: any) => a._id.toString() === alarmId);
       if (!alarmExists) {
         return err(DomainError.notFound(`Maintenance alarm with ID ${alarmId} not found in machine`));
       }

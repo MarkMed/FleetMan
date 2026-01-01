@@ -74,12 +74,11 @@ export class UpdateOperatingHoursUseCase {
       );
 
       // Delegar update al repo (sin lógica, solo persistencia)
+      // Usar dot notation para actualizar SOLO operatingHours sin borrar otros campos de specs
       const updateResult = await this.machineRepository.update(
         idResult.data,
         {
-          specs: {
-            operatingHours: newTotalHours
-          }
+          'specs.operatingHours': newTotalHours
         }
       );
 

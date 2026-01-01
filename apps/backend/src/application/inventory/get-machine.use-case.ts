@@ -1,4 +1,4 @@
-import { Machine, MachineId, IMachine } from '@packages/domain';
+import { MachineId, IMachine } from '@packages/domain';
 import { MachineRepository } from '@packages/persistence';
 import { logger } from '../../config/logger.config';
 

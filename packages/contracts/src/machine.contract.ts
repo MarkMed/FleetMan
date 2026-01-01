@@ -63,7 +63,7 @@ export const MachineSpecsSchema = z.object({
   enginePower: z.number().positive().optional(),
   maxCapacity: z.number().positive().optional(),
   fuelType: FuelTypeSchema.optional(),
-  year: z.number().int().min(1900).max(new Date().getFullYear() + 1).optional(),
+  year: z.number().int().min(1900).max(new Date().getFullYear() + 2).optional(),
   weight: z.number().positive().optional(),
   operatingHours: z.number().min(0).optional()
 }) satisfies z.ZodType<MachineSpecs>;
