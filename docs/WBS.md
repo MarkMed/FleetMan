@@ -742,6 +742,17 @@ Frontend: Configuración básica de React Router con definición de rutas princi
 		- Spike: **No**
 		- **Tareas agrupadas:** [2] Animaciones, [4] Reorder inputs
 
+	- 12.9 **UI/UX Enhancement - Simplicidad y Progressive Disclosure** (NFR).
+Refinamiento holístico de la experiencia de usuario en todas las pantallas existentes de la aplicación, con foco en simplicidad visual y cognitiva. Objetivo: Mejorar la calidad de uso, comprensión y navegación del sistema sin agregar nuevas funcionalidades core. Aplicar principio de Progressive Disclosure: mostrar primero lo esencial, revelar información adicional de forma gradual y contextual, facilitar exploración sin abrumar. Alcance: (1) Auditoría UX de pantallas principales (Dashboard, Máquinas List/Detail, QuickCheck, Mantenimientos, Notificaciones, Settings), (2) Identificar puntos de sobrecarga cognitiva o información redundante, (3) Rediseño/simplificación de layouts con jerarquía visual clara (tipografía, espaciado, agrupación), (4) Implementar patrones de Progressive Disclosure: tooltips informativos, collapsible sections, tabs/accordions para contenido secundario, estados empty con CTAs claros, (5) Consistencia de componentes: botones, cards, forms, modals con misma estructura y estilo, (6) Testing con usuario (informal) para validar mejoras. NO incluye: nuevas funcionalidades, refactor de backend, cambios en lógica de negocio, rediseño total de identidad visual (mantener guía de estilos existente). Tecnologías: Tailwind CSS utilities, ShadCN UI components (Accordion, Tooltip, Collapsible), Framer Motion para transiciones suaves. Entregables: Pantallas simplificadas con Progressive Disclosure aplicado, documentación de patrones UX adoptados, notas de mejoras implementadas por pantalla.
+		- Horas estimadas: **12**hs
+		- Margen: ±**2.5**hs (P80)
+		- Incertidumbre: **Media-Alta**
+		- Dependencias: 12.7, 4.1f, 4.2d, 8.4 (FS) - Requiere features principales implementadas
+		- Spike: **No** (refinamiento iterativo sobre código existente)
+		- PERT: Optimista 9hs, Probable 12hs, Pesimista 16hs
+		- Nota: **Tarea planificada para Sprint #13 o #14** (post-MVP), enfocada en pulido de calidad de uso antes de entregas finales. Se considera requerimiento NO funcional (NFR) que mejora usabilidad sin alterar funcionalidad core.
+		- **Tareas conceptuales agrupadas:** [Auditoría UX], [Simplificación layouts], [Progressive Disclosure], [Consistencia componentes], [Testing usuario]
+
 13. **Calidad & Pruebas** (alineado a SQA)
 
 	- 13.1 **Estrategia & DoD QA**.
