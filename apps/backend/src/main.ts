@@ -13,6 +13,7 @@ import routes from './routes';
 import { connectDatabase } from './config/database.config';
 import { seedMachineTypesIfEmpty } from './scripts/seed-machine-types';
 import { seedMachineEventTypesIfEmpty } from './scripts/seed-machine-event-types';
+import { MaintenanceCronService } from './services/cron/maintenance-cron.service';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -107,6 +108,9 @@ app.get('/api', (req, res) => {
 // TODO: Remove this line when routes are registered above
 // app.use('/api/v1', routes);
 
+// Global reference for cronjobs (needed for graceful shutdown)
+let maintenanceCronService: MaintenanceCronService | null = null;
+
 // Función principal para inicializar la aplicación
 (async () => {
   try {
@@ -123,7 +127,13 @@ app.get('/api', (req, res) => {
     // 2b. Seed de MachineTypes (tipos de máquina)
     await seedMachineTypesIfEmpty();
     
-    // 3. Iniciar servidor HTTP
+    // 3. Inicializar y arrancar cronjobs
+    // Sprint #11: Maintenance Alarms - Daily cronjob for automatic maintenance alerts
+    maintenanceCronService = new MaintenanceCronService();
+    maintenanceCronService.start();
+    console.log('✅ Maintenance cronjob started');
+    
+    // 4. Iniciar servidor HTTP
     app.listen(PORT, () => {
       console.log(`🚀 FleetMan Backend running on port ${PORT}`);
       console.log(`🌐 API available at http://localhost:${PORT}/api`);
@@ -139,16 +149,33 @@ app.get('/api', (req, res) => {
 })();
 
 // Graceful shutdown
+// Mejora A: Esperar a que cronjob termine antes de desconectar DB
 process.on('SIGTERM', async () => {
   console.log('SIGTERM received, shutting down gracefully');
+  
+  // Stop cronjobs first (waits for ongoing execution with 5min timeout)
+  if (maintenanceCronService) {
+    await maintenanceCronService.stop();
+  }
+  
+  // Disconnect from database
   const { disconnectDatabase } = await import('./config/database.config');
   await disconnectDatabase();
+  
   process.exit(0);
 });
 
 process.on('SIGINT', async () => {
   console.log('SIGINT received, shutting down gracefully');
+  
+  // Stop cronjobs first (waits for ongoing execution with 5min timeout)
+  if (maintenanceCronService) {
+    await maintenanceCronService.stop();
+  }
+  
+  // Disconnect from database
   const { disconnectDatabase } = await import('./config/database.config');
   await disconnectDatabase();
+  
   process.exit(0);
 });

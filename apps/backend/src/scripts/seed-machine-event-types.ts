@@ -49,6 +49,11 @@ const MACHINE_EVENT_TYPES_SEED = [
     languages: ['es', 'en'],
     systemGenerated: true 
   },
+  { 
+    name: NOTIFICATION_MESSAGE_KEYS.maintenance.alarmTriggered, 
+    languages: ['es', 'en'],
+    systemGenerated: true 
+  },
   
   // ===== TIPOS SUGERIDOS (Manuales) - ESPAÑOL =====
   // Tipos comunes que los usuarios pueden reportar manualmente
