@@ -18,6 +18,9 @@ import { MaintenanceCronService } from './services/cron/maintenance-cron.service
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+// Global maintenance cron service instance
+export let maintenanceCronService: MaintenanceCronService | null = null;
+
 // Security middlewares
 app.use(helmet({
   contentSecurityPolicy: false,
@@ -108,9 +111,6 @@ app.get('/api', (req, res) => {
 // TODO: Remove this line when routes are registered above
 // app.use('/api/v1', routes);
 
-// Global reference for cronjobs (needed for graceful shutdown)
-let maintenanceCronService: MaintenanceCronService | null = null;
-
 // Función principal para inicializar la aplicación
 (async () => {
   try {
@@ -153,7 +153,7 @@ let maintenanceCronService: MaintenanceCronService | null = null;
 process.on('SIGTERM', async () => {
   console.log('SIGTERM received, shutting down gracefully');
   
-  // Stop cronjobs first (waits for ongoing execution with 5min timeout)
+  // Stop cronjobs first (waits for ongoing execution)
   if (maintenanceCronService) {
     await maintenanceCronService.stop();
   }
@@ -168,7 +168,7 @@ process.on('SIGTERM', async () => {
 process.on('SIGINT', async () => {
   console.log('SIGINT received, shutting down gracefully');
   
-  // Stop cronjobs first (waits for ongoing execution with 5min timeout)
+  // Stop cronjobs first (waits for ongoing execution)
   if (maintenanceCronService) {
     await maintenanceCronService.stop();
   }

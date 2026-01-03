@@ -856,6 +856,7 @@ export class MachineRepository implements IMachineRepository {
       description?: string;
       relatedParts: string[];
       intervalHours: number;
+      accumulatedHours: number;
       createdBy: string;
     }
   ): Promise<Result<IMaintenanceAlarm, DomainError>> {
@@ -871,6 +872,7 @@ export class MachineRepository implements IMachineRepository {
               description: alarmData.description,
               relatedParts: alarmData.relatedParts,
               intervalHours: alarmData.intervalHours,
+              accumulatedHours: alarmData.accumulatedHours,
               isActive: true, // Default value
               createdBy: alarmData.createdBy,
               timesTriggered: 0,
@@ -950,13 +952,10 @@ export class MachineRepository implements IMachineRepository {
       relatedParts?: string[];
       intervalHours?: number;
       isActive?: boolean;
+      accumulatedHours?: number;
+      lastTriggeredAt?: Date;
     }
-  ): Promise<Result<void, DomainError>> {
-    // TODO: Refactorizar para retornar IMaintenanceAlarm actualizada usando MaintenanceAlarmMapper
-    // Razón: Útil para controllers que necesiten confirmar el cambio al usuario con el objeto actualizado
-    // Declaración: Promise<Result<IMaintenanceAlarm, DomainError>>
-    // Cambio: En lugar de solo verificar alarmExists, hacer const updatedAlarm = result.maintenanceAlarms?.find(...) y return ok(MaintenanceAlarmMapper.toDomain(updatedAlarm))
-    
+  ): Promise<Result<IMaintenanceAlarm, DomainError>> {
     try {
       const updateFields: any = {};
       
@@ -975,6 +974,12 @@ export class MachineRepository implements IMachineRepository {
       if (updates.isActive !== undefined) {
         updateFields['maintenanceAlarms.$[alarm].isActive'] = updates.isActive;
       }
+      if (updates.accumulatedHours !== undefined) {
+        updateFields['maintenanceAlarms.$[alarm].accumulatedHours'] = updates.accumulatedHours;
+      }
+      if (updates.lastTriggeredAt !== undefined) {
+        updateFields['maintenanceAlarms.$[alarm].lastTriggeredAt'] = updates.lastTriggeredAt;
+      }
 
       // Always update updatedAt timestamp
       updateFields['maintenanceAlarms.$[alarm].updatedAt'] = new Date();
@@ -992,13 +997,15 @@ export class MachineRepository implements IMachineRepository {
         return err(DomainError.notFound(`Machine with ID ${machineId.getValue()} not found`));
       }
 
-      // Verify alarm was updated (exists in array)
-      const alarmExists = result.maintenanceAlarms?.some((a: any) => a._id.toString() === alarmId);
-      if (!alarmExists) {
+      // Find and return the updated alarm
+      const updatedAlarm = result.maintenanceAlarms?.find((a: any) => a._id.toString() === alarmId);
+      if (!updatedAlarm) {
         return err(DomainError.notFound(`Maintenance alarm with ID ${alarmId} not found in machine`));
       }
 
-      return ok(undefined);
+      // Map to domain entity using MaintenanceAlarmMapper
+      const mappedAlarm = MaintenanceAlarmMapper.toDomain(updatedAlarm as any);
+      return ok(mappedAlarm);
     } catch (error: any) {
       logger.error({
         machineId: machineId.getValue(),
@@ -1016,7 +1023,11 @@ export class MachineRepository implements IMachineRepository {
     machineId: MachineId,
     alarmId: string
   ): Promise<Result<void, DomainError>> {
-    return this.updateMaintenanceAlarm(machineId, alarmId, { isActive: false });
+    const result = await this.updateMaintenanceAlarm(machineId, alarmId, { isActive: false });
+    if (!result.success) {
+      return err(result.error);
+    }
+    return ok(undefined); // Convert Result<IMaintenanceAlarm> to Result<void>
   }
 
   /**

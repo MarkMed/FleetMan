@@ -320,6 +320,29 @@ export class MaintenanceCronService {
     if (!this.lastExecutionTime) return null;
     return Date.now() - this.lastExecutionTime.getTime();
   }
+
+  /**
+   * Get comprehensive status of the cron service
+   * Útil para admin endpoints y monitoring
+   */
+  public getStatus(): {
+    isSchedulerRunning: boolean;
+    isExecutionRunning: boolean;
+    lastExecutionTime: string | null;
+    timeSinceLastExecutionMs: number | null;
+    schedule: string;
+  } {
+    const TEMP_CRON_SHCEDULE_FOR_TESTING = '*/5 * * * *';
+    const schedule = TEMP_CRON_SHCEDULE_FOR_TESTING;
+    
+    return {
+      isSchedulerRunning: this.isSchedulerRunning(),
+      isExecutionRunning: this.isExecutionRunning(),
+      lastExecutionTime: this.lastExecutionTime?.toISOString() ?? null,
+      timeSinceLastExecutionMs: this.getTimeSinceLastExecution(),
+      schedule
+    };
+  }
 }
 
 // TODO: Configurar alertas para errores en cronjob

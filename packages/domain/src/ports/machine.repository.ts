@@ -238,7 +238,7 @@ export interface IMachineRepository {
    * @param machineId - ID de la máquina
    * @param alarmId - ID de la alarma (subdocument _id)
    * @param updates - Campos a actualizar (partial update)
-   * @returns Result void o error
+   * @returns Result con la alarma actualizada o error
    */
   updateMaintenanceAlarm(
     machineId: MachineId,
@@ -249,8 +249,10 @@ export interface IMachineRepository {
       relatedParts?: string[];
       intervalHours?: number;
       isActive?: boolean;
+      accumulatedHours?: number;
+      lastTriggeredAt?: Date;
     }
-  ): Promise<Result<void, DomainError>>;
+  ): Promise<Result<IMaintenanceAlarm, DomainError>>;
 
   /**
    * Elimina (soft delete) una alarma de mantenimiento
