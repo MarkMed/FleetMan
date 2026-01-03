@@ -100,9 +100,16 @@ export const MachineDetailsScreen: React.FC = () => {
 
             {/* Action Buttons */}
             <div className="flex gap-3 mt-6 flex-wrap justify-between">
-              <div>
+              <div className="flex gap-3">
                 <Button variant="outline" size="default" disabled>
                   Editar Máquina
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="default"
+                  onPress={() => navigate(`/machines/${id}/alarms`)}
+                >
+                  {t('machines.actions.viewMaintenanceAlarms')}
                 </Button>
               </div>
               <div className="flex-grow flex justify-end gap-3">

@@ -79,37 +79,14 @@ export const machineSchema = z.object({
   notes: z.string().optional(),
 });
 
-// Maintenance reminder schema
-export const maintenanceReminderSchema = z.object({
-  title: z
-    .string()
-    .min(1, 'El título es requerido')
-    .min(3, 'El título debe tener al menos 3 caracteres'),
-  description: z.string().optional(),
-  type: z.enum(['time', 'hours', 'both'], {
-    errorMap: () => ({ message: 'Selecciona un tipo de recordatorio' }),
-  }),
-  intervalDays: z.number().optional(),
-  intervalHours: z.number().optional()
-})
-  .superRefine((data, ctx) => {
-    const { type, intervalDays, intervalHours } = data;
-    if ((type === 'time' || type === 'both') && (!intervalDays || intervalDays <= 0)) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: 'Los días de intervalo son requeridos cuando el tipo incluye tiempo',
-        path: ['intervalDays']
-      });
-    }
-    if ((type === 'hours' || type === 'both') && (!intervalHours || intervalHours <= 0)) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: 'Las horas de intervalo son requeridas cuando el tipo incluye horas',
-        path: ['intervalHours']
-      });
-    }
-  });
-  
+// Maintenance alarm validators - now using contract schemas
+// Import from @contracts for DRY compliance
+// export { CreateMaintenanceAlarmRequestSchema, UpdateMaintenanceAlarmRequestSchema } from '@contracts';
+// 
+// DEPRECATED: Old maintenanceReminderSchema removed - use CreateMaintenanceAlarmRequestSchema instead
+// The old schema supported 'time' | 'hours' | 'both' types
+// New alarm system only uses hours-based intervals (intervalHours)
+// Migration: type='hours' → keep intervalHours, type='time'/'both' → convert to equivalent hours
 
 // Event schema
 export const eventSchema = z.object({
@@ -215,7 +192,7 @@ export const contactInfoSchema = z.object({
 export type LoginFormData = z.infer<typeof loginSchema>;
 export type RegisterFormData = z.infer<typeof registerSchema>;
 export type MachineFormData = z.infer<typeof machineSchema>;
-export type MaintenanceReminderFormData = z.infer<typeof maintenanceReminderSchema>;
+// MaintenanceReminderFormData deprecated - use CreateMaintenanceAlarmRequest from @contracts
 export type EventFormData = z.infer<typeof eventSchema>;
 export type QuickCheckFormData = z.infer<typeof quickCheckSchema>;
 export type QuickCheckItemFormData = z.infer<typeof quickCheckItemSchema>;
