@@ -123,8 +123,8 @@ export const RelatedPartsInput: React.FC<RelatedPartsInputProps> = ({
         <Button
           htmlType="button"
           variant="outline"
-          size="sm"
-          onPress={handleAddPart}
+          className='h-10 border-primary/90'
+          onPress={handleAddPart}		  
           disabled={!inputValue.trim() || isAtMaxCapacity}
         >
           <Plus className="w-4 h-4 mr-2" />
@@ -134,7 +134,7 @@ export const RelatedPartsInput: React.FC<RelatedPartsInputProps> = ({
 
       {/* Tags Display */}
       {value.length > 0 && (
-        <div className="flex flex-wrap gap-2 p-3 bg-muted/50 rounded-md min-h-[60px]">
+        <div className="flex flex-wrap gap-2 p-3 bg-muted/30 rounded-md min-h-[60px]">
           {value.map((part, index) => (
             <Badge
               key={index}

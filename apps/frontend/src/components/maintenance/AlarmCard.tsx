@@ -112,9 +112,9 @@ export const AlarmCard: React.FC<AlarmCardProps> = ({
       {/* View Details Button - Full Width for Accessibility */}
       <div className="mt-4 pt-3 border-t border-border">
         <Button
-          variant="ghost"
+          variant="outline"
           onPress={() => onViewDetails?.(alarm)}
-          className="w-full justify-between"
+          className="w-full justify-between border-border hover:bg-accent"
         >
           <span>{t('maintenance.alarms.viewDetails')}</span>
           <ChevronRight className="h-4 w-4" />
