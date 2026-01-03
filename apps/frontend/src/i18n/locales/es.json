@@ -125,6 +125,11 @@
     "title": "Máquinas",
     "addMachine": "Agregar Máquina",
     "machineDetails": "Detalles de la Máquina",
+    "breadcrumb": {
+      "machines": "Máquinas",
+      "detail": "Detalle",
+      "alarms": "Alarmas"
+    },
     "serialNumber": "Número de Serie",
     "model": "Modelo",
     "brand": "Marca",

@@ -2,7 +2,6 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import type { MaintenanceAlarm } from '@contracts';
 import { Card, BodyText, Badge } from '@components/ui';
-import { Clock, Wrench, AlertTriangle, CheckCircle } from 'lucide-react';
 import { AlarmProgressIndicator } from './AlarmProgressIndicator';
 
 interface AlarmCardProps {
@@ -66,29 +65,19 @@ export const AlarmCard: React.FC<AlarmCardProps> = ({
       `}
       onClick={() => onClick?.(alarm)}
     >
-      {/* Header: Title + Status Badge */}
-      <div className="flex items-start justify-between mb-3">
-        <div className="flex-1 pr-4">
-          <div className="flex items-center gap-2 mb-1">
-            <Wrench className="w-5 h-5 text-primary" />
-            <BodyText weight="medium" className="text-foreground">
-              {alarm.title}
-            </BodyText>
-          </div>
-          {alarm.description && (
-            <BodyText size="small" className="text-muted-foreground line-clamp-2">
-              {alarm.description}
-            </BodyText>
-          )}
-        </div>
-
-        {/* Status Badge */}
-        <Badge variant={alarm.isActive ? 'success' : 'secondary'}>
-          {alarm.isActive ? t('maintenance.isActive') : t('common.inactive')}
-        </Badge>
+      {/* Header: Title only (minimalist) */}
+      <div className="mb-3">
+        <BodyText weight="medium" className="text-foreground mb-1">
+          {alarm.title}
+        </BodyText>
+        {alarm.description && (
+          <BodyText size="small" className="text-muted-foreground line-clamp-2">
+            {alarm.description}
+          </BodyText>
+        )}
       </div>
 
-      {/* Progress Indicator */}
+      {/* Progress Indicator - Core visual element */}
       <div className="mb-3">
         <AlarmProgressIndicator
           currentHours={hoursSinceLastTrigger}
@@ -96,57 +85,6 @@ export const AlarmCard: React.FC<AlarmCardProps> = ({
           isOverdue={isOverdue}
         />
       </div>
-
-      {/* Stats Grid */}
-      <div className="grid grid-cols-2 gap-3 pt-3 border-t border-border">
-        {/* Interval */}
-        <div className="flex items-center gap-2">
-          <Clock className="w-4 h-4 text-muted-foreground" />
-          <div>
-            <BodyText size="small" className="text-muted-foreground">
-              {t('maintenance.alarms.intervalHoursLabel')}
-            </BodyText>
-            <BodyText size="small" weight="medium">
-              {alarm.intervalHours}h
-            </BodyText>
-          </div>
-        </div>
-
-        {/* Times Triggered */}
-        <div className="flex items-center gap-2">
-          {isOverdue ? (
-            <AlertTriangle className="w-4 h-4 text-destructive" />
-          ) : (
-            <CheckCircle className="w-4 h-4 text-success" />
-          )}
-          <div>
-            <BodyText size="small" className="text-muted-foreground">
-              {t('maintenance.alarms.timesTriggered')}
-            </BodyText>
-            <BodyText size="small" weight="medium">
-              {alarm.timesTriggered}
-            </BodyText>
-          </div>
-        </div>
-      </div>
-
-      {/* Warning/Success Message */}
-      {isOverdue && (
-        <div className="mt-3 flex items-center gap-2 p-2 bg-destructive/10 rounded-md">
-          <AlertTriangle className="w-4 h-4 text-destructive flex-shrink-0" />
-          <BodyText size="small" className="text-destructive">
-            {t('maintenance.alarms.progress.overdue', { hours: Math.abs(hoursRemaining) })}
-          </BodyText>
-        </div>
-      )}
-      {isApproaching && !isOverdue && (
-        <div className="mt-3 flex items-center gap-2 p-2 bg-warning/10 rounded-md">
-          <AlertTriangle className="w-4 h-4 text-warning flex-shrink-0" />
-          <BodyText size="small" className="text-warning">
-            {t('maintenance.alarms.progress.approaching')}
-          </BodyText>
-        </div>
-      )}
 
       {/* Related Parts (if any) */}
       {alarm.relatedParts.length > 0 && (
@@ -177,10 +115,28 @@ export const AlarmCard: React.FC<AlarmCardProps> = ({
 // ============================================
 
 /**
+ * Elements removed for minimalism (moved to AlarmDetailModal):
+ * 
+ * 1. Wrench icon - Potential UX confusion (looks clickable)
+ * 2. Status Badge - Redundant with opacity + available in modal
+ * 3. Stats Grid - Secondary info (interval, times triggered)
+ * 4. Warning/Success Messages - Redundant with progress bar colors
+ * 
+ * Preserved elements (core functionality):
+ * - Title + Description (primary identification)
+ * - AlarmProgressIndicator (gigachad visual - color-coded status)
+ * - Related Parts (actionable info for maintenance)
+ * - Opacity 60% for inactive alarms (subtle visual cue)
+ * 
+ * Restore via AlarmDetailModal on card click (progressive disclosure)
+ */
+
+/**
  * AlarmCard with drag-and-drop support
  * Allows reordering alarms by priority
  * 
  * Integration: React DnD or dnd-kit
+ * Props: onDragStart, onDragEnd, isDragging
  */
 // export const DraggableAlarmCard: React.FC<AlarmCardProps & DraggableProps> = ({ ... }) => { }
 
@@ -189,6 +145,7 @@ export const AlarmCard: React.FC<AlarmCardProps> = ({
  * Quick toggle active/inactive without opening modal
  * 
  * Props: onToggle, onEdit, onDelete actions
+ * UI: Action buttons appear on hover (Edit, Toggle, Delete icons)
  */
 // export const AlarmCardWithActions: React.FC<AlarmCardProps & ActionProps> = ({ ... }) => { }
 
@@ -196,6 +153,30 @@ export const AlarmCard: React.FC<AlarmCardProps> = ({
  * Compact AlarmCard variant
  * For dashboard widgets or mobile view
  * 
- * Shows only: title, interval, status, progress bar (no description/parts)
+ * Shows only: title, progress bar, status dot (no description/parts)
+ * Height: ~100px vs ~200px current
  */
+// export const CompactAlarmCard: React.FC<AlarmCardProps> = ({ ... }) => { }
+
+/**
+ * AlarmDetailModal - Progressive Disclosure Pattern
+ * 
+ * Shows all metadata removed from card for clean UI:
+ * - Status badge with toggle action
+ * - Stats: Interval (500h), Times triggered (3x), Last triggered (Dec 28)
+ * - Warning/approaching messages with icons
+ * - Full related parts list (no truncation at 3 items)
+ * - Action buttons: Edit, Activate/Deactivate, Delete
+ * - Future: Trigger history timeline
+ * 
+ * Props:
+ * - alarm: MaintenanceAlarm
+ * - currentOperatingHours: number
+ * - onEdit: (alarm) => void
+ * - onToggleStatus: (alarmId, isActive) => void
+ * - onDelete: (alarmId) => void
+ * 
+ * Trigger: onClick from AlarmCard
+ */
+// export const AlarmDetailModal: React.FC<AlarmDetailModalProps> = ({ ... }) => { }
 // export const CompactAlarmCard: React.FC<AlarmCardProps> = ({ ... }) => { }

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Heading1, BodyText, Button, Card, Badge } from '@components/ui';
-import { Plus, AlertCircle, Bell, BellOff } from 'lucide-react';
+import { Heading1, BodyText, Button, Card } from '@components/ui';
+import { Plus, AlertCircle, Bell } from 'lucide-react';
 import { useMaintenanceAlarms } from '@hooks';
 import { AlarmCard, CreateEditAlarmModal } from '@components/maintenance';
 import type { MaintenanceAlarm } from '@contracts';
@@ -31,10 +31,7 @@ export function MaintenanceAlarmsListScreen() {
   // STATE
   // ========================
 
-  // Filter state: 'all' | 'active' | 'inactive'
-  const [filterStatus, setFilterStatus] = useState<'all' | 'active' | 'inactive'>('all');
-  
-  // Selected alarm for detail modal (Step 6)
+  // Selected alarm for detail modal (POST-MVP Step 6)
   const [selectedAlarm, setSelectedAlarm] = useState<MaintenanceAlarm | null>(null);
   
   // Create/Edit modal state (Step 5)
@@ -59,18 +56,6 @@ export function MaintenanceAlarmsListScreen() {
   // ========================
 
   const alarms = data?.alarms || [];
-  
-  // Filter alarms based on selected status
-  const filteredAlarms = alarms.filter(alarm => {
-    if (filterStatus === 'active') return alarm.isActive;
-    if (filterStatus === 'inactive') return !alarm.isActive;
-    return true; // 'all'
-  });
-
-  // Stats
-  const totalAlarms = alarms.length;
-  const activeAlarms = alarms.filter(a => a.isActive).length;
-  const inactiveAlarms = alarms.filter(a => !a.isActive).length;
 
   // ========================
   // HANDLERS
@@ -136,7 +121,20 @@ export function MaintenanceAlarmsListScreen() {
 
   if (alarms.length === 0) {
     return (
-      <div className="space-y-8">
+      <div className="container mx-auto px-4 py-6 space-y-6">
+        {/* Breadcrumb */}
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <Link to="/machines" className="hover:text-foreground">
+            {t('machines.breadcrumb.machines')}
+          </Link>
+          <span>/</span>
+          <Link to={`/machines/${machineId}`} className="hover:text-foreground">
+            {t('machines.breadcrumb.detail')}
+          </Link>
+          <span>/</span>
+          <span className="text-foreground">{t('machines.breadcrumb.alarms')}</span>
+        </div>
+
         {/* Header */}
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-4">
           <div>
@@ -176,7 +174,20 @@ export function MaintenanceAlarmsListScreen() {
   // ========================
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
+      {/* Breadcrumb */}
+      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+        <Link to="/machines" className="hover:text-foreground">
+          {t('machines.breadcrumb.machines')}
+        </Link>
+        <span>/</span>
+        <Link to={`/machines/${machineId}`} className="hover:text-foreground">
+          {t('machines.breadcrumb.detail')}
+        </Link>
+        <span>/</span>
+        <span className="text-foreground">{t('machines.breadcrumb.alarms')}</span>
+      </div>
+
       {/* Header with Create Button */}
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-4">
         <div>
@@ -193,101 +204,9 @@ export function MaintenanceAlarmsListScreen() {
         </Button>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Card className="p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <BodyText size="small" className="text-muted-foreground">
-                {t('maintenance.alarms.stats.total')}
-              </BodyText>
-              <Heading1 size="large" className="mt-1">
-                {totalAlarms}
-              </Heading1>
-            </div>
-            <Bell className="h-8 w-8 text-primary" />
-          </div>
-        </Card>
-
-        <Card className="p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <BodyText size="small" className="text-muted-foreground">
-                {t('maintenance.alarms.stats.active')}
-              </BodyText>
-              <Heading1 size="large" className="mt-1 text-success">
-                {activeAlarms}
-              </Heading1>
-            </div>
-            <Bell className="h-8 w-8 text-success" />
-          </div>
-        </Card>
-
-        <Card className="p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <BodyText size="small" className="text-muted-foreground">
-                {t('maintenance.alarms.stats.inactive')}
-              </BodyText>
-              <Heading1 size="large" className="mt-1 text-muted-foreground">
-                {inactiveAlarms}
-              </Heading1>
-            </div>
-            <BellOff className="h-8 w-8 text-muted-foreground" />
-          </div>
-        </Card>
-      </div>
-
-      {/* Filter Buttons */}
-      <div className="flex gap-2">
-        <Button
-          variant={filterStatus === 'all' ? 'filled' : 'outline'}
-          size="sm"
-          onPress={() => setFilterStatus('all')}
-        >
-          {t('maintenance.alarms.showAll')}
-          <Badge variant="secondary" className="ml-2">
-            {totalAlarms}
-          </Badge>
-        </Button>
-        <Button
-          variant={filterStatus === 'active' ? 'filled' : 'outline'}
-          size="sm"
-          onPress={() => setFilterStatus('active')}
-        >
-          {t('maintenance.alarms.showActive')}
-          <Badge variant="secondary" className="ml-2">
-            {activeAlarms}
-          </Badge>
-        </Button>
-        <Button
-          variant={filterStatus === 'inactive' ? 'filled' : 'outline'}
-          size="sm"
-          onPress={() => setFilterStatus('inactive')}
-        >
-          {t('maintenance.alarms.showInactive')}
-          <Badge variant="secondary" className="ml-2">
-            {inactiveAlarms}
-          </Badge>
-        </Button>
-      </div>
-
-      {/* Alarms Grid */}
-      {filteredAlarms.length === 0 ? (
-        <Card className="p-8">
-          <div className="flex flex-col items-center text-center space-y-2">
-            <BellOff className="h-12 w-12 text-muted-foreground" />
-            <BodyText className="text-muted-foreground">
-              {filterStatus === 'active' 
-                ? t('maintenance.alarms.empty.title') 
-                : `No hay alarmas ${filterStatus === 'inactive' ? 'inactivas' : 'en esta categoría'}`
-              }
-            </BodyText>
-          </div>
-        </Card>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredAlarms.map(alarm => (
+      {/* Alarms Grid - Minimalist approach: show all alarms without filters */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {alarms.map(alarm => (
             <AlarmCard
               key={alarm.id}
               alarm={alarm}
@@ -295,8 +214,7 @@ export function MaintenanceAlarmsListScreen() {
               onClick={handleViewDetails}
             />
           ))}
-        </div>
-      )}
+      </div>
 
       {/* Sprint #11 Step 5: CreateEditAlarmModal */}
       <CreateEditAlarmModal
@@ -309,14 +227,36 @@ export function MaintenanceAlarmsListScreen() {
         machineId={machineId}
       />
 
-      {/* TODO Sprint #11 Step 6: AlarmDetailModal */}
-      {/* <AlarmDetailModal
-        isOpen={!!selectedAlarm}
-        onClose={() => setSelectedAlarm(null)}
-        alarm={selectedAlarm}
-        machineId={machineId}
-        onEdit={handleEditAlarm}
-      /> */}
+      {/* POST-MVP: AlarmDetailModal - Progressive Disclosure Pattern 
+        
+        Modal for detailed alarm view with all metadata that was removed from card:
+        - Status badge (Active/Inactive) with toggle action
+        - Stats grid: Interval, Times triggered, Last triggered date
+        - Warning/approaching messages with icons
+        - Full related parts list (no truncation)
+        - Action buttons: Edit, Activate/Deactivate, Delete
+        - History timeline of triggers
+        
+        Trigger: Click on AlarmCard opens this modal
+        
+        Example implementation:
+        
+        const toggleMutation = useToggleAlarmStatus(machineId);
+        const deleteMutation = useDeleteMaintenanceAlarm(machineId);
+        
+        <AlarmDetailModal
+          open={!!selectedAlarm}
+          onOpenChange={(open) => !open && setSelectedAlarm(null)}
+          alarm={selectedAlarm}
+          currentOperatingHours={MOCK_CURRENT_OPERATING_HOURS}
+          machineId={machineId}
+          onEdit={handleEditAlarm}
+          onToggleStatus={(alarmId: string, isActive: boolean) => 
+            toggleMutation.mutate({ alarmId, isActive })
+          }
+          onDelete={(alarmId: string) => deleteMutation.mutate(alarmId)}
+        />
+      */}
     </div>
   );
 }
@@ -324,6 +264,20 @@ export function MaintenanceAlarmsListScreen() {
 // ============================================
 // POST-MVP: Enhanced Features (Commented)
 // ============================================
+
+/**
+ * Stats Cards + Filters (Removed for minimalism)
+ * 
+ * Re-enable if machine has >5 alarms or user requests filtering.
+ * Original implementation preserved in git history.
+ * 
+ * Features:
+ * - Stats cards: Total/Active/Inactive with icons
+ * - Filter buttons: All/Active/Inactive with count badges
+ * - Local filtering with reactive state
+ * 
+ * Tradeoff: Saves ~180px vertical space at cost of discoverability
+ */
 
 /**
  * Bulk Actions
