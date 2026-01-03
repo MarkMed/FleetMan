@@ -1,8 +1,9 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import type { MaintenanceAlarm } from '@contracts';
-import { Card, BodyText, Badge } from '@components/ui';
+import { Card, BodyText, Badge, Button } from '@components/ui';
 import { AlarmProgressIndicator } from './AlarmProgressIndicator';
+import { ChevronRight } from 'lucide-react';
 
 interface AlarmCardProps {
   alarm: MaintenanceAlarm;
@@ -12,9 +13,10 @@ interface AlarmCardProps {
    */
   currentOperatingHours: number;
   /**
-   * Click handler to open detail view
+   * Handler called when user clicks "Ver Más" button
+   * Triggers AlarmDetailModal display
    */
-  onClick?: (alarm: MaintenanceAlarm) => void;
+  onViewDetails?: (alarm: MaintenanceAlarm) => void;
   /**
    * Optional className for custom styling
    */
@@ -24,24 +26,25 @@ interface AlarmCardProps {
 /**
  * AlarmCard Component
  * 
- * Displays maintenance alarm summary in card format.
- * Shows: title, interval, active status, progress, last triggered info.
+ * Displays maintenance alarm summary in minimalist card format.
+ * Shows: title, description (2 lines), progress, related parts (max 3).
+ * Full details accessible via "Ver Más" button triggering AlarmDetailModal.
  * 
- * Sprint #11: Core component for MaintenanceAlarmsListScreen
+ * Sprint #11 Refinement: Minimalist UI + Progressive Disclosure Pattern
  * 
  * @example
  * ```tsx
  * <AlarmCard
  *   alarm={alarm}
  *   currentOperatingHours={machine.specs.operatingHours}
- *   onClick={(alarm) => setSelectedAlarm(alarm)}
+ *   onViewDetails={(alarm) => setSelectedAlarm(alarm)}
  * />
  * ```
  */
 export const AlarmCard: React.FC<AlarmCardProps> = ({
   alarm,
   currentOperatingHours,
-  onClick,
+  onViewDetails,
   className = '',
 }) => {
   const { t } = useTranslation();
@@ -59,11 +62,10 @@ export const AlarmCard: React.FC<AlarmCardProps> = ({
   return (
     <Card 
       className={`
-        p-4 hover:shadow-md transition-shadow cursor-pointer
+        p-4 hover:shadow-md transition-shadow
         ${!alarm.isActive ? 'opacity-60' : ''}
         ${className}
       `}
-      onClick={() => onClick?.(alarm)}
     >
       {/* Header: Title only (minimalist) */}
       <div className="mb-3">
@@ -106,6 +108,18 @@ export const AlarmCard: React.FC<AlarmCardProps> = ({
           </div>
         </div>
       )}
+
+      {/* View Details Button - Full Width for Accessibility */}
+      <div className="mt-4 pt-3 border-t border-border">
+        <Button
+          variant="ghost"
+          onPress={() => onViewDetails?.(alarm)}
+          className="w-full justify-between"
+        >
+          <span>{t('maintenance.alarms.viewDetails')}</span>
+          <ChevronRight className="h-4 w-4" />
+        </Button>
+      </div>
     </Card>
   );
 };

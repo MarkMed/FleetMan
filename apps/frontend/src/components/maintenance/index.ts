@@ -9,3 +9,4 @@ export { AlarmCard } from './AlarmCard';
 export { AlarmProgressIndicator } from './AlarmProgressIndicator';
 export { RelatedPartsInput } from './RelatedPartsInput';
 export { CreateEditAlarmModal } from './CreateEditAlarmModal';
+export { AlarmDetailModal } from './AlarmDetailModal';

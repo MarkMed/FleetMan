@@ -88,7 +88,6 @@ export const CreateEditAlarmModal: React.FC<CreateEditAlarmModalProps> = ({
       description: '',
       intervalHours: 100,
       relatedParts: [],
-      isActive: true,
     },
   });
 
@@ -109,7 +108,6 @@ export const CreateEditAlarmModal: React.FC<CreateEditAlarmModalProps> = ({
           description: alarm.description || '',
           intervalHours: alarm.intervalHours,
           relatedParts: [...alarm.relatedParts], // Clone array
-          isActive: alarm.isActive,
         });
       } else {
         // Create mode: reset to defaults
@@ -118,7 +116,6 @@ export const CreateEditAlarmModal: React.FC<CreateEditAlarmModalProps> = ({
           description: '',
           intervalHours: 100,
           relatedParts: [],
-          isActive: true,
         });
       }
     }
@@ -142,8 +139,8 @@ export const CreateEditAlarmModal: React.FC<CreateEditAlarmModalProps> = ({
           variant: 'success',
         });
       } else {
-        // Create new alarm
-        await createMutation.mutateAsync(data);
+        // Create new alarm - Always active by default (Focus on Value, Not Edge Cases)
+        await createMutation.mutateAsync({ ...data, isActive: true });
 
         toast({
           title: t('maintenance.alarms.notifications.created'),
@@ -249,21 +246,26 @@ export const CreateEditAlarmModal: React.FC<CreateEditAlarmModalProps> = ({
           />
         </div>
 
-        {/* Active Toggle */}
-        <div className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
-          <div>
-            <BodyText weight="medium">{t('maintenance.isActive')}</BodyText>
-            <BodyText size="small" className="text-muted-foreground">
-              {watch('isActive')
-                ? 'La alarma sonará automáticamente cuando se cumpla el intervalo'
-                : 'La alarma está desactivada y no sonará'}
-            </BodyText>
-          </div>
-          <Switch
-            checked={watch('isActive')}
-            onCheckedChange={(checked: boolean) => setValue('isActive', checked)}
-          />
-        </div>
+        {/* POST-MVP: Active Toggle
+         * Removed in minimalist iteration - "Focus on Value, Not Edge Cases"
+         * Edge case: Creating alarm to immediately disable makes no functional sense
+         * User can activate/deactivate later from AlarmDetailModal
+         * 
+         * <div className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
+         *   <div>
+         *     <BodyText weight="medium">{t('maintenance.isActive')}</BodyText>
+         *     <BodyText size="small" className="text-muted-foreground">
+         *       {watch('isActive')
+         *         ? 'La alarma sonará automáticamente cuando se cumpla el intervalo'
+         *         : 'La alarma está desactivada y no sonará'}
+         *     </BodyText>
+         *   </div>
+         *   <Switch
+         *     checked={watch('isActive')}
+         *     onCheckedChange={(checked: boolean) => setValue('isActive', checked)}
+         *   />
+         * </div>
+         */}
 
         {/* Action Buttons */}
         <div className="flex justify-end gap-3 pt-4">

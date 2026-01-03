@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Heading1, BodyText, Button, Card } from '@components/ui';
 import { Plus, AlertCircle, Bell } from 'lucide-react';
 import { useMaintenanceAlarms } from '@hooks';
-import { AlarmCard, CreateEditAlarmModal } from '@components/maintenance';
+import { AlarmCard, CreateEditAlarmModal, AlarmDetailModal } from '@components/maintenance';
 import type { MaintenanceAlarm } from '@contracts';
 
 /**
@@ -211,7 +211,7 @@ export function MaintenanceAlarmsListScreen() {
               key={alarm.id}
               alarm={alarm}
               currentOperatingHours={MOCK_CURRENT_OPERATING_HOURS}
-              onClick={handleViewDetails}
+              onViewDetails={handleViewDetails}
             />
           ))}
       </div>
@@ -227,35 +227,28 @@ export function MaintenanceAlarmsListScreen() {
         machineId={machineId}
       />
 
-      {/* POST-MVP: AlarmDetailModal - Progressive Disclosure Pattern 
+      {/* Sprint #11 Refinement: AlarmDetailModal - Progressive Disclosure Pattern */}
+      <AlarmDetailModal
+        open={!!selectedAlarm}
+        onOpenChange={(open) => !open && setSelectedAlarm(null)}
+        alarm={selectedAlarm}
+        currentOperatingHours={MOCK_CURRENT_OPERATING_HOURS}
+        machineId={machineId}
+        onEdit={handleEditAlarm}
+      />
+
+      {/* POST-MVP: Additional AlarmDetailModal features
         
-        Modal for detailed alarm view with all metadata that was removed from card:
-        - Status badge (Active/Inactive) with toggle action
-        - Stats grid: Interval, Times triggered, Last triggered date
-        - Warning/approaching messages with icons
-        - Full related parts list (no truncation)
-        - Action buttons: Edit, Activate/Deactivate, Delete
-        - History timeline of triggers
-        
-        Trigger: Click on AlarmCard opens this modal
-        
-        Example implementation:
+        Toggle Status and Delete actions (requires mutations):
         
         const toggleMutation = useToggleAlarmStatus(machineId);
         const deleteMutation = useDeleteMaintenanceAlarm(machineId);
         
-        <AlarmDetailModal
-          open={!!selectedAlarm}
-          onOpenChange={(open) => !open && setSelectedAlarm(null)}
-          alarm={selectedAlarm}
-          currentOperatingHours={MOCK_CURRENT_OPERATING_HOURS}
-          machineId={machineId}
-          onEdit={handleEditAlarm}
+        Props to add:
           onToggleStatus={(alarmId: string, isActive: boolean) => 
             toggleMutation.mutate({ alarmId, isActive })
           }
           onDelete={(alarmId: string) => deleteMutation.mutate(alarmId)}
-        />
       */}
     </div>
   );
