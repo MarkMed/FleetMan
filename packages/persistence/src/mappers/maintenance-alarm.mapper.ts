@@ -27,12 +27,13 @@ export interface IMaintenanceAlarmSubdoc {
   description?: string;
   relatedParts: string[];
   intervalHours: number;
+  accumulatedHours: number; // 🆕 NUEVO: Accumulator pattern field
   isActive: boolean;
   createdBy: string;
   createdAt: Date;
   updatedAt: Date;
   lastTriggeredAt?: Date;
-  lastTriggeredHours?: number;
+  lastTriggeredHours?: number; // ⚠️ DEPRECATED - mantener para compatibilidad
   timesTriggered: number;
 }
 
@@ -52,6 +53,7 @@ export class MaintenanceAlarmMapper {
       description: doc.description,
       relatedParts: doc.relatedParts,
       intervalHours: doc.intervalHours,
+      accumulatedHours: doc.accumulatedHours, // 🆕 NUEVO
       isActive: doc.isActive,
       createdBy: doc.createdBy,
       createdAt: doc.createdAt,
@@ -81,6 +83,7 @@ export class MaintenanceAlarmMapper {
       description: alarm.description,
       relatedParts: alarm.relatedParts ? [...alarm.relatedParts] : [], // Cast readonly to mutable for Mongoose
       intervalHours: alarm.intervalHours!,
+      accumulatedHours: alarm.accumulatedHours !== undefined ? alarm.accumulatedHours : 0, // 🆕 NUEVO: Default 0
       isActive: alarm.isActive !== undefined ? alarm.isActive : true,
       createdBy: alarm.createdBy!,
       lastTriggeredAt: alarm.lastTriggeredAt,

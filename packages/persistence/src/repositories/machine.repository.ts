@@ -1020,8 +1020,54 @@ export class MachineRepository implements IMachineRepository {
   }
 
   /**
+   * Actualiza el acumulador de horas de una alarma específica
+   * Usado por cronjob para sumar horas diarias después de día operativo
+   * 
+   * @param machineId - ID de la máquina
+   * @param alarmId - ID de la alarma (subdocument _id)
+   * @param hoursToAdd - Horas a sumar (usualmente usageSchedule.dailyHours)
+   */
+  async updateAlarmAccumulatedHours(
+    machineId: MachineId,
+    alarmId: string,
+    hoursToAdd: number
+  ): Promise<Result<void, DomainError>> {
+    try {
+      const result = await MachineModel.findOneAndUpdate(
+        { _id: machineId.getValue() },
+        {
+          $inc: {
+            'maintenanceAlarms.$[alarm].accumulatedHours': hoursToAdd
+          },
+          $set: {
+            'maintenanceAlarms.$[alarm].updatedAt': new Date()
+          }
+        },
+        {
+          arrayFilters: [{ 'alarm._id': alarmId }],
+          new: true
+        }
+      );
+
+      if (!result) {
+        return err(DomainError.notFound(`Machine with ID ${machineId.getValue()} not found`));
+      }
+
+      return ok(undefined);
+    } catch (error: any) {
+      console.error('Error updating alarm accumulated hours:', {
+        machineId: machineId.getValue(),
+        alarmId,
+        hoursToAdd,
+        error: error.message
+      });
+      return err(DomainError.create('PERSISTENCE_ERROR', `Failed to update accumulated hours: ${error.message}`));
+    }
+  }
+
+  /**
    * Actualiza tracking fields cuando alarma se dispara
-   * Usado por cronjob
+   * Usado por cronjob - AHORA RESETEA acumulatedHours a 0
    */
   async triggerMaintenanceAlarm(
     machineId: MachineId,
@@ -1035,6 +1081,7 @@ export class MachineRepository implements IMachineRepository {
           $set: {
             'maintenanceAlarms.$[alarm].lastTriggeredAt': new Date(),
             'maintenanceAlarms.$[alarm].lastTriggeredHours': currentOperatingHours,
+            'maintenanceAlarms.$[alarm].accumulatedHours': 0, // 🆕 NUEVO: Reset accumulator
             'maintenanceAlarms.$[alarm].updatedAt': new Date()
           },
           $inc: {

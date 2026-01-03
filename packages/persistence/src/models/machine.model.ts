@@ -314,6 +314,26 @@ const machineSchema = new Schema<IMachineDocument>({
       required: true,
       min: 1
     },
+    // 🆕 NUEVO: Accumulator Pattern Field
+    // Horas acumuladas desde último trigger o creación
+    // Cronjob suma dailyHours el día DESPUÉS de que máquina operó
+    // Cuando accumulatedHours >= intervalHours → trigger + reset a 0
+    accumulatedHours: {
+      type: Number,
+      required: true,
+      default: 0,
+      min: 0,
+      validate: {
+        validator: function(this: any, value: number) {
+          // Safety check: No debe exceder 2x intervalHours (posible error de datos)
+          if (this.intervalHours) {
+            return value <= (this.intervalHours * 2);
+          }
+          return true;
+        },
+        message: 'Accumulated hours should not exceed 2x interval (possible data error)'
+      }
+    },
     isActive: {
       type: Boolean,
       required: true,

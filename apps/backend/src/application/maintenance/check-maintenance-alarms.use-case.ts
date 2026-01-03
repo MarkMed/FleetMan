@@ -2,7 +2,7 @@ import { MachineRepository, MachineEventTypeRepository } from '@packages/persist
 import { logger } from '../../config/logger.config';
 import { CreateMachineEventUseCase } from '../machine-events/create-machine-event.use-case';
 import { NOTIFICATION_MESSAGE_KEYS } from '../../constants/notification-messages.constants';
-import { MachineId } from '@packages/domain';
+import { MachineId, Machine } from '@packages/domain';
 
 /**
  * Resultado de la verificación de alarmas de mantenimiento
@@ -51,19 +51,37 @@ export class CheckMaintenanceAlarmsUseCase {
   /**
    * Ejecuta la verificación de alarmas de mantenimiento
    * 
-   * Flujo:
-   * 1. Query máquinas con maintenanceAlarms donde isActive === true
-   * 2. Por cada alarma verificar si: machine.operatingHours >= alarm.lastTriggeredHours + alarm.intervalHours
-   * 3. Si sí, disparar secuencia:
-   *    (a) Crear MachineEvent usando CreateMachineEventUseCase
-   *        - typeId: 'notification.maintenance.alarmTriggered' (del seed)
-   *        - metadata: {alarmId, alarmName, targetHours, currentHours, triggeredAt}
-   *    (b) Actualizar alarm tracking usando triggerMaintenanceAlarm()
-   *        - lastTriggeredAt = now
-   *        - lastTriggeredHours = currentOperatingHours
-   *        - timesTriggered++
-   *    (c) Notificar AL OWNER ÚNICAMENTE (automático via CreateMachineEventUseCase)
-   * 4. Retornar métricas {alarmsChecked, alarmsTriggered, errors}
+   * LÓGICA IMPLEMENTADA: "Accumulator Pattern con Día Siguiente"
+   * 
+   * Flujo Detallado:
+   * 1. Query máquinas ACTIVE con maintenanceAlarms activas Y usageSchedule definido
+   * 2. Calcular día de AYER (día de operación)
+   * 3. Por cada máquina:
+   *    a) Verificar si AYER fue día operativo (usageSchedule.operatingDays)
+   *    b) Por cada alarma activa:
+   *       - Si ayer operó → acumulatedHours += dailyHours
+   *       - Si acumulatedHours >= intervalHours → trigger + reset a 0
+   *       - Si no → solo guardar acumulatedHours actualizado
+   * 
+   * IMPORTANTE - "Día Siguiente al Día de Uso":
+   * Las horas se suman el día DESPUÉS de que la máquina operó porque representa
+   * el tracking de horas ya registradas (pasado), no horas futuras.
+   * 
+   * Ejemplo:
+   *   - Máquina operó: Lunes (10 horas)
+   *   - Cronjob ejecuta: Martes 2am
+   *   - Acción: Suma 10h al acumulador (refleja las 10h del Lunes)
+   *   - Consulta usuario Martes 8am: Ve las horas del Lunes reflejadas
+   * 
+   * Esta lógica mantiene coherencia con la semántica de "horas de uso registradas"
+   * vs "horas de uso proyectadas". Si en el futuro se desea cambiar esta lógica
+   * (ej: sumar el mismo día operativo), modificar la verificación de "yesterday"
+   * por "today" en la línea que calcula yesterdayDayOfWeek.
+   * 
+   * Principios aplicados:
+   * - Information Expert: Cada alarma maneja su propio acumulador
+   * - Error Isolation: Errores en una alarma no bloquean las demás
+   * - Single Responsibility: Use case solo orquesta, repository hace persistencia
    * 
    * @returns Promise con métricas de la verificación
    */
@@ -88,65 +106,109 @@ export class CheckMaintenanceAlarmsUseCase {
       }
       const eventType = eventTypeResult.data;
 
-      // 2. Obtener todas las máquinas activas
+      // 2. Calcular día de AYER (día de operación)
+      // Lógica: Si hoy es Martes, ayer fue Lunes → sumar horas si Lunes era operativo
+      // Esto refleja que las horas son del día anterior (pasado), no del día actual
+      const today = new Date().getDay(); // 0=DOM, 1=LUN, ..., 6=SAB
+      const yesterday = (today - 1 + 7) % 7; // Handle wrap-around (ej: hoy DOM → ayer SAB)
+      const dayMap = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
+      const yesterdayDayOfWeek = dayMap[yesterday];
+
+      logger.info({ 
+        today: dayMap[today], 
+        yesterday: yesterdayDayOfWeek 
+      }, 'Calculated yesterday for hours accumulation (day-after logic)');
+
+      // 3. Obtener todas las máquinas activas
       const activeMachines = await this.machineRepository.findByStatus('ACTIVE');
       logger.info({ totalActiveMachines: activeMachines.length }, 'Fetched active machines');
 
-      // 3. Por cada máquina, verificar sus alarmas
-      for (const machine of activeMachines) {
+      // 4. Filtrar máquinas con alarmas activas Y usageSchedule definido
+      const machinesWithAlarms = activeMachines.filter((machine: Machine) => {
+        const machinePublic = machine.toPublicInterface();
+        const hasActiveAlarms = machinePublic.maintenanceAlarms && 
+          machinePublic.maintenanceAlarms.some((alarm: any) => alarm.isActive);
+        const hasSchedule = machinePublic.usageSchedule !== undefined;
+        return hasActiveAlarms && hasSchedule;
+      });
+
+      logger.info(
+        { 
+          totalActive: activeMachines.length,
+          withAlarms: machinesWithAlarms.length,
+          withoutAlarms: activeMachines.length - machinesWithAlarms.length
+        }, 
+        'Filtered machines with active alarms and schedule'
+      );
+
+      // 5. Procesar cada máquina
+      for (const machine of machinesWithAlarms) {
         const machinePublic = machine.toPublicInterface();
         const machineId = machinePublic.id;
+        const usageSchedule = machinePublic.usageSchedule!;
         const alarms = machinePublic.maintenanceAlarms || [];
-
-        // Filtrar solo alarmas activas
         const activeAlarms = alarms.filter((alarm: any) => alarm.isActive);
-        result.alarmsChecked += activeAlarms.length;
 
-        if (activeAlarms.length === 0) {
-          continue; // Skip machines without active alarms
+        // Verificar si AYER fue día operativo
+        const operatedYesterday = usageSchedule.operatingDays.includes(yesterdayDayOfWeek as any);
+
+        if (!operatedYesterday) {
+          logger.debug({ 
+            machineId, 
+            yesterday: yesterdayDayOfWeek,
+            operatingDays: usageSchedule.operatingDays
+          }, 'Machine did not operate yesterday - skipping accumulation');
+          continue;
         }
 
-        const currentHours = machinePublic.specs?.operatingHours || 0;
-
+        const dailyHours = usageSchedule.dailyHours;
+        
         logger.debug(
           { 
             machineId, 
-            currentHours, 
+            yesterdayOperative: yesterdayDayOfWeek,
+            dailyHours,
             activeAlarms: activeAlarms.length 
           }, 
-          'Checking alarms for machine'
+          'Processing alarms for machine that operated yesterday'
         );
 
-        // 4. Verificar cada alarma
+        // 6. Procesar cada alarma activa (loop interno)
         for (const alarm of activeAlarms) {
+          result.alarmsChecked++;
+
           try {
-            // Calcular si debe dispararse
-            const lastHours = alarm.lastTriggeredHours || 0;
-            const targetHours = lastHours + alarm.intervalHours;
-            const shouldTrigger = currentHours >= targetHours;
+            const alarmId = alarm.id;
+            const currentAccumulated = alarm.accumulatedHours || 0;
+            const newAccumulated = currentAccumulated + dailyHours;
 
             logger.debug(
               {
                 machineId,
-                alarmId: alarm.id,
+                alarmId,
                 alarmTitle: alarm.title,
-                currentHours,
-                lastHours,
+                currentAccumulated,
+                dailyHoursAdded: dailyHours,
+                newAccumulated,
                 intervalHours: alarm.intervalHours,
-                targetHours,
-                shouldTrigger
+                willTrigger: newAccumulated >= alarm.intervalHours
               },
-              'Alarm evaluation'
+              'Evaluating alarm with accumulator pattern'
             );
 
-            if (shouldTrigger) {
-              // (a) Crear MachineEvent (genera notificación automáticamente)
+            // Verificar si debe dispararse
+            if (newAccumulated >= alarm.intervalHours) {
+              // ============================================================
+              // TRIGGER SEQUENCE: Event + Notification + Reset
+              // ============================================================
+
+              // (a) Crear MachineEvent (genera notificación automática al owner)
               const title = `⚠️ Mantenimiento Requerido: ${alarm.title}`;
-              const description = `La alarma de mantenimiento "${alarm.title}" se ha disparado después de acumular ${alarm.intervalHours} horas de operación. Horas actuales: ${currentHours}h. ${alarm.relatedParts.length > 0 ? `Partes involucradas: ${alarm.relatedParts.join(', ')}` : ''}`;
+              const description = `La alarma de mantenimiento "${alarm.title}" se ha disparado después de acumular ${alarm.intervalHours} horas de operación. Horas acumuladas: ${newAccumulated}h. ${alarm.relatedParts.length > 0 ? `Partes involucradas: ${alarm.relatedParts.join(', ')}.` : ''}`;
 
               await this.createMachineEventUseCase.execute(
                 machineId,
-                'system', // System-generated event (userId = 'system')
+                'system',
                 {
                   machineId,
                   createdBy: 'system',
@@ -158,32 +220,30 @@ export class CheckMaintenanceAlarmsUseCase {
                       alarmId: alarm.id,
                       alarmTitle: alarm.title,
                       intervalHours: alarm.intervalHours,
-                      currentOperatingHours: currentHours,
-                      lastTriggeredHours: lastHours,
-                      targetHours,
+                    accumulatedHours: newAccumulated,
                       relatedParts: alarm.relatedParts,
                       timesTriggered: alarm.timesTriggered,
                       triggeredAt: new Date().toISOString()
                     }
                   }
                 },
-                `/machines/${machineId}/maintenance-alarms`, // actionUrl
-                true, // isSystemGenerated
-                'MAINTENANCE' // sourceType
+                `/machines/${machineId}/maintenance-alarms`,
+                true,
+                'MAINTENANCE'
               );
 
               logger.info(
                 { 
                   machineId, 
-                  alarmId: alarm.id, 
+                  alarmId, 
                   alarmTitle: alarm.title,
-                  currentHours,
-                  targetHours
+                  acumulatedHours: newAccumulated,
+                  intervalHours: alarm.intervalHours
                 }, 
-                '📝 Event created for maintenance alarm'
+                '📝 Event created for triggered maintenance alarm'
               );
 
-              // (b) Actualizar alarm tracking fields
+              // (b) Actualizar alarm tracking (reset acumulatedHours a 0)
               const machineIdVO = MachineId.create(machineId);
               if (!machineIdVO.success) {
                 throw new Error(`Invalid machine ID: ${machineIdVO.error.message}`);
@@ -191,22 +251,54 @@ export class CheckMaintenanceAlarmsUseCase {
 
               const triggerResult = await this.machineRepository.triggerMaintenanceAlarm(
                 machineIdVO.data,
-                alarm.id,
-                currentHours
+                alarmId,
+                machinePublic.specs?.operatingHours || 0
               );
 
               if (!triggerResult.success) {
-                throw new Error(`Failed to update alarm tracking: ${triggerResult.error.message}`);
+                throw new Error(`Failed to trigger alarm: ${triggerResult.error.message}`);
               }
 
               result.alarmsTriggered++;
               logger.info(
                 { 
                   machineId, 
-                  alarmId: alarm.id,
-                  timesTriggered: alarm.timesTriggered + 1
+                  alarmId,
+                  timesTriggered: alarm.timesTriggered + 1,
+                  resetAccumulated: true
                 }, 
-                '✅ Maintenance alarm triggered successfully'
+                '✅ Maintenance alarm triggered and accumulator reset to 0'
+              );
+
+            } else {
+              // ============================================================
+              // ACCUMULATE ONLY (no trigger yet)
+              // ============================================================
+
+              const machineIdVO = MachineId.create(machineId);
+              if (!machineIdVO.success) {
+                throw new Error(`Invalid machine ID: ${machineIdVO.error.message}`);
+              }
+
+              const updateResult = await this.machineRepository.updateAlarmAccumulatedHours(
+                machineIdVO.data,
+                alarmId,
+                dailyHours
+              );
+
+              if (!updateResult.success) {
+                throw new Error(`Failed to update accumulated hours: ${updateResult.error.message}`);
+              }
+
+              logger.debug(
+                { 
+                  machineId, 
+                  alarmId,
+                  newAccumulated,
+                  intervalHours: alarm.intervalHours,
+                  remainingHours: alarm.intervalHours - newAccumulated
+                }, 
+                '➕ Accumulated hours updated (no trigger - not reached interval yet)'
               );
             }
 
@@ -222,7 +314,7 @@ export class CheckMaintenanceAlarmsUseCase {
                 alarmId: alarm.id,
                 error: error instanceof Error ? error.message : 'Unknown error'
               }, 
-              '⚠️ Failed to trigger maintenance alarm'
+              '⚠️ Failed to process maintenance alarm'
             );
           }
         }
