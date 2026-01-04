@@ -100,7 +100,7 @@ export class MachineRepository implements IMachineRepository {
       });
       return count > 0;
     } catch (error) {
-      console.error('Error checking serial number existence excluding ID:', error);
+      logger.error({ error }, 'Error checking serial number existence excluding ID');
       return false;
     }
   }
@@ -113,7 +113,7 @@ export class MachineRepository implements IMachineRepository {
       const docs = await MachineModel.find({ ownerId: ownerId.getValue() }).sort({ createdAt: -1 });
       return MachineMapper.toEntityArray(docs);
     } catch (error) {
-      console.error('Error finding machines by owner ID:', error);
+      logger.error({ error }, 'Error finding machines by owner ID');
       return [];
     }
   }
@@ -126,7 +126,7 @@ export class MachineRepository implements IMachineRepository {
       const docs = await MachineModel.find({ assignedProviderId: providerId.getValue() }).sort({ createdAt: -1 });
       return MachineMapper.toEntityArray(docs);
     } catch (error) {
-      console.error('Error finding machines by assigned provider ID:', error);
+      logger.error({ error }, 'Error finding machines by assigned provider ID');
       return [];
     }
   }
@@ -139,7 +139,7 @@ export class MachineRepository implements IMachineRepository {
       const docs = await MachineModel.find({ machineTypeId: typeId.getValue() }).sort({ createdAt: -1 });
       return MachineMapper.toEntityArray(docs);
     } catch (error) {
-      console.error('Error finding machines by machine type ID:', error);
+      logger.error({ error }, 'Error finding machines by machine type ID');
       return [];
     }
   }
@@ -152,7 +152,7 @@ export class MachineRepository implements IMachineRepository {
       const docs = await MachineModel.find({ 'status.code': statusCode }).sort({ createdAt: -1 });
       return MachineMapper.toEntityArray(docs);
     } catch (error) {
-      console.error('Error finding machines by status:', error);
+      logger.error({ error }, 'Error finding machines by status');
       return [];
     }
   }
@@ -165,7 +165,7 @@ export class MachineRepository implements IMachineRepository {
       const docs = await MachineModel.find({ 'status.code': 'ACTIVE' }).sort({ createdAt: -1 });
       return MachineMapper.toEntityArray(docs);
     } catch (error) {
-      console.error('Error finding all active machines:', error);
+      logger.error({ error }, 'Error finding all active machines');
       return [];
     }
   }
@@ -393,7 +393,7 @@ export class MachineRepository implements IMachineRepository {
         totalPages: Math.ceil(total / options.limit)
       };
     } catch (error) {
-      console.error('Error finding paginated machines:', error);
+      logger.error({ error }, 'Error finding paginated machines');
       return {
         items: [],
         total: 0,
@@ -762,10 +762,10 @@ export class MachineRepository implements IMachineRepository {
       });
 
     } catch (error: any) {
-      console.error('Error getting events history:', { 
+      logger.error({ 
         machineId: machineId.getValue(), 
         error: error.message 
-      });
+      }, 'Error getting events history');
       return err(DomainError.create('PERSISTENCE_ERROR', `Failed to get events: ${error.message}`));
     }
   }
@@ -1066,12 +1066,12 @@ export class MachineRepository implements IMachineRepository {
 
       return ok(undefined);
     } catch (error: any) {
-      console.error('Error updating alarm accumulated hours:', {
+      logger.error({
         machineId: machineId.getValue(),
         alarmId,
         hoursToAdd,
         error: error.message
-      });
+      }, 'Error updating alarm accumulated hours');
       return err(DomainError.create('PERSISTENCE_ERROR', `Failed to update accumulated hours: ${error.message}`));
     }
   }
@@ -1111,12 +1111,12 @@ export class MachineRepository implements IMachineRepository {
 
       return ok(undefined);
     } catch (error: any) {
-      console.error('Error triggering maintenance alarm:', {
+      logger.error({
         machineId: machineId.getValue(),
         alarmId,
         currentOperatingHours,
         error: error.message
-      });
+      }, 'Error triggering maintenance alarm');
       return err(DomainError.create('PERSISTENCE_ERROR', `Failed to trigger maintenance alarm: ${error.message}`));
     }
   }

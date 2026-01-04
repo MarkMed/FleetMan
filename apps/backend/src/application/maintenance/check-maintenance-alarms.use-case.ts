@@ -2,7 +2,7 @@ import { MachineRepository, MachineEventTypeRepository } from '@packages/persist
 import { logger } from '../../config/logger.config';
 import { CreateMachineEventUseCase } from '../machine-events/create-machine-event.use-case';
 import { NOTIFICATION_MESSAGE_KEYS } from '../../constants/notification-messages.constants';
-import { MachineId, Machine } from '@packages/domain';
+import { MachineId, Machine, type NotificationSourceType, NOTIFICATION_SOURCE_TYPES  } from '@packages/domain';
 
 /**
  * Resultado de la verificación de alarmas de mantenimiento
@@ -229,7 +229,8 @@ export class CheckMaintenanceAlarmsUseCase {
                 },
                 `/machines/${machineId}/maintenance-alarms`,
                 true,
-                'MAINTENANCE'
+                NOTIFICATION_SOURCE_TYPES[2],
+                machinePublic.ownerId // Notificar al dueño de la máquina, no a 'system'
               );
 
               logger.info(
