@@ -124,7 +124,7 @@ export const RelatedPartsInput: React.FC<RelatedPartsInputProps> = ({
           htmlType="button"
           variant="outline"
           className="h-10 border-primary/90"
-          onPress={handleAddPart}		  
+          onPress={handleAddPart}
           disabled={!inputValue.trim() || isAtMaxCapacity}
         >
           <Plus className="w-4 h-4 mr-2" />
