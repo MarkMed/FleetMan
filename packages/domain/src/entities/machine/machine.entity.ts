@@ -14,6 +14,7 @@ import {
   IMachine, 
   IQuickCheckRecord,
   IMachineEvent,
+  IMaintenanceAlarm,
   IUsageSchedule
 } from '../../models/interfaces';
 // FuelType imported from models/index.ts (SSOT)
@@ -85,6 +86,7 @@ interface MachineProps {
   location?: MachineLocation;
   quickChecks: IQuickCheckRecord[]; // Historial de inspecciones (mutable)
   eventsHistory: IMachineEvent[]; // 🆕 Sprint #10: Historial de eventos (mutable)
+  maintenanceAlarms: IMaintenanceAlarm[]; // 🆕 Sprint #11: Alarmas de mantenimiento (mutable)
   createdAt: Date;
   updatedAt: Date;
 }
@@ -142,6 +144,7 @@ export class Machine {
       } : undefined,
       quickChecks: this.props.quickChecks, // Real quickcheck history
       eventsHistory: this.props.eventsHistory, // 🆕 Sprint #10: Real events history
+      maintenanceAlarms: this.props.maintenanceAlarms, // 🆕 Sprint #11: Real maintenance alarms
       createdAt: this.props.createdAt,
       updatedAt: this.props.updatedAt
     };
@@ -227,6 +230,7 @@ export class Machine {
       location: createProps.location,
       quickChecks: [], // Initialize empty history
       eventsHistory: [], // 🆕 Sprint #10: Initialize empty events
+      maintenanceAlarms: [], // 🆕 Sprint #11: Initialize empty alarms
       createdAt: now,
       updatedAt: now,
     };

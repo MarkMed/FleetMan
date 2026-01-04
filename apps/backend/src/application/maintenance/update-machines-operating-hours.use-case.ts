@@ -65,59 +65,36 @@ export class UpdateMachinesOperatingHoursUseCase {
     logger.info('📊 Starting batch update of operating hours for active machines');
 
     try {
-      // 1. Obtener todas las máquinas activas
-      const activeMachines = await this.machineRepository.findByStatus('ACTIVE');
-      logger.info({ totalActiveMachines: activeMachines.length }, 'Fetched active machines');
-
-      // 2. Filtrar máquinas con usageSchedule definido
-      const machinesWithSchedule = activeMachines.filter((machine: Machine) => {
-        const machinePublic = machine.toPublicInterface();
-        return machinePublic.usageSchedule !== undefined && machinePublic.usageSchedule !== null;
-      });
-
-      logger.info(
-        { 
-          totalActive: activeMachines.length,
-          withSchedule: machinesWithSchedule.length,
-          withoutSchedule: activeMachines.length - machinesWithSchedule.length
-        }, 
-        'Filtered machines with usage schedule'
-      );
-
-      // 3. Filtrar máquinas que operaron AYER (día de operación)
+      // Calcular día de AYER (día de operación)
       // Lógica: Cronjob se ejecuta a las 2am de HOY, pero suma horas del día que ya pasó (AYER)
       // Ejemplo: Si hoy es Domingo 2am → sumar horas si la máquina operó el Sábado
-      const machinesToUpdate = machinesWithSchedule.filter((machine: Machine) => {
-        const machinePublic = machine.toPublicInterface();
-        const usageSchedule = machinePublic.usageSchedule!;
-        
-        // Calcular día de AYER (día de operación)
-        // SSOT: Usar DayOfWeek enum (valores de 3 letras: 'SUN', 'MON', etc.)
-        // Estos valores coinciden con lo que está en la DB (operatingDays: ['TUE', 'WED', ...])
-        const today = new Date().getDay(); // 0=DOM, 1=LUN, ..., 6=SAB
-        const yesterday = (today - 1 + 7) % 7; // Handle wrap-around (ej: hoy DOM → ayer SAB)
-        const dayMap: DayOfWeek[] = [
-          DayOfWeek.SUN,  // 0
-          DayOfWeek.MON,  // 1
-          DayOfWeek.TUE,  // 2
-          DayOfWeek.WED,  // 3
-          DayOfWeek.THU,  // 4
-          DayOfWeek.FRI,  // 5
-          DayOfWeek.SAT   // 6
-        ];
-        const yesterdayDayOfWeek = dayMap[yesterday];
-        
-        // Verificar si AYER fue un día operativo (sumar horas del día pasado)
-        return usageSchedule.operatingDays.includes(yesterdayDayOfWeek);
-      });
+      const today = new Date().getDay(); // 0=DOM, 1=LUN, ..., 6=SAB
+      const yesterday = (today - 1 + 7) % 7; // Handle wrap-around (ej: hoy DOM → ayer SAB)
+      const dayMap: DayOfWeek[] = [
+        DayOfWeek.SUN,  // 0
+        DayOfWeek.MON,  // 1
+        DayOfWeek.TUE,  // 2
+        DayOfWeek.WED,  // 3
+        DayOfWeek.THU,  // 4
+        DayOfWeek.FRI,  // 5
+        DayOfWeek.SAT   // 6
+      ];
+      const yesterdayDayOfWeek = dayMap[yesterday];
+
+      logger.info({ yesterday: yesterdayDayOfWeek }, 'Querying machines that operated yesterday');
+
+      // 🆕 Query optimizada: Trae SOLO máquinas activas que operaron ayer (filtro en DB)
+      // Antes: findByStatus('ACTIVE') → 1000 máquinas → filtrar en memoria
+      // Ahora: findActiveWithOperatingDay('SAT') → 200 máquinas directo de DB
+      // Usa índice compuesto: { 'status.code': 1, 'usageSchedule.operatingDays': 1 }
+      const machinesToUpdate = await this.machineRepository.findActiveWithOperatingDay(yesterdayDayOfWeek);
 
       logger.info(
         { 
-          withSchedule: machinesWithSchedule.length,
-          operatingToday: machinesToUpdate.length,
-          notOperatingToday: machinesWithSchedule.length - machinesToUpdate.length
+          operatingDay: yesterdayDayOfWeek,
+          machinesToUpdate: machinesToUpdate.length
         }, 
-        'Filtered machines operating today'
+        'Fetched machines to update (already filtered by DB)'
       );
 
       // 4. Actualizar cada máquina (con error isolation)
@@ -144,8 +121,11 @@ export class UpdateMachinesOperatingHoursUseCase {
         }
       }
 
-      // 5. Calcular máquinas saltadas
-      result.skipped = activeMachines.length - machinesToUpdate.length;
+      // 5. Métricas finales
+      // Skipped: Máquinas que NO se actualizaron (errores + las que no operaron ayer ya filtradas en query)
+      // updated: Máquinas exitosamente actualizadas
+      // La query DB ya filtró solo las que operaron ayer, así que skipped = errors
+      result.skipped = result.errors.length;
 
       const duration = new Date().getTime() - startTime.getTime();
       logger.info(

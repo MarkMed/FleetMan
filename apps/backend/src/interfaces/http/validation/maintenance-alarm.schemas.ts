@@ -75,19 +75,19 @@ export const ListMaintenanceAlarmsQuerySchema = z.object({
 // Schema para params de ruta (machineId, alarmId)
 export const MaintenanceAlarmParamsSchema = z.object({
   machineId: z.string()
-    .min(1, 'Machine ID is required')
-    .regex(/^machine_[a-zA-Z0-9]+$/, 'Invalid machine ID format'),
+    .min(1, 'Machine ID is required'),
+    // No regex específico - delegar validación al use case (mismo patrón que quickcheck)
   
   alarmId: z.string()
     .min(1, 'Alarm ID is required')
-    .regex(/^[a-f0-9]{24}$/, 'Invalid alarm ID format (must be MongoDB ObjectId)')
+    // No regex específico - alarmId es generado internamente por MongoDB como subdocumento
 });
 
 // Schema solo para machineId
 export const MachineIdParamSchema = z.object({
   machineId: z.string()
     .min(1, 'Machine ID is required')
-    .regex(/^machine_[a-zA-Z0-9]+$/, 'Invalid machine ID format')
+    // No regex específico - delegar validación al use case (mismo patrón que quickcheck)
 });
 
 // Tipos inferidos para TypeScript

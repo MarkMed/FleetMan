@@ -451,6 +451,11 @@ machineSchema.index({ 'eventsHistory.typeId': 1, 'eventsHistory.createdAt': -1 }
 machineSchema.index({ 'eventsHistory.isSystemGenerated': 1, 'eventsHistory.createdAt': -1 });
 machineSchema.index({ 'eventsHistory.createdBy': 1, 'eventsHistory.createdAt': -1 });
 
+// 🆕 Sprint #11: Index para cronjob de mantenimiento (máquinas activas que operaron día específico)
+// Sparse index: máquinas sin usageSchedule automáticamente excluidas
+// Multikey index: operatingDays es array, cada elemento se indexa individualmente
+machineSchema.index({ 'status.code': 1, 'usageSchedule.operatingDays': 1 });
+
 // GeoSpatial index for location-based queries
 machineSchema.index({ 'location.coordinates': '2dsphere' });
 

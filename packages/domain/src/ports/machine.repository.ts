@@ -52,6 +52,17 @@ export interface IMachineRepository {
   findByStatus(statusCode: 'ACTIVE' | 'MAINTENANCE' | 'OUT_OF_SERVICE' | 'RETIRED'): Promise<Machine[]>;
 
   /**
+   * 🆕 Sprint #11: Busca máquinas activas que operaron en un día específico
+   * 
+   * Optimizado para cronjob de mantenimiento - filtra a nivel DB.
+   * Query MongoDB: { 'status.code': 'ACTIVE', 'usageSchedule.operatingDays': dayOfWeek }
+   * 
+   * @param dayOfWeek - Día de la semana (ej: 'MON', 'TUE', 'SAT' del enum DayOfWeek)
+   * @returns Máquinas activas que operaron ese día (vacío si ninguna)
+   */
+  findActiveWithOperatingDay(dayOfWeek: string): Promise<Machine[]>;
+
+  /**
    * Obtiene todas las máquinas activas
    */
   findAllActive(): Promise<Machine[]>;

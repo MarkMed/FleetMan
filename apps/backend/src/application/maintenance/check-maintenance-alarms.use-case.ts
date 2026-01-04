@@ -107,8 +107,8 @@ export class CheckMaintenanceAlarmsUseCase {
       const eventType = eventTypeResult.data;
 
       // 2. Calcular día de AYER (día de operación)
-      // Lógica: Si hoy es Martes, ayer fue Lunes → sumar horas si Lunes era operativo
-      // Esto refleja que las horas son del día anterior (pasado), no del día actual
+      // Lógica: Cronjob se ejecuta a las 2am de HOY, pero acumula horas del día que ya pasó (AYER)
+      // Ejemplo: Si hoy es Martes 2am → acumular horas si la máquina operó el Lunes
       const today = new Date().getDay(); // 0=DOM, 1=LUN, ..., 6=SAB
       const yesterday = (today - 1 + 7) % 7; // Handle wrap-around (ej: hoy DOM → ayer SAB)
       
@@ -130,47 +130,41 @@ export class CheckMaintenanceAlarmsUseCase {
         yesterday: yesterdayDayOfWeek 
       }, 'Calculated yesterday for hours accumulation (day-after logic)');
 
-      // 3. Obtener todas las máquinas activas
-      const activeMachines = await this.machineRepository.findByStatus('ACTIVE');
-      logger.info({ totalActiveMachines: activeMachines.length }, 'Fetched active machines');
+      // 🆕 Query optimizada: Trae SOLO máquinas activas que operaron ayer (filtro en DB)
+      // Antes: findByStatus('ACTIVE') → 1000 máquinas → filtrar en memoria
+      // Ahora: findActiveWithOperatingDay('MON') → 200 máquinas directo de DB
+      // Usa índice compuesto: { 'status.code': 1, 'usageSchedule.operatingDays': 1 }
+      const machinesOperatedYesterday = await this.machineRepository.findActiveWithOperatingDay(yesterdayDayOfWeek);
+      
+      logger.info({ totalActiveMachines: machinesOperatedYesterday.length }, 'Fetched active machines');
 
-      // 4. Filtrar máquinas con alarmas activas Y usageSchedule definido
-      const machinesWithAlarms = activeMachines.filter((machine: Machine) => {
+      // Filtrar solo máquinas con alarmas activas
+      // (No podemos filtrar esto en DB porque necesitamos verificar isActive en cada subdocumento)
+      const machinesWithAlarms = machinesOperatedYesterday.filter((machine: Machine) => {
         const machinePublic = machine.toPublicInterface();
         const hasActiveAlarms = machinePublic.maintenanceAlarms && 
           machinePublic.maintenanceAlarms.some((alarm: any) => alarm.isActive);
-        const hasSchedule = machinePublic.usageSchedule !== undefined;
-        return hasActiveAlarms && hasSchedule;
+        return hasActiveAlarms;
       });
 
       logger.info(
         { 
-          totalActive: activeMachines.length,
+          totalActive: machinesOperatedYesterday.length,
           withAlarms: machinesWithAlarms.length,
-          withoutAlarms: activeMachines.length - machinesWithAlarms.length
+          withoutAlarms: machinesOperatedYesterday.length - machinesWithAlarms.length
         }, 
         'Filtered machines with active alarms and schedule'
       );
 
-      // 5. Procesar cada máquina
+      // 5. Procesar cada máquina con alarmas activas
+      // NOTA: Las máquinas ya vienen filtradas por día operativo desde la query DB
+      // No necesitamos verificar usageSchedule.operatingDays.includes(yesterday) aquí
       for (const machine of machinesWithAlarms) {
         const machinePublic = machine.toPublicInterface();
         const machineId = machinePublic.id;
         const usageSchedule = machinePublic.usageSchedule!;
         const alarms = machinePublic.maintenanceAlarms || [];
         const activeAlarms = alarms.filter((alarm: any) => alarm.isActive);
-
-        // Verificar si AYER fue día operativo
-        const operatedYesterday = usageSchedule.operatingDays.includes(yesterdayDayOfWeek as any);
-
-        if (!operatedYesterday) {
-          logger.debug({ 
-            machineId, 
-            yesterday: yesterdayDayOfWeek,
-            operatingDays: usageSchedule.operatingDays
-          }, 'Machine did not operate yesterday - skipping accumulation');
-          continue;
-        }
 
         const dailyHours = usageSchedule.dailyHours;
         

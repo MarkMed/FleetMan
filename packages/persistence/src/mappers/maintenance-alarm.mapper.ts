@@ -47,7 +47,20 @@ export class MaintenanceAlarmMapper {
    * Usado al leer alarmas de Machine.maintenanceAlarms[]
    */
   static toDomain(doc: IMaintenanceAlarmSubdoc): IMaintenanceAlarm {
-    return {
+    // 🆕 DEBUG: Ver estructura del subdocumento
+    console.log('🔍 DEBUG: MaintenanceAlarmMapper.toDomain input:', {
+      hasDoc: !!doc,
+      docType: typeof doc,
+      docKeys: doc ? Object.keys(doc) : [],
+      _id: doc?._id,
+      title: doc?.title,
+      intervalHours: doc?.intervalHours,
+      accumulatedHours: doc?.accumulatedHours,
+      isActive: doc?.isActive,
+      fullDoc: doc
+    });
+
+    const result = {
       id: doc._id.toString(), // ObjectId → string
       title: doc.title,
       description: doc.description,
@@ -62,6 +75,10 @@ export class MaintenanceAlarmMapper {
       lastTriggeredHours: doc.lastTriggeredHours,
       timesTriggered: doc.timesTriggered
     };
+
+    console.log('🔍 DEBUG: MaintenanceAlarmMapper.toDomain output:', result);
+
+    return result;
   }
 
   /**
