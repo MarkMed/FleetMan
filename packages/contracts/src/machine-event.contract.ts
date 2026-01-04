@@ -6,7 +6,7 @@ import { SortOrderSchema, PaginationSchema, BasePaginatedResponseSchema } from '
 // =============================================================================
 
 // Import local para uso en schemas
-import type { MachineEventMetadata, CreateMachineEventProps } from '@packages/domain';
+import type { MachineEventMetadata, CreateMachineEventProps, IMachineEvent } from '@packages/domain';
 
 // Re-exportamos los types exactos del dominio para reutilización (type-only)
 export type { MachineEventMetadata, CreateMachineEventProps } from '@packages/domain';
@@ -26,6 +26,7 @@ export const MachineEventMetadataSchema = z.object({
 /**
  * Schema standalone para Machine Event (para reutilización)
  * Similar a MaintenanceAlarmSchema - representa el evento completo
+ * Uses satisfies to ensure compile-time validation against domain IMachineEvent
  */
 export const MachineEventSchema = z.object({
   id: z.string(),
@@ -37,7 +38,7 @@ export const MachineEventSchema = z.object({
   metadata: MachineEventMetadataSchema.optional(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date()
-});
+}) satisfies z.ZodType<IMachineEvent>;
 
 /**
  * Schema para crear evento basado en CreateMachineEventProps del dominio

@@ -1,3 +1,5 @@
+import { apiClient } from './apiClient';
+import { API_ENDPOINTS } from '../../constants';
 import type { 
   MaintenanceAlarm,
   CreateMaintenanceAlarmRequest,
@@ -9,7 +11,7 @@ import type {
  * Maintenance Alarm Service
  * 
  * Provides API methods for managing maintenance alarms (subdocuments within machines).
- * Sprint #11: Mock implementation for UI development
+ * Sprint #11: Connected to real backend API endpoints
  * 
  * Alarms are hour-based triggers that automatically create events + notifications
  * when machine.operatingHours reaches (lastTriggeredHours + intervalHours).
@@ -17,78 +19,12 @@ import type {
  * Pattern: Embedded subdocument (stored in Machine.maintenanceAlarms array)
  * Backend: Cronjob checks daily and triggers alarms
  * 
- * TODO Sprint #12: Replace mock data with real API calls to:
- * - POST /api/machines/:machineId/maintenance-alarms
- * - GET /api/machines/:machineId/maintenance-alarms?onlyActive=true
- * - PATCH /api/machines/:machineId/maintenance-alarms/:alarmId
- * - DELETE /api/machines/:machineId/maintenance-alarms/:alarmId (soft delete)
+ * API Endpoints:
+ * - GET /api/v1/machines/:machineId/maintenance-alarms?onlyActive=boolean
+ * - POST /api/v1/machines/:machineId/maintenance-alarms
+ * - PATCH /api/v1/machines/:machineId/maintenance-alarms/:alarmId
+ * - DELETE /api/v1/machines/:machineId/maintenance-alarms/:alarmId
  */
-
-// ============================================
-// MOCK DATA for Sprint #11 UI Development
-// ============================================
-
-const MOCK_ALARMS: MaintenanceAlarm[] = [
-  {
-    id: 'alarm_1',
-    title: 'Cambiar filtros de aceite y aire',
-    description: 'Mantenimiento preventivo esencial para prolongar vida del motor',
-    relatedParts: ['Filtro de Aceite', 'Filtro de Aire', 'Aceite Motor 15W-40'],
-    intervalHours: 500,
-    isActive: true,
-    createdBy: 'user_client_1',
-    createdAt: new Date('2025-12-01T10:00:00Z'),
-    updatedAt: new Date('2025-12-01T10:00:00Z'),
-    lastTriggeredAt: new Date('2025-11-15T14:30:00Z'),
-    lastTriggeredHours: 1500,
-    timesTriggered: 3,
-  },
-  {
-    id: 'alarm_2',
-    title: 'Revisión de sistema hidráulico',
-    description: 'Inspeccionar mangueras, sellos y nivel de fluido hidráulico',
-    relatedParts: ['Fluido Hidráulico', 'Kit de Sellos'],
-    intervalHours: 250,
-    isActive: true,
-    createdBy: 'user_client_1',
-    createdAt: new Date('2025-12-05T08:00:00Z'),
-    updatedAt: new Date('2025-12-05T08:00:00Z'),
-    lastTriggeredAt: new Date('2025-12-20T16:45:00Z'),
-    lastTriggeredHours: 1750,
-    timesTriggered: 7,
-  },
-  {
-    id: 'alarm_3',
-    title: 'Lubricación de cadenas y rodamientos',
-    description: 'Aplicar grasa en puntos de lubricación según manual del fabricante',
-    relatedParts: ['Grasa Multiuso', 'Aceite Penetrante'],
-    intervalHours: 100,
-    isActive: true,
-    createdBy: 'user_client_1',
-    createdAt: new Date('2025-11-20T12:00:00Z'),
-    updatedAt: new Date('2025-11-20T12:00:00Z'),
-    lastTriggeredAt: new Date('2025-12-28T09:15:00Z'),
-    lastTriggeredHours: 1900,
-    timesTriggered: 19,
-  },
-  {
-    id: 'alarm_4',
-    title: 'Inspección de sistema eléctrico',
-    description: 'Revisar conexiones, fusibles y estado de batería',
-    relatedParts: ['Fusibles', 'Limpiador de Contactos'],
-    intervalHours: 1000,
-    isActive: false, // Inactiva
-    createdBy: 'user_client_1',
-    createdAt: new Date('2025-10-10T15:30:00Z'),
-    updatedAt: new Date('2025-12-22T11:20:00Z'),
-    lastTriggeredAt: new Date('2025-11-01T10:00:00Z'),
-    lastTriggeredHours: 1000,
-    timesTriggered: 1,
-  },
-];
-
-// Simular delay de red
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 class MaintenanceAlarmService {
   /**
@@ -101,26 +37,47 @@ class MaintenanceAlarmService {
     machineId: string,
     onlyActive: boolean = false
   ): Promise<GetMaintenanceAlarmsResponse> {
-    await delay(400); // Simular latencia de red
-
     console.log('[maintenanceAlarmService.getMaintenanceAlarms] Fetching alarms:', {
       machineId,
       onlyActive,
     });
 
-    // Filtrar según query
-    let alarms = [...MOCK_ALARMS];
+    const params: Record<string, string> = {};
     if (onlyActive) {
-      alarms = alarms.filter(alarm => alarm.isActive);
+      params.onlyActive = 'true';
     }
 
-    const activeCount = MOCK_ALARMS.filter(a => a.isActive).length;
+    const response = await apiClient.get<{ 
+      success: boolean; 
+      message?: string; 
+      data: GetMaintenanceAlarmsResponse | MaintenanceAlarm[]; // Support both formats during transition
+    }>(
+      API_ENDPOINTS.MAINTENANCE_ALARMS(machineId),
+      params
+    );
 
-    return {
-      alarms,
-      total: alarms.length,
-      activeCount,
-    };
+    if (!response.success || !response.data) {
+      throw new Error(response.error || 'Failed to fetch maintenance alarms');
+    }
+
+    const responseData = response.data.data;
+
+    // Handle both response formats:
+    // New format: { alarms: [...], total: number, activeCount: number }
+    // Old format: [...] (array directly)
+    if (Array.isArray(responseData)) {
+      // Old format - transform to new format
+      console.warn('[maintenanceAlarmService] Received old format (array), transforming to new format');
+      const alarms = responseData;
+      return {
+        alarms,
+        total: alarms.length,
+        activeCount: alarms.filter(a => a.isActive).length,
+      };
+    }
+
+    // New format - return as is
+    return responseData;
   }
 
   /**
@@ -133,26 +90,25 @@ class MaintenanceAlarmService {
     machineId: string,
     alarmData: CreateMaintenanceAlarmRequest
   ): Promise<MaintenanceAlarm> {
-    await delay(600);
-
     console.log('[maintenanceAlarmService.createMaintenanceAlarm] Creating alarm:', {
       machineId,
       alarmData,
     });
 
-    // Simular creación
-    const newAlarm: MaintenanceAlarm = {
-      id: `alarm_${Date.now()}`,
-      ...alarmData,
-      createdBy: 'user_client_1', // Mock user
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      timesTriggered: 0,
-    };
+    const response = await apiClient.post<{ 
+      success: boolean; 
+      message?: string; 
+      data: MaintenanceAlarm 
+    }>(
+      API_ENDPOINTS.MAINTENANCE_ALARMS(machineId),
+      alarmData
+    );
 
-    MOCK_ALARMS.push(newAlarm);
+    if (!response.success || !response.data) {
+      throw new Error(response.error || 'Failed to create maintenance alarm');
+    }
 
-    return newAlarm;
+    return response.data.data;
   }
 
   /**
@@ -167,29 +123,26 @@ class MaintenanceAlarmService {
     alarmId: string,
     alarmData: UpdateMaintenanceAlarmRequest
   ): Promise<MaintenanceAlarm> {
-    await delay(500);
-
     console.log('[maintenanceAlarmService.updateMaintenanceAlarm] Updating alarm:', {
       machineId,
       alarmId,
       alarmData,
     });
 
-    // Simular actualización
-    const alarmIndex = MOCK_ALARMS.findIndex(a => a.id === alarmId);
-    if (alarmIndex === -1) {
-      throw new Error(`Alarm ${alarmId} not found`);
+    const response = await apiClient.patch<{ 
+      success: boolean; 
+      message?: string; 
+      data: MaintenanceAlarm 
+    }>(
+      API_ENDPOINTS.MAINTENANCE_ALARM(machineId, alarmId),
+      alarmData
+    );
+
+    if (!response.success || !response.data) {
+      throw new Error(response.error || 'Failed to update maintenance alarm');
     }
 
-    const updatedAlarm: MaintenanceAlarm = {
-      ...MOCK_ALARMS[alarmIndex],
-      ...alarmData,
-      updatedAt: new Date(),
-    };
-
-    MOCK_ALARMS[alarmIndex] = updatedAlarm;
-
-    return updatedAlarm;
+    return response.data.data;
   }
 
   /**
@@ -202,18 +155,17 @@ class MaintenanceAlarmService {
     machineId: string,
     alarmId: string
   ): Promise<void> {
-    await delay(400);
-
     console.log('[maintenanceAlarmService.deleteMaintenanceAlarm] Deleting alarm:', {
       machineId,
       alarmId,
     });
 
-    // Simular soft delete (set isActive = false)
-    const alarmIndex = MOCK_ALARMS.findIndex(a => a.id === alarmId);
-    if (alarmIndex !== -1) {
-      MOCK_ALARMS[alarmIndex].isActive = false;
-      MOCK_ALARMS[alarmIndex].updatedAt = new Date();
+    const response = await apiClient.delete(
+      API_ENDPOINTS.MAINTENANCE_ALARM(machineId, alarmId)
+    );
+
+    if (!response.success) {
+      throw new Error(response.error || 'Failed to delete maintenance alarm');
     }
   }
 

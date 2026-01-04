@@ -49,14 +49,8 @@ export const AlarmCard: React.FC<AlarmCardProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  // Calculate hours since last trigger
-  // For never-triggered alarms, use full currentOperatingHours as baseline
-  const hoursSinceLastTrigger = alarm.lastTriggeredHours !== null && alarm.lastTriggeredHours !== undefined
-    ? currentOperatingHours - alarm.lastTriggeredHours
-    : currentOperatingHours;
-
   // Calculate hours remaining until next trigger
-  const hoursRemaining = alarm.intervalHours - hoursSinceLastTrigger;
+  const hoursRemaining = alarm.intervalHours - alarm.accumulatedHours;
   const isOverdue = hoursRemaining < 0;
   // const isApproaching = hoursRemaining > 0 && hoursRemaining <= alarm.intervalHours * 0.2; // 20% threshold
 
@@ -83,7 +77,7 @@ export const AlarmCard: React.FC<AlarmCardProps> = ({
       {/* Progress Indicator - Core visual element */}
       <div className="mb-3">
         <AlarmProgressIndicator
-          currentHours={hoursSinceLastTrigger}
+          currentHours={alarm.accumulatedHours}
           intervalHours={alarm.intervalHours}
           isOverdue={isOverdue}
         />

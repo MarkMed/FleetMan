@@ -208,8 +208,9 @@ export class CheckMaintenanceAlarmsUseCase {
               // ============================================================
 
               // (a) Crear MachineEvent (genera notificación automática al owner)
-              const title = `⚠️ Mantenimiento Requerido: ${alarm.title}`;
-              const description = `La alarma de mantenimiento "${alarm.title}" se ha disparado después de acumular ${alarm.intervalHours} horas de operación. Horas acumuladas: ${newAccumulated}h. ${alarm.relatedParts.length > 0 ? `Partes involucradas: ${alarm.relatedParts.join(', ')}.` : ''}`;
+              // Usar i18n keys para multi-idioma (mismo patrón que quickcheck)
+              const title = eventTypeKey; // i18n key: 'notification.maintenance.alarmTriggered'
+              const description = eventTypeKey + `.description`; // i18n key para descripción detallada
 
               await this.createMachineEventUseCase.execute(
                 machineId,

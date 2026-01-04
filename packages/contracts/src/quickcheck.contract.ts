@@ -3,7 +3,9 @@ import {
   QUICK_CHECK_ITEM_RESULTS, 
   QUICK_CHECK_RESULTS,
   type QuickCheckItemResult as DomainQuickCheckItemResult,
-  type QuickCheckResult as DomainQuickCheckResult
+  type QuickCheckResult as DomainQuickCheckResult,
+  type IQuickCheckItem,
+  type IQuickCheckRecord
 } from '@packages/domain';
 
 // =============================================================================
@@ -18,6 +20,7 @@ export const QuickCheckItemResultSchema = z.enum(QUICK_CHECK_ITEM_RESULTS) satis
 
 /**
  * Item individual del QuickCheck con su resultado
+ * Uses satisfies to ensure compile-time validation against domain IQuickCheckItem
  */
 export const QuickCheckItemSchema = z.object({
   name: z.string()
@@ -27,7 +30,7 @@ export const QuickCheckItemSchema = z.object({
     .max(500, 'La descripción no puede exceder 500 caracteres')
     .optional(),
   result: QuickCheckItemResultSchema
-});
+}) satisfies z.ZodType<IQuickCheckItem>;
 
 export type QuickCheckItem = z.infer<typeof QuickCheckItemSchema>;
 
@@ -40,6 +43,7 @@ export const QuickCheckResultSchema = z.enum(QUICK_CHECK_RESULTS) satisfies z.Zo
 /**
  * Registro completo de un QuickCheck ejecutado
  * Este objeto se embede dentro del array quickChecks[] de Machine
+ * Uses satisfies to ensure compile-time validation against domain IQuickCheckRecord
  */
 export const QuickCheckRecordSchema = z.object({
   result: QuickCheckResultSchema,
@@ -60,7 +64,7 @@ export const QuickCheckRecordSchema = z.object({
   observations: z.string()
     .max(1000, 'Las observaciones no pueden exceder 1000 caracteres')
     .optional()
-});
+}) satisfies z.ZodType<IQuickCheckRecord>;
 
 export type QuickCheckRecord = z.infer<typeof QuickCheckRecordSchema>;
 

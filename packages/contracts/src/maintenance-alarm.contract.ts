@@ -6,24 +6,27 @@
  */
 
 import { z } from 'zod';
+import type { IMaintenanceAlarm } from '@packages/domain';
 
 /**
  * Schema para MaintenanceAlarm (lectura/respuesta)
+ * Uses satisfies to ensure compile-time validation against domain IMaintenanceAlarm
  */
 export const MaintenanceAlarmSchema = z.object({
   id: z.string(),
   title: z.string().min(1).max(100),
   description: z.string().max(500).optional(),
-  relatedParts: z.array(z.string().min(1)).default([]),
+  relatedParts: z.array(z.string().min(1)), // No .default() aquí - siempre debe estar presente en lectura
   intervalHours: z.number().int().min(1),
+  accumulatedHours: z.number().int().min(0), // Accumulator Pattern: horas acumuladas desde último trigger
   isActive: z.boolean(),
   createdBy: z.string(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
   lastTriggeredAt: z.coerce.date().optional(),
-  lastTriggeredHours: z.number().int().min(0).optional(),
+  lastTriggeredHours: z.number().int().min(0).optional(), // DEPRECATED: usar accumulatedHours
   timesTriggered: z.number().int().min(0)
-});
+}) satisfies z.ZodType<IMaintenanceAlarm>;
 
 /**
  * Schema para crear MaintenanceAlarm
@@ -48,6 +51,10 @@ export const CreateMaintenanceAlarmRequestSchema = z.object({
     .int('Interval must be an integer')
     .min(1, 'Interval must be at least 1 hour')
     .max(50000, 'Interval too large (max 50,000 hours)'), // ~5.7 años @ 24h/día - límite razonable MVP
+  accumulatedHours: z.number()
+    .int('Accumulated hours must be an integer')
+    .min(0, 'Accumulated hours cannot be negative')
+    .default(0), // Default: comienza en 0 al crear alarma
   isActive: z.boolean()
     .default(true) // Alarms active by default
 });
@@ -78,6 +85,10 @@ export const UpdateMaintenanceAlarmRequestSchema = z.object({
     .min(1, 'Interval must be at least 1 hour')
     .max(50000, 'Interval too large (max 50,000 hours)')
     .optional(),
+  accumulatedHours: z.number()
+    .int('Accumulated hours must be an integer')
+    .min(0, 'Accumulated hours cannot be negative')
+    .optional(), // Opcional para update (ej: reset manual o ajuste)
   isActive: z.boolean()
     .optional()
 });
@@ -107,6 +118,26 @@ export type CreateMaintenanceAlarmRequest = z.infer<typeof CreateMaintenanceAlar
 export type UpdateMaintenanceAlarmRequest = z.infer<typeof UpdateMaintenanceAlarmRequestSchema>;
 export type GetMaintenanceAlarmsQuery = z.infer<typeof GetMaintenanceAlarmsQuerySchema>;
 export type GetMaintenanceAlarmsResponse = z.infer<typeof GetMaintenanceAlarmsResponseSchema>;
+
+/**
+ * DTO type for HTTP responses (dates serialized as ISO strings)
+ * 
+ * Zod schemas use z.coerce.date() for parsing, but when sending responses,
+ * Date objects are serialized to ISO strings by JSON.stringify().
+ * This type reflects the actual wire format received by the frontend.
+ */
+export type MaintenanceAlarmDTO = Omit<MaintenanceAlarm, 'createdAt' | 'updatedAt' | 'lastTriggeredAt'> & {
+  createdAt: string;
+  updatedAt: string;
+  lastTriggeredAt: string | null;
+};
+
+/**
+ * Response type for list endpoint with DTOs
+ */
+export type GetMaintenanceAlarmsResponseDTO = Omit<GetMaintenanceAlarmsResponse, 'alarms'> & {
+  alarms: MaintenanceAlarmDTO[];
+};
 
 // =============================================================================
 // 🔮 POST-MVP: Schemas comentados para futuras funcionalidades

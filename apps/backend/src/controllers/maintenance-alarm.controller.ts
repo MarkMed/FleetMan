@@ -9,6 +9,11 @@ import {
 } from '../application/maintenance';
 import type { AuthenticatedRequest } from '../middlewares/auth.middleware';
 import type { IMaintenanceAlarm } from '@packages/domain';
+import type { 
+  MaintenanceAlarmDTO, 
+  GetMaintenanceAlarmsResponseDTO,
+  ApiResponse 
+} from '@packages/contracts';
 
 /**
  * MaintenanceAlarmController handles maintenance alarms HTTP requests
@@ -40,12 +45,12 @@ export class MaintenanceAlarmController {
    * Helper para convertir entidad de dominio a DTO de respuesta
    * Sanitiza datos para respuesta HTTP
    */
-  private toResponse(alarm: IMaintenanceAlarm) {
+  private toResponse(alarm: IMaintenanceAlarm): MaintenanceAlarmDTO {
     return {
       id: alarm.id,
       title: alarm.title,
       description: alarm.description,
-      relatedParts: alarm.relatedParts,
+      relatedParts: [...alarm.relatedParts], // Convert readonly to mutable array
       intervalHours: alarm.intervalHours,
       accumulatedHours: alarm.accumulatedHours,
       isActive: alarm.isActive,
@@ -93,10 +98,12 @@ export class MaintenanceAlarmController {
         alarmId: alarm.id 
       }, 'Maintenance alarm created successfully');
 
+      const responseData: MaintenanceAlarmDTO = this.toResponse(alarm);
+
       res.status(201).json({
         success: true,
         message: 'Maintenance alarm created successfully',
-        data: this.toResponse(alarm)
+        data: responseData
       });
 
     } catch (error) {
@@ -148,14 +155,19 @@ export class MaintenanceAlarmController {
         alarmsCount: alarms.length 
       }, 'Maintenance alarms retrieved successfully');
 
+      // Calculate activeCount for response
+      const activeCount = alarms.filter((alarm: IMaintenanceAlarm) => alarm.isActive).length;
+
+      const responseData: GetMaintenanceAlarmsResponseDTO = {
+        alarms: alarms.map((alarm: IMaintenanceAlarm) => this.toResponse(alarm)),
+        total: alarms.length,
+        activeCount
+      };
+
       res.status(200).json({
         success: true,
         message: 'Maintenance alarms retrieved successfully',
-        data: alarms.map((alarm: IMaintenanceAlarm) => this.toResponse(alarm)),
-        metadata: {
-          total: alarms.length,
-          filtered: isActive !== undefined
-        }
+        data: responseData
       });
 
     } catch (error) {
@@ -208,10 +220,12 @@ export class MaintenanceAlarmController {
         alarmId 
       }, 'Maintenance alarm updated successfully');
 
+      const responseData: MaintenanceAlarmDTO = this.toResponse(alarm);
+
       res.status(200).json({
         success: true,
         message: 'Maintenance alarm updated successfully',
-        data: this.toResponse(alarm)
+        data: responseData
       });
 
     } catch (error) {
@@ -314,10 +328,12 @@ export class MaintenanceAlarmController {
         alarmId 
       }, 'Maintenance alarm reset successfully');
 
+      const responseData: MaintenanceAlarmDTO = this.toResponse(alarm);
+
       res.status(200).json({
         success: true,
         message: 'Maintenance alarm reset successfully (accumulated hours set to 0)',
-        data: this.toResponse(alarm)
+        data: responseData
       });
 
     } catch (error) {
