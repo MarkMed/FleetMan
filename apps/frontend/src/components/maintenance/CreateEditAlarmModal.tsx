@@ -8,7 +8,7 @@ import {
   type MaintenanceAlarm,
 } from '@contracts';
 
-import { Modal, InputField, Button, Textarea, Switch, BodyText } from '@components/ui';
+import { Modal, InputField, Button, Textarea, BodyText } from '@components/ui';
 import { RelatedPartsInput } from '@components/maintenance';
 import { useCreateMaintenanceAlarm, useUpdateMaintenanceAlarm } from '@hooks';
 import { useToast } from '@hooks/useToast';
@@ -108,6 +108,7 @@ export const CreateEditAlarmModal: React.FC<CreateEditAlarmModalProps> = ({
           description: alarm.description || '',
           intervalHours: alarm.intervalHours,
           relatedParts: [...alarm.relatedParts], // Clone array
+          isActive: alarm.isActive, // Preserve current activation state
         });
       } else {
         // Create mode: reset to defaults

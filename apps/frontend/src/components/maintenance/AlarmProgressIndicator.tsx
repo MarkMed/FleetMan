@@ -92,7 +92,7 @@ export const AlarmProgressIndicator: React.FC<AlarmProgressIndicatorProps> = ({
           className={`h-full transition-all duration-300 ease-out ${colorClass}`}
           style={{ width: `${percentage}%` }}
           role="progressbar"
-          aria-valuenow={percentageForDisplay}
+          aria-valuenow={Math.min(percentageForDisplay, 100)}
           aria-valuemin={0}
           aria-valuemax={100}
         />

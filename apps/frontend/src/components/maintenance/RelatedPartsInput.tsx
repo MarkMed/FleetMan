@@ -72,8 +72,8 @@ export const RelatedPartsInput: React.FC<RelatedPartsInputProps> = ({
       return;
     }
 
-    // Validation: duplicate
-    if (value.includes(trimmedValue)) {
+    // Validation: duplicate (case-insensitive to prevent near-duplicates)
+    if (value.some(part => part.toLowerCase() === trimmedValue.toLowerCase())) {
       return;
     }
 
@@ -123,7 +123,7 @@ export const RelatedPartsInput: React.FC<RelatedPartsInputProps> = ({
         <Button
           htmlType="button"
           variant="outline"
-          className='h-10 border-primary/90'
+          className="h-10 border-primary/90"
           onPress={handleAddPart}		  
           disabled={!inputValue.trim() || isAtMaxCapacity}
         >
