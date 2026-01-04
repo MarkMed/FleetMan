@@ -594,7 +594,9 @@
       "overdue": "Maintenance overdue for machine {{machineName}}",
       "completed": "Maintenance completed on machine {{machineName}}",
       "cancelled": "Maintenance cancelled for machine {{machineName}}",
-      "rescheduled": "Maintenance rescheduled for machine {{machineName}}"
+      "rescheduled": "Maintenance rescheduled for machine {{machineName}}",
+      "alarmTriggered": "⚠️ {{alarmTitle}}",
+      "alarmTriggered.description": "Machine {{machineName}} reached {{accumulatedHours}} operating hours. Maintenance required every {{intervalHours}} hours. Related parts: {{relatedParts}}"
     },
     "user": {
       "assigned": "You have been assigned to {{taskType}}",

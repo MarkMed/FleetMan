@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
 import { 
@@ -75,6 +75,7 @@ export const CreateEditAlarmModal: React.FC<CreateEditAlarmModalProps> = ({
 
   // Form with Zod validation from contracts
   const {
+    control,
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
@@ -184,36 +185,40 @@ export const CreateEditAlarmModal: React.FC<CreateEditAlarmModalProps> = ({
     >
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Title Field */}
-        <InputField
-          label={t('maintenance.alarms.alarmTitle')}
-          placeholder={t('maintenance.alarms.alarmTitlePlaceholder')}
+        <Controller
+          control={control}
           name="title"
-          value={watch('title')}
-          onChangeText={(text) => setValue('title', text)}
-          error={errors.title?.message}
-          required
+          render={({ field: { onChange, onBlur, value } }) => (
+            <InputField
+              label={t('maintenance.alarms.alarmTitle')}
+              placeholder={t('maintenance.alarms.alarmTitlePlaceholder')}
+              value={value || ''}
+              onChangeText={onChange}
+              onBlur={onBlur}
+              error={errors.title?.message}
+              required
+            />
+          )}
         />
 
         {/* Description Field */}
-        <div>
-          <label className="block text-sm font-medium mb-1">
-            {t('maintenance.alarms.alarmDescription')}
-          </label>
-          <Textarea
-            placeholder={t('maintenance.alarms.alarmDescriptionPlaceholder')}
-            {...register('description')}
-            rows={3}
-            maxLength={500}
-          />
-          {errors.description && (
-            <BodyText size="small" className="text-destructive mt-1">
-              {errors.description.message}
-            </BodyText>
+        <Controller
+          control={control}
+          name="description"
+          render={({ field: { onChange, onBlur, value } }) => (
+            <Textarea
+              label={t('maintenance.alarms.alarmDescription')}
+              placeholder={t('maintenance.alarms.alarmDescriptionPlaceholder')}
+              value={value || ''}
+              onChangeText={onChange}
+              onBlur={onBlur}
+              rows={3}
+              maxLength={500}
+              error={errors.description?.message}
+              helperText={t('maintenance.alarms.form.descriptionMax')}
+            />
           )}
-          <BodyText size="small" className="text-muted-foreground mt-1">
-            {t('maintenance.alarms.form.descriptionMax')}
-          </BodyText>
-        </div>
+        />
 
         {/* Interval Hours Field */}
         <div>

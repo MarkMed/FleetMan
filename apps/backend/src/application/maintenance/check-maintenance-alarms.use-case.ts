@@ -209,8 +209,8 @@ export class CheckMaintenanceAlarmsUseCase {
 
               // (a) Crear MachineEvent (genera notificación automática al owner)
               // Usar i18n keys para multi-idioma (mismo patrón que quickcheck)
-              const title = eventTypeKey; // i18n key: 'notification.maintenance.alarmTriggered'
-              const description = eventTypeKey + `.description`; // i18n key para descripción detallada
+              const title = machinePublic.nickname ? `${machinePublic.nickname} - ${alarm.title}` : `${machinePublic.serialNumber} - ${alarm.title}`; // eventTypeKey; // i18n key: 'notification.maintenance.alarmTriggered'
+              const description = alarm.description as string || ""// eventTypeKey + `.description`; // i18n key para descripción detallada
 
               await this.createMachineEventUseCase.execute(
                 machineId,
@@ -225,15 +225,17 @@ export class CheckMaintenanceAlarmsUseCase {
                     additionalInfo: {
                       alarmId: alarm.id,
                       alarmTitle: alarm.title,
+                      alarmDescription: alarm.description,
                       intervalHours: alarm.intervalHours,
                       accumulatedHours: newAccumulated,
                       relatedParts: alarm.relatedParts,
                       timesTriggered: alarm.timesTriggered,
-                      triggeredAt: new Date().toISOString()
+                      triggeredAt: new Date().toISOString(),
+                      machineName: machinePublic.nickname || machinePublic.serialNumber
                     }
                   }
                 },
-                `/machines/${machineId}/maintenance-alarms`,
+                `/machines/${machineId}/alarms`,
                 true,
                 NOTIFICATION_SOURCE_TYPES[2],
                 machinePublic.ownerId // Notificar al dueño de la máquina, no a 'system'

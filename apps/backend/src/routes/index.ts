@@ -8,6 +8,7 @@ import notificationRoutes from './notification.routes';
 import machineEventRoutes from './machine-event.routes';
 import eventTypeRoutes from './event-type.routes';
 import adminRoutes from './admin.routes';
+import maintenanceRoutes from './maintenance-alarm.routes';
 
 /**
  * Router principal de la API v1
@@ -38,6 +39,9 @@ router.use('/machines', machineEventRoutes);
 
 // Event Types routes (Sprint #10) - CRUD de tipos de eventos (crowdsourcing)
 router.use('/event-types', eventTypeRoutes);
+
+// Maintenance Alarm routes (Sprint #11) - Gestión de alarmas de mantenimiento
+router.use('/machines', maintenanceRoutes);
 
 // Admin routes (Sprint #11) - Gestión de cronjobs y admin tools
 router.use('/admin/cronjobs', adminRoutes);

@@ -81,13 +81,17 @@ export class CreateMachineEventUseCase {
         throw new Error(`Invalid machine ID format: ${machineIdResult.error.message}`);
       }
 
-      // 2. Validar formato de userId
-      const userIdResult = UserId.create(userId);
-      if (!userIdResult.success) {
-        throw new Error(`Invalid user ID format: ${userIdResult.error.message}`);
+      // 2. Validar formato de userId (skip validation for system-generated events)
+      const isSystemUser = userId === 'system';
+      
+      if (!isSystemUser) {
+        const userIdResult = UserId.create(userId);
+        if (!userIdResult.success) {
+          throw new Error(`Invalid user ID format: ${userIdResult.error.message}`);
+        }
       }
 
-      // 3. Validar que la máquina existe y que el usuario tiene acceso
+      // 3. Validar que la máquina existe
       const machineResult = await this.machineRepository.findById(machineIdResult.data);
       if (!machineResult.success) {
         throw new Error(`Machine with ID ${machineId} not found`);
@@ -96,11 +100,16 @@ export class CreateMachineEventUseCase {
       const machine = machineResult.data;
 
       // 4. Validar acceso del usuario (owner o provider asignado)
-      const isOwner = machine.ownerId.getValue() === userId;
-      const isAssignedProvider = machine.assignedProviderId?.getValue() === userId;
+      // SKIP ownership validation for system-generated events (cronjobs, automated tasks)
+      // Note: userId is ONLY for access control and audit trail
+      //       Notifications are sent to recipientId or machine.ownerId (not affected by userId='system')
+      if (!isSystemUser) {
+        const isOwner = machine.ownerId.getValue() === userId;
+        const isAssignedProvider = machine.assignedProviderId?.getValue() === userId;
 
-      if (!isOwner && !isAssignedProvider) {
-        throw new Error('Access denied: you are not the owner or assigned provider');
+        if (!isOwner && !isAssignedProvider) {
+          throw new Error('Access denied: you are not the owner or assigned provider');
+        }
       }
 
       // 5. Validar que el tipo de evento existe
