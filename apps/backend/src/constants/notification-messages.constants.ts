@@ -52,7 +52,8 @@ export const NOTIFICATION_MESSAGE_KEYS = {
     overdue: 'notification.maintenance.overdue',
     completed: 'notification.maintenance.completed',
     cancelled: 'notification.maintenance.cancelled',
-    rescheduled: 'notification.maintenance.rescheduled'
+    rescheduled: 'notification.maintenance.rescheduled',
+    alarmTriggered: 'notification.maintenance.alarmTriggered' // Sprint #11: Cronjob trigger
   },
   user: {
     assigned: 'notification.user.assigned',

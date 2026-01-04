@@ -238,7 +238,7 @@ export interface IMachineRepository {
    * @param machineId - ID de la máquina
    * @param alarmId - ID de la alarma (subdocument _id)
    * @param updates - Campos a actualizar (partial update)
-   * @returns Result void o error
+   * @returns Result con la alarma actualizada o error
    */
   updateMaintenanceAlarm(
     machineId: MachineId,
@@ -249,8 +249,10 @@ export interface IMachineRepository {
       relatedParts?: string[];
       intervalHours?: number;
       isActive?: boolean;
+      accumulatedHours?: number;
+      lastTriggeredAt?: Date;
     }
-  ): Promise<Result<void, DomainError>>;
+  ): Promise<Result<IMaintenanceAlarm, DomainError>>;
 
   /**
    * Elimina (soft delete) una alarma de mantenimiento
@@ -266,8 +268,24 @@ export interface IMachineRepository {
   ): Promise<Result<void, DomainError>>;
 
   /**
-   * Actualiza tracking fields cuando alarma se dispara
+   * Actualiza el acumulador de horas de una alarma específica
+   * Usado por cronjob para sumar horas diarias después de día operativo
+   * 
+   * @param machineId - ID de la máquina
+   * @param alarmId - ID de la alarma (subdocument _id)
+   * @param hoursToAdd - Horas a sumar (usualmente usageSchedule.dailyHours)
+   * @returns Result void o error
+   */
+  updateAlarmAccumulatedHours(
+    machineId: MachineId,
+    alarmId: string,
+    hoursToAdd: number
+  ): Promise<Result<void, DomainError>>;
+
+  /**
+   * Actualiza tracking fields cuando alarma de mantenimiento se dispara
    * Uso interno: Invocado por cronjob cuando se cumple condición
+   * Ahora también resetea acumulatedHours a 0
    * 
    * @param machineId - ID de la máquina
    * @param alarmId - ID de la alarma (subdocument _id)

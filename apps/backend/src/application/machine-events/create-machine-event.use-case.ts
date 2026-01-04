@@ -46,6 +46,11 @@ export class CreateMachineEventUseCase {
    *   - metadata: Datos adicionales flexibles (JSON)
    * @param actionUrl - URL para la notificación (opcional, ej: /machines/:id/quickcheck/history)
    *   Si no se provee, se usa /machines/:id/events/:eventId
+   * @param isSystemGenerated - Indica si el evento es generado automáticamente por el sistema
+   * @param sourceType - Tipo de fuente que genera la notificación (EVENT, QUICKCHECK, MAINTENANCE, etc)
+   * @param recipientId - ID del usuario que recibirá la notificación (opcional)
+   *   Si no se provee, la notificación se envía al dueño de la máquina (machine.ownerId)
+   *   Útil para eventos del sistema que deben notificar a un usuario específico
    * 
    * @returns Promise con el evento creado
    * @throws Error si máquina no existe, acceso denegado, o validación falla
@@ -56,7 +61,8 @@ export class CreateMachineEventUseCase {
     request: CreateMachineEventRequest,
     actionUrl?: string,
     isSystemGenerated = true,
-    sourceType: NotificationSourceType = NOTIFICATION_SOURCE_TYPES[1] // 'EVENT' por defecto
+    sourceType: NotificationSourceType = NOTIFICATION_SOURCE_TYPES[1], // 'EVENT' por defecto
+    recipientId?: string
   ): Promise<{
     eventId: string;
     machineId: string;
@@ -122,8 +128,10 @@ export class CreateMachineEventUseCase {
 
       const createdEvent = addEventResult.data;
 
-      // 7. Notificar al owner de la máquina (fire-and-forget)
-      const ownerId = machine.ownerId.getValue();
+      // 7. Notificar al destinatario del evento (fire-and-forget)
+      // Si se provee recipientId, notificar a ese usuario específico
+      // Sino, notificar al owner de la máquina (comportamiento por defecto)
+      const notificationRecipient = recipientId || machine.ownerId.getValue();
       const machinePublic = machine.toPublicInterface();
       const machineName = machinePublic.nickname || machinePublic.serialNumber;
       
@@ -132,7 +140,7 @@ export class CreateMachineEventUseCase {
       const responsibleWorkerId = request.metadata?.additionalInfo?.responsibleWorkerId as string | undefined;
       
       this.notifyOwner(
-        ownerId,
+        notificationRecipient,
         machineId,
         createdEvent.id,
         request.title,
@@ -174,18 +182,21 @@ export class CreateMachineEventUseCase {
   }
 
   /**
-   * Notifica al owner sobre el evento creado
+   * Notifica al destinatario sobre el evento creado
    * Fire-and-forget: errores se loggean pero no se propagan
    * 
-   * @param ownerId - ID del owner de la máquina
+   * @param recipientId - ID del usuario que recibirá la notificación
    * @param machineId - ID de la máquina
    * @param eventId - ID del evento creado
    * @param eventTitle - Título del evento
    * @param machineName - Nombre de la máquina (nickname o serialNumber)
    * @param customActionUrl - URL custom para la notificación (opcional)
+   * @param responsibleName - Nombre del responsable (opcional)
+   * @param responsibleWorkerId - ID del trabajador responsable (opcional)
+   * @param sourceType - Tipo de fuente que genera la notificación
    */
   private async notifyOwner(
-    ownerId: string,
+    recipientId: string,
     machineId: string,
     eventId: string,
     eventTitle: string,
@@ -199,7 +210,7 @@ export class CreateMachineEventUseCase {
       // actionUrl: usar custom si se provee, sino default a evento específico
       const actionUrl = customActionUrl || `/machines/${machineId}/events/`;
 
-      await this.addNotificationUseCase.execute(ownerId, {
+      await this.addNotificationUseCase.execute(recipientId, {
         notificationType: NOTIFICATION_TYPES[3], // 'info' por defecto
         message: eventTitle, // Usar título del evento como mensaje
         actionUrl,
@@ -214,19 +225,19 @@ export class CreateMachineEventUseCase {
       });
 
       logger.info({ 
-        ownerId,
+        recipientId,
         machineId,
         eventId
-      }, '🔔 Event notification sent to owner');
+      }, '🔔 Event notification sent to recipient');
 
     } catch (error) {
       // Log error pero no propagar (fire-and-forget)
       logger.warn({ 
-        ownerId,
+        recipientId,
         machineId,
         eventId,
         error: error instanceof Error ? error.message : 'Unknown error'
-      }, 'Failed to notify owner about event');
+      }, 'Failed to notify recipient about event');
     }
   }
 

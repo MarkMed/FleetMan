@@ -228,12 +228,24 @@ export interface IMaintenanceAlarm {
   readonly description?: string; // Detalles del mantenimiento
   readonly relatedParts: readonly string[]; // Partes involucradas (ej: ["Filtro de Aceite", "Filtro de Aire"])
   readonly intervalHours: number; // Cada cuántas horas acumuladas alertar
+  
+  // 🆕 NUEVO: Accumulator Pattern (Sprint #11 - Refactor)
+  // Horas acumuladas desde el último trigger (o desde creación si nunca se disparó)
+  // El cronjob suma dailyHours cada día DESPUÉS de que la máquina operó (día siguiente)
+  // Cuando accumulatedHours >= intervalHours → trigger alarma + reset a 0
+  // Ejemplo: Si intervalo es 500h y acumula 502h → trigger + reset a 0 (nuevo ciclo)
+  readonly accumulatedHours: number;
+  
   readonly isActive: boolean; // Permite desactivar sin eliminar
   readonly createdBy: string; // userId - Trazabilidad
   readonly createdAt: Date; // Timestamp de creación
   readonly updatedAt: Date; // Timestamp de última actualización
   readonly lastTriggeredAt?: Date; // Última vez que se disparó la alarma
-  readonly lastTriggeredHours?: number; // operatingHours cuando se disparó (base para próximo trigger)
+  
+  // ⚠️ DEPRECATED (mantener por compatibilidad con datos existentes, remover en v2.0)
+  // Ya no se usa en lógica de cronjob - usar accumulatedHours en su lugar
+  readonly lastTriggeredHours?: number;
+  
   readonly timesTriggered: number; // Contador de veces disparadas
   // 🔮 POST-MVP: Campos comentados para futuras versiones
   // readonly priority?: 'LOW' | 'MEDIUM' | 'HIGH'; // Priorización visual
