@@ -226,8 +226,8 @@ export const AlarmDetailScreen: React.FC = () => {
 
           {/* Status Alert Cards */}
           {vm.data.isOverdue && (
-            <div className="flex items-start gap-3 p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
-              <AlertTriangle className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
+            <div className="flex items-center gap-3 p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
+              <AlertTriangle className="h-7 w-7 text-destructive flex-shrink-0 mr-2" />
               <div>
                 <BodyText weight="medium" className="text-destructive">
                   {vm.t('maintenance.alarms.overdue')}
@@ -240,8 +240,8 @@ export const AlarmDetailScreen: React.FC = () => {
           )}
           
           {!vm.data.isOverdue && !vm.data.isApproaching && (
-            <div className="flex items-start gap-3 p-4 bg-success/10 border border-success/20 rounded-lg">
-              <CheckCircle className="h-5 w-5 text-success flex-shrink-0 mt-0.5" />
+            <div className="flex items-center gap-3 p-4 bg-success/10 border border-success/20 rounded-lg">
+              <CheckCircle className="h-7 w-7 text-success flex-shrink-0 mr-2" />
               <div>
                 <BodyText weight="medium" className="text-success">
                   {vm.t('maintenance.alarms.onTrack')}
@@ -253,8 +253,8 @@ export const AlarmDetailScreen: React.FC = () => {
             </div>
           )}
           {vm.data.isApproaching && !vm.data.isOverdue && !vm.data.needsAttention && (
-            <div className="flex items-start gap-3 p-4 bg-warning/10 border border-warning/20 rounded-lg">
-              <Bell className="h-5 w-5 text-warning flex-shrink-0 mt-0.5" />
+            <div className="flex items-center gap-3 p-4 bg-warning/10 border border-warning/20 rounded-lg">
+              <Bell className="h-7 w-7 text-warning flex-shrink-0 mr-2" />
               <div>
                 <BodyText weight="medium" className="text-warning">
                   {vm.t('maintenance.alarms.approaching')}
@@ -266,8 +266,8 @@ export const AlarmDetailScreen: React.FC = () => {
             </div>
           )}
           {vm.data.needsAttention && !vm.data.isOverdue && (
-            <div className="flex items-start gap-3 p-4 bg-warning/10 border border-warning/20 rounded-lg">
-              <AlertTriangle className="h-5 w-5 text-warning flex-shrink-0 mt-0.5" />
+            <div className="flex items-center gap-3 p-4 bg-warning/10 border border-warning/20 rounded-lg">
+              <AlertTriangle className="h-7 w-7 text-warning flex-shrink-0 mr-2" />
               <div>
                 <BodyText weight="medium" className="text-warning">
                   {vm.t('maintenance.alarms.triggered')}
