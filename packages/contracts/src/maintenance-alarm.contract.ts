@@ -47,7 +47,9 @@ export const CreateMaintenanceAlarmRequestSchema = z.object({
   intervalHours: z.number()
     .int('Interval must be an integer')
     .min(1, 'Interval must be at least 1 hour')
-    .max(50000, 'Interval too large (max 50,000 hours)') // ~5.7 años @ 24h/día - límite razonable MVP
+    .max(50000, 'Interval too large (max 50,000 hours)'), // ~5.7 años @ 24h/día - límite razonable MVP
+  isActive: z.boolean()
+    .default(true) // Alarms active by default
 });
 
 /**

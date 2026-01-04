@@ -125,6 +125,11 @@
     "title": "Máquinas",
     "addMachine": "Agregar Máquina",
     "machineDetails": "Detalles de la Máquina",
+    "breadcrumb": {
+      "machines": "Máquinas",
+      "detail": "Detalle",
+      "alarms": "Alarmas"
+    },
     "serialNumber": "Número de Serie",
     "model": "Modelo",
     "brand": "Marca",
@@ -133,7 +138,8 @@
     "status": "Estado",
     "owner": "Propietario",
     "actions": {
-      "viewEventHistory": "Ver Historial"
+      "viewEventHistory": "Ver Historial",
+      "viewMaintenanceAlarms": "Alarmas de Mantenimiento"
     },
     "operation": {
       "title": "Programación de Uso",
@@ -310,6 +316,92 @@
       "time": "Basado en Tiempo",
       "hours": "Basado en Horas",
       "both": "Tiempo y Horas"
+    },
+    "alarms": {
+      "title": "Alarmas de Mantenimiento",
+      "subtitle": "Configure alertas automáticas basadas en horas de operación",
+      "createAlarm": "Crear Alarma",
+      "editAlarm": "Editar Alarma",
+      "deleteAlarm": "Eliminar Alarma",
+      "alarmDetails": "Detalles de Alarma",
+      "alarmTitle": "Título de Alarma",
+      "alarmTitlePlaceholder": "Ej: Cambiar filtros de aceite y aire",
+      "alarmDescription": "Descripción",
+      "alarmDescriptionPlaceholder": "Detalles sobre el mantenimiento a realizar...",
+      "relatedParts": "Partes Relacionadas",
+      "relatedPartsPlaceholder": "Ej: Filtro de Aceite",
+      "addPart": "Agregar Parte",
+      "viewDetails": "Ver Más",
+      "status": "Estado",
+      "active": "Activa",
+      "inactive": "Inactiva",
+      "description": "Descripción",
+      "progress": "Progreso",
+      "statistics": "Estadísticas",
+      "interval": "Intervalo",
+      "neverTriggered": "Nunca disparada",
+      "onTrack": "En Buen Estado",
+      "onTrackDescription": "La alarma está dentro del intervalo esperado",
+      "overdue": "Alarma Vencida",
+      "overdueDescription": "Se ha excedido el intervalo. Realizar mantenimiento urgente.",
+      "approaching": "Próxima a Sonar",
+      "approachingDescription": "La alarma está cerca de alcanzar el intervalo",
+      "intervalHoursLabel": "Intervalo (horas de operación)",
+      "intervalHoursHint": "La alarma sonará cada X horas acumuladas",
+      "intervalHoursPlaceholder": "Ej: 500",
+      "lastTriggered": "Último Disparo",
+      "lastTriggeredAt": "Disparada el",
+      "lastTriggeredHours": "Horas al Disparar",
+      "timesTriggered": "Veces Disparada",
+      "activeAlarms": "Alarmas Activas",
+      "inactiveAlarms": "Alarmas Inactivas",
+      "showActive": "Mostrar Activas",
+      "showInactive": "Mostrar Inactivas",
+      "showAll": "Mostrar Todas",
+      "activate": "Activar",
+      "deactivate": "Desactivar",
+      "confirmDelete": "¿Estás seguro de eliminar esta alarma?",
+      "confirmDeactivate": "¿Desactivar esta alarma?",
+      "confirmActivate": "¿Activar esta alarma?",
+      "empty": {
+        "title": "No hay alarmas configuradas",
+        "description": "Las alarmas de mantenimiento te alertarán automáticamente cuando se alcance el intervalo de horas especificado. Crea tu primera alarma para comenzar.",
+        "action": "Crear Primera Alarma"
+      },
+      "progress": {
+        "label": "Progreso hasta próxima alarma",
+        "hours": "{{current}} / {{target}} horas",
+        "remaining": "Faltan {{hours}} horas",
+        "overdue": "¡Alarma vencida! (+{{hours}} horas)",
+        "approaching": "Próxima a sonar"
+      },
+      "stats": {
+        "total": "Total de Alarmas",
+        "active": "Activas",
+        "inactive": "Inactivas",
+        "triggered": "Disparadas Esta Semana"
+      },
+      "form": {
+        "createTitle": "Crear Alarma de Mantenimiento",
+        "editTitle": "Editar Alarma de Mantenimiento",
+        "titleRequired": "El título es requerido",
+        "titleMin": "El título debe tener al menos 3 caracteres",
+        "titleMax": "El título no puede exceder 100 caracteres",
+        "descriptionMax": "La descripción no puede exceder 500 caracteres",
+        "intervalRequired": "El intervalo es requerido",
+        "intervalMin": "El intervalo debe ser al menos 1 hora",
+        "intervalMax": "El intervalo no puede exceder 50,000 horas",
+        "partsMax": "No puedes agregar más de 50 partes",
+        "partEmpty": "El nombre de la parte no puede estar vacío"
+      },
+      "notifications": {
+        "created": "Alarma creada exitosamente",
+        "updated": "Alarma actualizada exitosamente",
+        "deleted": "Alarma eliminada exitosamente",
+        "activated": "Alarma activada",
+        "deactivated": "Alarma desactivada",
+        "triggered": "⚠️ Alarma disparada: {{title}}"
+      }
     },
     "eventTypes": {
       "maintenance": "Mantenimiento",

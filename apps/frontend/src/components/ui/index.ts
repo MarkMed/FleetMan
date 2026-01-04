@@ -5,6 +5,9 @@ export { TimerButton } from './TimerButton';
 export { CircularProgress } from './CircularProgress';
 export { CollapsibleSection } from './CollapsibleSection';
 export { Spinner } from './Spinner';
+export { Badge, badgeVariants } from './Badge';
+export { Switch } from './Switch';
+export { Input } from './Input';
 export { 
   Modal,
   ModalRoot,
