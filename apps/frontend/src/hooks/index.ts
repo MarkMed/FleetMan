@@ -318,6 +318,7 @@ export {
   useCreateMaintenanceAlarm, 
   useUpdateMaintenanceAlarm, 
   useDeleteMaintenanceAlarm,
+  useResetMaintenanceAlarm,
   useToggleAlarmStatus,
   MAINTENANCE_ALARM_KEYS,
 } from './useMaintenanceAlarms';

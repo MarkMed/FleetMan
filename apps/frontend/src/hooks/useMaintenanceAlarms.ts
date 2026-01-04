@@ -268,6 +268,50 @@ export function useDeleteMaintenanceAlarm(machineId: string | undefined) {
 }
 
 /**
+ * Hook: Reset maintenance alarm (mark as completed)
+ * Resets accumulatedHours to 0 after performing maintenance
+ * 
+ * Pattern: Optimistic UI update with automatic cache invalidation
+ * Backend: POST /api/v1/machines/:machineId/maintenance-alarms/:alarmId/reset
+ * 
+ * @param machineId - Machine UUID
+ * @returns Mutation object
+ * 
+ * @example
+ * ```tsx
+ * const resetMutation = useResetMaintenanceAlarm(machineId);
+ * 
+ * const handleMarkCompleted = (alarmId: string) => {
+ *   resetMutation.mutate(alarmId, {
+ *     onSuccess: () => toast.success('Contador reseteado')
+ *   });
+ * };
+ * ```
+ */
+export function useResetMaintenanceAlarm(machineId: string | undefined) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (alarmId: string) =>
+      maintenanceAlarmService.resetMaintenanceAlarm(machineId!, alarmId),
+    onSuccess: (updatedAlarm) => {
+      console.log('[useResetMaintenanceAlarm] Alarm reset:', updatedAlarm);
+      
+      // Invalidate queries to refetch fresh data
+      queryClient.invalidateQueries({ 
+        queryKey: MAINTENANCE_ALARM_KEYS.byMachine(machineId!) 
+      });
+      queryClient.invalidateQueries({ 
+        queryKey: MAINTENANCE_ALARM_KEYS.active(machineId!) 
+      });
+      queryClient.invalidateQueries({ 
+        queryKey: MAINTENANCE_ALARM_KEYS.detail(machineId!, updatedAlarm.id) 
+      });
+    },
+  });
+}
+
+/**
  * Hook: Toggle alarm active status (activate/deactivate)
  * Convenience wrapper around useUpdateMaintenanceAlarm
  * 

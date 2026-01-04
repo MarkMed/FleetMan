@@ -10,3 +10,4 @@ export { AlarmProgressIndicator } from './AlarmProgressIndicator';
 export { RelatedPartsInput } from './RelatedPartsInput';
 export { CreateEditAlarmModal } from './CreateEditAlarmModal';
 export { AlarmDetailModal } from './AlarmDetailModal';
+export { AlarmActionMenuModal } from './AlarmActionMenuModal';

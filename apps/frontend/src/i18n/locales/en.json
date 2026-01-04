@@ -345,6 +345,8 @@
       "onTrackDescription": "The alarm is within expected interval",
       "overdue": "Overdue Alarm",
       "overdueDescription": "Interval exceeded. Perform urgent maintenance.",
+      "triggered": "Alarm Triggered",
+      "triggeredDescription": "The alarm has been activated. Maintenance is recommended soon.",
       "approaching": "Approaching",
       "approachingDescription": "The alarm is close to reaching the interval",
       "intervalHoursLabel": "Interval (operating hours)",
@@ -371,6 +373,7 @@
       "accumulated": "Accumulated",
       "remaining": "Remaining",
       "progressTitle": "Progress",
+      "takeAction": "Take Action",
       "empty": {
         "title": "No alarms configured",
         "description": "Maintenance alarms will automatically alert you when the specified hour interval is reached. Create your first alarm to get started.",
@@ -409,6 +412,20 @@
         "activated": "Alarm activated",
         "deactivated": "Alarm deactivated",
         "triggered": "⚠️ Alarm triggered: {{title}}"
+      },
+      "actions": {
+        "title": "Alarm Actions",
+        "selectAction": "Select an action",
+        "contactProvider": "Contact Provider",
+        "contactProviderDesc": "Coordinate maintenance with provider",
+        "postpone": "Postpone Alarm",
+        "postponeDesc": "Temporarily extend the interval",
+        "editAlarm": "Edit Alarm",
+        "editAlarmDesc": "Modify alarm configuration",
+        "markCompleted": "Mark as Completed",
+        "markCompletedDesc": "Reset counter after performing maintenance",
+        "stopMachine": "Stop Machine",
+        "stopMachineDesc": "Temporarily shut down the machine"
       }
     },
     "eventTypes": {

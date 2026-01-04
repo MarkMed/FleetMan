@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useMaintenanceAlarm, useDeleteMaintenanceAlarm } from '@hooks';
+import { useMaintenanceAlarm, useDeleteMaintenanceAlarm, useResetMaintenanceAlarm } from '@hooks';
 import { useToast } from '@hooks/useToast';
 import { modal } from '@helpers/modal';
 
@@ -58,6 +58,9 @@ export function useAlarmDetailViewModel() {
   
   // Edit modal state
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  
+  // Action menu modal state
+  const [isActionMenuOpen, setIsActionMenuOpen] = useState(false);
 
   // ========================
   // DATA FETCHING
@@ -68,6 +71,9 @@ export function useAlarmDetailViewModel() {
 
   // Delete mutation
   const deleteMutation = useDeleteMaintenanceAlarm(machineId);
+  
+  // Reset mutation
+  const resetMutation = useResetMaintenanceAlarm(machineId);
 
   // ========================
   // DERIVED STATE
@@ -82,11 +88,13 @@ export function useAlarmDetailViewModel() {
   let isOverdue = false;
   let isApproaching = false;
   let lastTriggeredDate = '';
+  let needsAttention = false;
 
   if (alarm) {
     hoursRemaining = alarm.intervalHours - alarm.accumulatedHours;
     isOverdue = hoursRemaining < 0;
-    isApproaching = hoursRemaining > 0 && hoursRemaining <= alarm.intervalHours * 0.2; // 20% threshold
+    isApproaching = hoursRemaining <= alarm.intervalHours * 0.3; // 30% threshold
+    needsAttention = hoursRemaining === 0 || hoursRemaining <= alarm.intervalHours * 0.1; // 10% threshold
 
     lastTriggeredDate = alarm.lastTriggeredAt
       ? new Date(alarm.lastTriggeredAt).toLocaleDateString('es-AR', {
@@ -123,6 +131,76 @@ export function useAlarmDetailViewModel() {
    */
   const handleCloseEditModal = () => {
     setIsEditModalOpen(false);
+  };
+
+  /**
+   * Open action menu modal
+   */
+  const handleOpenActionMenu = () => {
+    setIsActionMenuOpen(true);
+  };
+
+  /**
+   * Close action menu modal
+   */
+  const handleCloseActionMenu = () => {
+    setIsActionMenuOpen(false);
+  };
+
+  /**
+   * Contact provider (Coming soon)
+   */
+  const handleContactProvider = () => {
+    toast.info({
+      title: t('common.comingSoon'),
+      description: t('common.featureComingSoon'),
+    });
+  };
+
+  /**
+   * Postpone alarm (Coming soon)
+   */
+  const handlePostpone = () => {
+    toast.info({
+      title: t('common.comingSoon'),
+      description: t('common.featureComingSoon'),
+    });
+  };
+
+  /**
+   * Mark alarm as completed (reset counter)
+   * Calls reset endpoint to set accumulatedHours to 0
+   */
+  const handleMarkCompleted = async () => {
+    if (!alarm) return;
+
+    try {
+      await resetMutation.mutateAsync(alarm.id);
+
+      // Success toast
+      toast.success({
+        title: t('common.success'),
+        description: t('maintenance.alarms.notifications.updated'),
+      });
+    } catch (error) {
+      console.error('[useAlarmDetailViewModel] Failed to reset alarm:', error);
+
+      // Error toast
+      toast.error({
+        title: t('common.error'),
+        description: error instanceof Error ? error.message : t('errors.unknownError'),
+      });
+    }
+  };
+
+  /**
+   * Stop machine (Coming soon)
+   */
+  const handleStopMachine = () => {
+    toast.info({
+      title: t('common.comingSoon'),
+      description: t('common.featureComingSoon'),
+    });
   };
 
   /**
@@ -195,6 +273,7 @@ export function useAlarmDetailViewModel() {
       hoursRemaining,
       isOverdue,
       isApproaching,
+      needsAttention,
       
       // Stats for display
       stats: {
@@ -213,6 +292,15 @@ export function useAlarmDetailViewModel() {
         machineId: machineId,
         onClose: handleCloseEditModal,
       },
+      actionMenu: {
+        isOpen: isActionMenuOpen,
+        onOpenChange: setIsActionMenuOpen,
+        onContactProvider: handleContactProvider,
+        onPostpone: handlePostpone,
+        onEditAlarm: handleEdit,
+        onMarkCompleted: handleMarkCompleted,
+        onStopMachine: handleStopMachine,
+      },
     },
 
     // ACTIONS: User interaction handlers
@@ -222,6 +310,12 @@ export function useAlarmDetailViewModel() {
       handleDelete,
       handleRetry,
       handleCloseEditModal,
+      handleOpenActionMenu,
+      handleCloseActionMenu,
+      handleContactProvider,
+      handlePostpone,
+      handleMarkCompleted,
+      handleStopMachine,
     },
 
     // i18n: Translation function

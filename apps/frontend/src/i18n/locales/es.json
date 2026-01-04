@@ -91,6 +91,8 @@
     "description": "Descripción",
     "expand": "Expandir",
     "collapse": "Colapsar",
+    "comingSoon": "Próximamente",
+    "featureComingSoon": "Esta funcionalidad estará disponible próximamente",
     "daysOfWeek": {
       "full": {
         "SUN": "Domingo",
@@ -345,6 +347,8 @@
       "onTrackDescription": "La alarma está dentro del intervalo esperado",
       "overdue": "Alarma Vencida",
       "overdueDescription": "Se ha excedido el intervalo. Realizar mantenimiento urgente.",
+      "triggered": "Alarma Disparada",
+      "triggeredDescription": "La alarma se ha activado. Se recomienda realizar el mantenimiento.",
       "approaching": "Próxima a Sonar",
       "approachingDescription": "La alarma está cerca de alcanzar el intervalo",
       "intervalHoursLabel": "Intervalo (horas de operación)",
@@ -371,6 +375,7 @@
       "accumulated": "Acumuladas",
       "remaining": "Restantes",
       "progressTitle": "Progreso",
+      "takeAction": "Tomar Acción",
       "empty": {
         "title": "No hay alarmas configuradas",
         "description": "Las alarmas de mantenimiento te alertarán automáticamente cuando se alcance el intervalo de horas especificado. Crea tu primera alarma para comenzar.",
@@ -409,6 +414,20 @@
         "activated": "Alarma activada",
         "deactivated": "Alarma desactivada",
         "triggered": "⚠️ Alarma disparada: {{title}}"
+      },
+      "actions": {
+        "title": "Acciones de Alarma",
+        "selectAction": "Selecciona una acción",
+        "contactProvider": "Contactar Proveedor",
+        "contactProviderDesc": "Coordinar mantenimiento con el proveedor",
+        "postpone": "Posponer Alarma",
+        "postponeDesc": "Extender el intervalo temporalmente",
+        "editAlarm": "Editar Alarma",
+        "editAlarmDesc": "Modificar configuración de la alarma",
+        "markCompleted": "Marcar como Completado",
+        "markCompletedDesc": "Resetear contador tras realizar mantenimiento",
+        "stopMachine": "Detener Máquina",
+        "stopMachineDesc": "Apagar la máquina temporalmente"
       }
     },
     "eventTypes": {

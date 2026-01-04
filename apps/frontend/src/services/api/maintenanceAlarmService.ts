@@ -169,6 +169,35 @@ class MaintenanceAlarmService {
     }
   }
 
+  /**
+   * Reset maintenance alarm accumulator (mark as completed)
+   * Resets accumulatedHours to 0 after maintenance is performed
+   * @param machineId - Machine UUID
+   * @param alarmId - Alarm subdocument ID
+   * @returns Promise with updated alarm
+   */
+  async resetMaintenanceAlarm(
+    machineId: string,
+    alarmId: string
+  ): Promise<MaintenanceAlarm> {
+    console.log('[maintenanceAlarmService.resetMaintenanceAlarm] Resetting alarm:', {
+      machineId,
+      alarmId,
+    });
+
+    const response = await apiClient.post<{ 
+      success: boolean; 
+      message?: string; 
+      data: MaintenanceAlarm 
+    }>(API_ENDPOINTS.RESET_MAINTENANCE_ALARM(machineId, alarmId));
+
+    if (!response.success || !response.data) {
+      throw new Error(response.error || 'Failed to reset maintenance alarm');
+    }
+
+    return response.data.data;
+  }
+
   // ============================================
   // POST-MVP: Strategic Features (Commented)
   // ============================================

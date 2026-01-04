@@ -1,9 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Card, BodyText, Badge, Button } from '@components/ui';
-import { AlarmProgressIndicator, CreateEditAlarmModal } from '@components/maintenance';
+import { AlarmProgressIndicator, CreateEditAlarmModal, AlarmActionMenuModal } from '@components/maintenance';
 import { useAlarmDetailViewModel } from '../../viewModels/maintenance/useAlarmDetailViewModel';
-import { ArrowLeft, Clock, AlertTriangle, CheckCircle, Edit, Trash2 } from 'lucide-react';
+import { ArrowLeft, Clock, AlertTriangle, CheckCircle, Edit, Trash2, Zap, Bell } from 'lucide-react';
 
 /**
  * AlarmDetailScreen Component
@@ -179,6 +179,14 @@ export const AlarmDetailScreen: React.FC = () => {
               {vm.t('common.back')}
             </Button>
             <Button
+              variant="filled"
+              size="default"
+              onPress={vm.actions.handleOpenActionMenu}
+            >
+              <Zap className="w-4 h-4 mr-2" />
+              {vm.t('maintenance.alarms.takeAction')}
+            </Button>
+            <Button
               variant="destructive"
               size="default"
               onPress={vm.actions.handleDelete}
@@ -216,6 +224,60 @@ export const AlarmDetailScreen: React.FC = () => {
             </Card>
           )}
 
+          {/* Status Alert Cards */}
+          {vm.data.isOverdue && (
+            <div className="flex items-start gap-3 p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
+              <AlertTriangle className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
+              <div>
+                <BodyText weight="medium" className="text-destructive">
+                  {vm.t('maintenance.alarms.overdue')}
+                </BodyText>
+                <BodyText size="small" className="text-destructive/80">
+                  {vm.t('maintenance.alarms.overdueDescription')}
+                </BodyText>
+              </div>
+            </div>
+          )}
+          
+          {!vm.data.isOverdue && !vm.data.isApproaching && (
+            <div className="flex items-start gap-3 p-4 bg-success/10 border border-success/20 rounded-lg">
+              <CheckCircle className="h-5 w-5 text-success flex-shrink-0 mt-0.5" />
+              <div>
+                <BodyText weight="medium" className="text-success">
+                  {vm.t('maintenance.alarms.onTrack')}
+                </BodyText>
+                <BodyText size="small" className="text-success/80">
+                  {vm.t('maintenance.alarms.onTrackDescription')}
+                </BodyText>
+              </div>
+            </div>
+          )}
+          {vm.data.isApproaching && !vm.data.isOverdue && !vm.data.needsAttention && (
+            <div className="flex items-start gap-3 p-4 bg-warning/10 border border-warning/20 rounded-lg">
+              <Bell className="h-5 w-5 text-warning flex-shrink-0 mt-0.5" />
+              <div>
+                <BodyText weight="medium" className="text-warning">
+                  {vm.t('maintenance.alarms.approaching')}
+                </BodyText>
+                <BodyText size="small" className="text-warning/80">
+                  {vm.t('maintenance.alarms.approachingDescription')}
+                </BodyText>
+              </div>
+            </div>
+          )}
+          {vm.data.needsAttention && !vm.data.isOverdue && (
+            <div className="flex items-start gap-3 p-4 bg-warning/10 border border-warning/20 rounded-lg">
+              <AlertTriangle className="h-5 w-5 text-warning flex-shrink-0 mt-0.5" />
+              <div>
+                <BodyText weight="medium" className="text-warning">
+                  {vm.t('maintenance.alarms.triggered')}
+                </BodyText>
+                <BodyText size="small" className="text-warning/80">
+                  {vm.t('maintenance.alarms.triggeredDescription')}
+                </BodyText>
+              </div>
+            </div>
+          )}
           {/* Progress Card */}
           <Card className="p-6">
             <BodyText weight="medium" className="mb-4">
@@ -247,49 +309,6 @@ export const AlarmDetailScreen: React.FC = () => {
               </div>
             </div>
           </Card>
-
-          {/* Status Alert Cards */}
-          {vm.data.isOverdue && (
-            <div className="flex items-start gap-3 p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
-              <AlertTriangle className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
-              <div>
-                <BodyText weight="medium" className="text-destructive">
-                  {vm.t('maintenance.alarms.overdue')}
-                </BodyText>
-                <BodyText size="small" className="text-destructive/80">
-                  {vm.t('maintenance.alarms.overdueDescription')}
-                </BodyText>
-              </div>
-            </div>
-          )}
-
-          {vm.data.isApproaching && !vm.data.isOverdue && (
-            <div className="flex items-start gap-3 p-4 bg-warning/10 border border-warning/20 rounded-lg">
-              <AlertTriangle className="h-5 w-5 text-warning flex-shrink-0 mt-0.5" />
-              <div>
-                <BodyText weight="medium" className="text-warning">
-                  {vm.t('maintenance.alarms.approaching')}
-                </BodyText>
-                <BodyText size="small" className="text-warning/80">
-                  {vm.t('maintenance.alarms.approachingDescription')}
-                </BodyText>
-              </div>
-            </div>
-          )}
-
-          {!vm.data.isOverdue && !vm.data.isApproaching && (
-            <div className="flex items-start gap-3 p-4 bg-success/10 border border-success/20 rounded-lg">
-              <CheckCircle className="h-5 w-5 text-success flex-shrink-0 mt-0.5" />
-              <div>
-                <BodyText weight="medium" className="text-success">
-                  {vm.t('maintenance.alarms.onTrack')}
-                </BodyText>
-                <BodyText size="small" className="text-success/80">
-                  {vm.t('maintenance.alarms.onTrackDescription')}
-                </BodyText>
-              </div>
-            </div>
-          )}
 
           {/* Related Parts Card */}
           {alarm.relatedParts.length > 0 && (
@@ -360,6 +379,19 @@ export const AlarmDetailScreen: React.FC = () => {
         onClose={vm.modals.edit.onClose}
         alarm={vm.modals.edit.alarm}
         machineId={vm.modals.edit.machineId}
+      />
+
+      {/* ========================
+          ACTION MENU MODAL
+          ======================== */}
+      <AlarmActionMenuModal
+        open={vm.modals.actionMenu.isOpen}
+        onOpenChange={vm.modals.actionMenu.onOpenChange}
+        onContactProvider={vm.modals.actionMenu.onContactProvider}
+        onPostpone={vm.modals.actionMenu.onPostpone}
+        onEditAlarm={vm.modals.actionMenu.onEditAlarm}
+        onMarkCompleted={vm.modals.actionMenu.onMarkCompleted}
+        onStopMachine={vm.modals.actionMenu.onStopMachine}
       />
     </div>
   );
