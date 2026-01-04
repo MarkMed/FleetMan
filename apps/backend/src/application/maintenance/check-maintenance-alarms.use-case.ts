@@ -59,9 +59,9 @@ export class CheckMaintenanceAlarmsUseCase {
    * 3. Por cada máquina:
    *    a) Verificar si AYER fue día operativo (usageSchedule.operatingDays)
    *    b) Por cada alarma activa:
-   *       - Si ayer operó → acumulatedHours += dailyHours
-   *       - Si acumulatedHours >= intervalHours → trigger + reset a 0
-   *       - Si no → solo guardar acumulatedHours actualizado
+   *       - Si ayer operó → accumulatedHours += dailyHours
+   *       - Si accumulatedHours >= intervalHours → trigger + reset a 0
+   *       - Si no → solo guardar accumulatedHours actualizado
    * 
    * IMPORTANTE - "Día Siguiente al Día de Uso":
    * Las horas se suman el día DESPUÉS de que la máquina operó porque representa
@@ -220,7 +220,7 @@ export class CheckMaintenanceAlarmsUseCase {
                       alarmId: alarm.id,
                       alarmTitle: alarm.title,
                       intervalHours: alarm.intervalHours,
-                    accumulatedHours: newAccumulated,
+                      accumulatedHours: newAccumulated,
                       relatedParts: alarm.relatedParts,
                       timesTriggered: alarm.timesTriggered,
                       triggeredAt: new Date().toISOString()
@@ -237,13 +237,13 @@ export class CheckMaintenanceAlarmsUseCase {
                   machineId, 
                   alarmId, 
                   alarmTitle: alarm.title,
-                  acumulatedHours: newAccumulated,
+                  accumulatedHours: newAccumulated,
                   intervalHours: alarm.intervalHours
                 }, 
                 '📝 Event created for triggered maintenance alarm'
               );
 
-              // (b) Actualizar alarm tracking (reset acumulatedHours a 0)
+              // (b) Actualizar alarm tracking (reset accumulatedHours a 0)
               const machineIdVO = MachineId.create(machineId);
               if (!machineIdVO.success) {
                 throw new Error(`Invalid machine ID: ${machineIdVO.error.message}`);

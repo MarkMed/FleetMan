@@ -31,7 +31,6 @@
 import 'dotenv/config';
 import { connectDatabase, disconnectDatabase } from '../config/database.config';
 import { CheckMaintenanceAlarmsUseCase } from '../application/maintenance/check-maintenance-alarms.use-case';
-import { logger } from '../config/logger.config';
 
 async function testAccumulatorLogic() {
   console.log('\n🧪 ========================================');

@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { logger } from '../config/logger.config';
 import type { AuthenticatedRequest } from '../middlewares/auth.middleware';
 import { MaintenanceCronService } from '../services/cron/maintenance-cron.service';
