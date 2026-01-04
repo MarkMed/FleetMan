@@ -75,6 +75,65 @@ export function useMaintenanceAlarms(
 }
 
 /**
+ * Hook: Get single maintenance alarm by ID
+ * 
+ * Used for AlarmDetailScreen to fetch specific alarm when accessed via URL
+ * Enables deep-linking from notifications: /machines/:machineId/maintenance-alarms/:alarmId
+ * 
+ * Sprint #11: Fetches all alarms and filters client-side (subdocument limitation)
+ * Sprint #12: Backend could optimize with projection if performance needed
+ * 
+ * Configured for always-fresh data like useMaintenanceAlarms
+ * 
+ * @param machineId - Machine UUID
+ * @param alarmId - Alarm subdocument ID
+ * @returns Query result with single alarm or undefined if not found
+ * 
+ * @example
+ * ```tsx
+ * const { data: alarm, isLoading, error } = useMaintenanceAlarm(machineId, alarmId);
+ * 
+ * if (isLoading) return <Loading />;
+ * if (error) return <Error />;
+ * if (!alarm) return <NotFound />;
+ * 
+ * return <AlarmDetail alarm={alarm} />;
+ * ```
+ */
+export function useMaintenanceAlarm(
+  machineId: string | undefined,
+  alarmId: string | undefined
+) {
+  return useQuery({
+    queryKey: MAINTENANCE_ALARM_KEYS.detail(machineId!, alarmId!),
+    queryFn: async () => {
+      // Fetch all alarms for the machine
+      const response = await maintenanceAlarmService.getMaintenanceAlarms(machineId!, false);
+      
+      // Find the specific alarm by ID
+      const alarm = response.alarms.find((a: MaintenanceAlarm) => a.id === alarmId);
+      
+      // Return alarm or undefined if not found
+      return alarm;
+    },
+    enabled: !!machineId && !!alarmId,
+    staleTime: 0, // Always stale to ensure fresh data
+    gcTime: 10 * 60 * 1000, // 10 minutes cache
+    refetchOnMount: 'always', // Always refetch on component mount
+    refetchOnWindowFocus: true, // Refetch when user returns to tab
+    
+    // 🔮 POST-MVP: Optimization opportunities
+    // - Add backend endpoint: GET /api/machines/:machineId/maintenance-alarms/:alarmId
+    //   Benefit: Direct fetch without loading all alarms (better for large lists)
+    //   Implementation: Add route to maintenanceAlarmService
+    // 
+    // - Add retry logic for 404 Not Found
+    //   Use case: Alarm deleted while user is viewing detail screen
+    //   Example: retry: (failureCount, error) => error.status !== 404 && failureCount < 3
+  });
+}
+
+/**
  * Hook: Create maintenance alarm mutation
  * 
  * Sprint #11: Simulates creation with mock data

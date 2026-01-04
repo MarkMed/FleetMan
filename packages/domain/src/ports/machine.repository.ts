@@ -267,7 +267,12 @@ export interface IMachineRepository {
 
   /**
    * Elimina (soft delete) una alarma de mantenimiento
-   * Marca isActive = false en lugar de eliminar físicamente
+   * Eliminación física usando $pull (remueve del array)
+   * 
+   * Consideraciones:
+   * - Eliminación permanente del subdocumento
+   * - Histórico de eventos relacionados NO se elimina
+   * - Solo owner puede eliminar
    * 
    * @param machineId - ID de la máquina
    * @param alarmId - ID de la alarma (subdocument _id)

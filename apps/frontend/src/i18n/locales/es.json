@@ -115,6 +115,8 @@
   "navigation": {
     "dashboard": "Panel Principal",
     "machines": "Máquinas",
+    "machineDetail": "Detalle de Máquina",
+    "alarms": "Alarmas",
     "maintenance": "Mantenimiento",
     "quickcheck": "Chequeo Rápido",
     "notifications": "Notificaciones",
@@ -362,6 +364,13 @@
       "confirmDelete": "¿Estás seguro de eliminar esta alarma?",
       "confirmDeactivate": "¿Desactivar esta alarma?",
       "confirmActivate": "¿Activar esta alarma?",
+      "notFound": "Alarma no encontrada",
+      "notFoundDescription": "La alarma que buscas no existe o fue eliminada",
+      "backToList": "Volver a Alarmas",
+      "detailSubtitle": "Información completa de la alarma de mantenimiento",
+      "accumulated": "Acumuladas",
+      "remaining": "Restantes",
+      "progressTitle": "Progreso",
       "empty": {
         "title": "No hay alarmas configuradas",
         "description": "Las alarmas de mantenimiento te alertarán automáticamente cuando se alcance el intervalo de horas especificado. Crea tu primera alarma para comenzar.",

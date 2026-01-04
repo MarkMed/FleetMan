@@ -313,7 +313,8 @@ export { useRegistrationConfirmation } from './useRegistrationConfirmation';
 
 // Maintenance alarms (Sprint #11)
 export { 
-  useMaintenanceAlarms, 
+  useMaintenanceAlarms,
+  useMaintenanceAlarm, 
   useCreateMaintenanceAlarm, 
   useUpdateMaintenanceAlarm, 
   useDeleteMaintenanceAlarm,

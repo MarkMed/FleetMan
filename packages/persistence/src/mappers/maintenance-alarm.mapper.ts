@@ -48,17 +48,17 @@ export class MaintenanceAlarmMapper {
    */
   static toDomain(doc: IMaintenanceAlarmSubdoc): IMaintenanceAlarm {
     // 🆕 DEBUG: Ver estructura del subdocumento
-    console.log('🔍 DEBUG: MaintenanceAlarmMapper.toDomain input:', {
-      hasDoc: !!doc,
-      docType: typeof doc,
-      docKeys: doc ? Object.keys(doc) : [],
-      _id: doc?._id,
-      title: doc?.title,
-      intervalHours: doc?.intervalHours,
-      accumulatedHours: doc?.accumulatedHours,
-      isActive: doc?.isActive,
-      fullDoc: doc
-    });
+    // console.log('🔍 DEBUG: MaintenanceAlarmMapper.toDomain input:', {
+    //   hasDoc: !!doc,
+    //   docType: typeof doc,
+    //   docKeys: doc ? Object.keys(doc) : [],
+    //   _id: doc?._id,
+    //   title: doc?.title,
+    //   intervalHours: doc?.intervalHours,
+    //   accumulatedHours: doc?.accumulatedHours,
+    //   isActive: doc?.isActive,
+    //   fullDoc: doc
+    // });
 
     const result = {
       id: doc._id.toString(), // ObjectId → string
@@ -76,7 +76,7 @@ export class MaintenanceAlarmMapper {
       timesTriggered: doc.timesTriggered
     };
 
-    console.log('🔍 DEBUG: MaintenanceAlarmMapper.toDomain output:', result);
+    // console.log('🔍 DEBUG: MaintenanceAlarmMapper.toDomain output:', result);
 
     return result;
   }

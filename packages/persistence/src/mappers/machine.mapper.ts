@@ -133,19 +133,19 @@ export class MachineMapper {
       machineAny.props.quickChecks = quickChecks;
 
       // 🆕 Mapear maintenanceAlarms desde documento (Sprint #11)
-      console.log('🔍 DEBUG: MachineMapper - doc.maintenanceAlarms:', {
-        hasMaintenanceAlarms: !!doc.maintenanceAlarms,
-        isArray: Array.isArray(doc.maintenanceAlarms),
-        length: doc.maintenanceAlarms?.length,
-        rawData: doc.maintenanceAlarms
-      });
+      // console.log('🔍 DEBUG: MachineMapper - doc.maintenanceAlarms:', {
+      //   hasMaintenanceAlarms: !!doc.maintenanceAlarms,
+      //   isArray: Array.isArray(doc.maintenanceAlarms),
+      //   length: doc.maintenanceAlarms?.length,
+      //   rawData: doc.maintenanceAlarms
+      // });
 
       const maintenanceAlarms = (doc.maintenanceAlarms || []).map((alarm: any) => {
-        console.log('🔍 DEBUG: Mapping alarm:', {
-          id: alarm._id?.toString(),
-          title: alarm.title,
-          intervalHours: alarm.intervalHours
-        });
+        // console.log('🔍 DEBUG: Mapping alarm:', {
+        //   id: alarm._id?.toString(),
+        //   title: alarm.title,
+        //   intervalHours: alarm.intervalHours
+        // });
 
         return {
           id: alarm._id?.toString() || alarm.id,
@@ -164,7 +164,7 @@ export class MachineMapper {
         };
       });
 
-      console.log('🔍 DEBUG: Mapped maintenanceAlarms count:', maintenanceAlarms.length);
+      // console.log('🔍 DEBUG: Mapped maintenanceAlarms count:', maintenanceAlarms.length);
       
       machineAny.props.maintenanceAlarms = maintenanceAlarms;
 

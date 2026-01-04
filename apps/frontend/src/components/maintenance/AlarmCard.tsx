@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import type { MaintenanceAlarm } from '@contracts';
 import { Card, BodyText, Badge, Button } from '@components/ui';
@@ -13,14 +14,16 @@ interface AlarmCardProps {
    */
   currentOperatingHours: number;
   /**
-   * Handler called when user clicks "Ver Más" button
-   * Triggers AlarmDetailModal display
+   * Machine ID for navigation to alarm detail screen
    */
-  onViewDetails?: (alarm: MaintenanceAlarm) => void;
+  machineId: string;
   /**
    * Optional className for custom styling
    */
   className?: string;
+  
+  // POST-MVP: Optional callback for quick preview modal alongside navigation
+  // onViewDetails?: (alarm: MaintenanceAlarm) => void;
 }
 
 /**
@@ -28,26 +31,32 @@ interface AlarmCardProps {
  * 
  * Displays maintenance alarm summary in minimalist card format.
  * Shows: title, description (2 lines), progress, related parts (max 3).
- * Full details accessible via "Ver Más" button triggering AlarmDetailModal.
+ * Full details accessible via "Ver Más" button navigating to dedicated screen.
  * 
  * Sprint #11 Refinement: Minimalist UI + Progressive Disclosure Pattern
+ * Navigation: Intentional click on "Ver Más" button prevents accidental taps
  * 
  * @example
  * ```tsx
  * <AlarmCard
  *   alarm={alarm}
  *   currentOperatingHours={machine.specs.operatingHours}
- *   onViewDetails={(alarm) => setSelectedAlarm(alarm)}
+ *   machineId={machineId}
  * />
  * ```
  */
 export const AlarmCard: React.FC<AlarmCardProps> = ({
   alarm,
   currentOperatingHours,
-  onViewDetails,
+  machineId,
   className = '',
 }) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+
+  const handleViewDetails = () => {
+    navigate(`/machines/${machineId}/maintenance-alarms/${alarm.id}`);
+  };
 
   // Calculate hours remaining until next trigger
   const hoursRemaining = alarm.intervalHours - alarm.accumulatedHours;
@@ -108,7 +117,7 @@ export const AlarmCard: React.FC<AlarmCardProps> = ({
       <div className="mt-4 pt-3 border-t border-border">
         <Button
           variant="outline"
-          onPress={() => onViewDetails?.(alarm)}
+          onPress={handleViewDetails}
           className="w-full justify-between border-border hover:bg-accent"
         >
           <span>{t('maintenance.alarms.viewDetails')}</span>

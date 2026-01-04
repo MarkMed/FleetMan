@@ -2,7 +2,7 @@ import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Heading1, BodyText, Button, Card } from '@components/ui';
 import { Plus, AlertCircle, Bell } from 'lucide-react';
-import { AlarmCard, CreateEditAlarmModal, AlarmDetailModal } from '@components/maintenance';
+import { AlarmCard, CreateEditAlarmModal } from '@components/maintenance';
 import { useMaintenanceAlarmsViewModel } from '../../viewModels/maintenance/useMaintenanceAlarmsViewModel';
 import type { MaintenanceAlarm } from '@contracts';
 
@@ -174,7 +174,7 @@ export function MaintenanceAlarmsListScreen() {
             key={alarm.id}
             alarm={alarm}
             currentOperatingHours={vm.data.currentOperatingHours}
-            onViewDetails={vm.actions.handleViewDetails}
+            machineId={machineId!}
           />
         ))}
       </div>
@@ -187,16 +187,16 @@ export function MaintenanceAlarmsListScreen() {
         machineId={vm.modals.create.machineId}
       />
 
-      {/* Alarm Detail Modal */}
-      <AlarmDetailModal
-        open={vm.modals.detail.isOpen}
-        onOpenChange={(open: boolean) => !open && vm.modals.detail.onClose()}
-        alarm={vm.modals.detail.alarm}
-        currentOperatingHours={vm.modals.detail.currentOperatingHours}
-        machineId={vm.modals.detail.machineId}
-        onEdit={vm.modals.detail.onEdit}
-        onDelete={vm.actions.handleDeleteAlarm}
-      />
+      {/* POST-MVP: Keep AlarmDetailModal for quick preview feature
+       * Add optional modal view alongside screen navigation
+       * Use case: Quick peek without leaving list context
+       * 
+       * Implementation:
+       * - Add state: const [previewAlarmId, setPreviewAlarmId] = useState<string | null>(null);
+       * - Add onQuickPreview handler in AlarmCard (right-click or hover preview)
+       * - Render modal conditionally: {previewAlarmId && <AlarmDetailModal ... />}
+       * - Benefits: Fast preview for experienced users, full screen for deep work
+       */}
     </div>
   );
 }

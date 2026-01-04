@@ -5,3 +5,4 @@
  */
 
 export { MaintenanceAlarmsListScreen } from './MaintenanceAlarmsListScreen';
+export { AlarmDetailScreen } from './AlarmDetailScreen';

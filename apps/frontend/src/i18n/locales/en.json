@@ -115,6 +115,8 @@
   "navigation": {
     "dashboard": "Dashboard",
     "machines": "Machines",
+    "machineDetail": "Machine Detail",
+    "alarms": "Alarms",
     "maintenance": "Maintenance",
     "quickcheck": "Quick Check",
     "notifications": "Notifications",
@@ -362,6 +364,13 @@
       "confirmDelete": "Are you sure you want to delete this alarm?",
       "confirmDeactivate": "Deactivate this alarm?",
       "confirmActivate": "Activate this alarm?",
+      "notFound": "Alarm not found",
+      "notFoundDescription": "The alarm you're looking for doesn't exist or was deleted",
+      "backToList": "Back to Alarms",
+      "detailSubtitle": "Complete information about the maintenance alarm",
+      "accumulated": "Accumulated",
+      "remaining": "Remaining",
+      "progressTitle": "Progress",
       "empty": {
         "title": "No alarms configured",
         "description": "Maintenance alarms will automatically alert you when the specified hour interval is reached. Create your first alarm to get started.",

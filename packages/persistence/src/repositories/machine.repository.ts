@@ -1163,17 +1163,85 @@ export class MachineRepository implements IMachineRepository {
   }
 
   /**
-   * Soft delete de alarma (marca isActive = false)
+   * Eliminar alarma de mantenimiento (HARD DELETE)
+   * Usa $pull para remover físicamente el subdocumento del array
+   * 
+   * Validaciones:
+   * - Máquina debe existir
+   * - Alarma debe existir en el array
+   * 
+   * Patrón MongoDB: $pull remueve elementos que coinciden con condición
+   * 
+   * @param machineId - ID de la máquina
+   * @param alarmId - ID de la alarma (subdocument _id)
+   * @returns Result<void> si exitoso, error si falla
    */
   async deleteMaintenanceAlarm(
     machineId: MachineId,
     alarmId: string
   ): Promise<Result<void, DomainError>> {
-    const result = await this.updateMaintenanceAlarm(machineId, alarmId, { isActive: false });
-    if (!result.success) {
-      return err(result.error);
+    try {
+      // Validar que la máquina existe
+      const machine = await MachineModel.findById(machineId.getValue());
+      if (!machine) {
+        return err(DomainError.notFound(`Machine with ID ${machineId.getValue()} not found`));
+      }
+
+      // Validar que la alarma existe en el array
+      const alarmExists = machine.maintenanceAlarms?.some(
+        (alarm: any) => alarm._id.toString() === alarmId
+      );
+      
+      if (!alarmExists) {
+        return err(
+          DomainError.notFound(
+            `Maintenance alarm with ID ${alarmId} not found in machine ${machineId.getValue()}`
+          )
+        );
+      }
+
+      // Eliminar alarma usando $pull
+      const result = await MachineModel.findByIdAndUpdate(
+        machineId.getValue(),
+        {
+          $pull: {
+            maintenanceAlarms: { _id: alarmId }
+          }
+        },
+        { new: true }
+      );
+
+      if (!result) {
+        return err(
+          DomainError.create(
+            'DELETE_FAILED',
+            'Failed to delete maintenance alarm'
+          )
+        );
+      }
+
+      logger.info(
+        { machineId: machineId.getValue(), alarmId },
+        'Maintenance alarm deleted successfully'
+      );
+
+      return ok(undefined);
+    } catch (error: any) {
+      logger.error(
+        { 
+          machineId: machineId.getValue(), 
+          alarmId,
+          error: error.message 
+        },
+        'Error deleting maintenance alarm'
+      );
+      return err(
+        DomainError.create(
+          'DELETE_FAILED',
+          `Failed to delete maintenance alarm: ${error.message}`
+        )
+      );
     }
-    return ok(undefined); // Convert Result<IMaintenanceAlarm> to Result<void>
   }
 
   /**
