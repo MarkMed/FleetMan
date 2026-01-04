@@ -195,6 +195,7 @@ export function MaintenanceAlarmsListScreen() {
         currentOperatingHours={vm.modals.detail.currentOperatingHours}
         machineId={vm.modals.detail.machineId}
         onEdit={vm.modals.detail.onEdit}
+        onDelete={vm.actions.handleDeleteAlarm}
       />
     </div>
   );

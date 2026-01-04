@@ -336,7 +336,6 @@
       "active": "Active",
       "inactive": "Inactive",
       "description": "Description",
-      "progress": "Progress",
       "statistics": "Statistics",
       "interval": "Interval",
       "neverTriggered": "Never triggered",

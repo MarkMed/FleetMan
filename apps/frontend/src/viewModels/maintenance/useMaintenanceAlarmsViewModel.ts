@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useMaintenanceAlarms } from '@hooks';
+import { useMaintenanceAlarms, useDeleteMaintenanceAlarm } from '@hooks';
+import { useToast } from '@hooks/useToast';
 import type { MaintenanceAlarm } from '@contracts';
 
 /**
@@ -42,6 +43,7 @@ import type { MaintenanceAlarm } from '@contracts';
  */
 export function useMaintenanceAlarmsViewModel(machineId: string | undefined) {
   const { t } = useTranslation();
+  const { toast } = useToast();
 
   // ========================
   // STATE MANAGEMENT
@@ -64,6 +66,9 @@ export function useMaintenanceAlarmsViewModel(machineId: string | undefined) {
     machineId,
     false // Get all alarms (no filter by active)
   );
+
+  // Delete mutation
+  const deleteMutation = useDeleteMaintenanceAlarm(machineId);
 
   // ========================
   // DERIVED STATE
@@ -127,6 +132,35 @@ export function useMaintenanceAlarmsViewModel(machineId: string | undefined) {
     refetch();
   };
 
+  /**
+   * Delete alarm with user feedback
+   * @param alarmId - Alarm ID to delete
+   */
+  const handleDeleteAlarm = async (alarmId: string) => {
+    try {
+      await deleteMutation.mutateAsync(alarmId);
+      
+      // Success toast
+      toast.success({
+        title: t('common.success'),
+        description: t('maintenance.alarms.notifications.deleted'),
+      });
+      
+      // Close detail modal if the deleted alarm was being viewed
+      if (selectedAlarm?.id === alarmId) {
+        setSelectedAlarm(null);
+      }
+    } catch (error) {
+      console.error('[ViewModel] Failed to delete alarm:', error);
+      
+      // Error toast
+      toast.error({
+        title: t('common.error'),
+        description: error instanceof Error ? error.message : t('errors.unknownError'),
+      });
+    }
+  };
+
   // ========================
   // RETURN ViewModel API
   // ========================
@@ -172,6 +206,7 @@ export function useMaintenanceAlarmsViewModel(machineId: string | undefined) {
       handleEditAlarm,
       handleViewDetails,
       handleRetry,
+      handleDeleteAlarm,
     },
     
     // i18n: Translation function

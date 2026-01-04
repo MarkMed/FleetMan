@@ -235,7 +235,7 @@ export class CheckMaintenanceAlarmsUseCase {
                     }
                   }
                 },
-                `/machines/${machineId}/alarms`,
+                `/machines/${machineId}/alarms/${alarm.id}`, // actionUrl: link to alarm detail
                 true,
                 NOTIFICATION_SOURCE_TYPES[2],
                 machinePublic.ownerId // Notificar al dueño de la máquina, no a 'system'

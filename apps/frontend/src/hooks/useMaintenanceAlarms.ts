@@ -21,8 +21,13 @@ export const MAINTENANCE_ALARM_KEYS = {
 /**
  * Hook: Get maintenance alarms for a machine
  * 
- * Sprint #11: Uses mock data from maintenanceAlarmService
- * Sprint #12: Will call GET /api/machines/:machineId/maintenance-alarms
+ * Configured for always-fresh data:
+ * - Refetches every time the screen is mounted
+ * - Refetches when user returns to tab (window focus)
+ * - Critical for seeing cronjob-triggered alarms in real-time
+ * 
+ * Sprint #11: Connected to real backend API
+ * Sprint #12: Will add optimistic updates and background sync
  * 
  * @param machineId - Machine UUID
  * @param onlyActive - Filter only active alarms
@@ -44,8 +49,28 @@ export function useMaintenanceAlarms(
       : MAINTENANCE_ALARM_KEYS.byMachine(machineId!),
     queryFn: () => maintenanceAlarmService.getMaintenanceAlarms(machineId!, onlyActive),
     enabled: !!machineId,
-    staleTime: 5 * 60 * 1000, // 5 minutes - alarms don't change frequently
+    staleTime: 5 * 60 * 1000, // is stale after 5 minutes
     gcTime: 10 * 60 * 1000, // 10 minutes cache
+    refetchOnMount: 'always', // Always refetch when component mounts, even if data exists
+    refetchOnWindowFocus: true, // Also refetch when user returns to tab (useful for cronjob updates)
+    
+    // 🔮 POST-MVP: Possible optimizations if performance becomes an issue:
+    // - Use SSE/WebSocket for real-time updates instead of polling
+    //   Implementation: Subscribe to 'maintenanceAlarm:triggered' events
+    //   Benefits: Instant updates, reduce server load, better UX
+    // 
+    // - Add refetchInterval for periodic background sync
+    //   Example: refetchInterval: 2 * 60 * 1000 (every 2 minutes when tab active)
+    //   Use case: Dashboard monitoring without manual refresh
+    // 
+    // - Implement selective invalidation on mutations
+    //   Current: invalidateQueries refetches all alarms
+    //   Optimized: Update cache manually with setQueryData for single alarm changes
+    //   Benefits: Instant UI updates, no loading states on edit/delete
+    // 
+    // - Add pagination for machines with 50+ alarms
+    //   API: GET /alarms?page=1&limit=20
+    //   UI: Infinite scroll or paginated table
   });
 }
 

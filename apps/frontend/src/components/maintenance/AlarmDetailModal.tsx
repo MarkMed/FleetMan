@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import type { MaintenanceAlarm } from '@contracts';
 import { Modal, BodyText, Badge, Button } from '@components/ui';
 import { AlarmProgressIndicator } from './AlarmProgressIndicator';
-import { Clock, AlertTriangle, CheckCircle } from 'lucide-react';
+import { Clock, AlertTriangle, CheckCircle, Trash2 } from 'lucide-react';
 
 interface AlarmDetailModalProps {
   /**
@@ -31,10 +31,14 @@ interface AlarmDetailModalProps {
    * Handler called when user clicks Edit button
    */
   onEdit: (alarm: MaintenanceAlarm) => void;
+  /**
+   * Handler called when user clicks Delete button
+   * Optional - if not provided, delete button won't be shown
+   */
+  onDelete?: (alarmId: string) => void;
   
   // POST-MVP: Additional handlers for future features
   // onToggleStatus?: (alarm: MaintenanceAlarm) => void;
-  // onDelete?: (alarm: MaintenanceAlarm) => void;
 }
 
 /**
@@ -72,6 +76,7 @@ export const AlarmDetailModal: React.FC<AlarmDetailModalProps> = ({
   currentOperatingHours,
   machineId,
   onEdit,
+  onDelete,
 }) => {
   const { t } = useTranslation();
 
@@ -104,6 +109,15 @@ export const AlarmDetailModal: React.FC<AlarmDetailModalProps> = ({
   const handleEdit = () => {
     onEdit(alarm);
     onOpenChange(false);
+  };
+
+  const handleDelete = () => {
+    if (!alarm || !onDelete) return;
+    
+    // Confirmation dialog
+    if (window.confirm(t('maintenance.alarms.confirmDelete'))) {
+      onDelete(alarm.id);
+    }
   };
 
   const handleClose = () => {
@@ -259,17 +273,31 @@ export const AlarmDetailModal: React.FC<AlarmDetailModalProps> = ({
         )}
 
         {/* Action Buttons */}
-        <div className="flex justify-end gap-3 pt-4 border-t border-border">
-          <Button variant="outline" onPress={handleClose}>
-            {t('common.close')}
-          </Button>
-          <Button variant="filled" onPress={handleEdit}>
-            {t('common.edit')}
-          </Button>
+        <div className="flex justify-between gap-3 pt-4 border-t border-border">
+          {/* Delete Button - Left side (destructive action) */}
+          {onDelete && (
+            <Button
+              variant="destructive"
+              size="default"
+              onPress={handleDelete}
+            >
+              <Trash2 className="w-4 h-4 mr-2" />
+              {t('common.delete')}
+            </Button>
+          )}
+          
+          {/* Close and Edit - Right side */}
+          <div className="flex gap-3 ml-auto">
+            <Button variant="outline" onPress={handleClose}>
+              {t('common.close')}
+            </Button>
+            <Button variant="filled" onPress={handleEdit}>
+              {t('common.edit')}
+            </Button>
+          </div>
           
           {/* POST-MVP: Additional actions
            * Activate/Deactivate toggle for quick status changes
-           * Delete button with confirmation dialog
            * 
            * <Button 
            *   variant="outline" 
@@ -278,13 +306,6 @@ export const AlarmDetailModal: React.FC<AlarmDetailModalProps> = ({
            *   {alarm.isActive 
            *     ? t('maintenance.alarms.deactivate') 
            *     : t('maintenance.alarms.activate')}
-           * </Button>
-           * 
-           * <Button 
-           *   variant="destructive" 
-           *   onPress={() => onDelete?.(alarm)}
-           * >
-           *   {t('common.delete')}
            * </Button>
            */}
         </div>
