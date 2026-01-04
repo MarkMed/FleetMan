@@ -12,7 +12,7 @@ import { requestSanitization } from './middlewares/requestSanitization';
 import routes from './routes';
 import { connectDatabase } from './config/database.config';
 import { seedMachineTypesIfEmpty } from './scripts/seed-machine-types';
-import { seedMachineEventTypesIfEmpty } from './scripts/seed-machine-event-types';
+import { syncMachineEventTypes } from './scripts/seed-machine-event-types';
 import { MaintenanceCronService } from './services/cron/maintenance-cron.service';
 
 const app = express();
@@ -121,8 +121,9 @@ app.get('/api', (req, res) => {
     // IMPORTANTE: Solo se ejecuta si count de registros === 0
     // En reinicios subsecuentes, detecta registros existentes y skipea
     
-    // 2a. Seed de MachineEventTypes (PRIMERO - tipos de eventos de máquina)
-    await seedMachineEventTypesIfEmpty();
+    // 2a. Sync de MachineEventTypes (PRIMERO - asegura tipos de sistema existen)
+    // Sprint #11+: Sync incremental - agrega nuevos tipos sin destruir data
+    await syncMachineEventTypes();
     
     // 2b. Seed de MachineTypes (tipos de máquina)
     await seedMachineTypesIfEmpty();

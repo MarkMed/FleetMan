@@ -2,7 +2,7 @@ import { MachineRepository, MachineEventTypeRepository } from '@packages/persist
 import { logger } from '../../config/logger.config';
 import { CreateMachineEventUseCase } from '../machine-events/create-machine-event.use-case';
 import { NOTIFICATION_MESSAGE_KEYS } from '../../constants/notification-messages.constants';
-import { MachineId, Machine, type NotificationSourceType, NOTIFICATION_SOURCE_TYPES  } from '@packages/domain';
+import { MachineId, Machine, NOTIFICATION_SOURCE_TYPES, DayOfWeek } from '@packages/domain';
 
 /**
  * Resultado de la verificación de alarmas de mantenimiento
@@ -111,7 +111,18 @@ export class CheckMaintenanceAlarmsUseCase {
       // Esto refleja que las horas son del día anterior (pasado), no del día actual
       const today = new Date().getDay(); // 0=DOM, 1=LUN, ..., 6=SAB
       const yesterday = (today - 1 + 7) % 7; // Handle wrap-around (ej: hoy DOM → ayer SAB)
-      const dayMap = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
+      
+      // SSOT: Usar DayOfWeek enum (valores de 3 letras: 'SUN', 'MON', etc.)
+      // Estos valores coinciden con lo que está en la DB (operatingDays: ['TUE', 'WED', ...])
+      const dayMap: DayOfWeek[] = [
+        DayOfWeek.SUN,  // 0
+        DayOfWeek.MON,  // 1
+        DayOfWeek.TUE,  // 2
+        DayOfWeek.WED,  // 3
+        DayOfWeek.THU,  // 4
+        DayOfWeek.FRI,  // 5
+        DayOfWeek.SAT   // 6
+      ];
       const yesterdayDayOfWeek = dayMap[yesterday];
 
       logger.info({ 

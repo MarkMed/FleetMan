@@ -1,5 +1,5 @@
 import { MachineRepository } from '@packages/persistence';
-import { Machine } from '@packages/domain';
+import { Machine, DayOfWeek } from '@packages/domain';
 import { logger } from '../../config/logger.config';
 import { UpdateOperatingHoursUseCase } from '../inventory/update-operating-hours.use-case';
 
@@ -84,19 +84,31 @@ export class UpdateMachinesOperatingHoursUseCase {
         'Filtered machines with usage schedule'
       );
 
-      // 3. Filtrar máquinas que operan hoy
+      // 3. Filtrar máquinas que operaron AYER (día de operación)
+      // Lógica: Cronjob se ejecuta a las 2am de HOY, pero suma horas del día que ya pasó (AYER)
+      // Ejemplo: Si hoy es Domingo 2am → sumar horas si la máquina operó el Sábado
       const machinesToUpdate = machinesWithSchedule.filter((machine: Machine) => {
         const machinePublic = machine.toPublicInterface();
         const usageSchedule = machinePublic.usageSchedule!;
         
-        // Verificar si hoy es un día operativo
-        // DayOfWeek mapping: 0=SUN, 1=MON, ..., 6=SAT
-        const today = new Date().getDay();
-        const dayMap = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
-        const todayDayOfWeek = dayMap[today];
+        // Calcular día de AYER (día de operación)
+        // SSOT: Usar DayOfWeek enum (valores de 3 letras: 'SUN', 'MON', etc.)
+        // Estos valores coinciden con lo que está en la DB (operatingDays: ['TUE', 'WED', ...])
+        const today = new Date().getDay(); // 0=DOM, 1=LUN, ..., 6=SAB
+        const yesterday = (today - 1 + 7) % 7; // Handle wrap-around (ej: hoy DOM → ayer SAB)
+        const dayMap: DayOfWeek[] = [
+          DayOfWeek.SUN,  // 0
+          DayOfWeek.MON,  // 1
+          DayOfWeek.TUE,  // 2
+          DayOfWeek.WED,  // 3
+          DayOfWeek.THU,  // 4
+          DayOfWeek.FRI,  // 5
+          DayOfWeek.SAT   // 6
+        ];
+        const yesterdayDayOfWeek = dayMap[yesterday];
         
-        // Verificar si hoy está en operatingDays
-        return usageSchedule.operatingDays.includes(todayDayOfWeek as any);
+        // Verificar si AYER fue un día operativo (sumar horas del día pasado)
+        return usageSchedule.operatingDays.includes(yesterdayDayOfWeek);
       });
 
       logger.info(

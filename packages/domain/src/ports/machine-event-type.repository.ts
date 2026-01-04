@@ -20,6 +20,16 @@ export interface IMachineEventTypeRepository {
   findByNormalizedName(normalizedName: string): Promise<Result<MachineEventType, DomainError>>;
 
   /**
+   * Busca un tipo de evento por nombre exacto y lenguaje específico
+   * Útil para verificar existencia antes de crear en seeds (evita duplicados)
+   * Retorna null si no existe la combinación nombre+idioma
+   * 
+   * @param name Nombre del tipo de evento (sin normalizar)
+   * @param language Código ISO 639-1 del idioma (2 letras, ej: 'es', 'en')
+   */
+  findByName(name: string, language: string): Promise<MachineEventType | null>;
+
+  /**
    * Verifica si existe un nombre normalizado específico
    */
   normalizedNameExists(normalizedName: string): Promise<boolean>;

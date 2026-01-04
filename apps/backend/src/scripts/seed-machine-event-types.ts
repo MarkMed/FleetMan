@@ -199,65 +199,109 @@ const MACHINE_EVENT_TYPES_SEED = [
  * 
  * @returns Promise<void>
  */
-export async function seedMachineEventTypesIfEmpty(): Promise<void> {
+export async function syncMachineEventTypes(): Promise<void> {
   try {
     const repository = new MachineEventTypeRepository();
 
-    // 1. Verificar si ya existen registros en la DB
-    const existingTypes = await repository.findAllActive();
-    
-    if (existingTypes.length > 0) {
-      // DB ya tiene datos - SKIP seed
-      logger.info({ count: existingTypes.length }, '⏭️  MachineEventTypes seed skipped: DB already populated');
-      return;
-    }
-
-    // 2. DB está vacía - Ejecutar seed
-    logger.info({ totalTypes: MACHINE_EVENT_TYPES_SEED.length }, '🌱 Seeding MachineEventTypes: DB is empty, populating with initial data...');
+    logger.info(
+      { totalTypes: MACHINE_EVENT_TYPES_SEED.length }, 
+      '🔄 Syncing MachineEventTypes: Ensuring all system types exist...'
+    );
 
     let created = 0;
+    let skipped = 0;
 
     for (const typeData of MACHINE_EVENT_TYPES_SEED) {
       try {
-        // El repositorio maneja la lógica de crear o actualizar (patrón MachineType)
-        await repository.save(
+        // Procesar idioma principal (index 0)
+        const primaryLangExists = await repository.findByName(
           typeData.name,
-          typeData.languages[0],
-          typeData.systemGenerated
+          typeData.languages[0]
         );
-        
-        // Agregar idiomas adicionales si existen
-        for (let i = 1; i < typeData.languages.length; i++) {
+
+        if (primaryLangExists) {
+          skipped++;
+          if (process.env.NODE_ENV === 'development') {
+            logger.debug({ 
+              name: typeData.name, 
+              language: typeData.languages[0] 
+            }, 'MachineEventType already exists (skipped)');
+          }
+        } else {
+          // No existe, crear nuevo
           await repository.save(
             typeData.name,
-            typeData.languages[i],
+            typeData.languages[0],
             typeData.systemGenerated
           );
-        }
-        
-        created++;
-        
-        // Log discreto solo en desarrollo
-        if (process.env.NODE_ENV === 'development') {
+          created++;
           logger.debug({ 
             name: typeData.name, 
-            languages: typeData.languages,
-            systemGenerated: typeData.systemGenerated 
-          }, 'MachineEventType created');
+            language: typeData.languages[0] 
+          }, 'Created new MachineEventType');
         }
+        
+        // Procesar idiomas adicionales (index 1+)
+        // Útil para agregar idiomas incrementalmente sin duplicar
+        for (let i = 1; i < typeData.languages.length; i++) {
+          const additionalLangExists = await repository.findByName(
+            typeData.name,
+            typeData.languages[i]
+          );
+          
+          if (!additionalLangExists) {
+            // Idioma no existe, agregarlo
+            await repository.save(
+              typeData.name,
+              typeData.languages[i],
+              typeData.systemGenerated
+            );
+            logger.debug({ 
+              name: typeData.name, 
+              language: typeData.languages[i] 
+            }, 'Added additional language to existing MachineEventType');
+          }
+        }
+        
       } catch (error: any) {
-        logger.error({ name: typeData.name, error: error.message }, 'Failed to seed MachineEventType');
+        logger.error({ 
+          name: typeData.name, 
+          error: error.message 
+        }, 'Failed to sync MachineEventType');
       }
     }
 
-    logger.info({ created, total: MACHINE_EVENT_TYPES_SEED.length }, '✅ MachineEventTypes seed completed successfully');
+    logger.info(
+      { created, skipped, total: MACHINE_EVENT_TYPES_SEED.length }, 
+      '✅ MachineEventTypes sync completed successfully'
+    );
 
   } catch (error: any) {
     // No lanzar error para evitar que falle el startup del servidor
     // Solo loguear y continuar
-    logger.error({ error: error.message }, '❌ Error during MachineEventTypes seed (non-critical, server will continue)');
+    logger.error({ error: error.message }, '❌ Error during MachineEventTypes sync (non-critical, server will continue)');
   }
 }
+
+// TODO: Método para limpiar tipos de evento huérfanos (sin uso en 6+ meses)
+// Propósito: Mantener DB limpia de tipos custom que usuarios crearon y nunca usaron
+// Declaración:
+// export async function cleanupUnusedEventTypes(monthsThreshold: number = 6): Promise<void>
+// Lógica:
+// - Buscar tipos con timesUsed = 0 y createdAt > monthsThreshold
+// - NUNCA eliminar tipos systemGenerated (solo user-generated)
+// - Soft delete (isActive = false) en lugar de hard delete
+// - Loguear qué tipos se eliminaron para auditoría
+
+// TODO: Método para exportar tipos de evento a JSON (backup)
+// Propósito: Permitir a usuarios exportar sus tipos custom antes de migrations
+// Declaración:
+// export async function exportEventTypesToJSON(outputPath: string): Promise<void>
+// Lógica:
+// - Obtener todos los tipos (findAll)
+// - Serializar a JSON con formato legible
+// - Guardar en archivo (usar fs.writeFileSync)
+// - Útil para disaster recovery o migrar entre ambientes
 
 // ============================================================================
 // SCRIPT STANDALONE - Solo se ejecuta si se corre directamente este archivo
@@ -273,7 +317,7 @@ if (require.main === module) {
       
       console.log('✅ Connected to MongoDB');
 
-      await seedMachineEventTypesIfEmpty();
+      await syncMachineEventTypes();
 
       await mongoose.default.disconnect();
       console.log('✅ Disconnected from MongoDB');

@@ -103,6 +103,47 @@ export class MachineEventTypeRepository implements IMachineEventTypeRepository {
   }
 
   /**
+   * Busca un tipo de evento por nombre exacto y lenguaje específico
+   * Útil para verificar existencia antes de crear en seeds (evita duplicados)
+   * 
+   * IMPORTANTE: Este método busca por nombre normalizado + idioma específico
+   * Diferencia con findByNormalizedName: Ese retorna el documento completo (cualquier idioma),
+   * este verifica si existe la COMBINACIÓN nombre+idioma específica.
+   * 
+   * Ejemplo:
+   * - DB tiene: { name: 'Mantenimiento', normalizedName: 'mantenimiento', languages: ['es', 'en'] }
+   * - findByName('Mantenimiento', 'es') → OK (idioma existe)
+   * - findByName('Mantenimiento', 'pt') → null (idioma NO existe)
+   * - findByNormalizedName('mantenimiento') → OK (documento existe, no importa idioma)
+   * 
+   * @param name - Nombre del evento (no normalizado)
+   * @param language - Código ISO 639-1 del idioma (2 letras)
+   * @returns MachineEventType si existe la combinación, null si no
+   */
+  async findByName(name: string, language: string): Promise<MachineEventType | null> {
+    try {
+      const normalizedName = name.toLowerCase().trim().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, '_');
+      const normalizedLang = language.trim().toLowerCase();
+
+      // Buscar documento con ese normalizedName que incluya el idioma
+      const eventTypeDoc = await MachineEventTypeModel.findOne({ 
+        normalizedName,
+        languages: normalizedLang // Verifica que el array languages incluya ese idioma
+      });
+      
+      if (!eventTypeDoc) {
+        return null;
+      }
+
+      const entityResult = this.toEntity(eventTypeDoc);
+      return entityResult.success ? entityResult.data : null;
+    } catch (error: any) {
+      console.error('Error finding machine event type by name and language:', error);
+      return null;
+    }
+  }
+
+  /**
    * Verifica si existe un nombre normalizado
    */
   async normalizedNameExists(normalizedName: string): Promise<boolean> {

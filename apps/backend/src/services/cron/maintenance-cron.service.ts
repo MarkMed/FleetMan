@@ -43,7 +43,7 @@ export class MaintenanceCronService {
   // dentro del mismo intervalo de tiempo (ej: si cron está configurado cada 1 hora
   // y el servidor reinicia 10 min después de la última ejecución)
   private lastExecutionTime: Date | null = null;
-  private minIntervalBetweenExecutionsMs: number = 60 * 60 * 1000; // 1 hour (default)
+  private minIntervalBetweenExecutionsMs: number = 10 * 1000; // 10 seconds (default)
 
   constructor() {
     this.updateMachinesOperatingHoursUseCase = new UpdateMachinesOperatingHoursUseCase();
@@ -208,7 +208,7 @@ export class MaintenanceCronService {
    * Librerías recomendadas: moment-timezone, luxon, date-fns-tz
    */
   public start(): void {
-    const TEMP_CRON_SHCEDULE_FOR_TESTING = '*/5 * * * *'; // Cada 5 min (testing)
+    const TEMP_CRON_SHCEDULE_FOR_TESTING = '*/1 * * * *'; // Cada 1 min (testing)
 	const schedule = TEMP_CRON_SHCEDULE_FOR_TESTING //process.env.CRON_MAINTENANCE_SCHEDULE || '0 5 * * *'; // Default: daily at 2am UY time
     
     // Validate cron expression
