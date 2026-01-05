@@ -42,7 +42,7 @@ export {
   INotification,
   NotificationType, // 🔔 Sprint #9 - notification types
   NotificationSourceType, // 🔔 Sprint #9 - notification source types
-  IMaintenanceReminder,
+  IMaintenanceAlarm, // 🔔 Sprint #11 - maintenance alarms embedded in Machine
   IQuickCheckTemplate, // OLD - not used in MVP
   IQuickCheckItemTemplate, // OLD - not used in MVP
   IInternalMessage,

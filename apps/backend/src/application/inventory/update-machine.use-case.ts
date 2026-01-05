@@ -1,10 +1,18 @@
-import { Machine, MachineId, MachineStatusRegistry, UsageSchedule } from '@packages/domain';
+import { MachineId, IMachine } from '@packages/domain';
 import { MachineRepository } from '@packages/persistence';
 import { logger } from '../../config/logger.config';
 import { UpdateMachineRequest } from '@packages/contracts';
+import { flattenToDotNotation } from '../../utils/flatten-to-dot-notation';
 
 /**
  * Use Case para actualizar una máquina existente
+ * 
+ * PRINCIPIO DE EXPERTO:
+ * - Use Case = Experto en lógica de negocio (QUÉ actualizar, validaciones)
+ * - Repository = Experto en persistencia (CÓMO guardar en DB)
+ * 
+ * Este Use Case valida ownership y prepara el objeto de updates.
+ * El Repository hace el update directo con Mongoose $set (merge automático).
  */
 export class UpdateMachineUseCase {
   private machineRepository: MachineRepository;
@@ -19,14 +27,14 @@ export class UpdateMachineUseCase {
    * @param request - Datos a actualizar
    * @param requestingUserId - ID del usuario que solicita
    * @param userType - Tipo de usuario
-   * @returns Promise con la máquina actualizada
+   * @returns Promise<IMachine> - Interface ligera de la máquina actualizada
    */
   async execute(
     machineId: string,
     request: UpdateMachineRequest,
     requestingUserId: string,
     userType: string
-  ): Promise<Machine> {
+  ): Promise<IMachine> {
     logger.info({ machineId, requestingUserId }, 'Starting machine update');
 
     try {
@@ -36,7 +44,7 @@ export class UpdateMachineUseCase {
         throw new Error('Invalid machine ID format');
       }
 
-      // Buscar máquina
+      // Buscar máquina (solo para validar ownership)
       const machineResult = await this.machineRepository.findById(idResult.data);
       if (!machineResult.success) {
         throw new Error(machineResult.error.message);
@@ -49,87 +57,55 @@ export class UpdateMachineUseCase {
         throw new Error('Access denied - not your machine');
       }
 
-      // Actualizar specs si se proporcionan
+      // Preparar objeto de updates (lógica de negocio: QUÉ actualizar)
+      const updates: Record<string, any> = {};
+
+      // Basic info
+      if (request.brand !== undefined) updates.brand = request.brand;
+      if (request.modelName !== undefined) updates.modelName = request.modelName;
+      if (request.nickname !== undefined) updates.nickname = request.nickname;
+
+      // Assignment
+      if (request.assignedTo !== undefined) updates.assignedTo = request.assignedTo;
+      if (request.assignedProviderId !== undefined) updates.assignedProviderId = request.assignedProviderId;
+
+      // Photo
+      if (request.machinePhotoUrl !== undefined) updates.machinePhotoUrl = request.machinePhotoUrl;
+
+      // Specs (nested - usar dot notation para evitar reemplazar todo el objeto)
       if (request.specs) {
-        const updateSpecsResult = machine.updateSpecs(request.specs);
-        if (!updateSpecsResult.success) {
-          throw new Error(updateSpecsResult.error.message);
-        }
+        updates.specs = request.specs;
       }
 
-      // Actualizar location si se proporciona
+      // Location (nested - usar dot notation para evitar reemplazar todo el objeto)
       if (request.location) {
-        const updateLocationResult = machine.updateLocation({
-          ...request.location,
-          lastUpdated: new Date(request.location.lastUpdated)
-        });
-        if (!updateLocationResult.success) {
-          throw new Error(updateLocationResult.error.message);
-        }
+        updates.location = request.location;
       }
 
-      // Actualizar nickname si se proporciona
-      if (request.nickname !== undefined) {
-        const updatePropsResult = machine.updateMachineProps({
-          nickname: request.nickname
-        });
-        if (!updatePropsResult.success) {
-          throw new Error(updatePropsResult.error.message);
-        }
+      // Usage schedule
+      if (request.usageSchedule) {
+        updates.usageSchedule = request.usageSchedule;
       }
 
-      // Actualizar status si se proporciona
-      if (request.status) {
-        const newStatus = MachineStatusRegistry.getByCode(request.status);
-        if (!newStatus) {
-          throw new Error(`Invalid status code: ${request.status}`);
-        }
-        const changeStatusResult = machine.changeStatus(newStatus);
-        if (!changeStatusResult.success) {
-          throw new Error(changeStatusResult.error.message);
-        }
+      // Validar que hay algo que actualizar
+      if (Object.keys(updates).length === 0) {
+        throw new Error('No fields to update');
       }
 
-      // Actualizar assignedTo si se proporciona
-      if (request.assignedTo !== undefined) {
-        const updateAssignedToResult = machine.updateAssignedTo(request.assignedTo);
-        if (!updateAssignedToResult.success) {
-          throw new Error(updateAssignedToResult.error.message);
-        }
-      }
+      // Convertir nested objects a dot notation para evitar reemplazar objetos completos
+      // Ejemplo: { specs: { operatingHours: 500 } } → { 'specs.operatingHours': 500 }
+      const flattenedUpdates = flattenToDotNotation(updates);
 
-      // Actualizar usageSchedule si se proporciona
-      if (request.usageSchedule !== undefined) {
-        // Convertir objeto plano a UsageSchedule VO
-        const usageScheduleResult = UsageSchedule.create(
-          request.usageSchedule.dailyHours,
-          request.usageSchedule.operatingDays // UsageSchedule.create acepta readonly arrays
-        );
-        if (!usageScheduleResult.success) {
-          throw new Error(usageScheduleResult.error.message);
-        }
-        const updateUsageScheduleResult = machine.updateUsageSchedule(usageScheduleResult.data);
-        if (!updateUsageScheduleResult.success) {
-          throw new Error(updateUsageScheduleResult.error.message);
-        }
-      }
-
-      // Actualizar machinePhotoUrl si se proporciona
-      if (request.machinePhotoUrl !== undefined) {
-        const updatePhotoUrlResult = machine.updateMachinePhotoUrl(request.machinePhotoUrl);
-        if (!updatePhotoUrlResult.success) {
-          throw new Error(updatePhotoUrlResult.error.message);
-        }
-      }
-
-      // Guardar cambios
-      const saveResult = await this.machineRepository.save(machine);
-      if (!saveResult.success) {
-        throw new Error(saveResult.error.message);
+      // Delegar update al repo (sin lógica, solo persistencia)
+      const updateResult = await this.machineRepository.update(idResult.data, flattenedUpdates);
+      if (!updateResult.success) {
+        throw new Error(updateResult.error.message);
       }
 
       logger.info({ machineId }, '✅ Machine updated successfully');
-      return machine;
+
+      // Convertir entity a interface ligera (DTO pattern)
+      return updateResult.data.toPublicInterface();
 
     } catch (error) {
       logger.error({ 
@@ -141,3 +117,4 @@ export class UpdateMachineUseCase {
     }
   }
 }
+

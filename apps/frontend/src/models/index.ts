@@ -1,6 +1,9 @@
 // Domain models and contracts
 export * from '@contracts';
 
+// Import specific domain types (selective to avoid bundle bloat)
+export type { IMaintenanceAlarm } from '@domain';
+
 // Form specific types
 export * from './forms';
 
@@ -72,25 +75,13 @@ export interface Machine extends BaseEntity {
   notes?: string;
 }
 
-// Maintenance related types
-export interface MaintenanceReminder extends BaseEntity {
-  machineId: string;
-  title: string;
-  description?: string;
-  type: 'time' | 'hours' | 'both';
-  intervalDays?: number;
-  intervalHours?: number;
-  lastExecutedAt?: string;
-  nextDueDate?: string;
-  nextDueHours?: number;
-  isActive: boolean;
-  createdById: string;
-}
+// Maintenance Alarms now use IMaintenanceAlarm from @domain (no local duplication)
+// See: packages/domain/src/models/interfaces.ts for full interface definition
 
 // Event related types
 export interface MachineEvent extends BaseEntity {
   machineId: string;
-  type: 'maintenance' | 'breakdown' | 'inspection' | 'repair' | 'quickcheck' | 'reminder' | 'manual';
+  type: 'maintenance' | 'breakdown' | 'inspection' | 'repair' | 'quickcheck' | 'manual';
   title: string;
   description?: string;
   startDate: string;
@@ -99,7 +90,8 @@ export interface MachineEvent extends BaseEntity {
   severity?: 'low' | 'medium' | 'high' | 'critical';
   cost?: number;
   performedById: string;
-  relatedReminderId?: string;
+  // relatedReminderId removed - maintenance alarms now create events with metadata
+  // relatedAlarmId?: string; // TODO: Add when integrating with backend alarm system
   quickCheckData?: QuickCheckExecution;
   attachments?: string[];
   notes?: string;
@@ -147,7 +139,7 @@ export interface Notification extends BaseEntity {
   message: string;
   isRead: boolean;
   readAt?: string;
-  relatedEntityType?: 'machine' | 'maintenance_reminder' | 'quickcheck' | 'event';
+  relatedEntityType?: 'machine' | 'maintenance_alarm' | 'quickcheck' | 'event';
   relatedEntityId?: string;
   actionUrl?: string;
   priority: 'low' | 'medium' | 'high';

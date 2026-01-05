@@ -310,3 +310,15 @@ export { useMachineTypeName, useMachineTypeResolver } from './useMachineTypeName
 
 // Machine registration
 export { useRegistrationConfirmation } from './useRegistrationConfirmation';
+
+// Maintenance alarms (Sprint #11)
+export { 
+  useMaintenanceAlarms,
+  useMaintenanceAlarm, 
+  useCreateMaintenanceAlarm, 
+  useUpdateMaintenanceAlarm, 
+  useDeleteMaintenanceAlarm,
+  useResetMaintenanceAlarm,
+  useToggleAlarmStatus,
+  MAINTENANCE_ALARM_KEYS,
+} from './useMaintenanceAlarms';

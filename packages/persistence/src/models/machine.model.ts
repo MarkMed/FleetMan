@@ -284,6 +284,91 @@ const machineSchema = new Schema<IMachineDocument>({
     }
   }],
 
+  // 🆕 Sprint #11: Maintenance Alarms embedded as subdocuments (like QuickCheck/Events pattern)
+  // Patrón: Embedded array (NO separate collection) para alarmas programadas
+  maintenanceAlarms: [{
+    title: {
+      type: String,
+      required: true,
+      trim: true,
+      maxlength: 100
+    },
+    description: {
+      type: String,
+      trim: true,
+      maxlength: 500
+    },
+    relatedParts: {
+      type: [String],
+      required: true,
+      default: [],
+      validate: {
+        validator: function(arr: string[]) {
+          return arr.every(part => typeof part === 'string' && part.trim().length > 0);
+        },
+        message: 'All related parts must be non-empty strings'
+      }
+    },
+    intervalHours: {
+      type: Number,
+      required: true,
+      min: 1
+    },
+    // 🆕 NUEVO: Accumulator Pattern Field
+    // Horas acumuladas desde último trigger o creación
+    // Cronjob suma dailyHours el día DESPUÉS de que máquina operó
+    // Cuando accumulatedHours >= intervalHours → trigger + reset a 0
+    accumulatedHours: {
+      type: Number,
+      required: true,
+      default: 0,
+      min: 0,
+      validate: {
+        validator: function(this: any, value: number) {
+          // Safety check: No debe exceder 2x intervalHours (posible error de datos)
+          if (this.intervalHours) {
+            return value <= (this.intervalHours * 2);
+          }
+          return true;
+        },
+        message: 'Accumulated hours should not exceed 2x interval (possible data error)'
+      }
+    },
+    isActive: {
+      type: Boolean,
+      required: true,
+      default: true
+    },
+    createdBy: {
+      type: String,
+      required: true,
+      ref: 'User'
+    },
+    lastTriggeredAt: {
+      type: Date
+    },
+    lastTriggeredHours: {
+      type: Number,
+      min: 0
+    },
+    timesTriggered: {
+      type: Number,
+      required: true,
+      default: 0,
+      min: 0
+    },
+    createdAt: {
+      type: Date,
+      required: true,
+      default: Date.now
+    },
+    updatedAt: {
+      type: Date,
+      required: true,
+      default: Date.now
+    }
+  }],
+
   // QuickCheck records embedded as subdocuments
   quickChecks: [{
     result: {
@@ -365,6 +450,11 @@ machineSchema.index({ brand: 1, modelName: 1 });
 machineSchema.index({ 'eventsHistory.typeId': 1, 'eventsHistory.createdAt': -1 });
 machineSchema.index({ 'eventsHistory.isSystemGenerated': 1, 'eventsHistory.createdAt': -1 });
 machineSchema.index({ 'eventsHistory.createdBy': 1, 'eventsHistory.createdAt': -1 });
+
+// 🆕 Sprint #11: Index para cronjob de mantenimiento (máquinas activas que operaron día específico)
+// Sparse index: máquinas sin usageSchedule automáticamente excluidas
+// Multikey index: operatingDays es array, cada elemento se indexa individualmente
+machineSchema.index({ 'status.code': 1, 'usageSchedule.operatingDays': 1 });
 
 // GeoSpatial index for location-based queries
 machineSchema.index({ 'location.coordinates': '2dsphere' });

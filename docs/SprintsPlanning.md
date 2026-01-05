@@ -538,26 +538,39 @@ Distribución por categoría:
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
 | Documentación | 20.1 Reporte Académico del Sprint #10 | 1 | 5 | |
 | Gestión | 20.2 Demo/UAT de Sprint #10 | 2 | 1.5 | 1.2 |
-| Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
+| Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | 1.2 |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | 1 |
-| Desarrollo | 4.1a Domain+Contracts+Persistence MaintenanceAlarm | 5 | 6 | |
-| Desarrollo | 4.1b Application Layer Backend MaintenanceAlarm | 6 | 5 | |
-| Desarrollo | 4.1c Use Cases Automatización (actualizar horas + disparar) | 7 | 5 | |
-| Desarrollo | 4.1d CronJob Scheduler & Orquestación | 8 | 3 | |
-| Desarrollo | 4.1e Frontend UI MaintenanceAlarm | 9 | 6 | |
-| Desarrollo | 4.1f Frontend Integration MaintenanceAlarm | 10 | 4 | |
+| Desarrollo | 4.1a Domain+Contracts+Persistence MaintenanceAlarm | 5 | 6 | 5.3 |
+| Desarrollo | 4.1b Application Layer Backend MaintenanceAlarm | 6 | 5 | 4.8 |
+| Desarrollo | 4.1c Use Cases Automatización (actualizar horas + disparar) | 7 | 5 | 6.6 |
+| Desarrollo | 4.1d CronJob Scheduler & Orquestación | 8 | 3 | 2.9 |
+| Desarrollo | 4.1e Frontend UI MaintenanceAlarm | 9 | 6 | 7.9 |
+| Desarrollo | 4.1f Frontend Integration MaintenanceAlarm | 10 | 4 | 7.2 |
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales | Consumo |
 |:---:|:----------:|:-------:|
-| **37.8**hs | **0**hs | **0.0%** |
+| **37.8**hs | **38.1**hs | **100.8%** |
 
 Buffer reservado: **-2.8**hs ⚠️
 Total con buffer: **35**hs
 
+```mermaid
+xychart-beta
+    title "Sprint #11: Horas Estimadas (azul) vs Reales (verde)"
+    x-axis "Tareas" ["20.1", "20.2", "20.3", "21.2", "4.1a", "4.1b", "4.1c", "4.1d", "4.1e", "4.1f", "TOTAL"]
+    y-axis "Horas" 0 --> 40
+	
+	%% Green line (Estimadas)
+    line [5, 1.5, 1.3, 1, 6, 5, 5, 3, 6, 4, 37.8]
+
+	%% Black line (Reales)
+    line [0, 1.2, 1.2, 1, 5.3, 4.8, 6.6, 2.9, 7.9, 7.2, 38.1]
+```
+
 Distribución por categoría:
 | Documentación | Desarrollo | QA | Capacitación | Gestión |
 |:-------:|:----------:|:--:|:------------:|:-------------:|
-| **5**hs | **29**hs | **0**hs | **1**hs | **2.8**hs |
+| **5**hs | **34.7**hs | **0**hs | **1**hs | **2.4**hs |
 
 **Notas del Sprint:**
 - **Sprint enfocado 100% en mantenimientos programados** siguiendo patrón exitoso de Sprints #9 (Notifications) y #10 (Events)
@@ -610,7 +623,7 @@ Distribución por categoría:
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
 | Documentación | 20.1 Reporte Académico del Sprint #11 | 1 | 5 | |
-| Gestión | 20.2 Demo/UAT de Sprint #11 | 2 | 1.5 | |
+| Gestión | 20.2 Demo/UAT de Sprint #11 | 2 | 1.5 | 1.2 |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | |
 | Desarrollo | 4.3 Historial unificado (RF-009) | 5 | 15 | |

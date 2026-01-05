@@ -141,6 +141,7 @@ export interface IMachine extends IBaseEntity {
   };
   readonly quickChecks?: readonly IQuickCheckRecord[];
   readonly eventsHistory?: readonly IMachineEvent[]; // 🆕 Sprint #10: Historial de eventos embebido (como quickChecks)
+  readonly maintenanceAlarms?: readonly IMaintenanceAlarm[]; // 🆕 Sprint #11: Alarmas de mantenimiento embebidas (patrón subdocumento)
 }
 
 /**
@@ -208,22 +209,50 @@ export interface INotification {
   // readonly expiresAt?: Date; // Auto-eliminación de notificaciones
 }
 
+// =============================================================================
+// 🔔 MAINTENANCE ALARM INTERFACES (Sprint #11)
+// =============================================================================
+
 /**
- * Interface pública para MaintenanceReminder
+ * Maintenance Alarm Record - Alarma de mantenimiento embebida en Machine
+ * Similar a IQuickCheckRecord e IMachineEvent embebidos en Machine
+ * NO es una entidad independiente, sino un subdocumento
+ * 
+ * Propósito: Sistema de alertas automáticas basadas en horas acumuladas de uso.
+ * El cronjob verifica si machine.specs.operatingHours >= (lastTriggeredHours + intervalHours)
+ * y dispara evento + notificación cuando se cumple la condición.
  */
-export interface IMaintenanceReminder extends IBaseEntity {
-  readonly machineId: string;
-  readonly title: string;
-  readonly description?: string;
-  readonly type: 'TIME_BASED' | 'HOUR_BASED' | 'COMBINED';
-  readonly intervalDays?: number;
-  readonly intervalHours?: number;
-  readonly lastExecutedAt?: Date;
-  readonly nextDueDate?: Date;
-  readonly nextDueHours?: number;
-  readonly isActive: boolean;
-  readonly createdById: string;
-  readonly priority: 'LOW' | 'MEDIUM' | 'HIGH';
+export interface IMaintenanceAlarm {
+  readonly id: string; // ID del subdocumento
+  readonly title: string; // Ej: "Cambiar filtros de aceite y aire"
+  readonly description?: string; // Detalles del mantenimiento
+  readonly relatedParts: readonly string[]; // Partes involucradas (ej: ["Filtro de Aceite", "Filtro de Aire"])
+  readonly intervalHours: number; // Cada cuántas horas acumuladas alertar
+  
+  // 🆕 NUEVO: Accumulator Pattern (Sprint #11 - Refactor)
+  // Horas acumuladas desde el último trigger (o desde creación si nunca se disparó)
+  // El cronjob suma dailyHours cada día DESPUÉS de que la máquina operó (día siguiente)
+  // Cuando accumulatedHours >= intervalHours → trigger alarma + reset a 0
+  // Ejemplo: Si intervalo es 500h y acumula 502h → trigger + reset a 0 (nuevo ciclo)
+  readonly accumulatedHours: number;
+  
+  readonly isActive: boolean; // Permite desactivar sin eliminar
+  readonly createdBy: string; // userId - Trazabilidad
+  readonly createdAt: Date; // Timestamp de creación
+  readonly updatedAt: Date; // Timestamp de última actualización
+  readonly lastTriggeredAt?: Date; // Última vez que se disparó la alarma
+  
+  // ⚠️ DEPRECATED (mantener por compatibilidad con datos existentes, remover en v2.0)
+  // Ya no se usa en lógica de cronjob - usar accumulatedHours en su lugar
+  readonly lastTriggeredHours?: number;
+  
+  readonly timesTriggered: number; // Contador de veces disparadas
+  // 🔮 POST-MVP: Campos comentados para futuras versiones
+  // readonly priority?: 'LOW' | 'MEDIUM' | 'HIGH'; // Priorización visual
+  // readonly notifyBefore?: number; // Alertar X horas antes de cumplirse intervalo
+  // readonly autoResetOnComplete?: boolean; // Reset automático vs manual
+  // readonly assignedTo?: string; // Responsable específico de atender alarma
+  // readonly estimatedDuration?: number; // Duración estimada de mantenimiento (para planificación)
 }
 
 /**

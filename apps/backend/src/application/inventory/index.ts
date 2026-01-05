@@ -12,6 +12,7 @@ export * from './list-machines.use-case';
 export * from './create-machine.use-case';
 export * from './get-machine.use-case';
 export * from './update-machine.use-case';
+export * from './update-operating-hours.use-case'; // 🆕 Sprint #11 - Cronjob
 export * from './delete-machine.use-case';
 
 // TODO: Implementar casos de uso de repuestos:

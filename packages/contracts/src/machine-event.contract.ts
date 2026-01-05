@@ -6,7 +6,7 @@ import { SortOrderSchema, PaginationSchema, BasePaginatedResponseSchema } from '
 // =============================================================================
 
 // Import local para uso en schemas
-import type { MachineEventMetadata, CreateMachineEventProps } from '@packages/domain';
+import type { MachineEventMetadata, CreateMachineEventProps, IMachineEvent } from '@packages/domain';
 
 // Re-exportamos los types exactos del dominio para reutilización (type-only)
 export type { MachineEventMetadata, CreateMachineEventProps } from '@packages/domain';
@@ -22,6 +22,23 @@ export const MachineEventMetadataSchema = z.object({
   additionalInfo: z.record(z.any()).optional(),
   notes: z.string().optional()
 }) satisfies z.ZodType<MachineEventMetadata>;
+
+/**
+ * Schema standalone para Machine Event (para reutilización)
+ * Similar a MaintenanceAlarmSchema - representa el evento completo
+ * Uses satisfies to ensure compile-time validation against domain IMachineEvent
+ */
+export const MachineEventSchema = z.object({
+  id: z.string(),
+  typeId: z.string(),
+  title: z.string(),
+  description: z.string(),
+  createdBy: z.string(),
+  isSystemGenerated: z.boolean(),
+  metadata: MachineEventMetadataSchema.optional(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date()
+}) satisfies z.ZodType<IMachineEvent>;
 
 /**
  * Schema para crear evento basado en CreateMachineEventProps del dominio
@@ -41,6 +58,10 @@ export const CreateMachineEventRequestSchema = z.object({
 
 /**
  * Schema de respuesta con información completa del evento
+ * NOTA: Difiere de MachineEventSchema en:
+ * - Incluye machineId (útil en responses para identificar contexto)
+ * - Usa z.string().datetime() en lugar de z.coerce.date() (HTTP serialization)
+ * - Incluye updatedAt implícito en el objeto (no en schema por simplicidad)
  */
 export const CreateMachineEventResponseSchema = z.object({
   id: z.string(),

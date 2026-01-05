@@ -47,3 +47,30 @@ export type SortOrder = z.infer<typeof SortOrderSchema>;
 export type Pagination = z.infer<typeof PaginationSchema>;
 export type BasePaginatedResponse = z.infer<typeof BasePaginatedResponseSchema>;
 export type Search = z.infer<typeof SearchSchema>;
+
+/**
+ * Generic API Response Wrapper
+ * 
+ * Standardizes HTTP response structure across all controllers.
+ * All endpoints return: { success, message, data? }
+ * 
+ * Usage:
+ * ```typescript
+ * const response: ApiResponse<Machine> = {
+ *   success: true,
+ *   message: 'Machine created',
+ *   data: machine
+ * };
+ * ```
+ */
+export type ApiResponse<T = unknown> = {
+  success: boolean;
+  message: string;
+  data?: T;
+};
+
+// POST-MVP: Error response con múltiples errores de validación
+// export type ApiValidationError = ApiResponse<never> & {
+//   success: false;
+//   errors: Array<{ field: string; message: string }>;
+// };

@@ -11,6 +11,7 @@ import {
   MachineEventTypeModel, 
   type IMachineEventTypeDocument
 } from '../models';
+import { logger } from '../utils/logger';
 
 export class MachineEventTypeRepository implements IMachineEventTypeRepository {
 
@@ -103,14 +104,55 @@ export class MachineEventTypeRepository implements IMachineEventTypeRepository {
   }
 
   /**
+   * Busca un tipo de evento por nombre exacto y lenguaje específico
+   * Útil para verificar existencia antes de crear en seeds (evita duplicados)
+   * 
+   * IMPORTANTE: Este método busca por nombre normalizado + idioma específico
+   * Diferencia con findByNormalizedName: Ese retorna el documento completo (cualquier idioma),
+   * este verifica si existe la COMBINACIÓN nombre+idioma específica.
+   * 
+   * Ejemplo:
+   * - DB tiene: { name: 'Mantenimiento', normalizedName: 'mantenimiento', languages: ['es', 'en'] }
+   * - findByName('Mantenimiento', 'es') → OK (idioma existe)
+   * - findByName('Mantenimiento', 'pt') → null (idioma NO existe)
+   * - findByNormalizedName('mantenimiento') → OK (documento existe, no importa idioma)
+   * 
+   * @param name - Nombre del evento (no normalizado)
+   * @param language - Código ISO 639-1 del idioma (2 letras)
+   * @returns MachineEventType si existe la combinación, null si no
+   */
+  async findByName(name: string, language: string): Promise<MachineEventType | null> {
+    try {
+      const normalizedName = name.toLowerCase().trim().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, '_');
+      const normalizedLang = language.trim().toLowerCase();
+
+      // Buscar documento con ese normalizedName que incluya el idioma
+      const eventTypeDoc = await MachineEventTypeModel.findOne({ 
+        normalizedName,
+        languages: normalizedLang // Verifica que el array languages incluya ese idioma
+      });
+      
+      if (!eventTypeDoc) {
+        return null;
+      }
+
+      const entityResult = this.toEntity(eventTypeDoc);
+      return entityResult.success ? entityResult.data : null;
+    } catch (error: any) {
+      logger.error({ error: error.message }, 'Error finding machine event type by name and language');
+      return null;
+    }
+  }
+
+  /**
    * Verifica si existe un nombre normalizado
    */
   async normalizedNameExists(normalizedName: string): Promise<boolean> {
     try {
       const count = await MachineEventTypeModel.countDocuments({ normalizedName: normalizedName.toLowerCase() });
       return count > 0;
-    } catch (error) {
-      console.error('Error checking normalized name existence:', error);
+    } catch (error: any) {
+      logger.error({ error: error.message }, 'Error checking normalized name existence');
       return false;
     }
   }
@@ -125,8 +167,8 @@ export class MachineEventTypeRepository implements IMachineEventTypeRepository {
         _id: { $ne: excludeId }
       });
       return count > 0;
-    } catch (error) {
-      console.error('Error checking normalized name existence excluding ID:', error);
+    } catch (error: any) {
+      logger.error({ error: error.message }, 'Error checking normalized name existence excluding ID');
       return false;
     }
   }
@@ -140,8 +182,8 @@ export class MachineEventTypeRepository implements IMachineEventTypeRepository {
         .sort({ timesUsed: -1 }); // Más populares primero
       
       return this.toEntityArray(docs);
-    } catch (error) {
-      console.error('Error finding active machine event types:', error);
+    } catch (error: any) {
+      logger.error({ error: error.message }, 'Error finding active machine event types');
       return [];
     }
   }
@@ -155,8 +197,8 @@ export class MachineEventTypeRepository implements IMachineEventTypeRepository {
         .sort({ timesUsed: -1 });
       
       return this.toEntityArray(docs);
-    } catch (error) {
-      console.error('Error finding all machine event types:', error);
+    } catch (error: any) {
+      logger.error({ error: error.message }, 'Error finding all machine event types');
       return [];
     }
   }
@@ -172,8 +214,8 @@ export class MachineEventTypeRepository implements IMachineEventTypeRepository {
       }).sort({ name: 1 });
       
       return this.toEntityArray(docs);
-    } catch (error) {
-      console.error('Error finding system-generated event types:', error);
+    } catch (error: any) {
+      logger.error({ error: error.message }, 'Error finding system-generated event types');
       return [];
     }
   }
@@ -189,8 +231,8 @@ export class MachineEventTypeRepository implements IMachineEventTypeRepository {
       }).sort({ timesUsed: -1 });
       
       return this.toEntityArray(docs);
-    } catch (error) {
-      console.error('Error finding user-generated event types:', error);
+    } catch (error: any) {
+      logger.error({ error: error.message }, 'Error finding user-generated event types');
       return [];
     }
   }
@@ -206,8 +248,8 @@ export class MachineEventTypeRepository implements IMachineEventTypeRepository {
         .limit(limit);
       
       return this.toEntityArray(docs);
-    } catch (error) {
-      console.error('Error finding most used event types:', error);
+    } catch (error: any) {
+      logger.error({ error: error.message }, 'Error finding most used event types');
       return [];
     }
   }
@@ -222,8 +264,8 @@ export class MachineEventTypeRepository implements IMachineEventTypeRepository {
         .limit(limit);
       
       return this.toEntityArray(docs);
-    } catch (error) {
-      console.error('Error finding active event types by usage:', error);
+    } catch (error: any) {
+      logger.error({ error: error.message }, 'Error finding active event types by usage');
       return [];
     }
   }
@@ -239,8 +281,8 @@ export class MachineEventTypeRepository implements IMachineEventTypeRepository {
       }).sort({ timesUsed: -1 });
       
       return this.toEntityArray(docs);
-    } catch (error) {
-      console.error('Error finding event types by owner:', error);
+    } catch (error: any) {
+      logger.error({ error: error.message }, 'Error finding event types by owner');
       return [];
     }
   }
@@ -391,7 +433,7 @@ export class MachineEventTypeRepository implements IMachineEventTypeRepository {
       return ok(undefined);
     } catch (error: any) {
       // Fire-and-forget: log pero no throw
-      console.error('Error incrementing usage count:', error);
+      logger.error({ error: error.message }, 'Error incrementing usage count');
       return ok(undefined);
     }
   }
@@ -420,8 +462,8 @@ export class MachineEventTypeRepository implements IMachineEventTypeRepository {
         .limit(limit);
       
       return this.toEntityArray(docs);
-    } catch (error) {
-      console.error('Error searching event types by term:', error);
+    } catch (error: any) {
+      logger.error({ error: error.message }, 'Error searching event types by term');
       return [];
     }
   }
@@ -435,8 +477,8 @@ export class MachineEventTypeRepository implements IMachineEventTypeRepository {
       // For now, return 0 as placeholder
       console.warn('MachineEventTypeRepository.countEventsUsingType not fully implemented');
       return 0;
-    } catch (error) {
-      console.error('Error counting events using type:', error);
+    } catch (error: any) {
+      logger.error({ error: error.message }, 'Error counting events using type');
       return 0;
     }
   }
@@ -518,8 +560,8 @@ export class MachineEventTypeRepository implements IMachineEventTypeRepository {
         limit: options.limit,
         totalPages: Math.ceil(total / options.limit)
       };
-    } catch (error) {
-      console.error('Error finding paginated machine event types:', error);
+    } catch (error: any) {
+      logger.error({ error: error.message }, 'Error finding paginated machine event types');
       return {
         items: [],
         total: 0,

@@ -51,6 +51,11 @@ export const API_ENDPOINTS = {
   MAINTENANCE_REMINDER: (id: string) => `/maintenance/reminders/${id}`,
   MACHINE_REMINDERS: (machineId: string) => `/machines/${machineId}/reminders`,
   
+  // Maintenance Alarms (Sprint #11)
+  MAINTENANCE_ALARMS: (machineId: string) => `/machines/${machineId}/maintenance-alarms`,
+  MAINTENANCE_ALARM: (machineId: string, alarmId: string) => `/machines/${machineId}/maintenance-alarms/${alarmId}`,
+  RESET_MAINTENANCE_ALARM: (machineId: string, alarmId: string) => `/machines/${machineId}/maintenance-alarms/${alarmId}/reset`,
+  
   // Events
   EVENTS: '/events',
   EVENT: (id: string) => `/events/${id}`,

@@ -11,7 +11,7 @@ export { MachineDetailsScreen } from './machines/MachineDetailsScreen';
 export { NewMachineScreen } from './machines/NewMachineScreen';
 
 // Maintenance Screens
-export { MaintenanceScreen } from './maintenance/MaintenanceScreen';
+export { MaintenanceAlarmsListScreen } from './maintenance/MaintenanceAlarmsListScreen';
 
 // Quickcheck Screens
 export { QuickCheckScreen } from './quickcheck/QuickCheckScreen';

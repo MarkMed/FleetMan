@@ -1,0 +1,91 @@
+/**
+ * Utility para convertir objetos nested a dot notation para Mongoose $set
+ * 
+ * Esto previene que Mongoose reemplace objetos nested completos,
+ * permitiendo updates parciales sin pérdida de datos.
+ * 
+ * ⚠️ LIMITACIÓN ACTUAL (MVP):
+ * Solo soporta modo MERGE. No permite REPLACE de objetos completos.
+ * 
+ * Problema:
+ * - Si quieres borrar un campo nested, NO es posible con flatten
+ * - Ejemplo: { location: { city: 'NY' } } NO borrará location.coordinates
+ * - El campo original location.coordinates PERSISTIRÁ en la DB
+ * 
+ * Solución POST-MVP:
+ * - Agregar parámetro mode: 'merge' | 'replace'
+ * - Permitir Use Cases decidir si merge o replace completo
+ * - Requiere lógica adicional para detectar qué campos borrar
+ * 
+ * Para MVP: Suficiente con merge (caso de uso actual: actualizar campos específicos)
+ * 
+ * @example
+ * Input:  { specs: { operatingHours: 500 } }
+ * Output: { 'specs.operatingHours': 500 }
+ * 
+ * @example
+ * Input:  { location: { city: 'NY', coordinates: { lat: 40.7 } } }
+ * Output: { 'location.city': 'NY', 'location.coordinates.lat': 40.7 }
+ */
+export function flattenToDotNotation(
+  obj: Record<string, any>,
+  prefix: string = ''
+): Record<string, any> {
+  const result: Record<string, any> = {};
+
+  for (const key in obj) {
+    if (!obj.hasOwnProperty(key)) continue;
+
+    const value = obj[key];
+    const newKey = prefix ? `${prefix}.${key}` : key;
+
+    // Si el valor es null o undefined, asignarlo directamente
+    if (value === null || value === undefined) {
+      result[newKey] = value;
+      continue;
+    }
+
+    // Si es un array, asignarlo directamente (no flatten)
+    if (Array.isArray(value)) {
+      result[newKey] = value;
+      continue;
+    }
+
+    // Si es un Date, asignarlo directamente
+    if (value instanceof Date) {
+      result[newKey] = value;
+      continue;
+    }
+
+    // Si es un objeto plain (no Date, no Array), hacer recursión
+    if (typeof value === 'object' && value.constructor === Object) {
+      // Flatten recursivamente
+      const nested = flattenToDotNotation(value, newKey);
+      Object.assign(result, nested);
+    } else {
+      // Primitivos (string, number, boolean) - asignar directamente
+      result[newKey] = value;
+    }
+  }
+
+  return result;
+}
+
+/**
+ * Ejemplos de uso:
+ * 
+ * flattenToDotNotation({ brand: 'CAT', specs: { operatingHours: 500 } })
+ * // → { brand: 'CAT', 'specs.operatingHours': 500 }
+ * 
+ * flattenToDotNotation({ 
+ *   location: { 
+ *     city: 'NY', 
+ *     coordinates: { latitude: 40.7, longitude: -74.0 } 
+ *   } 
+ * })
+ * // → { 
+ * //     'location.city': 'NY', 
+ * //     'location.coordinates.latitude': 40.7,
+ * //     'location.coordinates.longitude': -74.0
+ * //   }
+ */

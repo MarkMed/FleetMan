@@ -13,6 +13,8 @@ import { DashboardScreen } from '../screens/dashboard/DashboardScreen';
 import { MachinesScreen } from '../screens/machines/MachinesScreen';
 import { MachineDetailsScreen } from '../screens/machines/MachineDetailsScreen';
 import { MachineEventsScreen } from '../screens/machines/MachineEventsScreen';
+import { MaintenanceAlarmsListScreen } from '../screens/maintenance/MaintenanceAlarmsListScreen';
+import { AlarmDetailScreen } from '../screens/maintenance/AlarmDetailScreen';
 import { NewMachineScreen } from '../screens/machines/NewMachineScreen';
 import { QuickCheckScreen } from '../screens/quickcheck/QuickCheckScreen';
 import { QuickCheckHistoryScreen } from '../screens/quickcheck/QuickCheckHistoryScreen';
@@ -63,6 +65,8 @@ export const AppRouter: React.FC = () => {
           <Route path="machines/new" element={<NewMachineScreen />} />
           <Route path="machines/:id" element={<MachineDetailsScreen />} />
           <Route path="machines/:id/events" element={<MachineEventsScreen />} />
+          <Route path="machines/:id/alarms" element={<MaintenanceAlarmsListScreen />} />
+          <Route path="machines/:id/maintenance-alarms/:alarmId" element={<AlarmDetailScreen />} />
           <Route path="machines/:id/quickcheck" element={<QuickCheckScreen />} />
           <Route path="machines/:id/quickcheck/history" element={<QuickCheckHistoryScreen />} />
 

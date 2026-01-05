@@ -10,6 +10,7 @@ import {
   err,
   type IQuickCheckRecord,
   type IMachineEvent,
+  type IMaintenanceAlarm,
   type CreateMachineEventProps
 } from '@packages/domain';
 import { 
@@ -17,8 +18,9 @@ import {
   type IMachineDocument,
   MachineEventTypeModel
 } from '../models';
-import { MachineMapper, MachineEventMapper } from '../mappers';
+import { MachineMapper, MachineEventMapper, MaintenanceAlarmMapper } from '../mappers';
 import { type CreateQuickCheckRecord, type QuickCheckHistoryFilters } from '@packages/contracts';
+import { logger } from '../utils/logger';
 
 /**
  * Tipo para agregar evento (sin machineId porque se pasa por separado)
@@ -81,8 +83,8 @@ export class MachineRepository implements IMachineRepository {
     try {
       const count = await MachineModel.countDocuments({ serialNumber: serialNumber.toUpperCase() });
       return count > 0;
-    } catch (error) {
-      console.error('Error checking serial number existence:', error);
+    } catch (error: any) {
+      logger.error({ error: error.message }, 'Error checking serial number existence');
       return false;
     }
   }
@@ -97,8 +99,8 @@ export class MachineRepository implements IMachineRepository {
         _id: { $ne: excludeId.getValue() }
       });
       return count > 0;
-    } catch (error) {
-      console.error('Error checking serial number existence excluding ID:', error);
+    } catch (error: any) {
+      logger.error({ error: error.message }, 'Error checking serial number existence excluding ID');
       return false;
     }
   }
@@ -111,7 +113,7 @@ export class MachineRepository implements IMachineRepository {
       const docs = await MachineModel.find({ ownerId: ownerId.getValue() }).sort({ createdAt: -1 });
       return MachineMapper.toEntityArray(docs);
     } catch (error) {
-      console.error('Error finding machines by owner ID:', error);
+      logger.error({ error }, 'Error finding machines by owner ID');
       return [];
     }
   }
@@ -124,7 +126,7 @@ export class MachineRepository implements IMachineRepository {
       const docs = await MachineModel.find({ assignedProviderId: providerId.getValue() }).sort({ createdAt: -1 });
       return MachineMapper.toEntityArray(docs);
     } catch (error) {
-      console.error('Error finding machines by assigned provider ID:', error);
+      logger.error({ error }, 'Error finding machines by assigned provider ID');
       return [];
     }
   }
@@ -137,7 +139,7 @@ export class MachineRepository implements IMachineRepository {
       const docs = await MachineModel.find({ machineTypeId: typeId.getValue() }).sort({ createdAt: -1 });
       return MachineMapper.toEntityArray(docs);
     } catch (error) {
-      console.error('Error finding machines by machine type ID:', error);
+      logger.error({ error }, 'Error finding machines by machine type ID');
       return [];
     }
   }
@@ -150,7 +152,47 @@ export class MachineRepository implements IMachineRepository {
       const docs = await MachineModel.find({ 'status.code': statusCode }).sort({ createdAt: -1 });
       return MachineMapper.toEntityArray(docs);
     } catch (error) {
-      console.error('Error finding machines by status:', error);
+      logger.error({ error }, 'Error finding machines by status');
+      return [];
+    }
+  }
+
+  /**
+   * 🆕 Sprint #11: Busca máquinas activas que operaron en un día específico
+   * 
+   * Optimizado para cronjob de mantenimiento - filtra a nivel DB con índice compuesto.
+   * Automáticamente excluye máquinas sin usageSchedule (sparse index behavior).
+   * 
+   * Query MongoDB: { 'status.code': 'ACTIVE', 'usageSchedule.operatingDays': dayOfWeek }
+   * Index utilizado: { 'status.code': 1, 'usageSchedule.operatingDays': 1 }
+   * 
+   * Multikey index: operatingDays es array, query verifica si dayOfWeek existe en el array
+   * Ejemplo: Si máquina tiene operatingDays: ['MON', 'TUE', 'WED'] y buscas 'TUE', la retorna.
+   * 
+   * @param dayOfWeek - Día a buscar (ej: 'MON', 'TUE', 'SAT' del enum DayOfWeek)
+   * @returns Array de máquinas activas que operaron ese día (vacío si ninguna)
+   * 
+   * Performance: ~5x más rápido que findByStatus + filtrado en memoria
+   * Ejemplo: 1000 máquinas totales, 200 con schedule, 50 operaron ayer → retorna 50 directo
+   */
+  async findActiveWithOperatingDay(dayOfWeek: string): Promise<Machine[]> {
+    try {
+      const docs = await MachineModel.find({
+        'status.code': 'ACTIVE',
+        'usageSchedule.operatingDays': dayOfWeek  // Array contains check (multikey index)
+      }).sort({ createdAt: -1 });
+      
+      logger.debug(
+        { 
+          dayOfWeek, 
+          count: docs.length 
+        }, 
+        'Found active machines for operating day'
+      );
+      
+      return MachineMapper.toEntityArray(docs);
+    } catch (error) {
+      logger.error({ error, dayOfWeek }, 'Error finding active machines by operating day');
       return [];
     }
   }
@@ -163,10 +205,116 @@ export class MachineRepository implements IMachineRepository {
       const docs = await MachineModel.find({ 'status.code': 'ACTIVE' }).sort({ createdAt: -1 });
       return MachineMapper.toEntityArray(docs);
     } catch (error) {
-      console.error('Error finding all active machines:', error);
+      logger.error({ error }, 'Error finding all active machines');
       return [];
     }
   }
+
+  // TODO FUTURO: Bulk update de horas de operación (Sprint 12+)
+  // Propósito: Optimizar Stage 1 del cronjob para reducir N queries → 1 query
+  // Problema actual: UpdateOperatingHoursUseCase se llama N veces (1 por máquina)
+  // Beneficio estimado: 10-100x más rápido para flotas grandes (1000+ máquinas)
+  // 
+  // async bulkUpdateOperatingHours(updates: Array<{ machineId: string; hoursToAdd: number }>): Promise<number> {
+  //   try {
+  //     if (updates.length === 0) return 0;
+  //     
+  //     const operations = updates.map(({ machineId, hoursToAdd }) => ({
+  //       updateOne: {
+  //         filter: { _id: machineId },
+  //         update: {
+  //           $inc: { 'specs.operatingHours': hoursToAdd },
+  //           $set: { updatedAt: new Date() }
+  //         }
+  //       }
+  //     }));
+  //     
+  //     const result = await MachineModel.bulkWrite(operations, { ordered: false });
+  //     logger.info({ updated: result.modifiedCount, total: updates.length }, 'Bulk updated operating hours');
+  //     return result.modifiedCount;
+  //   } catch (error: any) {
+  //     logger.error({ error: error.message }, 'Error in bulk update operating hours');
+  //     throw error;
+  //   }
+  // }
+  //
+  // Uso en UpdateMachinesOperatingHoursUseCase:
+  // const bulkUpdates = machinesToUpdate.map(machine => ({
+  //   machineId: machine.id.getValue(),
+  //   hoursToAdd: machine.usageSchedule!.dailyHours
+  // }));
+  // await this.machineRepository.bulkUpdateOperatingHours(bulkUpdates);
+
+  // TODO FUTURO: Query para máquinas con alarmas activas que operaron ayer (Sprint 12+)
+  // Propósito: Optimizar Stage 2 eliminando filtro en memoria de maintenanceAlarms.isActive
+  // Problema actual: findActiveWithOperatingDay retorna máquinas SIN alarmas también
+  // Beneficio: Reducir data transfer y filtrado en memoria
+  //
+  // async findActiveWithAlarmsForDay(dayOfWeek: DayOfWeek): Promise<Machine[]> {
+  //   try {
+  //     const docs = await MachineModel.find({
+  //       'status.code': 'ACTIVE',
+  //       'usageSchedule.operatingDays': dayOfWeek,
+  //       'maintenanceAlarms': { $exists: true, $ne: [] },
+  //       'maintenanceAlarms.isActive': true  // Al menos una alarma activa
+  //     }).sort({ createdAt: -1 });
+  //     
+  //     return MachineMapper.toEntityArray(docs);
+  //   } catch (error) {
+  //     logger.error({ error, dayOfWeek }, 'Error finding machines with alarms for day');
+  //     return [];
+  //   }
+  // }
+  //
+  // Índice recomendado:
+  // machineSchema.index({ 'status.code': 1, 'usageSchedule.operatingDays': 1, 'maintenanceAlarms.isActive': 1 });
+
+  // TODO FUTURO: Aggregation pipeline para actualización server-side (Sprint 13+)
+  // Propósito: Eliminar COMPLETAMENTE el load de máquinas en Node.js
+  // Beneficio: Zero memory footprint, máxima escalabilidad para flotas de 10,000+ máquinas
+  // Técnica: $merge operator para actualizar directamente en MongoDB sin fetch
+  //
+  // async bulkUpdateOperatingHoursServerSide(dayOfWeek: DayOfWeek): Promise<number> {
+  //   try {
+  //     const result = await MachineModel.aggregate([
+  //       // Stage 1: Match - solo máquinas que operaron ayer
+  //       {
+  //         $match: {
+  //           'status.code': 'ACTIVE',
+  //           'usageSchedule.operatingDays': dayOfWeek
+  //         }
+  //       },
+  //       // Stage 2: AddFields - calcular nuevas horas
+  //       {
+  //         $addFields: {
+  //           'specs.operatingHours': {
+  //             $add: ['$specs.operatingHours', '$usageSchedule.dailyHours']
+  //           },
+  //           updatedAt: new Date()
+  //         }
+  //       },
+  //       // Stage 3: Merge - actualizar docs en la misma colección
+  //       {
+  //         $merge: {
+  //           into: 'machines',
+  //           whenMatched: 'merge'
+  //         }
+  //       }
+  //     ]);
+  //     
+  //     logger.info({ dayOfWeek }, 'Server-side bulk update completed');
+  //     return result.length;
+  //   } catch (error) {
+  //     logger.error({ error, dayOfWeek }, 'Error in server-side bulk update');
+  //     throw error;
+  //   }
+  // }
+  //
+  // Ventajas:
+  // - 0 bytes transferidos a Node.js (todo en MongoDB)
+  // - Atómico y consistente
+  // - Compatible con réplicas y sharding
+  // - Ideal para cronjobs de producción con millones de documentos
 
   /**
    * Guarda una máquina (crear o actualizar)
@@ -194,6 +342,94 @@ export class MachineRepository implements IMachineRepository {
         return err(DomainError.create('DUPLICATE_KEY', 'Serial number already exists'));
       }
       return err(DomainError.create('PERSISTENCE_ERROR', `Error saving machine: ${error.message}`));
+    }
+  }
+
+  /**
+   * Actualiza campos específicos de una máquina sin cargar entity completa
+   * 
+   * PRINCIPIO DE EXPERTO:
+   * - Repository = Experto en persistencia (CÓMO guardar en DB)
+   * - Use Case = Experto en negocio (QUÉ actualizar, validaciones)
+   * 
+   * ⚠️ IMPORTANTE - Nested Objects:
+   * $set con objetos nested REEMPLAZA el objeto completo, NO hace merge.
+   * Para updates parciales de nested objects, usar dot notation:
+   * 
+   * ❌ INCORRECTO: { specs: { operatingHours: 500 } } → Borra enginePower, fuelType, etc.
+   * ✅ CORRECTO:   { 'specs.operatingHours': 500 } → Solo actualiza ese campo
+   * 
+   * Use Cases deben usar flattenToDotNotation() para nested objects.
+   * 
+   * 🚧 LIMITACIÓN ACTUAL (MVP):
+   * flattenToDotNotation() solo soporta MERGE. No permite borrar campos nested.
+   * Si necesitas REEMPLAZAR un objeto nested completo (borrar campos), 
+   * usar directamente el objeto sin flatten (consciente del riesgo de pérdida de datos).
+   * Ver: apps/backend/src/utils/flatten-to-dot-notation.ts para detalles.
+   * POST-MVP: Agregar modo 'replace' al utility.
+   * 
+   * @param machineId - ID de la máquina
+   * @param updates - Objeto con campos a actualizar (usar dot notation para nested)
+   * @returns Result<Machine> - Retorna la máquina actualizada
+   * 
+   * Ejemplos:
+   * - update(id, { brand: "NewBrand" }) → OK (campo top-level)
+   * - update(id, { 'specs.operatingHours': 500 }) → OK (dot notation)
+   * - update(id, { brand: "X", 'location.city': "NY" }) → OK (mixto)
+   */
+  async update(
+    machineId: MachineId,
+    updates: Record<string, any>
+  ): Promise<Result<Machine, DomainError>> {
+    try {
+      // Validar que hay algo que actualizar
+      if (!updates || Object.keys(updates).length === 0) {
+        return err(DomainError.create('VALIDATION_ERROR', 'No fields to update'));
+      }
+
+      // Mongoose hace merge automático - NO necesitamos lógica especial
+      const doc = await MachineModel.findByIdAndUpdate(
+        machineId.getValue(),
+        { 
+          $set: {
+            ...updates,
+            updatedAt: new Date()
+          }
+        },
+        { 
+          new: true,
+          runValidators: true // Ejecuta validaciones de Mongoose schema
+        }
+      );
+
+      if (!doc) {
+        return err(DomainError.notFound(`Machine with ID ${machineId.getValue()} not found`));
+      }
+
+      // Mappear documento actualizado a entidad de dominio
+      const machine = MachineMapper.toEntity(doc);
+      if (!machine) {
+        return err(DomainError.create('MAPPING_ERROR', 'Failed to map updated machine to entity'));
+      }
+
+      return ok(machine);
+
+    } catch (error: any) {
+      // Errores de validación Mongoose
+      if (error.name === 'ValidationError') {
+        const messages = Object.values(error.errors)
+          .map((e: any) => e.message)
+          .join(', ');
+        return err(DomainError.create('VALIDATION_ERROR', messages));
+      }
+      
+      // Error de duplicado (ej: serialNumber único)
+      if (error.code === 11000) {
+        const field = Object.keys(error.keyPattern || {})[0] || 'field';
+        return err(DomainError.create('DUPLICATE_ERROR', `${field} already exists`));
+      }
+      
+      return err(DomainError.create('PERSISTENCE_ERROR', `Failed to update machine: ${error.message}`));
     }
   }
 
@@ -303,7 +539,7 @@ export class MachineRepository implements IMachineRepository {
         totalPages: Math.ceil(total / options.limit)
       };
     } catch (error) {
-      console.error('Error finding paginated machines:', error);
+      logger.error({ error }, 'Error finding paginated machines');
       return {
         items: [],
         total: 0,
@@ -544,21 +780,26 @@ export class MachineRepository implements IMachineRepository {
         eventData.typeId,
         { $inc: { timesUsed: 1 } }
       ).catch((err: any) => {
-        console.error('Failed to increment event type usage:', {
+        logger.error({
           typeId: eventData.typeId,
           error: err.message
-        });
+        }, 'Failed to increment event type usage');
       });
 
-      // Mapear a dominio
-      const mappedEvent = MachineEventMapper.toDomain(result as any);
+      // Mapear el evento creado (posición 0 porque usamos $position: 0 en línea 612)
+      const createdEvent = result.eventsHistory?.[0];
+      if (!createdEvent) {
+        return err(DomainError.create('PERSISTENCE_ERROR', 'Event was not persisted correctly'));
+      }
+      
+      const mappedEvent = MachineEventMapper.toDomain(createdEvent as any);
       return ok(mappedEvent);
 
     } catch (error: any) {
-      console.error('Error adding machine event:', { 
+      logger.error({ 
         machineId: machineId.getValue(), 
         error: error.message 
-      });
+      }, 'Error adding machine event');
       return err(DomainError.create('PERSISTENCE_ERROR', `Failed to add event: ${error.message}`));
     }
   }
@@ -667,10 +908,10 @@ export class MachineRepository implements IMachineRepository {
       });
 
     } catch (error: any) {
-      console.error('Error getting events history:', { 
+      logger.error({ 
         machineId: machineId.getValue(), 
         error: error.message 
-      });
+      }, 'Error getting events history');
       return err(DomainError.create('PERSISTENCE_ERROR', `Failed to get events: ${error.message}`));
     }
   }
@@ -745,4 +986,362 @@ export class MachineRepository implements IMachineRepository {
   // TODO: Implementar soft delete de eventos
   // Razón: Permitir que usuarios "borren" eventos user-generated sin perder trazabilidad
   // Declaración: async deleteEvent(machineId: MachineId, eventId: string): Promise<Result<void, DomainError>>
+
+  // ==========================================================================
+  // 🆕 Sprint #11: Maintenance Alarms Methods (Embedded Pattern)
+  // ==========================================================================
+
+  /**
+   * Agrega una alarma de mantenimiento a la máquina
+   * Patrón $push idéntico a addEvent y addNotification
+   */
+  async addMaintenanceAlarm(
+    machineId: MachineId,
+    alarmData: {
+      title: string;
+      description?: string;
+      relatedParts: string[];
+      intervalHours: number;
+      accumulatedHours: number;
+      createdBy: string;
+    }
+  ): Promise<Result<IMaintenanceAlarm, DomainError>> {
+    try {
+      const now = new Date();
+
+      const result = await MachineModel.findByIdAndUpdate(
+        machineId.getValue(),
+        {
+          $push: {
+            maintenanceAlarms: {
+              title: alarmData.title,
+              description: alarmData.description,
+              relatedParts: alarmData.relatedParts,
+              intervalHours: alarmData.intervalHours,
+              accumulatedHours: alarmData.accumulatedHours,
+              isActive: true, // Default value
+              createdBy: alarmData.createdBy,
+              timesTriggered: 0,
+              createdAt: now,
+              updatedAt: now
+            }
+          }
+        },
+        { new: true }
+      );
+
+      if (!result) {
+        return err(DomainError.notFound(`Machine with ID ${machineId.getValue()} not found`));
+      }
+
+      // Get the last added alarm (newest - se agrega al final del array)
+      const alarms = result.maintenanceAlarms || [];
+      if (alarms.length === 0) {
+        return err(DomainError.create('PERSISTENCE_ERROR', 'Failed to retrieve created alarm'));
+      }
+      const createdAlarm = alarms[alarms.length - 1];
+      
+      // Mapear usando MaintenanceAlarmMapper (DRY principle)
+      const mappedAlarm = MaintenanceAlarmMapper.toDomain(createdAlarm as any);
+      return ok(mappedAlarm);
+    } catch (error: any) {
+      logger.error({
+        machineId: machineId.getValue(),
+        error: error.message
+      }, 'Error adding maintenance alarm');
+      return err(DomainError.create('PERSISTENCE_ERROR', `Failed to add maintenance alarm: ${error.message}`));
+    }
+  }
+
+  /**
+   * Obtiene alarmas de mantenimiento con filtros
+   */
+  async getMaintenanceAlarms(
+    machineId: MachineId,
+    filters?: { onlyActive?: boolean }
+  ): Promise<Result<IMaintenanceAlarm[], DomainError>> {
+    try {
+      const machine = await MachineModel.findById(machineId.getValue()).select('maintenanceAlarms');
+      
+      if (!machine) {
+        return err(DomainError.notFound(`Machine with ID ${machineId.getValue()} not found`));
+      }
+
+      let alarms = machine.maintenanceAlarms || [];
+      
+      if (filters?.onlyActive) {
+        alarms = alarms.filter(a => a.isActive);
+      }
+
+      // Mapear usando MaintenanceAlarmMapper (DRY principle)
+      const mappedAlarms = MaintenanceAlarmMapper.toDomainArray(alarms as any);
+      return ok(mappedAlarms);
+    } catch (error: any) {
+      logger.error({
+        machineId: machineId.getValue(),
+        error: error.message
+      }, 'Error getting maintenance alarms');
+      return err(DomainError.create('PERSISTENCE_ERROR', `Failed to get maintenance alarms: ${error.message}`));
+    }
+  }
+
+  /**
+   * Actualiza una alarma específica
+   * Usa arrayFilters para actualizar subdocumento específico
+   */
+  async updateMaintenanceAlarm(
+    machineId: MachineId,
+    alarmId: string,
+    updates: {
+      title?: string;
+      description?: string;
+      relatedParts?: string[];
+      intervalHours?: number;
+      isActive?: boolean;
+      accumulatedHours?: number;
+      lastTriggeredAt?: Date;
+    }
+  ): Promise<Result<IMaintenanceAlarm, DomainError>> {
+    try {
+      const updateFields: any = {};
+      
+      if (updates.title !== undefined) {
+        updateFields['maintenanceAlarms.$[alarm].title'] = updates.title;
+      }
+      if (updates.description !== undefined) {
+        updateFields['maintenanceAlarms.$[alarm].description'] = updates.description;
+      }
+      if (updates.relatedParts !== undefined) {
+        updateFields['maintenanceAlarms.$[alarm].relatedParts'] = updates.relatedParts;
+      }
+      if (updates.intervalHours !== undefined) {
+        updateFields['maintenanceAlarms.$[alarm].intervalHours'] = updates.intervalHours;
+      }
+      if (updates.isActive !== undefined) {
+        updateFields['maintenanceAlarms.$[alarm].isActive'] = updates.isActive;
+      }
+      if (updates.accumulatedHours !== undefined) {
+        updateFields['maintenanceAlarms.$[alarm].accumulatedHours'] = updates.accumulatedHours;
+      }
+      if (updates.lastTriggeredAt !== undefined) {
+        updateFields['maintenanceAlarms.$[alarm].lastTriggeredAt'] = updates.lastTriggeredAt;
+      }
+
+      // Always update updatedAt timestamp
+      updateFields['maintenanceAlarms.$[alarm].updatedAt'] = new Date();
+
+      const result = await MachineModel.findOneAndUpdate(
+        { _id: machineId.getValue() },
+        { $set: updateFields },
+        {
+          arrayFilters: [{ 'alarm._id': alarmId }],
+          new: true
+        }
+      );
+
+      if (!result) {
+        return err(DomainError.notFound(`Machine with ID ${machineId.getValue()} not found`));
+      }
+
+      // Find and return the updated alarm
+      const updatedAlarm = result.maintenanceAlarms?.find((a: any) => a._id.toString() === alarmId);
+      if (!updatedAlarm) {
+        return err(DomainError.notFound(`Maintenance alarm with ID ${alarmId} not found in machine`));
+      }
+
+      // Map to domain entity using MaintenanceAlarmMapper
+      const mappedAlarm = MaintenanceAlarmMapper.toDomain(updatedAlarm as any);
+      return ok(mappedAlarm);
+    } catch (error: any) {
+      logger.error({
+        machineId: machineId.getValue(),
+        alarmId,
+        error: error.message
+      }, 'Error updating maintenance alarm');
+      return err(DomainError.create('PERSISTENCE_ERROR', `Failed to update maintenance alarm: ${error.message}`));
+    }
+  }
+
+  /**
+   * Eliminar alarma de mantenimiento (HARD DELETE)
+   * Usa $pull para remover físicamente el subdocumento del array
+   * 
+   * Validaciones:
+   * - Máquina debe existir
+   * - Alarma debe existir en el array
+   * 
+   * Patrón MongoDB: $pull remueve elementos que coinciden con condición
+   * 
+   * @param machineId - ID de la máquina
+   * @param alarmId - ID de la alarma (subdocument _id)
+   * @returns Result<void> si exitoso, error si falla
+   */
+  async deleteMaintenanceAlarm(
+    machineId: MachineId,
+    alarmId: string
+  ): Promise<Result<void, DomainError>> {
+    try {
+      // Validar que la máquina existe
+      const machine = await MachineModel.findById(machineId.getValue());
+      if (!machine) {
+        return err(DomainError.notFound(`Machine with ID ${machineId.getValue()} not found`));
+      }
+
+      // Validar que la alarma existe en el array
+      const alarmExists = machine.maintenanceAlarms?.some(
+        (alarm: any) => alarm._id.toString() === alarmId
+      );
+      
+      if (!alarmExists) {
+        return err(
+          DomainError.notFound(
+            `Maintenance alarm with ID ${alarmId} not found in machine ${machineId.getValue()}`
+          )
+        );
+      }
+
+      // Eliminar alarma usando $pull
+      const result = await MachineModel.findByIdAndUpdate(
+        machineId.getValue(),
+        {
+          $pull: {
+            maintenanceAlarms: { _id: alarmId }
+          }
+        },
+        { new: true }
+      );
+
+      if (!result) {
+        return err(
+          DomainError.create(
+            'DELETE_FAILED',
+            'Failed to delete maintenance alarm'
+          )
+        );
+      }
+
+      logger.info(
+        { machineId: machineId.getValue(), alarmId },
+        'Maintenance alarm deleted successfully'
+      );
+
+      return ok(undefined);
+    } catch (error: any) {
+      logger.error(
+        { 
+          machineId: machineId.getValue(), 
+          alarmId,
+          error: error.message 
+        },
+        'Error deleting maintenance alarm'
+      );
+      return err(
+        DomainError.create(
+          'DELETE_FAILED',
+          `Failed to delete maintenance alarm: ${error.message}`
+        )
+      );
+    }
+  }
+
+  /**
+   * Actualiza el acumulador de horas de una alarma específica
+   * Usado por cronjob para sumar horas diarias después de día operativo
+   * 
+   * @param machineId - ID de la máquina
+   * @param alarmId - ID de la alarma (subdocument _id)
+   * @param hoursToAdd - Horas a sumar (usualmente usageSchedule.dailyHours)
+   */
+  async updateAlarmAccumulatedHours(
+    machineId: MachineId,
+    alarmId: string,
+    hoursToAdd: number
+  ): Promise<Result<void, DomainError>> {
+    try {
+      const result = await MachineModel.findOneAndUpdate(
+        { _id: machineId.getValue() },
+        {
+          $inc: {
+            'maintenanceAlarms.$[alarm].accumulatedHours': hoursToAdd
+          },
+          $set: {
+            'maintenanceAlarms.$[alarm].updatedAt': new Date()
+          }
+        },
+        {
+          arrayFilters: [{ 'alarm._id': alarmId }],
+          new: true
+        }
+      );
+
+      if (!result) {
+        return err(DomainError.notFound(`Machine with ID ${machineId.getValue()} not found`));
+      }
+
+      return ok(undefined);
+    } catch (error: any) {
+      logger.error({
+        machineId: machineId.getValue(),
+        alarmId,
+        hoursToAdd,
+        error: error.message
+      }, 'Error updating alarm accumulated hours');
+      return err(DomainError.create('PERSISTENCE_ERROR', `Failed to update accumulated hours: ${error.message}`));
+    }
+  }
+
+  /**
+   * Actualiza tracking fields cuando alarma se dispara
+   * Usado por cronjob - AHORA RESETEA acumulatedHours a 0
+   */
+  async triggerMaintenanceAlarm(
+    machineId: MachineId,
+    alarmId: string,
+    currentOperatingHours: number
+  ): Promise<Result<void, DomainError>> {
+    try {
+      const result = await MachineModel.findOneAndUpdate(
+        { _id: machineId.getValue() },
+        {
+          $set: {
+            'maintenanceAlarms.$[alarm].lastTriggeredAt': new Date(),
+            'maintenanceAlarms.$[alarm].lastTriggeredHours': currentOperatingHours,
+            'maintenanceAlarms.$[alarm].accumulatedHours': 0, // 🆕 NUEVO: Reset accumulator
+            'maintenanceAlarms.$[alarm].updatedAt': new Date()
+          },
+          $inc: {
+            'maintenanceAlarms.$[alarm].timesTriggered': 1
+          }
+        },
+        {
+          arrayFilters: [{ 'alarm._id': alarmId }],
+          new: true
+        }
+      );
+
+      if (!result) {
+        return err(DomainError.notFound(`Machine with ID ${machineId.getValue()} not found`));
+      }
+
+      return ok(undefined);
+    } catch (error: any) {
+      logger.error({
+        machineId: machineId.getValue(),
+        alarmId,
+        currentOperatingHours,
+        error: error.message
+      }, 'Error triggering maintenance alarm');
+      return err(DomainError.create('PERSISTENCE_ERROR', `Failed to trigger maintenance alarm: ${error.message}`));
+    }
+  }
+
+  // TODO: Implementar método para obtener alarmas próximas a dispararse
+  // Razón: Dashboard preventivo - mostrar alarmas que están cerca de cumplir su intervalo
+  // Declaración: async getUpcomingAlarms(machineId: MachineId, hoursThreshold: number): Promise<Result<IMaintenanceAlarm[], DomainError>>
+  // Lógica: currentOperatingHours >= (lastTriggeredHours + intervalHours - hoursThreshold)
+
+  // TODO: Implementar método para resetear alarma después de mantenimiento completado
+  // Razón: Usuario completa mantenimiento → resetear lastTriggeredHours manualmente (no esperar al cronjob)
+  // Declaración: async resetMaintenanceAlarm(machineId: MachineId, alarmId: string): Promise<Result<void, DomainError>>
+  // Lógica: Actualizar lastTriggeredAt a ahora, lastTriggeredHours a specs.operatingHours actual
 }

@@ -6,7 +6,7 @@ import { SortOrderSchema, PaginationSchema, BasePaginatedResponseSchema } from '
 // =============================================================================
 
 // Import local para uso en schemas
-import type { CreateMachineEventTypeProps } from '@packages/domain';
+import type { CreateMachineEventTypeProps, IMachineEventType } from '@packages/domain';
 
 // Re-exportamos los types exactos del dominio para reutilización (type-only)
 export type { CreateMachineEventTypeProps } from '@packages/domain';
