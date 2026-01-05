@@ -208,7 +208,8 @@ export class MaintenanceCronService {
    * Librerías recomendadas: moment-timezone, luxon, date-fns-tz
    */
   public start(): void {
-	const schedule = process.env.CRON_MAINTENANCE_SCHEDULE || '0 5 * * *'; // Default: daily at 2am UY time
+    const TEMP_CRON_SHCEDULE_FOR_TESTING = '*/1 * * * *'; // Cada 1 min (testing)
+	const schedule = TEMP_CRON_SHCEDULE_FOR_TESTING //process.env.CRON_MAINTENANCE_SCHEDULE || '0 5 * * *'; // Default: daily at 2am UY time
     
     // Validate cron expression
     if (!cron.validate(schedule)) {

@@ -1,5 +1,5 @@
 import { MachineRepository } from '@packages/persistence';
-import { Machine, DayOfWeek } from '@packages/domain';
+import { DayOfWeek } from '@packages/domain';
 import { logger } from '../../config/logger.config';
 import { UpdateOperatingHoursUseCase } from '../inventory/update-operating-hours.use-case';
 

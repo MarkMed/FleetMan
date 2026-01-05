@@ -63,7 +63,7 @@ export const MachineSpecsSchema = z.object({
   enginePower: z.number().positive().optional(),
   maxCapacity: z.number().positive().optional(),
   fuelType: FuelTypeSchema.optional(),
-  year: z.number().int().min(1900).max(new Date().getFullYear() + 2).optional(),
+  year: z.number().int().min(1900).max(new Date().getFullYear() + 1).optional(), // +1 año: permite pre-órdenes pero evita errores
   weight: z.number().positive().optional(),
   operatingHours: z.number().min(0).optional()
 }) satisfies z.ZodType<MachineSpecs>;
@@ -220,7 +220,7 @@ export const UpdateMachineRequestSchema = z.object({
     enginePower: z.number().positive().optional(),
     maxCapacity: z.number().positive().optional(),
     fuelType: FuelTypeSchema.optional(),
-    year: z.number().int().min(1900).max(new Date().getFullYear() + 2).optional(),
+    year: z.number().int().min(1900).max(new Date().getFullYear() + 1).optional(), // +1 año: consistente con CreateMachineRequestSchema
     weight: z.number().positive().optional(),
     operatingHours: z.number().min(0).optional() // Para cronjob (no desde frontend típicamente)
   }).partial().strict().optional(),

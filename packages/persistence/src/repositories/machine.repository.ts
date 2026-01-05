@@ -99,8 +99,8 @@ export class MachineRepository implements IMachineRepository {
         _id: { $ne: excludeId.getValue() }
       });
       return count > 0;
-    } catch (error) {
-      logger.error({ error }, 'Error checking serial number existence excluding ID');
+    } catch (error: any) {
+      logger.error({ error: error.message }, 'Error checking serial number existence excluding ID');
       return false;
     }
   }

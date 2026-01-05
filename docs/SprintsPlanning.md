@@ -623,7 +623,7 @@ Distribución por categoría:
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
 | Documentación | 20.1 Reporte Académico del Sprint #11 | 1 | 5 | |
-| Gestión | 20.2 Demo/UAT de Sprint #11 | 2 | 1.5 | |
+| Gestión | 20.2 Demo/UAT de Sprint #11 | 2 | 1.5 | 1.2 |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | |
 | Desarrollo | 4.3 Historial unificado (RF-009) | 5 | 15 | |

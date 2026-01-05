@@ -76,7 +76,6 @@ export const CreateEditAlarmModal: React.FC<CreateEditAlarmModalProps> = ({
   // Form with Zod validation from contracts
   const {
     control,
-    register,
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
