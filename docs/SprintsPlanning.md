@@ -81,7 +81,7 @@ Distribución por categoría:
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
 | Documentación | 20.1 Reporte Académico del Sprint #1 | 1 | 0.9 | 1.8 |
 | Gestión | 20.2 Demo/UAT de Sprint #1 | 2 | 1.5 | 1 |
-| Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | 0.6 |
+| Gestión | 20.3 Sprint Planning de Sprint #2 | 3 | 1.3 | 0.6 |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | 0 |
 | Desarrollo | 1.2 Esquemas DB (Mongoose + índices clave) | 5 | 5 | 0 |
 | Desarrollo | 1.3 DTOs + Zod (contratos compartidos) | 6 | 7 | 9.02 |
@@ -124,7 +124,7 @@ Distribución por categoría:
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
 | Documentación | 20.1 Reporte Académico del Sprint #2 | 1 | 0.9 | 6.8 |
 | Gestión | 20.2 Demo/UAT de Sprint #2 | 2 | 1.5 | 1.1 |
-| Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | 1.9 |
+| Gestión | 20.3 Sprint Planning de Sprint #3 | 3 | 1.3 | 1.9 |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | 0.9 |
 | Desarrollo | 0.11 Setup Backend Básico | 5 | 8 | 3.5 |
 | Desarrollo | 0.13 Setup Frontend Básico | 6 | 8 | 4.2 |
@@ -164,7 +164,7 @@ Distribución por categoría:
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
 | Documentación | 20.1 Reporte Académico del Sprint #3 | 1 | 0.9 | 7.1 |
 | Gestión | 20.2 Demo/UAT de Sprint #3 | 2 | 1.5 | 1.6 |
-| Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | 4.1 |
+| Gestión | 20.3 Sprint Planning de Sprint #4 | 3 | 1.3 | 4.1 |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | 0.88 |
 | Desarrollo | 2.1 Registro de usuario (RF-001) | 5 | 10 | 12.9 |
 | Desarrollo | 2.2 Login de usuario (RF-002) | 6 | 8 | 8.2 |
@@ -205,7 +205,7 @@ Distribución por categoría:
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
 | Documentación | 20.1 Reporte Académico del Sprint #4 | 1 | 0.9 | 6.6 |
 | Gestión | 20.2 Demo/UAT de Sprint #4 | 2 | 1.5 | 0.9 |
-| Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | 1.2 |
+| Gestión | 20.3 Sprint Planning de Sprint #5 | 3 | 1.3 | 1.2 |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | 0.5 |
 | Desarrollo | 3.1 Alta de máquina (RF-005) + ReactHookForms + Wizard Component | 5 | 16 | 23.8 |
 | Capacitación | 16.3 Taller Deploy - AWS (mar 18 Nov) | 6 | 3 | 2.5 |
@@ -243,7 +243,7 @@ Distribución por categoría:
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
 | Documentación | 20.1 Reporte Académico del Sprint #5 | 1 | 5 | 5.8 |
 | Gestión | 20.2 Demo/UAT de Sprint #5 | 2 | 1.5 | 0.9 |
-| Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | 2.9 |
+| Gestión | 20.3 Sprint Planning de Sprint #6 | 3 | 1.3 | 2.9 |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | 0.75 |
 | Desarrollo | 16.11 Azure Deploy - Config práctica (Azure App Service) | 5 | 9 | 19.7 |
 | Desarrollo | 0.5 PWA base (manifest + SW básico) | 6 | 6 | |
@@ -286,7 +286,7 @@ Distribución por categoría:
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
 | Documentación | 20.1 Reporte Académico del Sprint #6 | 1 | 5 | 5.7 |
 | Gestión | 20.2 Demo/UAT de Sprint #6 | 2 | 1.5 | 0 |
-| Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | 1.2 |
+| Gestión | 20.3 Sprint Planning de Sprint #7 | 3 | 1.3 | 1.2 |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | 0.75 |
 | Desarrollo | 16.11 Azure Deploy - Config práctica (continuación) | 5 | 5 | 4.7 |
 | Desarrollo | 6.1 Domain + Persistence (RF-011) | 6 | 4.5 | 3.5 |
@@ -360,7 +360,7 @@ Distribución por categoría:
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
 | Documentación | 20.1 Reporte Académico del Sprint #7 | 1 | 5 | 5.4 |
 | Gestión | 20.2 Demo/UAT de Sprint #7 | 2 | 1.5 | 1.2 |
-| Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | 4.65 |
+| Gestión | 20.3 Sprint Planning de Sprint #8 | 3 | 1.3 | 4.65 |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | 0 |
 | Desarrollo | 12.8 UI Polish (animaciones + reorder inputs) | 5 | 0.75 | 0.1 |
 | Desarrollo | 12.7 Navigation Drawer | 6 | 3 | 2.3 |
@@ -418,7 +418,7 @@ xychart-beta
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
 | Documentación | 20.1 Reporte Académico del Sprint #8 | 1 | 5 | 5.3 |
 | Gestión | 20.2 Demo/UAT de Sprint #8 | 2 | 1.5 | 1.45 |
-| Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | 2.15 |
+| Gestión | 20.3 Sprint Planning de Sprint #9 | 3 | 1.3 | 2.15 |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | 1.1 |
 | Desarrollo | 8.1 Domain+Contracts+Persistence | 5 | 5 | 4.1 |
 | Desarrollo | 8.2 Application Layer Backend | 6 | 6 | 4.4 |
@@ -462,7 +462,7 @@ Distribución por categoría:
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
 | Documentación | 20.1 Reporte Académico del Sprint #9 | 1 | 5 | 5.2 |
 | Gestión | 20.2 Demo/UAT de Sprint #9 | 2 | 1.5 | 1.1 |
-| Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | 1.4 |
+| Gestión | 20.3 Sprint Planning de Sprint #10 | 3 | 1.3 | 1.4 |
 | Documentación | 20.4 Informe de avance (académico) | 4 | — | 1.2 |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 5 | 1 | 0.6 |
 | Desarrollo | 4.2a Domain+Contracts+Persistence MachineEvent | 6 | 5 | 4.1 |
@@ -538,7 +538,7 @@ Distribución por categoría:
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
 | Documentación | 20.1 Reporte Académico del Sprint #10 | 1 | 5 | 4.9 |
 | Gestión | 20.2 Demo/UAT de Sprint #10 | 2 | 1.5 | 1.2 |
-| Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | 1.2 |
+| Gestión | 20.3 Sprint Planning de Sprint #11 | 3 | 1.3 | 1.2 |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | 1 |
 | Desarrollo | 4.1a Domain+Contracts+Persistence MaintenanceAlarm | 5 | 6 | 5.3 |
 | Desarrollo | 4.1b Application Layer Backend MaintenanceAlarm | 6 | 5 | 4.8 |
@@ -623,7 +623,7 @@ Distribución por categoría:
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
 | Gestión | 20.2 Demo/UAT de Sprint #11 | 1 | 1.5 | 1.2 |
-| Gestión | 20.3 Sprint Planning dominguero (dominical) | 2 | 1.3 | 1 |
+| Gestión | 20.3 Sprint Planning de Sprint #12 | 2 | 1.3 | 1 |
 | Documentación | 20.1 Reporte Académico del Sprint #11 | 3 | 5 | 1 |
 | Desarrollo | 9.1a Domain+Contracts+Persistence UserDirectory | 4 | 2 | |
 | Desarrollo | 9.2a Domain+Contracts+Persistence Contacts | 5 | 3 | |
@@ -701,7 +701,7 @@ Distribución por categoría:
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
 | Documentación | 20.1 Reporte Académico del Sprint #12 | 1 | 5 | |
 | Gestión | 20.2 Demo/UAT de Sprint #12 | 2 | 1.5 | |
-| Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
+| Gestión | 20.3 Sprint Planning de Sprint #13 | 3 | 1.3 | |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | |
 | Desarrollo | 9.3c Frontend UI Chat Components | 5 | 4 | |
 | Desarrollo | 9.3d Frontend Integration + Polling Chat | 6 | 3 | |
@@ -728,7 +728,7 @@ Distribución por categoría:
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
 | Documentación | 20.1 Reporte Académico del Sprint #13 | 1 | 5 | |
 | Gestión | 20.2 Demo/UAT de Sprint #13 | 2 | 1.5 | |
-| Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
+| Gestión | 20.3 Sprint Planning de Sprint #14 | 3 | 1.3 | |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | |
 | QA | 13.5 Sanitización manual por feature | 5 | 8 | |
 | QA | 13.8 Smoke E2E de flujos críticos | 6 | 6 | |
@@ -758,7 +758,7 @@ Distribución por categoría:
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
 | Documentación | 20.1 Reporte Académico del Sprint #14 | 1 | 5 | |
 | Gestión | 20.2 Demo/UAT de Sprint #14 | 2 | 1.5 | |
-| Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
+| Gestión | 20.3 Sprint Planning de Sprint #15 | 3 | 1.3 | |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | |
 | QA | 13.7 Triage & fix post-UAT | 5 | 10 | |
 | QA | 13.9 Gestión de defectos | 6 | 6 | |
@@ -785,7 +785,7 @@ Distribución por categoría:
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
 | Documentación | 20.1 Reporte Académico del Sprint #15 | 1 | 5 | |
 | Gestión | 20.2 Demo/UAT de Sprint #15 | 2 | 1.5 | |
-| Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
+| Gestión | 20.3 Sprint Planning de Sprint #16 | 3 | 1.3 | |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | |
 | Desarrollo | 7.1 Alta/edición repuesto (RF-012/014) [NiceToHave] | 5 | 8 | |
 | Desarrollo | 7.2 Listado por máquina (RF-013) [NiceToHave] | 6 | 6 | |
@@ -814,7 +814,7 @@ Distribución por categoría:
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
 | Documentación | 20.1 Reporte Académico del Sprint #16 | 1 | 5 | |
 | Gestión | 20.2 Demo/UAT de Sprint #16 | 2 | 1.5 | |
-| Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
+| Gestión | 20.3 Sprint Planning de Sprint #17 | 3 | 1.3 | |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | |
 | Gestión | 21.21 Buffer de entrega final | 5 | 10 | |
 

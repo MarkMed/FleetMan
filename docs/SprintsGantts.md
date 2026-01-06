@@ -85,7 +85,7 @@ gantt
 
   20.1 Reporte Académico (0.9hs)               :t201, 2025-10-26, 1d
   20.2 Demo/UAT de Sprint #1 (1.5hs)           :t202, 2025-10-26, 1d
-  20.3 Sprint Planning dominguero (1.3hs)      :t203, 2025-10-26, 1d
+  20.3 Sprint Planning de Sprint #2 (1.3hs)      :t203, 2025-10-26, 1d
   0.6 User Journey mapping (flujos clave) (6hs) :t06, after t203, 2d
   1.3 DTOs + Zod (contratos compartidos) (7hs) :t13, after t06, 2d
   16.1 Taller Deploy - Conceptos Generales (3hs) :t161, 2025-10-30, 1d
@@ -110,7 +110,7 @@ gantt
 
   20.1 Reporte Académico (0.9hs)               :t201, 2025-11-02, 1d
   20.2 Demo/UAT de Sprint #2 (1.5hs)           :t202, 2025-11-02, 1d
-  20.3 Sprint Planning dominguero (1.3hs)      :t203, 2025-11-02, 1d
+  20.3 Sprint Planning de Sprint #3 (1.3hs)      :t203, 2025-11-02, 1d
   0.11 Setup Backend Básico (8hs)              :t011, after t203, 2d
   0.13 Setup Frontend Básico (8hs)             :t013, after t011, 2d
   16.2 Taller Deploy - Conceptos Generales (3hs) :t162, 2025-11-06, 1d
@@ -134,7 +134,7 @@ gantt
 
   20.1 Reporte Académico (0.9hs)               :t201, 2025-11-09, 1d
   20.2 Demo/UAT de Sprint #3 (1.5hs)           :t202, 2025-11-09, 1d
-  20.3 Sprint Planning dominguero (1.3hs)      :t203, 2025-11-09, 1d
+  20.3 Sprint Planning de Sprint #4 (1.3hs)      :t203, 2025-11-09, 1d
   21.2 Tutorías (guía con tutor asignado) (1hs) :t212, 2025-11-09, 1d
   2.1 Registro de usuario (RF-001) (10hs)      :t21, after t203, 2d
   16.5 Taller Deploy - Azure (3hs)             :t165, 2025-11-11, 1d
@@ -162,7 +162,7 @@ gantt
 
   20.1 Reporte Académico (0.9hs)               :t201, 2025-11-16, 1d
   20.2 Demo/UAT de Sprint #4 (1.5hs)           :t202, 2025-11-16, 1d
-  20.3 Sprint Planning dominguero (1.3hs)      :t203, 2025-11-16, 1d
+  20.3 Sprint Planning de Sprint #5 (1.3hs)      :t203, 2025-11-16, 1d
   3.1 Alta de máquina + ReactHookForms + Wizard Component (16hs) :t31, after t203, 4d
   21.2 Tutorías (guía con tutor asignado) (1hs) :t212, 2025-11-18, 1d
   16.3 Taller Deploy - AWS (3hs)               :t163, 2025-11-18, 1d
@@ -189,7 +189,7 @@ gantt
 
   20.1 Reporte Académico (5hs)                 :t201, 2025-11-23, 1d
   20.2 Demo/UAT de Sprint #5 (1.5hs)           :t202, 2025-11-23, 1d
-  20.3 Sprint Planning dominguero (1.3hs)      :t203, 2025-11-23, 1d
+  20.3 Sprint Planning de Sprint #6 (1.3hs)      :t203, 2025-11-23, 1d
   21.2 Tutorías (guía con tutor asignado) (1hs) :t212, 2025-11-24, 1d
   16.11 Azure Deploy - Config práctica (9hs)   :t1611, 2025-11-24, 2d
   0.5 PWA base (manifest + SW) (6hs)           :t05, after t1611, 1d
@@ -224,7 +224,7 @@ gantt
 
   20.1 Reporte Académico (5hs)                  :t201, 2025-11-30, 1d
   20.2 Demo/UAT de Sprint #6 (1.5hs)            :t202, 2025-11-30, 1d
-  20.3 Sprint Planning dominguero (1.3hs)       :t203, 2025-11-30, 1d
+  20.3 Sprint Planning de Sprint #7 (1.3hs)       :t203, 2025-11-30, 1d
   21.2 Tutorías (1hs)                           :t212, 2025-12-01, 1d
   6.1 Domain + Persistence (4.5hs)              :t61, 2025-12-02, 1d
   6.3 Application Layer Backend (6.5hs)         :t63, after t61, 2d
@@ -295,7 +295,7 @@ gantt
 
   section Domingo (Overhead)
   20.2 Demo/UAT de Sprint #8 (1.5hs)           :t202, 2025-12-14, 1d
-  20.3 Sprint Planning dominguero (1.3hs)      :t203, 2025-12-14, 1d
+  20.3 Sprint Planning de Sprint #9 (1.3hs)      :t203, 2025-12-14, 1d
   20.1 Reporte Académico (5hs)                 :t201, 2025-12-15, 1d
   21.2 Tutorías (1hs)                          :t212, 2025-12-15, 1d
   8.1 Domain+Contracts+Persistence (5hs)       :t81, 2025-12-16, 1d
@@ -337,7 +337,7 @@ gantt
   %% Asumimos 5 h/día. Horas estimadas incluidas en el nombre.
 
   20.2 Demo/UAT de Sprint #9 (1.5hs)           :t202, 2025-12-21, 1d
-  20.3 Sprint Planning dominguero (1.3hs)      :t203, 2025-12-21, 1d
+  20.3 Sprint Planning de Sprint #10 (1.3hs)      :t203, 2025-12-21, 1d
   20.1 Reporte Académico del Sprint #9 (5hs)    :t201, 2025-12-22, 1d
   21.2 Tutorías (1hs)                          :t212, 2025-12-23, 1d
   4.2a Domain+Contracts+Persistence (5hs)      :t42a, 2025-12-23, 1d
@@ -363,7 +363,7 @@ gantt
   %% Asumimos 5 h/día. Horas estimadas incluidas en el nombre.
 
   20.2 Demo/UAT de Sprint #10 (1.5hs)          :t202, 2025-12-28, 1d
-  20.3 Sprint Planning dominguero (1.3hs)      :t203, 2025-12-28, 1d
+  20.3 Sprint Planning de Sprint #11 (1.3hs)      :t203, 2025-12-28, 1d
   20.1 Reporte Académico (5hs)                 :t201, 2025-12-29, 1d
   21.2 Tutorías (1hs)                          :t212, 2025-12-29, 1d
   4.1a Domain+Contracts+Persistence (6hs)      :t41a, 2025-12-30, 1d
@@ -390,7 +390,7 @@ gantt
   %% Asumimos 5 h/día. Horas estimadas incluidas en el nombre.
 
   20.2 Demo/UAT de Sprint #11 (1.5hs)          :t202, 2026-01-04, 1d
-  20.3 Sprint Planning dominguero (1.3hs)      :t203, 2026-01-04, 1d
+  20.3 Sprint Planning de Sprint #12 (1.3hs)      :t203, 2026-01-04, 1d
   20.1 Reporte Académico (5hs)                 :t201, 2026-01-05, 1d
   9.1a Domain+Contracts UserDirectory (2hs)    :t91a, 2026-01-06, 1d
   9.2a Domain+Contracts Contacts (3hs)         :t92a, 2026-01-06, 1d
@@ -419,7 +419,7 @@ gantt
 
   20.1 Reporte Académico (0.9hs)               :t201, 2026-01-11, 1d
   20.2 Demo/UAT de Sprint #12 (1.5hs)          :t202, 2026-01-11, 1d
-  20.3 Sprint Planning dominguero (1.3hs)      :t203, 2026-01-11, 1d
+  20.3 Sprint Planning de Sprint #13 (1.3hs)      :t203, 2026-01-11, 1d
   13.3b Unit tests Frontend (10hs)             :t133b, after t203, 2d
   16.1 Build & deploy demo (front estático + API) (8hs) :t161, after t133b, 2d
   17.2 API docs (OpenAPI simple) (6hs)         :t172, after t161, 2d
@@ -442,7 +442,7 @@ gantt
 
   20.1 Reporte Académico (0.9hs)               :t201, 2026-01-18, 1d
   20.2 Demo/UAT de Sprint #13 (1.5hs)          :t202, 2026-01-18, 1d
-  20.3 Sprint Planning dominguero (1.3hs)      :t203, 2026-01-18, 1d
+  20.3 Sprint Planning de Sprint #14 (1.3hs)      :t203, 2026-01-18, 1d
   13.5 Sanitización manual por feature (8hs)   :t135, after t203, 2d
   13.8 Smoke E2E de flujos críticos (6hs)      :t138, after t135, 2d
   18.2 Control de cambios (3hs)                :t182, after t138, 1d
@@ -467,7 +467,7 @@ gantt
 
   20.1 Reporte Académico (0.9hs)               :t201, 2026-01-25, 1d
   20.2 Demo/UAT de Sprint #14 (1.5hs)          :t202, 2026-01-25, 1d
-  20.3 Sprint Planning dominguero (1.3hs)      :t203, 2026-01-25, 1d
+  20.3 Sprint Planning de Sprint #15 (1.3hs)      :t203, 2026-01-25, 1d
   13.7 Triage & fix post-UAT (10hs)            :t137, after t203, 2d
   13.9 Gestión de defectos (6hs)               :t139, after t137, 2d
   11.1 Ayuda inline mínima / "cómo usar esta página" (6hs) :t111, after t139, 2d
@@ -491,7 +491,7 @@ gantt
 
   20.1 Reporte Académico (0.9hs)               :t201, 2026-02-01, 1d
   20.2 Demo/UAT de Sprint #15 (1.5hs)          :t202, 2026-02-01, 1d
-  20.3 Sprint Planning dominguero (1.3hs)      :t203, 2026-02-01, 1d
+  20.3 Sprint Planning de Sprint #16 (1.3hs)      :t203, 2026-02-01, 1d
   7.1 Alta/edición repuesto (RF-012/014) (8hs) :t71, after t203, 2d
   7.2 Listado por máquina (RF-013) (6hs)       :t72, after t71, 2d
   16.3 Script "reset demo" (4hs)               :t163, after t72, 1d
@@ -515,7 +515,7 @@ gantt
 
   20.1 Reporte Académico (0.9hs)               :t201, 2026-02-08, 1d
   20.2 Demo/UAT de Sprint #16 (1.5hs)          :t202, 2026-02-08, 1d
-  20.3 Sprint Planning dominguero (1.3hs)      :t203, 2026-02-08, 1d
+  20.3 Sprint Planning de Sprint #17 (1.3hs)      :t203, 2026-02-08, 1d
   21.21 Buffer de entrega final (10hs)         :t2121, after t203, 2d
 
   section Hitos

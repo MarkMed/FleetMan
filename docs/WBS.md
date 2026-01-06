@@ -1236,7 +1236,7 @@ Demostración, sincronización y feedback/UAT inmediato.
 		- Dependencias: 20.1 (FS)
 		- Spike: **No**
 
-	- 20.3 **Sprint Planning dominguero** (dominical).
+	- 20.3 **Sprint Planning de Sprint #x** (donde x es el número del sprint correspondiente).
 Planificación de la iteración con foco en ruta crítica.
 		- Horas estimadas: **1.3**hs/sprint
 		- Margen: ±**0.1**hs (P80)
