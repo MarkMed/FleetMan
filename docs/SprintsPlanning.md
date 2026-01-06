@@ -549,7 +549,7 @@ Distribución por categoría:
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales | Consumo |
 |:---:|:----------:|:-------:|
-| **37.8**hs | **38.1**hs | **100.8%** |
+| **37.8**hs | **43**hs | **113.8%** |
 
 Buffer reservado: **-2.8**hs ⚠️
 Total con buffer: **35**hs
@@ -558,19 +558,19 @@ Total con buffer: **35**hs
 xychart-beta
     title "Sprint #11: Horas Estimadas (azul) vs Reales (verde)"
     x-axis "Tareas" ["20.1", "20.2", "20.3", "21.2", "4.1a", "4.1b", "4.1c", "4.1d", "4.1e", "4.1f", "TOTAL"]
-    y-axis "Horas" 0 --> 40
+    y-axis "Horas" 0 --> 45
 	
 	%% Green line (Estimadas)
     line [5, 1.5, 1.3, 1, 6, 5, 5, 3, 6, 4, 37.8]
 
 	%% Black line (Reales)
-    line [0, 1.2, 1.2, 1, 5.3, 4.8, 6.6, 2.9, 7.9, 7.2, 38.1]
+    line [4.9, 1.2, 1.2, 1, 5.3, 4.8, 6.6, 2.9, 7.9, 7.2, 43]
 ```
 
 Distribución por categoría:
 | Documentación | Desarrollo | QA | Capacitación | Gestión |
 |:-------:|:----------:|:--:|:------------:|:-------------:|
-| **5**hs | **34.7**hs | **0**hs | **1**hs | **2.4**hs |
+| **4.9**hs | **34.7**hs | **0**hs | **1**hs | **2.4**hs |
 
 **Notas del Sprint:**
 - **Sprint enfocado 100% en mantenimientos programados** siguiendo patrón exitoso de Sprints #9 (Notifications) y #10 (Events)
