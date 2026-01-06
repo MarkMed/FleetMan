@@ -618,33 +618,84 @@ Distribución por categoría:
 
 ### **Sprint #12**: dom 4 ene → sáb 10 ene 2026
 
-**Objetivo:** � Historial Unificado + Comunicaciones Básicas - Timeline consolidado y contacto con proveedores.
+**Objetivo:** 💬 Comunicación entre Usuarios - Sistema de descubrimiento, gestión de contactos y mensajería básica 1-a-1.
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
-| Documentación | 20.1 Reporte Académico del Sprint #11 | 1 | 5 | |
-| Gestión | 20.2 Demo/UAT de Sprint #11 | 2 | 1.5 | 1.2 |
-| Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
-| Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | |
-| Desarrollo | 4.3 Historial unificado (RF-009) | 5 | 15 | |
-| Desarrollo | 9.1 Datos de contacto por distribuidor | 6 | 5 | |
-| Desarrollo | 9.2 Acciones de contacto (tel:, mailto:, wa.me) | 7 | 5 | |
+| Gestión | 20.2 Demo/UAT de Sprint #11 | 1 | 1.5 | 1.2 |
+| Gestión | 20.3 Sprint Planning dominguero (dominical) | 2 | 1.3 | 1 |
+| Documentación | 20.1 Reporte Académico del Sprint #11 | 3 | 5 | 1 |
+| Desarrollo | 9.1a Domain+Contracts+Persistence UserDirectory | 4 | 2 | |
+| Desarrollo | 9.2a Domain+Contracts+Persistence Contacts | 5 | 3 | |
+| Desarrollo | 9.1b Application Layer Backend UserDirectory | 6 | 3 | |
+| Desarrollo | 9.2b Application Layer Backend Contacts | 7 | 4 | |
+| Desarrollo | 9.1c Frontend UI+Integration UserDiscovery | 8 | 3 | |
+| Desarrollo | 9.2c Frontend UI+Integration MyContacts | 9 | 4 | |
+| Desarrollo | 9.3a Domain+Contracts+Persistence Messages | 10 | 3 | |
+| Desarrollo | 9.3b Application Layer Backend Messages | 11 | 3 | |
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales | Consumo |
 |:---:|:----------:|:-------:|
-| **32.8**hs | **0**hs | **0.0%** |
+| **34.8**hs | **0**hs | **0.0%** |
 
-Buffer reservado: **2.2**hs
+Buffer reservado: **0.2**hs
 Total con buffer: **35**hs
 
 Distribución por categoría:
 | Documentación | Desarrollo | QA | Capacitación | Gestión |
 |:-------:|:----------:|:--:|:------------:|:-------------:|
-| **5**hs | **3**hs | **21**hs | **1**hs | **2.8**hs |
+| **5**hs | **25**hs | **0**hs | **0**hs | **2.8**hs |
+
+**Notas del Sprint:**
+- **Sprint enfocado en feature social básica** siguiendo patrón full-stack modular (Domain → Application → Presentation)
+- **Arquitectura simplificada (refinamiento post-planning):** Message como única colección con participants[] ordenado, NO coleccción chats, NO ConversationList, NO unread badges
+- **MVP ultra-simplificado:** Chat accesible SOLO desde contacto, sin "inbox" ni lista de conversaciones, polling SOLO cuando chat abierto
+- **Descope de 9.3c y 9.3d:** Chat UI + Integration (7hs) movidas a Sprint #13 para ajustar capacidad
+- **Orden secuencial lógico:**
+  1. User Discovery completo (9.1a → 9.1b → diferido 9.1c)
+  2. Contact Management completo (9.2a → 9.2b → 9.2c) - depende de 9.1b para verificar duplicados
+  3. Messaging backend simplificado (9.3a → 9.3b) - base para Sprint #13
+  4. Frontend integration (9.1c + 9.2c) - completa flujo de contactos
+- **Eliminación de complejidad:** Sin wasRead/readAt, sin mark as read, sin GetConversationsList, sin unread count global
+
+**Fortalezas:**
+- ✅ Patrón subdocumento probado (Contact en User, como Notification/MaintenanceAlarm)
+- ✅ Separación clara por capas (Domain/Application/Presentation) facilita testing
+- ✅ Relación unidireccional de contactos simplifica MVP (sin aceptación mutua)
+- ✅ Mensajería 1-a-1 ultra-simple: participants[] evita duplicados, un solo índice, cursor-based pagination
+- ✅ Arquitectura escalable: Message como entidad independiente evita hot documents y límite 16MB
+
+**Riesgos y Mitigaciones:**
+- ⚠️ **Buffer ajustado (-0.8hs):** Sprint equilibrado tras refinamiento (reducción de 3hs en 9.3a+9.3b)
+- ⚠️ **Messaging complejidad reducida:** Cursor-based pagination puede requerir ajuste UX (scroll behavior)
+- ⚠️ **Dependencias encadenadas:** 9.2 depende de 9.1, 9.3 depende de 9.2
+- ✅ **Mitigación:** Backend primero permite testing temprano con Postman/Swagger
+- ✅ **Mitigación:** Descope de 9.3c y 9.3d a Sprint #13 reduce presión (completan MVP de mensajería)
+- ✅ **Simplificación arquitectónica:** Eliminar ConversationList/unread reduce superficie de error
+
+**Consideraciones técnicas (refinadas):**
+- **Contact.userId:** Referencia a User, populate para enriquecer datos (nombre, empresa)
+- **Message.participants[]:** Array ordenado [min(A,B), max(A,B)] para evitar duplicados A-B vs B-A
+- **Message.índice:** {participants: 1, sentAt: -1} - UN SOLO ÍNDICE para queries eficientes
+- **Validaciones:** Usuario no puede agregarse como contacto, límite 100 contactos, mensajes máx 500 chars
+- **Polling:** Solo cuando ChatScreen montado (10s), NO polling global de conversaciones
+- **Paginación:** Cursor-based con before=sentAt (NO skip/page), límite 50 mensajes por request
+- **Caché:** Optimistic updates en agregar/eliminar contacto y enviar mensaje
+
+**Dependencias críticas:**
+1. 9.1a debe completarse antes de 9.1b (contratos necesarios para Use Cases)
+2. 9.1b debe completarse antes de 9.1c (endpoint necesario para UI)
+3. 9.2a debe completarse antes de 9.2b (schema Contact necesario)
+4. 9.2b debe completarse antes de 9.1c (verificación de duplicados) y antes de 9.2c (endpoints CRUD)
+5. 9.3a debe completarse antes de 9.3b (schema Message necesario)
+6. 9.2b debe completarse antes de 9.3b (validar que usuarios sean contactos)
+7. Todas las tareas dependen de 2.5 (User CRUD debe estar completo de Sprints anteriores)
+
+**Riesgos:** Feature social nueva requiere considerar UX de interacción. Validar con cliente que relación unidireccional de contactos es aceptable para MVP.
 
 ### **Sprint #13**: dom 11 ene → sáb 17 ene 2026
 
-**Objetivo:** 🧪 Smoke Tests + Buffer - Testing, refinamientos y mejoras necesarias.
+**Objetivo:** 💬 Completar Chat UI + Testing - Finalizar mensajería con interfaz de usuario y smoke tests.
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
@@ -652,21 +703,22 @@ Distribución por categoría:
 | Gestión | 20.2 Demo/UAT de Sprint #12 | 2 | 1.5 | |
 | Gestión | 20.3 Sprint Planning dominguero (dominical) | 3 | 1.3 | |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | |
-| QA | 13.3b Unit tests Frontend | 5 | 10 | |
-| Desarrollo | 16.1 Build & deploy demo (front estático + API) | 6 | 8 | |
-| Documentación | 17.2 API docs (OpenAPI simple) | 7 | 6 | |
+| Desarrollo | 9.3c Frontend UI Chat Components | 5 | 4 | |
+| Desarrollo | 9.3d Frontend Integration + Polling Chat | 6 | 3 | |
+| QA | 13.3b Unit tests Frontend | 7 | 10 | |
+| Desarrollo | 16.1 Build & deploy demo (front estático + API) | 8 | 8 | |
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales | Consumo |
 |:---:|:----------:|:-------:|
-| **32.8**hs | **0**hs | **0.0%** |
+| **33.8**hs | **0**hs | **0.0%** |
 
-Buffer reservado: **2.2**hs
+Buffer reservado: **1.2**hs ✅
 Total con buffer: **35**hs
 
 Distribución por categoría:
 | Documentación | Desarrollo | QA | Capacitación | Gestión |
 |:-------:|:----------:|:--:|:------------:|:-------------:|
-| **5**hs | **8**hs | **10**hs | **1**hs | **2.8**hs |
+| **5**hs | **15**hs | **10**hs | **1**hs | **2.8**hs |
 
 ### **Sprint #14**: dom 18 ene → sáb 24 ene 2026
 

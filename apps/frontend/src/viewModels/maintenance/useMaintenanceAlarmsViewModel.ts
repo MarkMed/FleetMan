@@ -185,7 +185,7 @@ export function useMaintenanceAlarmsViewModel(machineId: string | undefined) {
     // MODALS: State for create/edit and detail modals
     modals: {
       create: {
-        isOpen: isCreateModalOpen || !!editingAlarm,
+        isOpen: isCreateModalOpen,
         alarm: editingAlarm, // null = create, object = edit
         machineId,
         onClose: handleCloseCreateModal,

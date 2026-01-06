@@ -383,19 +383,23 @@ gantt
 
 ```mermaid
 gantt
-  title Sprint 12 (2026-01-04 → 2026-01-10)
+  title Sprint 12 (2026-01-04 → 2026-01-10) - Comunicación entre Usuarios
   dateFormat  YYYY-MM-DD
   axisFormat  %d
 
   %% Asumimos 5 h/día. Horas estimadas incluidas en el nombre.
 
-  20.1 Reporte Académico (0.9hs)               :t201, 2026-01-04, 1d
   20.2 Demo/UAT de Sprint #11 (1.5hs)          :t202, 2026-01-04, 1d
   20.3 Sprint Planning dominguero (1.3hs)      :t203, 2026-01-04, 1d
-  13.3a Unit tests Backend (12hs)              :t133a, after t203, 3d
-  13.4 Datos de prueba (semillas y factories) (4hs) :t134, after t133a, 1d
-  16.2 Semillas demo (usar 1.4) (3hs)          :t162, after t134, 1d
-  12.3 Pruebas visuales móviles/desktop (5hs)  :t123, after t162, 1d
+  20.1 Reporte Académico (5hs)                 :t201, 2026-01-05, 1d
+  9.1a Domain+Contracts UserDirectory (2hs)    :t91a, 2026-01-06, 1d
+  9.2a Domain+Contracts Contacts (3hs)         :t92a, 2026-01-06, 1d
+  9.1b Application Backend UserDirectory (3hs) :t91b, 2026-01-07, 1d
+  9.2b Application Backend Contacts (4hs)      :t92b, 2026-01-07, 1d
+  9.1c Frontend UserDiscovery (3hs)            :t91c, 2026-01-08, 1d
+  9.2c Frontend MyContacts (4hs)               :t92c, 2026-01-08, 1d
+  9.3a Domain+Contracts Messages (4hs)         :t93a, 2026-01-09, 1d
+  9.3b Application Backend Messages (5hs)      :t93b, 2026-01-09, 1d
 
   section Hitos
   Cierre Sprint 12                             :milestone, s12, 2026-01-10, 1d

@@ -713,36 +713,108 @@ Limitación automática de notificaciones por usuario y capacidad de eliminació
 
 9. **Comunicación entre Usuarios** (RF-015)
 
-	- 9.1 **Listado de usuarios para contactos**.
-Frontend: Lista paginada de todos los usuarios registrados (clientes/proveedores) 
-mostrando datos esenciales: nombre, empresa/rubro, especialidad. Incluye paginación 
-simple y botón "Agregar contacto". Backend: Endpoint GET /users/directory con 
-paginación, filtrado básico por rol y respuesta con datos públicos básicos.
-		- Horas estimadas: **8**hs
-		- Margen: ±**1.5**hs (P80)
-		- Incertidumbre: **Media**
-		- Dependencias: 2.5 (FS)
-		- Spike: **No**
+	- 9.1 **User Discovery - Descubrimiento de usuarios**.
+Módulo para descubrir y explorar usuarios registrados en la plataforma. NO incluye relación de contactos (eso es 9.2).
 
-	- 9.2 **Gestión de contactos personal**.
-Frontend: Lista de "Mis Contactos", agregar/quitar contactos, acceso desde 
-múltiples pantallas. Backend: Endpoints POST/DELETE /contacts/{userId}, 
-modelo ContactList como array de userIds, validaciones básicas.
-		- Horas estimadas: **6**hs
-		- Margen: ±**1.0**hs (P80)
-		- Incertidumbre: **Baja**
-		- Dependencias: 9.1 (FS)
-		- Spike: **No**
+		- 9.1a **Domain + Contracts + Persistence**.
+		Definir UserDirectory como DTO para exponer datos públicos de usuarios (id, nombre, empresa, rubro, especialidad, rol). Crear contratos Zod compartidos: UserDirectoryDTO (output), UserDirectoryQueryDTO (input con filtros: rol?, search?, page, limit). NO crear entidad independiente - reutilizar User existente pero con datos filtrados (public profile). Extender UserRepository con método findPublicProfiles(query) que retorna datos públicos paginados con filtros básicos. Excluir datos sensibles (password, email completo, etc.).
+			- Horas estimadas: **2**hs
+			- Margen: ±**0.5**hs (P80)
+			- Incertidumbre: **Baja**
+			- Dependencias: 2.5 (User CRUD completo)
+			- Spike: **No**
+			- PERT: Optimista 1.5hs, Probable 2hs, Pesimista 3hs
 
-	- 9.3 **Mensajería interna simple**.
-Frontend: Chat básico entre contactos, lista de conversaciones, envío/recepción 
-de mensajes. Backend: Endpoints POST /messages, GET /conversations, modelo Message 
-con fromUser/toUser/content/timestamp, persistencia simple sin threading complejo.
-		- Horas estimadas: **12**hs
-		- Margen: ±**2.5**hs (P80)
-		- Incertidumbre: **Media**
-		- Dependencias: 9.2 (FS)
-		- Spike: **No**
+		- 9.1b **Application Layer Backend**.
+		Implementar GetUserDirectoryUseCase con lógica de paginación y filtrado por rol/búsqueda. Crear UserDirectoryController con endpoint GET /users/directory?page=1&limit=20&role=cliente&search=palabra. Validaciones: página mínima 1, límite máximo 50, search mínimo 2 caracteres. Response paginado: {users: UserDirectoryDTO[], total, page, limit, hasMore}. NO incluir usuario logueado en resultados (filtrar por id). Manejo de errores: 400 si query params inválidos.
+			- Horas estimadas: **3**hs
+			- Margen: ±**0.5**hs (P80)
+			- Incertidumbre: **Baja**
+			- Dependencias: 9.1a (FS)
+			- Spike: **No**
+			- PERT: Optimista 2hs, Probable 3hs, Pesimista 4hs
+
+		- 9.1c **Frontend UI + Integration**.
+		Crear UserDiscoveryScreen con lista paginada de usuarios mostrando avatar, nombre, empresa/rubro, especialidad, rol badge. Incluir barra de búsqueda (debounced 500ms), filtro por rol (dropdown), paginación infinita o botón "Cargar más". Botón "Agregar contacto" en cada item (solo si NO está ya en contactos). Estados: loading, empty ("No hay usuarios"), error. Hook useUserDirectory(filters) con TanStack Query para GET /users/directory. Mutation useAddContact(userId) para agregar contacto (conecta con 9.2b). Navegación: accesible desde menú principal o sección "Descubrir usuarios". Validaciones: deshabilitar "Agregar" si ya es contacto (verificar contra lista de contactos locales).
+			- Horas estimadas: **3**hs
+			- Margen: ±**0.5**hs (P80)
+			- Incertidumbre: **Baja**
+			- Dependencias: 9.1b, 9.2b (FS) - Requiere endpoint de contactos para verificar duplicados
+			- Spike: **No**
+			- PERT: Optimista 2.5hs, Probable 3hs, Pesimista 4hs
+
+	- 9.2 **Contact Management - Gestión de contactos personal**.
+Módulo para mantener lista de contactos del usuario (agenda personal). Relación unidireccional (usuario A agrega a B, B no necesita aceptar).
+
+		- 9.2a **Domain + Contracts + Persistence**.
+		Definir Contact como subdocumento en User: {userId: string, addedAt: Date}. Extender User schema agregando array contacts: Contact[] con índice en userId para búsquedas rápidas. Crear contratos Zod: AddContactDTO {contactUserId: string}, ContactDTO {id, userId, name, empresa, addedAt} (enriquecido con datos del usuario referenciado). NO crear entidad independiente ContactList - usar subdocumento approach (patrón probado en Notifications/Events). Extender UserRepository con métodos: addContact(userId, contactUserId), removeContact(userId, contactUserId), getContacts(userId) que incluye populate de datos básicos del contacto.
+			- Horas estimadas: **3**hs
+			- Margen: ±**0.5**hs (P80)
+			- Incertidumbre: **Baja**
+			- Dependencias: 2.5 (User schema existente)
+			- Spike: **No**
+			- PERT: Optimista 2hs, Probable 3hs, Pesimista 4hs
+
+		- 9.2b **Application Layer Backend**.
+		Implementar 3 Use Cases: AddContactUseCase (validar que contacto exista, que no sea uno mismo, que no esté duplicado), RemoveContactUseCase (validar que exista en lista), GetUserContactsUseCase (retornar lista enriquecida con datos públicos). Crear ContactController con endpoints: POST /users/me/contacts (body: {contactUserId}), DELETE /users/me/contacts/:contactId, GET /users/me/contacts (retorna lista con populate de nombre, empresa, etc.). Validaciones: usuario no puede agregarse a sí mismo, contacto debe existir y estar activo, máximo 100 contactos por usuario (límite soft para MVP). Manejo de errores: 404 si contacto no existe, 409 si ya está agregado, 400 si es el mismo usuario.
+			- Horas estimadas: **4**hs
+			- Margen: ±**0.5**hs (P80)
+			- Incertidumbre: **Media**
+			- Dependencias: 9.2a (FS)
+			- Spike: **No**
+			- PERT: Optimista 3hs, Probable 4hs, Pesimista 5hs
+
+		- 9.2c **Frontend UI + Integration**.
+		Crear MyContactsScreen con lista de contactos mostrando avatar, nombre, empresa, fecha agregado. Acciones por contacto: botón "Enviar mensaje" (navega a chat, requiere 9.3c), botón "Eliminar" (confirmación modal). Acceso desde múltiples lugares: menú principal, botón floating en UserDiscoveryScreen, shortcut en navigation bar. Estados: loading, empty ("No tienes contactos aún. Descubre usuarios y agrégalos"), error con retry. Hooks: useContacts() para GET /users/me/contacts, useAddContact() para POST, useRemoveContact() para DELETE con confirmación y optimistic update. Integración: al agregar contacto desde UserDiscoveryScreen (9.1c), mostrar toast success y actualizar caché. Al eliminar, confirmación: "¿Eliminar a [nombre] de tus contactos?". Navegación: desde ContactItem → botón mensaje → navega a /chat/:contactUserId (requiere 9.3c).
+			- Horas estimadas: **4**hs
+			- Margen: ±**0.5**hs (P80)
+			- Incertidumbre: **Media**
+			- Dependencias: 9.2b (FS)
+			- Spike: **No**
+			- PERT: Optimista 3hs, Probable 4hs, Pesimista 5hs
+
+	- 9.3 **Messaging - Mensajería interna simple**.
+Sistema de chat básico 1-a-1 entre contactos. NO incluir features avanzadas (grupos, multimedia, presencia online, typing indicators). Versión 0.1 / MVP.
+
+		- 9.3a **Domain + Contracts + Persistence**.
+		Definir Message como entidad independiente (NO subdocumento, NO crear colección chats) con schema SIMPLIFICADO: {id, participants: [userIdA, userIdB] (array ordenado alfabéticamente para evitar duplicados A-B vs B-A), senderId: string (quién envió, necesario para UI burbujas), content: string (trim, non-empty, máx 500 chars), sentAt: Date}. Crear índice compuesto ÚNICO: {participants: 1, sentAt: -1} para queries eficientes de conversación. Crear MessageRepository con métodos REDUCIDOS: create(message), findConversationMessages(participants, options: {limit, before?: Date}) para cursor-based pagination. Definir contratos Zod: SendMessageDTO {toUserId, content}, MessageDTO {id, participants, senderId, content, sentAt}. Validación: content non-empty después de trim, máx 500 caracteres, participants siempre ordenado [min, max] al crear.
+			- Horas estimadas: **3**hs
+			- Margen: ±**0.5**hs (P80)
+			- Incertidumbre: **Baja**
+			- Dependencias: 2.5, 9.2a (FS) - Requiere User y Contact existentes
+			- Spike: **No**
+			- PERT: Optimista 2hs, Probable 3hs, Pesimista 4hs
+			- Nota: Reducido de 4hs a 3hs por simplificación (eliminar wasRead, ConversationDTO, getUnreadCount)
+
+		- 9.3b **Application Layer Backend**.
+		Implementar SOLO 2 Use Cases: SendMessageUseCase (validar que destinatario sea contacto del sender, crear mensaje con participants ordenado [min, max], NO enviar notificación en MVP), GetConversationMessagesUseCase (retornar mensajes paginados entre dos usuarios con cursor-based pagination usando before=sentAt). Crear MessageController con SOLO 2 endpoints: POST /messages (body: {toUserId, content}), GET /messages/:contactUserId?limit=50&before=<ISODate> (mensajes de conversación específica). ELIMINAR: GET /conversations (lista de conversaciones), PATCH /messages/read (mark as read), endpoints de unread count. Validaciones: sender debe tener a receiver como contacto (unidireccional), content requerido y no vacío después de trim, contactUserId debe existir. Paginación cursor-based: limit default 50, máximo 100, before opcional para mensajes más viejos que timestamp dado. Response: {messages: MessageDTO[], hasMore: boolean}. Ordenamiento: sentAt DESC (más recientes primero).
+			- Horas estimadas: **3**hs
+			- Margen: ±**0.5**hs (P80)
+			- Incertidumbre: **Baja**
+			- Dependencias: 9.3a (FS)
+			- Spike: **No**
+			- PERT: Optimista 2hs, Probable 3hs, Pesimista 4hs
+			- Nota: Reducido de 5hs a 3hs por simplificación (eliminar GetConversationsList, MarkAsRead, validaciones complejas)
+
+		- 9.3c **Frontend UI - Chat Components**.
+		Crear componentes SIMPLIFICADOS (sin ConversationList): ChatScreen (pantalla completa accesible SOLO desde contacto vía /chat/:contactUserId), MessageList (lista de mensajes con cursor-based pagination al hacer scroll up, alineación izq/der según senderId), MessageInput (textarea con botón enviar, contador caracteres 0/500, deshabilitar si vacío), MessageItem (burbuja con contenido, timestamp, SIN indicador de leído). ELIMINAR: ConversationList, badge unread, last message preview, indicadores de leído. Estilos: burbujas diferenciadas por color (senderId === currentUserId → derecha/azul, sino → izquierda/gris), timestamps formato relativo ("hace 5 min", "ayer 14:30"), scroll automático al fondo al abrir chat y al enviar mensaje, scroll sticky al recibir nuevo (solo si ya estaba al fondo). Estados: loading inicial, empty ("Inicia la conversación enviando un mensaje"), error con retry. Paginación: botón "Cargar más antiguos" al hacer scroll top o infinite scroll con IntersectionObserver.
+			- Horas estimadas: **4**hs
+			- Margen: ±**0.5**hs (P80)
+			- Incertidumbre: **Media**
+			- Dependencias: 9.3b (FS)
+			- Spike: **No**
+			- PERT: Optimista 3hs, Probable 4hs, Pesimista 5hs
+			- Nota: Reducido de 5hs a 4hs por eliminar ConversationList y lógica de unread
+
+		- 9.3d **Frontend Integration + Polling**.
+		Integrar componentes con backend: hook useConversationMessages(contactUserId) con polling cada 10s SOLO cuando ChatScreen está montado (useEffect con enabled flag), useSendMessage(contactUserId) con optimistic update (agregar mensaje temporalmente a caché con id generado, reemplazar con real al recibir response). ELIMINAR: useConversations() (no hay lista de conversaciones), markAsRead hooks, badge unread global. Navegación ÚNICA: desde MyContactsScreen → botón "Enviar mensaje" → navega a /chat/:contactUserId. Caché: usar TanStack Query con queryKey ['messages', contactUserId], agregar mensaje optimistamente con onMutate, invalidar caché al enviar (onSuccess). Cursor pagination: al hacer scroll top, cargar mensajes más antiguos con before=oldestMessage.sentAt. Testing: flujo completo enviar mensaje → ver en conversación → optimistic update → response confirma → receptor polling (10s) recibe mensaje.
+			- Horas estimadas: **3**hs
+			- Margen: ±**0.5**hs (P80)
+			- Incertidumbre: **Baja**
+			- Dependencias: 9.3c (FS)
+			- Spike: **No**
+			- PERT: Optimista 2hs, Probable 3hs, Pesimista 4hs
+			- Nota: Reducido de 4hs a 3hs por eliminar useConversations, markAsRead, badge unread
 
 10. **Búsqueda & Filtros** (RF-018) [Post-MVP]
 
