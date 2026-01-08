@@ -35,6 +35,7 @@ export {
   IUser,
   IClientUser, 
   IProviderUser,
+  IUserPublicProfile, // 🆕 Sprint #12 - Public user profile for discovery
   IMachine,
   IMachineType,
   IMachineEvent,

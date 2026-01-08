@@ -420,4 +420,85 @@ export class UserRepository implements IUserRepository {
       return err(DomainError.create('PERSISTENCE_ERROR', `Error counting unread notifications: ${error.message}`));
     }
   }
+
+  // =============================================================================
+  // 👥 USER DISCOVERY METHODS (Sprint #12 - Module 1)
+  // =============================================================================
+
+  /**
+   * Finds users for discovery (User Discovery)
+   * Returns active users excluding the logged-in user
+   * Supports search by company name and filter by type
+   */
+  async findForDiscovery(excludeUserId: UserId, options: {
+    page: number;
+    limit: number;
+    searchTerm?: string;
+    type?: 'CLIENT' | 'PROVIDER';
+  }): Promise<{
+    items: User[];
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  }> {
+    try {
+      // 1. Build query: active users excluding logged-in user
+      const query: any = {
+        isActive: true,
+        _id: { $ne: excludeUserId.getValue() }
+      };
+
+      // 2. Optional filter: user type
+      if (options.type) {
+        query.type = options.type;
+      }
+
+      // 3. Optional filter: search by company name
+      if (options.searchTerm) {
+        query['profile.companyName'] = { 
+          $regex: options.searchTerm, 
+          $options: 'i' // Case-insensitive
+        };
+      }
+
+      // 4. Get total count for pagination
+      const total = await UserModel.countDocuments(query);
+
+      // 5. Calculate pagination
+      const skip = (options.page - 1) * options.limit;
+      const totalPages = Math.ceil(total / options.limit);
+
+      // 6. Execute query with projection to exclude sensitive fields
+      const docs = await UserModel.find(query)
+        .select('-passwordHash -notifications') // ⚠️ CRITICAL: Exclude sensitive data
+        .sort({ 'profile.companyName': 1, createdAt: -1 }) // Sort by company name, then most recent
+        .skip(skip)
+        .limit(options.limit)
+        .lean();
+
+      // 7. Map documents to domain entities (cast needed due to lean() return type)
+      const items = await Promise.all(
+        docs.map(doc => this.documentToEntity(doc as unknown as IUserDocument))
+      );
+
+      return {
+        items,
+        total,
+        page: options.page,
+        limit: options.limit,
+        totalPages
+      };
+    } catch (error: any) {
+      console.error('Error finding users for discovery:', error);
+      // Return empty result on error (graceful degradation)
+      return {
+        items: [],
+        total: 0,
+        page: options.page,
+        limit: options.limit,
+        totalPages: 0
+      };
+    }
+  }
 }
