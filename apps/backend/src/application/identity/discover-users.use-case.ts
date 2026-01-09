@@ -66,6 +66,7 @@ export class DiscoverUsersUseCase {
           type: filters.type
         }
       );
+      console.log("DiscoverUsersUseCase result:", result);
 
       // 3. Mapear entidades User → IUserPublicProfile (sanitizar datos sensibles)
       const profiles = result.items.map(user => 

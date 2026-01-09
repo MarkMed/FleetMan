@@ -17,6 +17,13 @@ export const ROUTES = {
   NOTIFICATIONS: '/notifications',
   PROFILE: '/profile',
   SETTINGS: '/settings',
+  
+  // User Communication (Sprint #12)
+  CONTACT_DISCOVERY: '/contact-discovery',
+  // TODO: Rutas estratégicas futuras (Module 2+)
+  // CONTACTS: '/contacts',
+  // MESSAGES: '/messages',
+  // MESSAGE_THREAD: (userId: string) => `/messages/${userId}`,
 } as const;
 
 // Re-export navigation constants
@@ -38,6 +45,12 @@ export const API_ENDPOINTS = {
   // Users
   USERS: '/users',
   USER: (id: string) => `/users/${id}`,
+  
+  // User Discovery (Sprint #12 - Module 1: User Communication System)
+  USER_DISCOVERY: '/users/discover',
+  // TODO: Endpoints estratégicos futuros
+  // USER_PUBLIC_PROFILE: (userId: string) => `/users/${userId}/public-profile`,
+  // USER_STATS: (userId: string) => `/users/${userId}/stats`,
   
   // Machines
   MACHINES: '/machines',
@@ -200,6 +213,13 @@ export const QUERY_KEYS = {
   // Notifications (User-scoped query keys)
   NOTIFICATIONS: (userId: string) => ['notifications', userId],
   NOTIFICATIONS_UNREAD_COUNT: (userId: string) => ['notifications', 'unread-count', userId],
+  
+  // User Discovery (Sprint #12 - Module 1)
+  USER_DISCOVERY: ['users', 'discovery'],
+  // TODO: Query keys estratégicas futuras
+  // USER_PUBLIC_PROFILE: (userId: string) => ['users', userId, 'public-profile'],
+  // USER_STATS: (userId: string) => ['users', userId, 'stats'],
+  // CONTACTS: (userId: string) => ['users', userId, 'contacts'],
   
   // Spare Parts
   SPARE_PARTS: ['spare-parts'],

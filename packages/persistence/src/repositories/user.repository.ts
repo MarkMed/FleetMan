@@ -470,16 +470,25 @@ export class UserRepository implements IUserRepository {
       const totalPages = Math.ceil(total / options.limit);
 
       // 6. Execute query with projection to exclude sensitive fields
+      // ⚠️ IMPORTANT: Use lean() for performance (30-50% faster than full Mongoose docs)
+      // Note: lean() returns plain objects without Mongoose virtuals, so we transform _id → id manually
       const docs = await UserModel.find(query)
         .select('-passwordHash -notifications') // ⚠️ CRITICAL: Exclude sensitive data
         .sort({ 'profile.companyName': 1, createdAt: -1 }) // Sort by company name, then most recent
         .skip(skip)
         .limit(options.limit)
-        .lean();
+        .lean(); // Plain JS objects for performance
 
-      // 7. Map documents to domain entities (cast needed due to lean() return type)
+      // 7. Transform _id to id (required by documentToEntity)
+      // lean() returns MongoDB's _id (ObjectId), but domain entities expect id (string)
+      const docsWithId = docs.map(doc => ({
+        ...doc,
+        id: doc._id.toString() // Convert ObjectId to string
+      }));
+
+      // 8. Map documents to domain entities
       const items = await Promise.all(
-        docs.map(doc => this.documentToEntity(doc as unknown as IUserDocument))
+        docsWithId.map(doc => this.documentToEntity(doc as unknown as IUserDocument))
       );
 
       return {
