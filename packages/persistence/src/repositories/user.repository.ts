@@ -511,4 +511,135 @@ export class UserRepository implements IUserRepository {
       );
     }
   }
+
+  // =============================================================================
+  // 📇 CONTACT MANAGEMENT METHODS (Sprint #12 Module 2)
+  // =============================================================================
+
+  /**
+   * Agrega un contacto al array contacts del usuario
+   * Usa $addToSet para prevenir duplicados (idempotente)
+   * Valida que el contacto existe y está activo
+   */
+  async addContact(userId: UserId, contactUserId: UserId): Promise<Result<void, DomainError>> {
+    try {
+      // 1. Validar que contactUserId existe y está activo
+      const contactUser = await UserModel.findOne({
+        _id: contactUserId.getValue(),
+        isActive: true
+      }).select('_id'); // Solo necesitamos verificar existencia
+
+      if (!contactUser) {
+        return err(DomainError.notFound('Contact user not found or inactive'));
+      }
+
+      // 2. Agregar contacto usando $addToSet (previene duplicados automáticamente)
+      const result = await UserModel.findByIdAndUpdate(
+        userId.getValue(),
+        {
+          $addToSet: {
+            contacts: {
+              contactUserId: contactUserId.getValue(),
+              addedAt: new Date()
+            }
+          }
+        },
+        { new: true }
+      );
+
+      if (!result) {
+        return err(DomainError.notFound(`User with ID ${userId.getValue()} not found`));
+      }
+
+      return ok(undefined);
+    } catch (error: any) {
+      return err(DomainError.create('PERSISTENCE_ERROR', `Error adding contact: ${error.message}`));
+    }
+  }
+
+  /**
+   * Remueve un contacto del array contacts usando $pull
+   */
+  async removeContact(userId: UserId, contactUserId: UserId): Promise<Result<void, DomainError>> {
+    try {
+      const result = await UserModel.findByIdAndUpdate(
+        userId.getValue(),
+        {
+          $pull: {
+            contacts: { contactUserId: contactUserId.getValue() }
+          }
+        },
+        { new: true }
+      );
+
+      if (!result) {
+        return err(DomainError.notFound(`User with ID ${userId.getValue()} not found`));
+      }
+
+      return ok(undefined);
+    } catch (error: any) {
+      return err(DomainError.create('PERSISTENCE_ERROR', `Error removing contact: ${error.message}`));
+    }
+  }
+
+  /**
+   * Obtiene los contactos de un usuario con sus entidades completas
+   * Filtra solo usuarios activos
+   */
+  async getContacts(userId: UserId): Promise<Result<User[], DomainError>> {
+    try {
+      // 1. Obtener usuario con su array de contactos
+      const userDoc = await UserModel.findById(userId.getValue()).select('contacts');
+
+      if (!userDoc) {
+        return err(DomainError.notFound(`User with ID ${userId.getValue()} not found`));
+      }
+
+      // 2. Si no tiene contactos, retornar array vacío
+      if (!userDoc.contacts || userDoc.contacts.length === 0) {
+        return ok([]);
+      }
+
+      // 3. Extraer IDs de contactos del array
+      const contactIds = userDoc.contacts.map(c => c.contactUserId);
+
+      // 4. Buscar usuarios que son contactos (solo activos)
+      const contactDocs = await UserModel.find({
+        _id: { $in: contactIds },
+        isActive: true // Filtrar solo usuarios activos
+      }).lean();
+
+      // 5. Transform _id to id (required by documentToEntity)
+      const docsWithId = contactDocs.map(doc => ({
+        ...doc,
+        id: doc._id.toString()
+      }));
+
+      // 6. Mapear documentos a entidades de dominio
+      const contacts = await Promise.all(
+        docsWithId.map(doc => this.documentToEntity(doc as unknown as IUserDocument))
+      );
+
+      return ok(contacts);
+    } catch (error: any) {
+      return err(DomainError.create('PERSISTENCE_ERROR', `Error getting contacts: ${error.message}`));
+    }
+  }
+
+  /**
+   * Verifica si contactUserId está en el array contacts de userId
+   */
+  async isContact(userId: UserId, contactUserId: UserId): Promise<boolean> {
+    try {
+      const user = await UserModel.findOne({
+        _id: userId.getValue(),
+        'contacts.contactUserId': contactUserId.getValue()
+      }).select('_id');
+
+      return !!user; // true si encontró el documento, false si null
+    } catch (error: any) {
+      console.error('Error checking if is contact:', error);
+      return false; // En caso de error, asumir que no es contacto (fail-safe)
+    }
+  }
 }

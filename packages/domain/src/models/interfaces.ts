@@ -18,6 +18,21 @@ export interface IBaseEntity {
 }
 
 /**
+ * Interface para contactos (Sprint #12 Module 2 - Contact Management)
+ * Relación unidireccional: un usuario guarda a otro en su agenda personal
+ * Subdocumento embebido en User (similar a notifications)
+ */
+export interface IContact {
+  readonly contactUserId: string; // ID del usuario agregado como contacto
+  readonly addedAt: Date; // Fecha en que se agregó el contacto
+  // TODO: Campos estratégicos para futuro (personalización de agenda)
+  // readonly nickname?: string; // Alias personalizado para el contacto
+  // readonly tags?: readonly string[]; // Etiquetas: ['proveedor-confiable', 'urgente', etc.]
+  // readonly notes?: string; // Notas privadas sobre el contacto
+  // readonly isFavorite?: boolean; // Marcar como favorito
+}
+
+/**
  * Interface pública para User
  */
 export interface IUser extends IBaseEntity {
@@ -30,6 +45,7 @@ export interface IUser extends IBaseEntity {
   readonly type: 'CLIENT' | 'PROVIDER';
   readonly isActive: boolean;
   readonly notifications?: readonly INotification[]; // 🆕 Sprint #9: Notificaciones embebidas
+  readonly contacts?: readonly IContact[]; // 🆕 Sprint #12 Module 2: Contactos embebidos
 }
 
 /**

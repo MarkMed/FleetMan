@@ -159,4 +159,50 @@ export interface IUserRepository {
   // updateLastLoginAt(id: UserId, date: Date): Promise<void>; // Para tracking
   // findByServiceArea(serviceArea: string): Promise<User[]>; // Para búsquedas por especialidad
   // findNearby(location: {lat: number, lng: number}, radiusKm: number): Promise<User[]>; // Para búsquedas geográficas
+
+  // =============================================================================
+  // 📇 CONTACT MANAGEMENT METHODS (Sprint #12 - Module 2)
+  // =============================================================================
+
+  /**
+   * Agrega un contacto al array de contactos del usuario
+   * Relación unidireccional: userId agrega a contactUserId (no viceversa)
+   * Idempotente: no duplica si ya existe (usa $addToSet)
+   * @param userId - ID del usuario que agrega el contacto
+   * @param contactUserId - ID del usuario a agregar como contacto
+   * @returns Result<void, DomainError> - Success si se agregó o ya existía, Fail si error
+   */
+  addContact(userId: UserId, contactUserId: UserId): Promise<Result<void, DomainError>>;
+
+  /**
+   * Remueve un contacto del array de contactos del usuario
+   * @param userId - ID del usuario que remueve el contacto
+   * @param contactUserId - ID del usuario a remover de contactos
+   * @returns Result<void, DomainError> - Success si se removió (o no existía), Fail si error
+   */
+  removeContact(userId: UserId, contactUserId: UserId): Promise<Result<void, DomainError>>;
+
+  /**
+   * Obtiene los contactos de un usuario con sus perfiles completos
+   * Filtra solo usuarios activos (isActive: true)
+   * @param userId - ID del usuario del que se obtienen contactos
+   * @returns Result<User[], DomainError> - Lista de usuarios que son contactos (entidades completas)
+   */
+  getContacts(userId: UserId): Promise<Result<User[], DomainError>>;
+
+  /**
+   * Verifica si un usuario ya es contacto de otro
+   * Útil para evitar duplicados y validaciones en use cases
+   * @param userId - ID del usuario dueño de la lista de contactos
+   * @param contactUserId - ID del usuario a verificar si es contacto
+   * @returns boolean - true si contactUserId está en contacts de userId
+   */
+  isContact(userId: UserId, contactUserId: UserId): Promise<boolean>;
+
+  // TODO: Métodos estratégicos para futuro (Contact Management avanzado)
+  // getContactsByTag(userId: UserId, tag: string): Promise<Result<User[], DomainError>>; // Filtrar por tags
+  // getFavoriteContacts(userId: UserId): Promise<Result<User[], DomainError>>; // Solo favoritos
+  // searchContactsByName(userId: UserId, searchTerm: string): Promise<Result<User[], DomainError>>; // Buscar en agenda
+  // updateContactNickname(userId: UserId, contactUserId: UserId, nickname: string): Promise<Result<void, DomainError>>; // Personalizar
+  // getContactsAddedSince(userId: UserId, date: Date): Promise<Result<User[], DomainError>>; // Contactos recientes
 }

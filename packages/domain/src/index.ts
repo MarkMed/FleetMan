@@ -35,7 +35,8 @@ export {
   IUser,
   IClientUser, 
   IProviderUser,
-  IUserPublicProfile, // 🆕 Sprint #12 - Public user profile for discovery
+  IUserPublicProfile, // 🆕 Sprint #12 Module 1 - Public user profile for discovery
+  IContact, // 🆕 Sprint #12 Module 2 - Contact subdocument
   IMachine,
   IMachineType,
   IMachineEvent,

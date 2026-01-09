@@ -36,5 +36,8 @@ export * from "./notification.contract";
 // Use Cases retornan PaginatedUsers, Controllers envuelven en ApiResponse<PaginatedUsers>
 export * from "./user-discovery.contract";
 
+// Contact Management contracts (Sprint #12 - Module 2)
+export * from "./contact.contract";
+
 // Re-export DayOfWeek from domain for convenience
 export { DayOfWeek } from "@packages/domain";
