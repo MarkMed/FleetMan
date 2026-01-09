@@ -674,5 +674,31 @@
     "forbidden": "Prohibido",
     "serverError": "Error del servidor",
     "unknownError": "Error desconocido"
+  },
+  "users": {
+    "type": {
+      "client": "Cliente",
+      "provider": "Proveedor"
+    },
+    "discovery": {
+      "title": "Explorar Contactos",
+      "subtitle": "Encuentra y conecta con otros usuarios de FleetMan",
+      "searchPlaceholder": "Buscar por nombre de empresa...",
+      "filterAll": "Todos",
+      "noUsers": "No hay usuarios registrados",
+      "noUsersDescription": "Aún no hay usuarios disponibles para explorar",
+      "noResults": "No se encontraron resultados",
+      "tryDifferentFilters": "Intenta con diferentes filtros de búsqueda",
+      "clearFilters": "Limpiar filtros",
+      "resultsCount": "Mostrando {{start}} - {{end}} de {{total}} usuarios",
+      "pageInfo": "Página {{current}} de {{total}}",
+      "noCompanyName": "Sin nombre de empresa",
+      "verifiedProvider": "Proveedor Verificado",
+      "moreServiceAreas": "+{{count}} más",
+      "addContact": "Agregar Contacto",
+      "addingContact": "Agregando...",
+      "searchTitle": "Buscar",
+      "filterByType": "Filtrar por tipo"
+    }
   }
 }

@@ -9,6 +9,7 @@ import machineEventRoutes from './machine-event.routes';
 import eventTypeRoutes from './event-type.routes';
 import adminRoutes from './admin.routes';
 import maintenanceRoutes from './maintenance-alarm.routes';
+import userDiscoveryRoutes from './user-discovery.routes';
 
 /**
  * Router principal de la API v1
@@ -46,8 +47,11 @@ router.use('/machines', maintenanceRoutes);
 // Admin routes (Sprint #11) - Gestión de cronjobs y admin tools
 router.use('/admin/cronjobs', adminRoutes);
 
+// User Discovery routes (Sprint #12 - Module 1) - Descubrimiento de usuarios
+router.use('/users', userDiscoveryRoutes);
+
 // TODO: Agregar más rutas según se implementen los módulos
 // router.use('/maintenance', maintenanceRoutes);
-// router.use('/messages', messagesRoutes);
+// router.use('/messages', messagesRoutes); // Sprint #12 - Module 3
 
 export default router;

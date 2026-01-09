@@ -23,6 +23,7 @@ import { ContactsScreen } from '../screens/help/ContactsScreen';
 import { ProfileScreen } from '../screens/profile/ProfileScreen';
 import { ConfigurationsScreen } from '../screens/settings/ConfigurationsScreen';
 import { ExamplesScreen } from '../screens/ExamplesScreen';
+import { UserDiscoveryScreen } from '../screens/users/UserDiscoveryScreen';
 
 // Route components
 import { ProtectedRoute } from '../router/ProtectedRoute';
@@ -72,6 +73,7 @@ export const AppRouter: React.FC = () => {
 
           {/* Other protected routes */}
           <Route path="notifications" element={<NotificationsScreen />} />
+          <Route path="contact-discovery" element={<UserDiscoveryScreen />} />
           <Route path="contacts" element={<ContactsScreen />} />
           <Route path="profile" element={<ProfileScreen />} />
           <Route path="settings" element={<ConfigurationsScreen />} />

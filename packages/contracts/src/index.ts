@@ -31,5 +31,10 @@ export * from "./quickcheck.contract";
 // Notification contracts (Sprint #9)
 export * from "./notification.contract";
 
+// User Discovery contracts (Sprint #12 - Module 1)
+// SSOT Architecture: PaginatedUsers es el tipo base, DiscoverUsersResponse = composición
+// Use Cases retornan PaginatedUsers, Controllers envuelven en ApiResponse<PaginatedUsers>
+export * from "./user-discovery.contract";
+
 // Re-export DayOfWeek from domain for convenience
 export { DayOfWeek } from "@packages/domain";

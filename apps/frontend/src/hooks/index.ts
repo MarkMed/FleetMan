@@ -322,3 +322,6 @@ export {
   useToggleAlarmStatus,
   MAINTENANCE_ALARM_KEYS,
 } from './useMaintenanceAlarms';
+// User Discovery (Sprint #12 - Module 1: User Communication System)
+export { useDiscoverUsers } from './useUserDiscovery';
+export type { DiscoverUsersQuery, PaginatedUsers } from './useUserDiscovery';

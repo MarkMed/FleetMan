@@ -420,4 +420,95 @@ export class UserRepository implements IUserRepository {
       return err(DomainError.create('PERSISTENCE_ERROR', `Error counting unread notifications: ${error.message}`));
     }
   }
+
+  // =============================================================================
+  // 👥 USER DISCOVERY METHODS (Sprint #12 - Module 1)
+  // =============================================================================
+
+  /**
+   * Finds users for discovery (User Discovery)
+   * Returns active users excluding the logged-in user
+   * Supports search by company name and filter by type
+   * @returns Result.success() with paginated data or Result.fail() with infrastructure error
+   */
+  async findForDiscovery(excludeUserId: UserId, options: {
+    page: number;
+    limit: number;
+    searchTerm?: string;
+    type?: 'CLIENT' | 'PROVIDER';
+  }): Promise<Result<{
+    items: User[];
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  }, DomainError>> {
+    try {
+      // 1. Build query: active users excluding logged-in user
+      const query: any = {
+        isActive: true,
+        _id: { $ne: excludeUserId.getValue() }
+      };
+
+      // 2. Optional filter: user type
+      if (options.type) {
+        query.type = options.type;
+      }
+
+      // 3. Optional filter: search by company name
+      if (options.searchTerm) {
+        query['profile.companyName'] = { 
+          $regex: options.searchTerm, 
+          $options: 'i' // Case-insensitive
+        };
+      }
+
+      // 4. Get total count for pagination
+      const total = await UserModel.countDocuments(query);
+
+      // 5. Calculate pagination
+      const skip = (options.page - 1) * options.limit;
+      const totalPages = Math.ceil(total / options.limit);
+
+      // 6. Execute query with projection to exclude sensitive fields
+      // ⚠️ IMPORTANT: Use lean() for performance (30-50% faster than full Mongoose docs)
+      // Note: lean() returns plain objects without Mongoose virtuals, so we transform _id → id manually
+      const docs = await UserModel.find(query)
+        .select('-passwordHash -notifications') // ⚠️ CRITICAL: Exclude sensitive data
+        .sort({ 'profile.companyName': 1, createdAt: -1 }) // Sort by company name, then most recent
+        .skip(skip)
+        .limit(options.limit)
+        .lean(); // Plain JS objects for performance
+
+      // 7. Transform _id to id (required by documentToEntity)
+      // lean() returns MongoDB's _id (ObjectId), but domain entities expect id (string)
+      const docsWithId = docs.map(doc => ({
+        ...doc,
+        id: doc._id.toString() // Convert ObjectId to string
+      }));
+
+      // 8. Map documents to domain entities
+      const items = await Promise.all(
+        docsWithId.map(doc => this.documentToEntity(doc as unknown as IUserDocument))
+      );
+
+      return ok({
+        items,
+        total,
+        page: options.page,
+        limit: options.limit,
+        totalPages
+      });
+    } catch (error: any) {
+      console.error('Error finding users for discovery:', error);
+      // Return err() to propagate infrastructure errors to use case
+      // This allows proper error handling instead of silent failures
+      return err(
+        DomainError.create(
+          'PERSISTENCE_ERROR',
+          `Failed to find users for discovery: ${error.message}`
+        )
+      );
+    }
+  }
 }

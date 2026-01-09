@@ -52,6 +52,27 @@ export interface IProviderUser extends IUser {
 }
 
 /**
+ * Interface para datos públicos de usuarios (User Discovery - Sprint #12)
+ * Subconjunto de datos de User expuestos para descubrimiento de usuarios
+ * Excluye información sensible: email, phone, subscriptions, notifications
+ */
+export interface IUserPublicProfile {
+  readonly id: string;
+  readonly profile: {
+    readonly companyName?: string;
+  };
+  readonly type: 'CLIENT' | 'PROVIDER';
+  // Provider-specific fields (opcionales, solo para type === 'PROVIDER')
+  // serviceAreas: Para ProviderUser se mapea desde specialties
+  readonly serviceAreas?: readonly string[];
+  readonly isVerified?: boolean;
+  // TODO: Campos estratégicos para futuro
+  // readonly machineCount?: number; // Cantidad de máquinas (para mostrar experiencia del cliente)
+  // readonly rating?: number; // Rating promedio (para proveedores verificados)
+  // readonly location?: string; // Ciudad/región (para búsquedas geográficas futuras)
+}
+
+/**
  * QuickCheck Item Result - Resultado individual de un item
  * SSOT: Constante para evitar duplicación en schemas Zod
  */
