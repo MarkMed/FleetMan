@@ -57,7 +57,6 @@ export const UserCard: React.FC<UserCardProps> = ({
 
   // Type badge colors
   const typeBadgeVariant = user.type === 'CLIENT' ? 'secondary' : 'success';
-  const typeBadgeIcon = user.type === 'CLIENT' ? Users : Building2;
 
   // Service areas display (max 3 visible)
   const visibleServiceAreas = user.serviceAreas?.slice(0, 3) || [];

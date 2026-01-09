@@ -137,19 +137,20 @@ export interface IUserRepository {
    * Soporta búsqueda por nombre de empresa y filtro por tipo
    * @param excludeUserId - ID del usuario logueado (se excluye de resultados)
    * @param options - Filtros y paginación
+   * @returns Result<data, DomainError> - Success con datos paginados o Fail con error de infraestructura
    */
   findForDiscovery(excludeUserId: UserId, options: {
     page: number;
     limit: number;
     searchTerm?: string; // Busca en profile.companyName
     type?: 'CLIENT' | 'PROVIDER';
-  }): Promise<{
+  }): Promise<Result<{
     items: User[]; // Entidades completas (el use case mapea a IUserPublicProfile)
     total: number;
     page: number;
     limit: number;
     totalPages: number;
-  }>;
+  }, DomainError>>;
 
   // TODO: Métodos estratégicos a considerar:
   // findByCompanyName(name: string): Promise<User[]>; // Para buscar por empresa

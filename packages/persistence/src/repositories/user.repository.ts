@@ -429,19 +429,20 @@ export class UserRepository implements IUserRepository {
    * Finds users for discovery (User Discovery)
    * Returns active users excluding the logged-in user
    * Supports search by company name and filter by type
+   * @returns Result.success() with paginated data or Result.fail() with infrastructure error
    */
   async findForDiscovery(excludeUserId: UserId, options: {
     page: number;
     limit: number;
     searchTerm?: string;
     type?: 'CLIENT' | 'PROVIDER';
-  }): Promise<{
+  }): Promise<Result<{
     items: User[];
     total: number;
     page: number;
     limit: number;
     totalPages: number;
-  }> {
+  }, DomainError>> {
     try {
       // 1. Build query: active users excluding logged-in user
       const query: any = {
@@ -491,23 +492,23 @@ export class UserRepository implements IUserRepository {
         docsWithId.map(doc => this.documentToEntity(doc as unknown as IUserDocument))
       );
 
-      return {
+      return ok({
         items,
         total,
         page: options.page,
         limit: options.limit,
         totalPages
-      };
+      });
     } catch (error: any) {
       console.error('Error finding users for discovery:', error);
-      // Return empty result on error (graceful degradation)
-      return {
-        items: [],
-        total: 0,
-        page: options.page,
-        limit: options.limit,
-        totalPages: 0
-      };
+      // Return err() to propagate infrastructure errors to use case
+      // This allows proper error handling instead of silent failures
+      return err(
+        DomainError.create(
+          'PERSISTENCE_ERROR',
+          `Failed to find users for discovery: ${error.message}`
+        )
+      );
     }
   }
 }

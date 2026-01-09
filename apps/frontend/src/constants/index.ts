@@ -20,10 +20,11 @@ export const ROUTES = {
   
   // User Communication (Sprint #12)
   CONTACT_DISCOVERY: '/contact-discovery',
-  // TODO: Rutas estratégicas futuras (Module 2+)
-  // CONTACTS: '/contacts',
-  // MESSAGES: '/messages',
-  // MESSAGE_THREAD: (userId: string) => `/messages/${userId}`,
+  // TODO Sprint #12 Module 2: Contact Management (user-to-user contacts, distinct from help/ContactsScreen)
+  // MY_CONTACTS: '/my-contacts', // List of user's contacts (Module 2)
+  // MESSAGES: '/messages', // Messaging inbox (Module 3)
+  // MESSAGE_THREAD: (userId: string) => `/messages/${userId}`, // Direct message thread
+  // Note: '/contacts' already exists for help/support info (ContactsScreen in screens/help/)
 } as const;
 
 // Re-export navigation constants

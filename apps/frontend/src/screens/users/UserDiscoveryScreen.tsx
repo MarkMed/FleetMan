@@ -1,6 +1,6 @@
 import React from 'react';
 import { Heading1, BodyText, Button, Card, Input } from '@components/ui';
-import { Search, Filter, AlertCircle, Users } from 'lucide-react';
+import { Search, AlertCircle, Users } from 'lucide-react';
 import { UserCard } from '@components/users/UserCard';
 import { useUserDiscoveryViewModel } from '../../viewModels/users/useUserDiscoveryViewModel';
 

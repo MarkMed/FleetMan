@@ -173,6 +173,12 @@ userSchema.set('toJSON', {
 
 // Indexes for performance
 userSchema.index({ type: 1, isActive: 1 });
+
+// Sprint #12 User Discovery: Compound index for findForDiscovery queries
+// Optimizes queries with isActive + type filter + companyName regex search
+// Query pattern: { isActive: true, type: 'PROVIDER', 'profile.companyName': /regex/i }
+userSchema.index({ isActive: 1, type: 1, 'profile.companyName': 1 });
+
 // Note: Notification queries use in-memory filtering (not MongoDB queries),
 // so a compound index on notification fields wouldn't be beneficial.
 // If we implement aggregation pipeline in the future, consider adding:

@@ -57,7 +57,7 @@ export class DiscoverUsersUseCase {
       }
 
       // 2. Buscar usuarios desde repositorio con filtros y exclusión del usuario logueado
-      const result = await this.userRepository.findForDiscovery(
+      const repositoryResult = await this.userRepository.findForDiscovery(
         userIdResult.data,
         {
           page: filters.page,
@@ -66,7 +66,17 @@ export class DiscoverUsersUseCase {
           type: filters.type
         }
       );
-      console.log("DiscoverUsersUseCase result:", result);
+
+      // 2.1. Manejar errores de infraestructura (DB down, query error, etc.)
+      if (!repositoryResult.success) {
+        logger.error({ 
+          loggedUserId,
+          error: repositoryResult.error.message 
+        }, 'Repository error finding users for discovery');
+        throw new Error(`Database error: ${repositoryResult.error.message}`);
+      }
+
+      const result = repositoryResult.data;
 
       // 3. Mapear entidades User → IUserPublicProfile (sanitizar datos sensibles)
       const profiles = result.items.map(user => 
