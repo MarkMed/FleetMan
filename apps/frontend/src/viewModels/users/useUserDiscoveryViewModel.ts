@@ -34,8 +34,9 @@ import type { DiscoverUsersQuery, UserPublicProfile } from '@packages/contracts'
  *   return (
  *     <div>
  *       <SearchBar 
- *         value={vm.filters.searchTerm} 
- *         onChange={vm.actions.handleSearchChange} 
+ *         value={vm.filters.searchInput} 
+ *         onChange={vm.actions.handleSearchInputChange}
+ *         onSearch={vm.actions.handleSearch}
  *       />
  *       <TypeFilter 
  *         value={vm.filters.userType} 
@@ -55,7 +56,10 @@ export function useUserDiscoveryViewModel() {
   // STATE MANAGEMENT
   // ========================
   
-  // Search term (local state, debounced before querying)
+  // Search input (controlled by user typing, NOT used in query yet)
+  const [searchInput, setSearchInput] = useState<string>('');
+  
+  // Search term (applied to query when user presses Search button)
   const [searchTerm, setSearchTerm] = useState<string>('');
   
   // User type filter (CLIENT | PROVIDER | undefined for all)
@@ -97,7 +101,6 @@ export function useUserDiscoveryViewModel() {
   // ========================
   // DERIVED STATE
   // ========================
-  // TODO: Add debounce to searchTerm to reduce API calls (useDebounce hook)
   
   const users = data?.profiles || [];
   const isEmpty = users.length === 0;
@@ -112,11 +115,20 @@ export function useUserDiscoveryViewModel() {
   // ========================
   
   /**
-   * Handle search term change
-   * Resets to page 1 when search changes
+   * Handle search input change (user typing)
+   * Updates local input state without triggering API call
    */
-  const handleSearchChange = (newSearchTerm: string) => {
-    setSearchTerm(newSearchTerm);
+  const handleSearchInputChange = (value: string) => {
+    setSearchInput(value);
+  };
+
+  /**
+   * Execute search (when user presses Search button or Enter key)
+   * Updates searchTerm which triggers API call via query dependency
+   * Resets to page 1 when search executes
+   */
+  const handleSearch = () => {
+    setSearchTerm(searchInput);
     setPage(1); // Reset to first page on search
   };
 
@@ -131,8 +143,10 @@ export function useUserDiscoveryViewModel() {
 
   /**
    * Clear all filters and reset to initial state
+   * Clears both input field and applied search term
    */
   const handleClearFilters = () => {
+    setSearchInput('');
     setSearchTerm('');
     setUserType(undefined);
     setPage(1);
@@ -218,13 +232,15 @@ export function useUserDiscoveryViewModel() {
     
     // Current filters (for controlled inputs)
     filters: {
-      searchTerm,
+      searchInput, // Current value in search input (controlled)
+      searchTerm, // Applied search term in query (read-only for display)
       userType,
     },
     
     // User actions
     actions: {
-      handleSearchChange,
+      handleSearchInputChange, // Update search input (no API call)
+      handleSearch, // Execute search (triggers API call)
       handleTypeFilterChange,
       handleClearFilters,
       handleNextPage,
@@ -246,9 +262,10 @@ export function useUserDiscoveryViewModel() {
 export type UserDiscoveryViewModel = ReturnType<typeof useUserDiscoveryViewModel>;
 
 // TODO: Future enhancements (commented for post-MVP)
-// - Debounced search (useDebounce hook for searchTerm)
 // - Sort options (by companyName, type, etc.)
 // - Advanced filters (isVerified, serviceAreas for providers)
 // - Infinite scroll instead of pagination
 // - User detail modal (show more info before adding contact)
 // - Favorite/bookmark users for quick access
+// - Recent searches history (localStorage)
+// - Saved filter presets

@@ -78,7 +78,7 @@ export function UserDiscoveryScreen() {
 
   else if (vm.state.isLoading) {
     content = (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="flex flex-col gap-3">
         {[1, 2, 3, 4, 5, 6].map(i => (
           <div key={i} className="h-32 bg-muted animate-pulse rounded-lg" />
         ))}
@@ -197,9 +197,9 @@ export function UserDiscoveryScreen() {
   // ========================
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="p-6">
       {/* Header */}
-      <div>
+      <div className="mb-6">
         <Heading1 size="headline" className="tracking-tight text-foreground">
           {vm.t('users.discovery.title')}
         </Heading1>
@@ -208,55 +208,113 @@ export function UserDiscoveryScreen() {
         </BodyText>
       </div>
 
-      {/* Search and Filters */}
-      <Card className="p-4">
-        <div className="flex flex-col md:flex-row gap-3">
-          {/* Search Input */}
-          <div className="flex-1">
-            <Input
-              value={vm.filters.searchTerm}
-              onChange={(e) => vm.actions.handleSearchChange(e.target.value)}
-              placeholder={vm.t('users.discovery.searchPlaceholder')}
-              className="w-full"
-            />
-          </div>
+      {/* Grid Layout: Sidebar (1 col) + Content (2 cols) */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        {/* ======================== */}
+        {/* SIDEBAR: Filters (Left - 1 column) */}
+        {/* ======================== */}
+        <aside className="lg:col-span-1">
+          <div className="p-4 sticky top-6 space-y-4">
+            {/* Search Section */}
+            <div className="space-y-2">
+              <BodyText weight="medium" size="small" className="text-foreground">
+                {vm.t('users.discovery.searchTitle')}
+              </BodyText>
+              <div className="flex gap-2">
+                <Input
+                  value={vm.filters.searchInput}
+                  onChange={(e) => vm.actions.handleSearchInputChange(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      vm.actions.handleSearch();
+                    }
+                  }}
+                  placeholder={vm.t('users.discovery.searchPlaceholder')}
+                  className="flex-1"
+                />
+                <Button
+                  variant="filled"
+                  size="sm"
+                  onPress={vm.actions.handleSearch}
+                  disabled={vm.state.isLoading}
+                  className="px-3"
+                >
+                  <Search className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
 
-          {/* Type Filter */}
-          <div className="flex gap-2">
-            <Button
-              variant={vm.filters.userType === undefined ? 'filled' : 'outline'}
-              size="sm"
-              onPress={() => vm.actions.handleTypeFilterChange(undefined)}
-            >
-              {vm.t('users.discovery.filterAll')}
-            </Button>
-            <Button
-              variant={vm.filters.userType === 'CLIENT' ? 'filled' : 'outline'}
-              size="sm"
-              onPress={() => vm.actions.handleTypeFilterChange('CLIENT')}
-            >
-              {vm.t('users.type.client')}
-            </Button>
-            <Button
-              variant={vm.filters.userType === 'PROVIDER' ? 'filled' : 'outline'}
-              size="sm"
-              onPress={() => vm.actions.handleTypeFilterChange('PROVIDER')}
-            >
-              {vm.t('users.type.provider')}
-            </Button>
-          </div>
-        </div>
-      </Card>
+            {/* Divider */}
+            <div className="border-t" />
 
-      {/* Content (dynamic based on state) */}
-      {content}
+            {/* Type Filter Section */}
+            <div className="space-y-2">
+              <BodyText weight="medium" size="small" className="text-foreground">
+                {vm.t('users.discovery.filterByType')}
+              </BodyText>
+              <div className="flex flex-col gap-2">
+                <Button
+                  variant={vm.filters.userType === undefined ? 'filled' : 'outline'}
+                  size="sm"
+                  onPress={() => vm.actions.handleTypeFilterChange(undefined)}
+                  className="w-full justify-start"
+                >
+                  <Users className="w-4 h-4 mr-2" />
+                  {vm.t('users.discovery.filterAll')}
+                </Button>
+                <Button
+                  variant={vm.filters.userType === 'CLIENT' ? 'filled' : 'outline'}
+                  size="sm"
+                  onPress={() => vm.actions.handleTypeFilterChange('CLIENT')}
+                  className="w-full justify-start"
+                >
+                  <Users className="w-4 h-4 mr-2" />
+                  {vm.t('users.type.client')}
+                </Button>
+                <Button
+                  variant={vm.filters.userType === 'PROVIDER' ? 'filled' : 'outline'}
+                  size="sm"
+                  onPress={() => vm.actions.handleTypeFilterChange('PROVIDER')}
+                  className="w-full justify-start"
+                >
+                  <Users className="w-4 h-4 mr-2" />
+                  {vm.t('users.type.provider')}
+                </Button>
+              </div>
+            </div>
+
+            {/* Clear Filters (only show if active) */}
+            {vm.state.hasActiveFilters && (
+              <>
+                <div className="border-t" />
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onPress={vm.actions.handleClearFilters}
+                  className="w-full"
+                >
+                  {vm.t('users.discovery.clearFilters')}
+                </Button>
+              </>
+            )}
+          </div>
+        </aside>
+
+        {/* ======================== */}
+        {/* MAIN CONTENT: Users List (Right - 2 columns) */}
+        {/* ======================== */}
+        <main className="lg:col-span-2">
+          {content}
+        </main>
+      </div>
 
       {/* TODO POST-MVP: Add more features (Module 2+) */}
-      {/* - Add Contact button in UserCard */}
       {/* - View full profile modal */}
       {/* - Sort options (by company name, type, etc.) */}
       {/* - Advanced filters (verified, service areas) */}
       {/* - Infinite scroll instead of pagination */}
+      {/* - Export to CSV/PDF */}
     </div>
   );
 }

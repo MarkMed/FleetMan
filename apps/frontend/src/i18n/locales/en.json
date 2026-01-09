@@ -694,7 +694,9 @@
       "verifiedProvider": "Verified Provider",
       "moreServiceAreas": "+{{count}} more",
       "addContact": "Add Contact",
-      "addingContact": "Adding..."
+      "addingContact": "Adding...",
+      "searchTitle": "Search",
+      "filterByType": "Filter by type"
     }
   }
 }
