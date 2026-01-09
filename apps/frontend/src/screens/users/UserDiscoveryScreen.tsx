@@ -148,10 +148,14 @@ export function UserDiscoveryScreen() {
           )}
         </div>
 
-        {/* Users Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {/* Users List (vertical layout per WBS 9.1c spec) */}
+        <div className="flex flex-col gap-3">
           {vm.data.users.map(user => (
-            <UserCard key={user.id} user={user} />
+            <UserCard 
+              key={user.id} 
+              user={user}
+              onAddContact={vm.actions.handleAddContact}
+            />
           ))}
         </div>
 

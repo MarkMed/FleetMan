@@ -1,8 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import type { UserPublicProfile } from '@packages/contracts';
-import { Card, BodyText, Badge } from '@components/ui';
-import { Building2, Shield, Users } from 'lucide-react';
+import { Card, BodyText, Badge, Button } from '@components/ui';
+import { Building2, Shield, Users, UserPlus } from 'lucide-react';
 
 interface UserCardProps {
   user: UserPublicProfile;
@@ -11,10 +11,17 @@ interface UserCardProps {
    */
   className?: string;
   
-  // POST-MVP: Optional callbacks for interaction (Module 2: Contact Management)
+  /**
+   * Callback when user clicks "Add Contact" button
+   * Module 1: Logs to console (placeholder)
+   * Module 2: Will trigger addContactMutation
+   */
+  onAddContact?: (userId: string) => void;
+  
+  // POST-MVP: Optional callbacks for future interaction (Module 3+)
   // onClick?: (user: UserPublicProfile) => void; // View full profile modal
-  // onAddContact?: (userId: string) => void; // Add as contact
   // onViewMachines?: (userId: string) => void; // View user's machines (clients)
+  // onMessage?: (userId: string) => void; // Send direct message (Module 3: Messaging)
 }
 
 /**
@@ -44,6 +51,7 @@ interface UserCardProps {
 export const UserCard: React.FC<UserCardProps> = ({
   user,
   className = '',
+  onAddContact,
 }) => {
   const { t } = useTranslation();
 
@@ -120,23 +128,24 @@ export const UserCard: React.FC<UserCardProps> = ({
         </div>
       )}
 
-      {/* TODO POST-MVP: Add interaction buttons (Module 2: Contact Management) */}
-      {/* <div className="flex gap-2 mt-4 pt-3 border-t">
-        <Button 
-          size="small" 
-          variant="outline"
-          onClick={() => onViewDetails?.(user)}
-        >
-          {t('users.discovery.viewProfile')}
-        </Button>
-        <Button 
-          size="small" 
-          variant="primary"
-          onClick={() => onAddContact?.(user.id)}
-        >
-          {t('users.discovery.addContact')}
-        </Button>
-      </div> */}
+      {/* Interaction Section (Module 2: Contact Management) */}
+      {onAddContact && (
+        <div className="mt-4 pt-3 border-t">
+          <Button 
+            size="sm" 
+            variant="outline"
+            onPress={() => onAddContact(user.id)}
+            className="w-full"
+          >
+            <UserPlus className="w-4 h-4 mr-2" />
+            {t('users.discovery.addContact')}
+          </Button>
+        </div>
+      )}
+
+      {/* TODO Module 3+: Additional interaction buttons */}
+      {/* <Button onClick={() => onMessage?.(user.id)}>Send Message</Button> */}
+      {/* <Button onClick={() => onClick?.(user)}>View Profile</Button> */}
     </Card>
   );
 };

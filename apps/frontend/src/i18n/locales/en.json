@@ -692,7 +692,9 @@
       "pageInfo": "Page {{current}} of {{total}}",
       "noCompanyName": "No company name",
       "verifiedProvider": "Verified Provider",
-      "moreServiceAreas": "+{{count}} more"
+      "moreServiceAreas": "+{{count}} more",
+      "addContact": "Add Contact",
+      "addingContact": "Adding..."
     }
   }
 }

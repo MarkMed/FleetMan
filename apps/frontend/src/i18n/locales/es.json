@@ -694,7 +694,9 @@
       "pageInfo": "Página {{current}} de {{total}}",
       "noCompanyName": "Sin nombre de empresa",
       "verifiedProvider": "Proveedor Verificado",
-      "moreServiceAreas": "+{{count}} más"
+      "moreServiceAreas": "+{{count}} más",
+      "addContact": "Agregar Contacto",
+      "addingContact": "Agregando..."
     }
   }
 }

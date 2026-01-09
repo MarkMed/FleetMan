@@ -172,6 +172,20 @@ export function useUserDiscoveryViewModel() {
     refetch();
   };
 
+  /**
+   * Handle adding a user as contact
+   * 
+   * MVP Placeholder (Module 1): Console log only
+   * Module 2 Implementation: Will call addContactMutation with userId
+   * 
+   * @param userId - The ID of the user to add as contact
+   */
+  const handleAddContact = (userId: string) => {
+    console.log('👥 [User Discovery] Add contact clicked:', userId);
+    // TODO Module 2: Implement addContactMutation
+    // addContactMutation.mutate(userId);
+  };
+
   // ========================
   // VIEW MODEL OUTPUT
   // ========================
@@ -217,6 +231,7 @@ export function useUserDiscoveryViewModel() {
       handlePreviousPage,
       handleGoToPage,
       handleRetry,
+      handleAddContact, // Module 2: Add as contact (currently placeholder)
     },
     
     // i18n helper
