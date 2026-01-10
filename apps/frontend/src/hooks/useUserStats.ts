@@ -79,9 +79,9 @@ export const useUserStats = (options?: {
     queryKey: QUERY_KEYS.USER_STATS_TOTAL,
     queryFn: () => userStatsService.getTotalUsers(),
     enabled: options?.enabled !== false, // Default to true unless explicitly disabled
-    staleTime: 0, // CRITICAL: Always consider data stale to avoid showing outdated stats
-    gcTime: 5 * 60 * 1000, // 5 minutes cache (reduced from 30min to avoid stale data confusion)
-    refetchOnMount: 'always', // CRITICAL: Always refetch on mount to ensure fresh data
+    staleTime: 60 * 1000, // 1 minute - balance between freshness and performance
+    gcTime: 5 * 60 * 1000, // 5 minutes cache
+    refetchOnMount: 'always', // CRITICAL: Always refetch on mount (user reported stale data issues)
     refetchOnWindowFocus: false, // Avoid unnecessary refetches
     refetchInterval: options?.refetchInterval, // Optional auto-refresh
     retry: (failureCount, error: any) => {

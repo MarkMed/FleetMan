@@ -420,10 +420,6 @@ export type UserDiscoveryViewModel = ReturnType<typeof useUserDiscoveryViewModel
 //   - 30-70% usage = Evaluate based on user base size
 //   - >70% usage = Migrate to server-side (most users expect this)
 
-// TODO: 
-//   return map;
-// }, [contactsData]);
-
 // TODO: Future enhancements (commented for post-MVP)
 // - Sort options (by companyName, type, etc.)
 // - Advanced filters (isVerified, serviceAreas for providers)

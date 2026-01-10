@@ -1,4 +1,4 @@
-import { type IUserRepository, UserId, type IUserPublicProfile, ClientUser, ProviderUser } from '@packages/domain';
+import { type IUserRepository, UserId } from '@packages/domain';
 import { logger } from '../../config/logger.config';
 
 /**

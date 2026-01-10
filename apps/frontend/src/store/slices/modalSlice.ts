@@ -107,7 +107,7 @@ export interface ModalConfig {
   confirmButtonClassName?: string;
 
   /**
-   * Variant fpr the confirm button
+   * Variant for the confirm button
    */
   confirmButtonVariant?:  "warning" | "success" | "secondary" | "link" | "destructive" | "outline" | "filled" | "ghost"; 
 }

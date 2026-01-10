@@ -47,7 +47,7 @@ import type { ListContactsResponse } from '@packages/contracts';
  * @throws {Error} If user not found, inactive, or validation fails
  */
 export async function addContact(contactUserId: string): Promise<void> {
-  const response = await apiClient.post<{ success: boolean; message: string }>(
+  await apiClient.post<{ success: boolean; message: string }>(
     API_ENDPOINTS.MY_CONTACT(contactUserId)
   );
   
@@ -66,7 +66,7 @@ export async function addContact(contactUserId: string): Promise<void> {
  * - No validation if user is active (can remove inactive contacts)
  */
 export async function removeContact(contactUserId: string): Promise<void> {
-  const response = await apiClient.delete<{ success: boolean; message: string }>(
+  await apiClient.delete<{ success: boolean; message: string }>(
     API_ENDPOINTS.MY_CONTACT(contactUserId)
   );
   
