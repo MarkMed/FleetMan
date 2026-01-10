@@ -704,7 +704,9 @@
       "visibility": "Visibilidad",
       "hideContacts": "Ocultar contactos guardados",
       "contactsHidden": "{{count}} ocultos",
-      "showingFiltered": "Mostrando {{shown}} de {{total}} usuarios ({{hidden}} ocultos)"
+      "showingFiltered": "Mostrando {{shown}} de {{total}} usuarios ({{hidden}} ocultos)",
+      "totalRegistered": "Usuarios registrados en FleetMan",
+      "totalRegisteredShort": "Total registrados"
     },
     "contacts": {
       "title": "Mis Contactos",

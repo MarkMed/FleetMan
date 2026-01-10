@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDiscoverUsers } from '@hooks/useUserDiscovery';
 import { useAddContact, useMyContacts } from '@hooks/useContacts';
+import { useUserStats } from '@hooks/useUserStats';
 import type { DiscoverUsersQuery, UserPublicProfile } from '@packages/contracts';
 
 /**
@@ -111,6 +112,10 @@ export function useUserDiscoveryViewModel() {
   // This ensures contact data is available on first render of Discovery screen
   // and provides O(1) lookup performance with Set
   const { data: contactsData } = useMyContacts({ enabled: true });
+  
+  // Fetch user statistics (Sprint #12 - User Stats Feature)
+  // Shows ecosystem size to stimulate networking and internal business
+  const { data: userStatsData, isLoading: isLoadingStats } = useUserStats();
   
   // Add contact mutation (Module 2: Connect button to backend)
   const addContactMutation = useAddContact();
@@ -282,6 +287,7 @@ export function useUserDiscoveryViewModel() {
       isEmpty: !isLoading && displayedUsers.length === 0, // Use displayedUsers for empty check (respects filter)
       hasActiveFilters,
       isAddingContact: addContactMutation.isPending, // Module 2: Track add contact loading
+      isLoadingStats, // Sprint #12: User Stats Feature
     },
     
     // Data for rendering
@@ -289,6 +295,7 @@ export function useUserDiscoveryViewModel() {
       users: displayedUsers, // Module 2: Return filtered users instead of raw users
       allUsersCount: users.length, // Original count before filtering (for counters)
       hiddenContactsCount: hiddenCount, // How many contacts are hidden by filter
+      totalRegisteredUsers: userStatsData?.totalUsers, // Sprint #12: Total users in ecosystem
       total,
       currentPage: page,
       totalPages,

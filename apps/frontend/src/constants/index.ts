@@ -56,6 +56,9 @@ export const API_ENDPOINTS = {
   MY_CONTACTS: '/users/me/contacts',
   MY_CONTACT: (contactUserId: string) => `/users/me/contacts/${contactUserId}`,
   
+  // User Statistics (Sprint #12 - User Stats Feature)
+  USER_STATS_TOTAL: '/users/stats/total',
+  
   // TODO: Endpoints estratégicos futuros
   // USER_PUBLIC_PROFILE: (userId: string) => `/users/${userId}/public-profile`,
   // USER_STATS: (userId: string) => `/users/${userId}/stats`,
@@ -231,6 +234,9 @@ export const QUERY_KEYS = {
   // Contact Management (Sprint #12 - Module 2)
   CONTACTS: ['contacts'],
   CONTACT: (contactUserId: string) => ['contacts', contactUserId],
+  
+  // User Statistics (Sprint #12 - User Stats Feature)
+  USER_STATS_TOTAL: ['users', 'stats', 'total'],
   
   // TODO: Query keys estratégicas futuras
   // USER_PUBLIC_PROFILE: (userId: string) => ['users', userId, 'public-profile'],

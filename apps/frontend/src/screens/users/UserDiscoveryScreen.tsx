@@ -221,9 +221,11 @@ export function UserDiscoveryScreen() {
         <Heading1 size="headline" className="tracking-tight text-foreground">
           {vm.t('users.discovery.title')}
         </Heading1>
-        <BodyText className="text-muted-foreground">
-          {vm.t('users.discovery.subtitle')}
-        </BodyText>
+        <div className="flex items-center gap-3 mt-1">
+          <BodyText className="text-muted-foreground">
+            {vm.t('users.discovery.subtitle')}
+          </BodyText>
+        </div>
       </div>
 
       {/* Grid Layout: Sidebar (1 col) + Content (2 cols) */}
@@ -234,6 +236,20 @@ export function UserDiscoveryScreen() {
         {/* ======================== */}
         <aside className="lg:col-span-1">
           <div className="p-4 sticky top-6 space-y-4">
+          {/* User Stats Badge (Sprint #12 - Strategic Feature) */}
+          {vm.data.totalRegisteredUsers !== undefined && (
+            <div className="flex items-center gap-1.5 px-3 py-1 bg-green-50 dark:bg-green-950/20 rounded-full border border-green-200 dark:border-green-800">
+              <BodyText className="text-muted-foreground">
+                {vm.t('users.discovery.totalRegisteredShort')}:
+              </BodyText>
+              <BodyText weight="bold" className="text-green-600 dark:text-green-400">
+                {vm.data.totalRegisteredUsers.toLocaleString()}
+              </BodyText>
+            </div>
+          )}
+          {vm.state.isLoadingStats && (
+            <div className="h-6 w-32 bg-muted animate-pulse rounded-full" />
+          )}
             {/* Search Section */}
             <div className="space-y-2">
               <BodyText weight="medium" size="small" className="text-foreground">

@@ -46,8 +46,9 @@ export const useMyContacts = (options?: { enabled?: boolean }) => {
     queryKey: QUERY_KEYS.CONTACTS,
     queryFn: contactService.getMyContacts,
     enabled: options?.enabled !== false,
-    staleTime: 5 * 60 * 1000, // 5 minutes (contacts list is relatively stable)
-    gcTime: 15 * 60 * 1000, // 15 minutes cache
+    staleTime: 0, // CRITICAL: Always consider data stale to avoid showing outdated contacts
+    gcTime: 5 * 60 * 1000, // 5 minutes cache (reduced from 15min to avoid stale data confusion)
+    refetchOnMount: 'always', // CRITICAL: Always refetch on mount to ensure fresh data
     retry: (failureCount, error: any) => {
       // Don't retry on 401/403
       if (error?.response?.status === 401 || error?.response?.status === 403) {
