@@ -131,6 +131,7 @@ export function UserDiscoveryScreen() {
         <div className="flex items-center justify-between">
           <BodyText size="small" className="text-muted-foreground">
             {vm.filters.hideContacts && vm.data.hiddenContactsCount > 0 ? (
+              
               // Show filtered count when hiding contacts
               vm.t('users.discovery.showingFiltered', {
                 shown: vm.data.users.length,
@@ -217,7 +218,7 @@ export function UserDiscoveryScreen() {
   return (
     <div className="p-6">
       {/* Header */}
-      <div className="mb-6">
+      <div className="mb-6 lg:sticky lg:top-20">
         <Heading1 size="headline" className="tracking-tight text-foreground">
           {vm.t('users.discovery.title')}
         </Heading1>
@@ -235,7 +236,7 @@ export function UserDiscoveryScreen() {
         {/* SIDEBAR: Filters (Left - 1 column) */}
         {/* ======================== */}
         <aside className="lg:col-span-1">
-          <div className="p-4 sticky top-6 space-y-4">
+          <div className="p-4 space-y-4 lg:sticky lg:top-36">
           {/* User Stats Badge (Sprint #12 - Strategic Feature) */}
           {vm.data.totalRegisteredUsers !== undefined && (
             <div className="flex items-center gap-1.5 px-3 py-1 bg-green-50 dark:bg-green-950/20 rounded-full border border-green-200 dark:border-green-800">
