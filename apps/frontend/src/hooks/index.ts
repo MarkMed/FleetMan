@@ -325,3 +325,6 @@ export {
 // User Discovery (Sprint #12 - Module 1: User Communication System)
 export { useDiscoverUsers } from './useUserDiscovery';
 export type { DiscoverUsersQuery, PaginatedUsers } from './useUserDiscovery';
+
+// Contact Management (Sprint #12 - Module 2: User Communication System)
+export { useMyContacts, useAddContact, useRemoveContact, useIsContact, isUserInContacts } from './useContacts';

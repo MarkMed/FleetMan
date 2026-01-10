@@ -10,6 +10,8 @@ import eventTypeRoutes from './event-type.routes';
 import adminRoutes from './admin.routes';
 import maintenanceRoutes from './maintenance-alarm.routes';
 import userDiscoveryRoutes from './user-discovery.routes';
+import contactRoutes from './contact.routes';
+import userStatsRoutes from './user-stats.routes';
 
 /**
  * Router principal de la API v1
@@ -49,6 +51,12 @@ router.use('/admin/cronjobs', adminRoutes);
 
 // User Discovery routes (Sprint #12 - Module 1) - Descubrimiento de usuarios
 router.use('/users', userDiscoveryRoutes);
+
+// Contact Management routes (Sprint #12 - Module 2) - Gestión de contactos
+router.use('/users', contactRoutes);
+
+// User Statistics routes (Sprint #12 - User Stats Feature) - Estadísticas de usuarios
+router.use('/users', userStatsRoutes);
 
 // TODO: Agregar más rutas según se implementen los módulos
 // router.use('/maintenance', maintenanceRoutes);

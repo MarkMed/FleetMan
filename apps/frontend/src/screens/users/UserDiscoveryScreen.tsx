@@ -1,5 +1,5 @@
 import React from 'react';
-import { Heading1, BodyText, Button, Card, Input } from '@components/ui';
+import { Heading1, BodyText, Button, Card, Input, Checkbox } from '@components/ui';
 import { Search, AlertCircle, Users } from 'lucide-react';
 import { UserCard } from '@components/users/UserCard';
 import { useUserDiscoveryViewModel } from '../../viewModels/users/useUserDiscoveryViewModel';
@@ -130,11 +130,22 @@ export function UserDiscoveryScreen() {
         {/* Results Summary */}
         <div className="flex items-center justify-between">
           <BodyText size="small" className="text-muted-foreground">
-            {vm.t('users.discovery.resultsCount', {
-              start: vm.data.pagination.rangeStart,
-              end: vm.data.pagination.rangeEnd,
-              total: vm.data.total,
-            })}
+            {vm.filters.hideContacts && vm.data.hiddenContactsCount > 0 ? (
+              
+              // Show filtered count when hiding contacts
+              vm.t('users.discovery.showingFiltered', {
+                shown: vm.data.users.length,
+                total: vm.data.allUsersCount,
+                hidden: vm.data.hiddenContactsCount,
+              })
+            ) : (
+              // Normal count
+              vm.t('users.discovery.resultsCount', {
+                start: vm.data.pagination.rangeStart,
+                end: vm.data.pagination.rangeEnd,
+                total: vm.data.total,
+              })
+            )}
           </BodyText>
           
           {vm.state.hasActiveFilters && (
@@ -150,13 +161,21 @@ export function UserDiscoveryScreen() {
 
         {/* Users List (vertical layout per WBS 9.1c spec) */}
         <div className="flex flex-col gap-3">
-          {vm.data.users.map(user => (
-            <UserCard 
-              key={user.id} 
-              user={user}
-              onAddContact={vm.actions.handleAddContact}
-            />
-          ))}
+          {vm.data.users.map((user) => {
+            // O(1) lookup: Check if user is already a contact using Set
+            // Fixes Rules of Hooks violation (was calling hook inside loop)
+            const isContact = vm.data.contactIds.has(user.id);
+            
+            return (
+              <UserCard
+                key={user.id}
+                user={user}
+                isContact={isContact}
+                isAddingContact={vm.state.isAddingContact}
+                onAddContact={vm.actions.handleAddContact}
+              />
+            );
+          })}
         </div>
 
         {/* Pagination Controls */}
@@ -199,13 +218,15 @@ export function UserDiscoveryScreen() {
   return (
     <div className="p-6">
       {/* Header */}
-      <div className="mb-6">
+      <div className="mb-6 lg:sticky lg:top-20">
         <Heading1 size="headline" className="tracking-tight text-foreground">
           {vm.t('users.discovery.title')}
         </Heading1>
-        <BodyText className="text-muted-foreground">
-          {vm.t('users.discovery.subtitle')}
-        </BodyText>
+        <div className="flex items-center gap-3 mt-1">
+          <BodyText className="text-muted-foreground">
+            {vm.t('users.discovery.subtitle')}
+          </BodyText>
+        </div>
       </div>
 
       {/* Grid Layout: Sidebar (1 col) + Content (2 cols) */}
@@ -215,7 +236,21 @@ export function UserDiscoveryScreen() {
         {/* SIDEBAR: Filters (Left - 1 column) */}
         {/* ======================== */}
         <aside className="lg:col-span-1">
-          <div className="p-4 sticky top-6 space-y-4">
+          <div className="p-4 space-y-4 lg:sticky lg:top-36">
+          {/* User Stats Badge (Sprint #12 - Strategic Feature) */}
+          {vm.data.totalRegisteredUsers !== undefined && (
+            <div className="flex items-center gap-1.5 px-3 py-1 bg-green-50 dark:bg-green-950/20 rounded-full border border-green-200 dark:border-green-800">
+              <BodyText className="text-muted-foreground">
+                {vm.t('users.discovery.totalRegisteredShort')}:
+              </BodyText>
+              <BodyText weight="bold" className="text-green-600 dark:text-green-400">
+                {vm.data.totalRegisteredUsers.toLocaleString()}
+              </BodyText>
+            </div>
+          )}
+          {vm.state.isLoadingStats && (
+            <div className="h-6 w-32 bg-muted animate-pulse rounded-full" />
+          )}
             {/* Search Section */}
             <div className="space-y-2">
               <BodyText weight="medium" size="small" className="text-foreground">
@@ -242,6 +277,35 @@ export function UserDiscoveryScreen() {
                 >
                   <Search className="w-4 h-4" />
                 </Button>
+              </div>
+            </div>
+
+            {/* Divider */}
+            <div className="border-t" />
+
+            {/* Hide Contacts Filter Section (Module 2: Filter Enhancement) */}
+            <div className="space-y-2">
+              <BodyText weight="medium" size="small" className="text-foreground">
+                {vm.t('users.discovery.visibility')}
+              </BodyText>
+              <div className="flex items-start gap-2">
+                <Checkbox
+                  id="hideContacts"
+                  checked={vm.filters.hideContacts}
+                  onCheckedChange={vm.actions.handleToggleHideContacts}
+                  aria-label={vm.t('users.discovery.hideContacts')}
+                />
+                <label
+                  htmlFor="hideContacts"
+                  className="text-sm cursor-pointer select-none leading-tight"
+                >
+                  {vm.t('users.discovery.hideContacts')}
+                  {vm.data.hiddenContactsCount > 0 && (
+                    <span className="ml-2 text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
+                      {vm.t('users.discovery.contactsHidden', { count: vm.data.hiddenContactsCount })}
+                    </span>
+                  )}
+                </label>
               </div>
             </div>
 

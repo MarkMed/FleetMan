@@ -1,7 +1,10 @@
 import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDiscoverUsers } from '@hooks/useUserDiscovery';
+import { useAddContact, useMyContacts } from '@hooks/useContacts';
+import { useUserStats } from '@hooks/useUserStats';
 import type { DiscoverUsersQuery, UserPublicProfile } from '@packages/contracts';
+import { modal } from '@helpers/modal';
 
 /**
  * ViewModel: UserDiscoveryScreen Business Logic
@@ -70,6 +73,14 @@ export function useUserDiscoveryViewModel() {
   
   // Items per page (default 20, max 50)
   const limit = 20;
+  
+  // Hide saved contacts filter (Module 2: Filter Enhancement)
+  // Persisted in localStorage so user doesn't have to toggle each session
+  // Default: false (show all users for better discovery)
+  const [hideContacts, setHideContacts] = useState<boolean>(() => {
+    const stored = localStorage.getItem('discovery.hideContacts');
+    return stored === 'true';
+  });
 
   // ========================
   // DATA FETCHING
@@ -97,6 +108,18 @@ export function useUserDiscoveryViewModel() {
   
   // Fetch users from API
   const { data, isLoading, error, refetch } = useDiscoverUsers(query);
+  
+  // Pre-fetch contacts (Module 2: Fix Rules of Hooks violation)
+  // This ensures contact data is available on first render of Discovery screen
+  // and provides O(1) lookup performance with Set
+  const { data: contactsData } = useMyContacts({ enabled: true });
+  
+  // Fetch user statistics (Sprint #12 - User Stats Feature)
+  // Shows ecosystem size to stimulate networking and internal business
+  const { data: userStatsData, isLoading: isLoadingStats } = useUserStats();
+  
+  // Add contact mutation (Module 2: Connect button to backend)
+  const addContactMutation = useAddContact();
 
   // ========================
   // DERIVED STATE
@@ -107,8 +130,29 @@ export function useUserDiscoveryViewModel() {
   const total = data?.total || 0;
   const totalPages = data?.totalPages || 0;
   
+  // Create Set of contact IDs for O(1) lookup performance
+  // Used in View to check if discovered users are already contacts
+  const contactIds = useMemo(() => {
+    const ids = new Set<string>();
+    contactsData?.contacts.forEach(contact => ids.add(contact.id));
+    return ids;
+  }, [contactsData?.contacts]);
+  
+  // Filter users client-side to hide saved contacts (Module 2: Filter Enhancement)
+  // NOTE: Client-side filtering for MVP - see TODO below for server-side migration
+  const displayedUsers = useMemo(() => {
+    if (!hideContacts) return users; // Show all if filter not active
+    return users.filter(user => !contactIds.has(user.id));
+  }, [users, hideContacts, contactIds]);
+  
+  // Count how many contacts are hidden (for badge feedback)
+  const hiddenCount = useMemo(() => {
+    if (!hideContacts) return 0;
+    return users.length - displayedUsers.length;
+  }, [hideContacts, users.length, displayedUsers.length]);
+  
   // Check if any filters are active (useful for showing "Clear filters" button)
-  const hasActiveFilters = searchTerm.trim().length > 0 || userType !== undefined;
+  const hasActiveFilters = searchTerm.trim().length > 0 || userType !== undefined || hideContacts;
 
   // ========================
   // BUSINESS LOGIC ACTIONS
@@ -149,7 +193,27 @@ export function useUserDiscoveryViewModel() {
     setSearchInput('');
     setSearchTerm('');
     setUserType(undefined);
+    setHideContacts(false); // Also reset hide contacts filter
+    localStorage.setItem('discovery.hideContacts', 'false');
     setPage(1);
+  };
+  
+  /**
+   * Toggle hide saved contacts filter
+   * Persists preference in localStorage for future sessions
+   * Resets to page 1 when filter changes (like other filters)
+   * 
+   * Module 2: Filter Enhancement
+   * MVP: Client-side filtering
+   * Post-MVP: Consider server-side when user base > 1000 (see TODO below)
+   */
+  const handleToggleHideContacts = () => {
+    setHideContacts(prev => {
+      const newValue = !prev;
+      localStorage.setItem('discovery.hideContacts', String(newValue));
+      return newValue;
+    });
+    setPage(1); // Reset to first page when filter changes
   };
 
   /**
@@ -189,37 +253,59 @@ export function useUserDiscoveryViewModel() {
   /**
    * Handle adding a user as contact
    * 
-   * MVP Placeholder (Module 1): Console log only
-   * Module 2 Implementation: Will call addContactMutation with userId
+   * Module 2 Implementation: Calls addContactMutation with userId
+   * Shows success/error toast (handled by useAddContact hook)
+   * Invalidates caches to update UI state
    * 
    * @param userId - The ID of the user to add as contact
    */
-  const handleAddContact = (userId: string) => {
-    console.log('👥 [User Discovery] Add contact clicked:', userId);
-    // TODO Module 2: Implement addContactMutation
-    // addContactMutation.mutate(userId);
+  const handleAddContact = async (userId: string) => {
+    // Get user's company name for toast
+    const user = users.find(u => u.id === userId);
+    const companyName = user?.profile.companyName || t('users.discovery.noCompanyName');
+    
+    modal.showLoading(t('users.contacts.addingContactLoading'));
+    await new Promise(resolve => setTimeout(resolve, 700)); // Small delay to show loading modal
+    addContactMutation.mutate({ userId, companyName }, {
+      onError: (error) => {
+        // Error toast handled by useAddContact hook
+        console.error('❌ [User Discovery] Failed to add contact:', error);
+        modal.hide();
+      },
+      onSuccess: () => {
+        // Success toast handled by useAddContact hook
+        console.log('✅ [User Discovery] Contact added successfully:', userId);
+        modal.hide();
+      }
+    });
   };
 
   // ========================
   // VIEW MODEL OUTPUT
   // ========================
-  
+
   return {
     // State flags
     state: {
       isLoading,
       error: error as Error | null,
-      isEmpty: !isLoading && isEmpty,
+      isEmpty: !isLoading && displayedUsers.length === 0, // Use displayedUsers for empty check (respects filter)
       hasActiveFilters,
+      isAddingContact: addContactMutation.isPending, // Module 2: Track add contact loading
+      isLoadingStats, // Sprint #12: User Stats Feature
     },
     
     // Data for rendering
     data: {
-      users,
+      users: displayedUsers, // Module 2: Return filtered users instead of raw users
+      allUsersCount: users.length, // Original count before filtering (for counters)
+      hiddenContactsCount: hiddenCount, // How many contacts are hidden by filter
+      totalRegisteredUsers: userStatsData?.totalUsers, // Sprint #12: Total users in ecosystem
       total,
       currentPage: page,
       totalPages,
       limit,
+      contactIds, // Module 2: Set of contact IDs for O(1) lookup in View (fixes Rules of Hooks violation)
       
       // Pagination helpers
       pagination: {
@@ -235,6 +321,7 @@ export function useUserDiscoveryViewModel() {
       searchInput, // Current value in search input (controlled)
       searchTerm, // Applied search term in query (read-only for display)
       userType,
+      hideContacts, // Module 2: Hide saved contacts filter
     },
     
     // User actions
@@ -243,11 +330,12 @@ export function useUserDiscoveryViewModel() {
       handleSearch, // Execute search (triggers API call)
       handleTypeFilterChange,
       handleClearFilters,
+      handleToggleHideContacts, // Module 2: Toggle hide contacts filter
       handleNextPage,
       handlePreviousPage,
       handleGoToPage,
       handleRetry,
-      handleAddContact, // Module 2: Add as contact (currently placeholder)
+      handleAddContact, // Module 2: Add as contact (integrated with backend)
     },
     
     // i18n helper
@@ -260,6 +348,77 @@ export function useUserDiscoveryViewModel() {
 // ========================
 
 export type UserDiscoveryViewModel = ReturnType<typeof useUserDiscoveryViewModel>;
+
+// =============================================================================
+// FUTURE ENHANCEMENTS (Strategic, commented for post-MVP)
+// =============================================================================
+
+// TODO: Optimistic UI updates with contactIds
+// When user adds contact, immediately update local contactIds Set
+// without waiting for backend response - better perceived performance
+//
+// Example implementation:
+// const [optimisticContactIds, setOptimisticContactIds] = useState<Set<string>>(new Set());
+// const mergedContactIds = useMemo(() => {
+//   const merged = new Set(contactIds);
+//   optimisticContactIds.forEach(id => merged.add(id));
+//   return merged;
+// }, [contactIds, optimisticContactIds]);
+//
+// const handleAddContact = (userId: string) => {
+//   setOptimisticContactIds(prev => new Set(prev).add(userId));
+//   addContactMutation.mutate(userId, {
+//     onError: () => {
+//       setOptimisticContactIds(prev => {
+//         const next = new Set(prev);
+//         next.delete(userId);
+//         return next;
+//       });
+//     }
+//   });
+// };
+
+// TODO: Contact metadata enrichment
+// Store additional metadata about contacts for richer UI
+// Example: lastInteractionDate, mutualContactCount, tags
+//
+// type ContactMetadata = {
+//   userId: string;
+//   addedAt: Date;
+//   isMutual: boolean;
+//   mutualContactCount: number;
+//   tags: string[];
+// };
+//
+// const contactMetadata = useMemo(() => {
+//   const map = new Map<string, ContactMetadata>();
+//   contactsData?.contacts.forEach(contact => {
+//     map.set(contact.id, {
+//       userId: contact.id,
+//       addedAt: new Date(), // From backend
+//       isMutual: false, // TODO: Backend endpoint
+//       mutualContactCount: 0,
+//       tags: []
+//     });
+//   });Server-side "Hide Contacts" filter (Post-MVP Migration)
+// Current: Client-side filtering (MVP approach)
+// When: User base > 1000 OR if >70% of users enable this filter
+// Why migrate:
+//   1. Performance: Large user lists slow client-side filter
+//   2. Data efficiency: Don't fetch contacts if user always hides them
+//   3. Pagination accuracy: Current approach breaks counts (shows "50 of 100" but only 30 visible)
+//
+// Implementation plan:
+//   - Backend: Add `excludeContacts` query param to /users/discover endpoint
+//   - Backend: Filter SQL query with NOT IN (SELECT contact_id FROM contacts WHERE user_id = ?)
+//   - Frontend: Pass excludeContacts to useDiscoverUsers({ excludeContacts: true })
+//   - Frontend: Remove client-side filter logic (keep localStorage for preference)
+//   - Metrics: Track usage % in analytics to justify migration
+//
+// Decision criteria:
+//   - <30% usage = Keep client-side (not worth backend complexity)
+//   - 30-70% usage = Evaluate based on user base size
+//   - >70% usage = Migrate to server-side (most users expect this)
 
 // TODO: Future enhancements (commented for post-MVP)
 // - Sort options (by companyName, type, etc.)

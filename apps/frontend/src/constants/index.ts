@@ -10,6 +10,7 @@ export const ROUTES = {
   // Main application routes
   DASHBOARD: '/dashboard',
   MACHINES: '/machines',
+  NEW_MACHINE: '/machines/new',
   MACHINE_DETAIL: (id: string) => `/machines/${id}`,
   MAINTENANCE: '/maintenance',
   QUICKCHECK: '/quickcheck',
@@ -20,11 +21,12 @@ export const ROUTES = {
   
   // User Communication (Sprint #12)
   CONTACT_DISCOVERY: '/contact-discovery',
-  // TODO Sprint #12 Module 2: Contact Management (user-to-user contacts, distinct from help/ContactsScreen)
-  // MY_CONTACTS: '/my-contacts', // List of user's contacts (Module 2)
+  MY_CONTACTS: '/contacts', // Module 2: User's contact list (renamed to avoid conflict with /contacts help route)
+  // TODO Sprint #12 Module 3: Messaging
   // MESSAGES: '/messages', // Messaging inbox (Module 3)
   // MESSAGE_THREAD: (userId: string) => `/messages/${userId}`, // Direct message thread
-  // Note: '/contacts' already exists for help/support info (ContactsScreen in screens/help/)
+  // Note: '/contacts' route for user-to-user contacts (Module 2)
+  // Distinct from '/help/contacts' which is help/support info (ContactsScreen in screens/help/)
 } as const;
 
 // Re-export navigation constants
@@ -49,9 +51,20 @@ export const API_ENDPOINTS = {
   
   // User Discovery (Sprint #12 - Module 1: User Communication System)
   USER_DISCOVERY: '/users/discover',
+  
+  // Contact Management (Sprint #12 - Module 2: User Communication System)
+  MY_CONTACTS: '/users/me/contacts',
+  MY_CONTACT: (contactUserId: string) => `/users/me/contacts/${contactUserId}`,
+  
+  // User Statistics (Sprint #12 - User Stats Feature)
+  USER_STATS_TOTAL: '/users/stats/total',
+  
   // TODO: Endpoints estratégicos futuros
   // USER_PUBLIC_PROFILE: (userId: string) => `/users/${userId}/public-profile`,
   // USER_STATS: (userId: string) => `/users/${userId}/stats`,
+  // MY_CONTACT_DETAILS: (contactUserId: string) => `/users/me/contacts/${contactUserId}/details`,
+  // MY_CONTACTS_BULK: '/users/me/contacts/bulk',
+  // MY_CONTACT_MUTUAL: (contactUserId: string) => `/users/me/contacts/${contactUserId}/mutual`,
   
   // Machines
   MACHINES: '/machines',
@@ -217,10 +230,19 @@ export const QUERY_KEYS = {
   
   // User Discovery (Sprint #12 - Module 1)
   USER_DISCOVERY: ['users', 'discovery'],
+  
+  // Contact Management (Sprint #12 - Module 2)
+  CONTACTS: ['contacts'],
+  CONTACT: (contactUserId: string) => ['contacts', contactUserId],
+  
+  // User Statistics (Sprint #12 - User Stats Feature)
+  USER_STATS_TOTAL: ['users', 'stats', 'total'],
+  
   // TODO: Query keys estratégicas futuras
   // USER_PUBLIC_PROFILE: (userId: string) => ['users', userId, 'public-profile'],
   // USER_STATS: (userId: string) => ['users', userId, 'stats'],
-  // CONTACTS: (userId: string) => ['users', userId, 'contacts'],
+  // CONTACTS_BULK: ['contacts', 'bulk'],
+  // CONTACT_MUTUAL: (contactUserId: string) => ['contacts', contactUserId, 'mutual'],
   
   // Spare Parts
   SPARE_PARTS: ['spare-parts'],

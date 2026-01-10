@@ -57,8 +57,9 @@ export const useDiscoverUsers = (
     queryKey: [...QUERY_KEYS.USER_DISCOVERY, query],
     queryFn: () => userDiscoveryService.discoverUsers(query),
     enabled: options?.enabled !== false, // Default to true unless explicitly disabled
-    staleTime: 5 * 60 * 1000, // 5 minutes (user list doesn't change frequently)
-    gcTime: 15 * 60 * 1000, // 15 minutes cache (keep discovery data longer)
+    staleTime: 60 * 1000, // 1 minute - balance between freshness and performance
+    gcTime: 5 * 60 * 1000, // 5 minutes cache
+    refetchOnMount: 'always', // CRITICAL: Always refetch on mount (user reported stale data issues)
     retry: (failureCount, error: any) => {
       // Don't retry on 401 (unauthorized) or 403 (forbidden)
       if (error?.response?.status === 401 || error?.response?.status === 403) {

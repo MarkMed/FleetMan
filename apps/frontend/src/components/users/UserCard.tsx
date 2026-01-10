@@ -1,8 +1,10 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import type { UserPublicProfile } from '@packages/contracts';
 import { Card, BodyText, Badge, Button } from '@components/ui';
-import { Building2, Shield, Users, UserPlus } from 'lucide-react';
+import { Building2, Shield, UserPlus, ArrowRight, CheckCircle } from 'lucide-react';
+import { ROUTES } from '@constants';
 
 interface UserCardProps {
   user: UserPublicProfile;
@@ -17,6 +19,18 @@ interface UserCardProps {
    * Module 2: Will trigger addContactMutation
    */
   onAddContact?: (userId: string) => void;
+  
+  /**
+   * Module 2: Flag indicating user is already a contact
+   * When true, button shows "Ya es contacto" and is disabled
+   */
+  isContact?: boolean;
+  
+  /**
+   * Module 2: Flag indicating add contact mutation is in progress
+   * When true, button shows "Agregando..." and is disabled
+   */
+  isAddingContact?: boolean;
   
   // POST-MVP: Optional callbacks for future interaction (Module 3+)
   // onClick?: (user: UserPublicProfile) => void; // View full profile modal
@@ -52,8 +66,11 @@ export const UserCard: React.FC<UserCardProps> = ({
   user,
   className = '',
   onAddContact,
+  isContact = false,
+  isAddingContact = false,
 }) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   // Type badge colors
   const typeBadgeVariant = user.type === 'CLIENT' ? 'secondary' : 'success';
@@ -130,21 +147,78 @@ export const UserCard: React.FC<UserCardProps> = ({
       {/* Interaction Section (Module 2: Contact Management) */}
       {onAddContact && (
         <div className="mt-4 pt-3 border-t">
-          <Button 
-            size="sm" 
-            variant="outline"
-            onPress={() => onAddContact(user.id)}
-            className="w-full"
-          >
-            <UserPlus className="w-4 h-4 mr-2" />
-            {t('users.discovery.addContact')}
-          </Button>
+          <div className="flex gap-2 justify-center">
+            {/* Primary Button: Add Contact / Already Contact */}
+            <Button 
+              size="sm"
+              variant={isContact ? "ghost" : "outline"}
+              onPress={() => onAddContact(user.id)}
+              disabled={isContact || isAddingContact}
+              className={isContact ? "text-success disabled:opacity-100" : "flex-1"}
+            >
+              {isContact ? (
+                <CheckCircle className="w-4 h-4 mr-2" />
+              ) : (
+                <UserPlus className="w-4 h-4 mr-2" />
+              )}
+              {isAddingContact 
+                ? t('users.discovery.addingContact')
+                : isContact
+                  ? t('users.discovery.alreadyContact')
+                  : t('users.discovery.addContact')
+              }
+            </Button>
+            
+            {/* Secondary Button: Navigate to My Contacts (only when already contact) */}
+            {isContact && (
+              <Button
+                size="sm"
+                variant="outline"
+                onPress={() => navigate(ROUTES.MY_CONTACTS)}
+              >
+                <span className="whitespace-nowrap">
+                  {t('users.discovery.viewInContacts')}
+                </span>
+                <ArrowRight className="w-4 h-4 ml-1.5" />
+              </Button>
+            )}
+          </div>
         </div>
       )}
 
       {/* TODO Module 3+: Additional interaction buttons */}
       {/* <Button onClick={() => onMessage?.(user.id)}>Send Message</Button> */}
       {/* <Button onClick={() => onClick?.(user)}>View Profile</Button> */}
+      
+      {/* TODO: Quick Actions Menu (Optional Enhancement)
+       * Add dropdown menu with additional actions for contacts:
+       * - Send Message (Module 3)
+       * - View Full Profile
+       * - Add Note
+       * - Mark as Favorite
+       * - Share Contact Info
+       * 
+       * @example
+       * {isContact && (
+       *   <DropdownMenu>
+       *     <DropdownMenuTrigger asChild>
+       *       <Button size="sm" variant="ghost">
+       *         <MoreVertical className="w-4 h-4" />
+       *       </Button>
+       *     </DropdownMenuTrigger>
+       *     <DropdownMenuContent>
+       *       <DropdownMenuItem onClick={() => onMessage?.(user.id)}>
+       *         <MessageCircle className="w-4 h-4 mr-2" />
+       *         Send Message
+       *       </DropdownMenuItem>
+       *       <DropdownMenuItem onClick={() => onAddNote?.(user.id)}>
+       *         <FileText className="w-4 h-4 mr-2" />
+       *         Add Note
+       *       </DropdownMenuItem>
+       *     </DropdownMenuContent>
+       *   </DropdownMenu>
+       * )}
+       */}
     </Card>
   );
 };
