@@ -100,6 +100,16 @@ export interface ModalConfig {
    * @default false
    */
   loading?: boolean;
+
+  /**
+   * Styles for the confirm button
+   */
+  confirmButtonClassName?: string;
+
+  /**
+   * Variant fpr the confirm button
+   */
+  confirmButtonVariant?:  "warning" | "success" | "secondary" | "link" | "destructive" | "outline" | "filled" | "ghost"; 
 }
 
 /**

@@ -695,8 +695,36 @@
       "moreServiceAreas": "+{{count}} more",
       "addContact": "Add Contact",
       "addingContact": "Adding...",
+      "alreadyContact": "Already Contact",
       "searchTitle": "Search",
       "filterByType": "Filter by type"
+    },
+    "contacts": {
+      "title": "My Contacts",
+      "subtitle": "Manage your contact list",
+      "totalCount": "{{count}} contact(s)",
+      "noContacts": "You don't have any contacts yet",
+      "noContactsDescription": "Explore users and add them to your personal list to keep in touch",
+      "exploreUsers": "Explore Users",
+      "sendMessage": "Send message",
+      "removeContact": "Remove contact",
+      "viewProfile": "View profile",
+      "confirmRemoveTitle": "Remove contact?",
+      "confirmRemoveMessage": "You will remove {{companyName}} from your contacts. This action cannot be undone.",
+      "confirmRemoveButton": "Remove",
+      "cancelRemoveButton": "Cancel",
+      "addSuccess": "{{companyName}} saved as contact",
+      "addError": "Error adding contact: {{message}}",
+      "removeSuccess": "{{companyName}} removed from contacts",
+      "removeError": "Error removing contact: {{message}}",
+      "removeErrorTitle": "Failed to remove contact",
+      "removeErrorMessage": "Could not remove {{companyName}} from your contact list. {{error}}",
+      "alreadyContact": "This user is already your contact",
+      "cannotAddSelf": "You cannot add yourself as a contact",
+      "loading": "Loading contacts...",
+      "removing": "Removing...",
+      "contactAdded": "Contact added",
+      "messagingComingSoon": "Messaging coming soon"
     }
   }
 }

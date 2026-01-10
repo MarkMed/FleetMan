@@ -18,6 +18,18 @@ interface UserCardProps {
    */
   onAddContact?: (userId: string) => void;
   
+  /**
+   * Module 2: Flag indicating user is already a contact
+   * When true, button shows "Ya es contacto" and is disabled
+   */
+  isContact?: boolean;
+  
+  /**
+   * Module 2: Flag indicating add contact mutation is in progress
+   * When true, button shows "Agregando..." and is disabled
+   */
+  isAddingContact?: boolean;
+  
   // POST-MVP: Optional callbacks for future interaction (Module 3+)
   // onClick?: (user: UserPublicProfile) => void; // View full profile modal
   // onViewMachines?: (userId: string) => void; // View user's machines (clients)
@@ -52,6 +64,8 @@ export const UserCard: React.FC<UserCardProps> = ({
   user,
   className = '',
   onAddContact,
+  isContact = false,
+  isAddingContact = false,
 }) => {
   const { t } = useTranslation();
 
@@ -131,13 +145,19 @@ export const UserCard: React.FC<UserCardProps> = ({
       {onAddContact && (
         <div className="mt-4 pt-3 border-t">
           <Button 
-            size="sm" 
-            variant="outline"
+            size="sm"
+            variant={isContact ? "ghost" : "outline"}
             onPress={() => onAddContact(user.id)}
+            disabled={isContact || isAddingContact}
             className="w-full"
           >
             <UserPlus className="w-4 h-4 mr-2" />
-            {t('users.discovery.addContact')}
+            {isAddingContact 
+              ? t('users.discovery.addingContact')
+              : isContact
+                ? t('users.discovery.alreadyContact')
+                : t('users.discovery.addContact')
+            }
           </Button>
         </div>
       )}

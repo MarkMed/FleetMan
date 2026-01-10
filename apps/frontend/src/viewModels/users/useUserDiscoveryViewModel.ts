@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDiscoverUsers } from '@hooks/useUserDiscovery';
+import { useAddContact, useMyContacts } from '@hooks/useContacts';
 import type { DiscoverUsersQuery, UserPublicProfile } from '@packages/contracts';
 
 /**
@@ -97,6 +98,14 @@ export function useUserDiscoveryViewModel() {
   
   // Fetch users from API
   const { data, isLoading, error, refetch } = useDiscoverUsers(query);
+  
+  // Pre-fetch contacts (Module 2: Fix Rules of Hooks violation)
+  // This ensures contact data is available on first render of Discovery screen
+  // and provides O(1) lookup performance with Set
+  const { data: contactsData } = useMyContacts({ enabled: true });
+  
+  // Add contact mutation (Module 2: Connect button to backend)
+  const addContactMutation = useAddContact();
 
   // ========================
   // DERIVED STATE
@@ -106,6 +115,14 @@ export function useUserDiscoveryViewModel() {
   const isEmpty = users.length === 0;
   const total = data?.total || 0;
   const totalPages = data?.totalPages || 0;
+  
+  // Create Set of contact IDs for O(1) lookup performance
+  // Used in View to check if discovered users are already contacts
+  const contactIds = useMemo(() => {
+    const ids = new Set<string>();
+    contactsData?.contacts.forEach(contact => ids.add(contact.id));
+    return ids;
+  }, [contactsData?.contacts]);
   
   // Check if any filters are active (useful for showing "Clear filters" button)
   const hasActiveFilters = searchTerm.trim().length > 0 || userType !== undefined;
@@ -189,21 +206,33 @@ export function useUserDiscoveryViewModel() {
   /**
    * Handle adding a user as contact
    * 
-   * MVP Placeholder (Module 1): Console log only
-   * Module 2 Implementation: Will call addContactMutation with userId
+   * Module 2 Implementation: Calls addContactMutation with userId
+   * Shows success/error toast (handled by useAddContact hook)
+   * Invalidates caches to update UI state
    * 
    * @param userId - The ID of the user to add as contact
    */
   const handleAddContact = (userId: string) => {
-    console.log('👥 [User Discovery] Add contact clicked:', userId);
-    // TODO Module 2: Implement addContactMutation
-    // addContactMutation.mutate(userId);
+    // Get user's company name for toast
+    const user = users.find(u => u.id === userId);
+    const companyName = user?.profile.companyName || t('users.discovery.noCompanyName');
+    
+    addContactMutation.mutate({ userId, companyName }, {
+      onError: (error) => {
+        // Error toast handled by useAddContact hook
+        console.error('❌ [User Discovery] Failed to add contact:', error);
+      },
+      onSuccess: () => {
+        // Success toast handled by useAddContact hook
+        console.log('✅ [User Discovery] Contact added successfully:', userId);
+      }
+    });
   };
 
   // ========================
   // VIEW MODEL OUTPUT
   // ========================
-  
+
   return {
     // State flags
     state: {
@@ -211,6 +240,7 @@ export function useUserDiscoveryViewModel() {
       error: error as Error | null,
       isEmpty: !isLoading && isEmpty,
       hasActiveFilters,
+      isAddingContact: addContactMutation.isPending, // Module 2: Track add contact loading
     },
     
     // Data for rendering
@@ -220,6 +250,7 @@ export function useUserDiscoveryViewModel() {
       currentPage: page,
       totalPages,
       limit,
+      contactIds, // Module 2: Set of contact IDs for O(1) lookup in View (fixes Rules of Hooks violation)
       
       // Pagination helpers
       pagination: {
@@ -247,7 +278,7 @@ export function useUserDiscoveryViewModel() {
       handlePreviousPage,
       handleGoToPage,
       handleRetry,
-      handleAddContact, // Module 2: Add as contact (currently placeholder)
+      handleAddContact, // Module 2: Add as contact (integrated with backend)
     },
     
     // i18n helper
@@ -260,6 +291,61 @@ export function useUserDiscoveryViewModel() {
 // ========================
 
 export type UserDiscoveryViewModel = ReturnType<typeof useUserDiscoveryViewModel>;
+
+// =============================================================================
+// FUTURE ENHANCEMENTS (Strategic, commented for post-MVP)
+// =============================================================================
+
+// TODO: Optimistic UI updates with contactIds
+// When user adds contact, immediately update local contactIds Set
+// without waiting for backend response - better perceived performance
+//
+// Example implementation:
+// const [optimisticContactIds, setOptimisticContactIds] = useState<Set<string>>(new Set());
+// const mergedContactIds = useMemo(() => {
+//   const merged = new Set(contactIds);
+//   optimisticContactIds.forEach(id => merged.add(id));
+//   return merged;
+// }, [contactIds, optimisticContactIds]);
+//
+// const handleAddContact = (userId: string) => {
+//   setOptimisticContactIds(prev => new Set(prev).add(userId));
+//   addContactMutation.mutate(userId, {
+//     onError: () => {
+//       setOptimisticContactIds(prev => {
+//         const next = new Set(prev);
+//         next.delete(userId);
+//         return next;
+//       });
+//     }
+//   });
+// };
+
+// TODO: Contact metadata enrichment
+// Store additional metadata about contacts for richer UI
+// Example: lastInteractionDate, mutualContactCount, tags
+//
+// type ContactMetadata = {
+//   userId: string;
+//   addedAt: Date;
+//   isMutual: boolean;
+//   mutualContactCount: number;
+//   tags: string[];
+// };
+//
+// const contactMetadata = useMemo(() => {
+//   const map = new Map<string, ContactMetadata>();
+//   contactsData?.contacts.forEach(contact => {
+//     map.set(contact.id, {
+//       userId: contact.id,
+//       addedAt: new Date(), // From backend
+//       isMutual: false, // TODO: Backend endpoint
+//       mutualContactCount: 0,
+//       tags: []
+//     });
+//   });
+//   return map;
+// }, [contactsData]);
 
 // TODO: Future enhancements (commented for post-MVP)
 // - Sort options (by companyName, type, etc.)

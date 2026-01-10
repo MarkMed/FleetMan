@@ -150,13 +150,21 @@ export function UserDiscoveryScreen() {
 
         {/* Users List (vertical layout per WBS 9.1c spec) */}
         <div className="flex flex-col gap-3">
-          {vm.data.users.map(user => (
-            <UserCard 
-              key={user.id} 
-              user={user}
-              onAddContact={vm.actions.handleAddContact}
-            />
-          ))}
+          {vm.data.users.map((user) => {
+            // O(1) lookup: Check if user is already a contact using Set
+            // Fixes Rules of Hooks violation (was calling hook inside loop)
+            const isContact = vm.data.contactIds.has(user.id);
+            
+            return (
+              <UserCard
+                key={user.id}
+                user={user}
+                isContact={isContact}
+                isAddingContact={vm.state.isAddingContact}
+                onAddContact={vm.actions.handleAddContact}
+              />
+            );
+          })}
         </div>
 
         {/* Pagination Controls */}
