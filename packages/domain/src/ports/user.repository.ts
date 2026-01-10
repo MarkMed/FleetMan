@@ -152,12 +152,38 @@ export interface IUserRepository {
     totalPages: number;
   }, DomainError>>;
 
+  // =============================================================================
+  // 📊 USER STATISTICS METHODS (Sprint #12 - User Stats Feature)
+  // =============================================================================
+
+  /**
+   * Obtiene el total de usuarios registrados en el sistema
+   * Retorna breakdown interno con conteos por tipo (CLIENT, PROVIDER, etc.)
+   * que el use case puede usar para decisiones internas
+   * 
+   * @returns Result<TotalUsersStats, DomainError> - Success con estadísticas completas o Fail con error
+   * 
+   * Purpose: Feature estratégica para transparencia del ecosistema y estimular networking
+   * Snowball effect: Mostrar cantidad total hookea a más usuarios y estimula negocios internos
+   */
+  getTotalRegisteredUsers(): Promise<Result<{
+    totalUsers: number; // Total absoluto de usuarios en la collection (sin filtros)
+    breakdown: {
+      clients: number; // Usuarios tipo CLIENT
+      providers: number; // Usuarios tipo PROVIDER
+      // Extensible: admins, iaAgents, etc. (futuro)
+    };
+  }, DomainError>>;
+
   // TODO: Métodos estratégicos a considerar:
   // findByCompanyName(name: string): Promise<User[]>; // Para buscar por empresa
   // findBySubscriptionLevel(level: string): Promise<User[]>; // Para ClientUser
   // findVerifiedProviders(): Promise<User[]>; // Para ProviderUser
   // updateLastLoginAt(id: UserId, date: Date): Promise<void>; // Para tracking
   // findByServiceArea(serviceArea: string): Promise<User[]>; // Para búsquedas por especialidad
+  // getTotalActiveUsers(days: number): Promise<Result<number, DomainError>>; // Activos últimos N días (KPI)
+  // getTotalUsersByRegion(region: string): Promise<Result<number, DomainError>>; // Filtrar por geografía
+  // getUserGrowthStats(period: '7d' | '30d' | '90d'): Promise<Result<GrowthStats, DomainError>>; // Crecimiento temporal
   // findNearby(location: {lat: number, lng: number}, radiusKm: number): Promise<User[]>; // Para búsquedas geográficas
 
   // =============================================================================

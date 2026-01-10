@@ -39,5 +39,8 @@ export * from "./user-discovery.contract";
 // Contact Management contracts (Sprint #12 - Module 2)
 export * from "./contact.contract";
 
+// User Statistics contracts (Sprint #12 - User Stats Feature)
+export * from "./user-stats.contract";
+
 // Re-export DayOfWeek from domain for convenience
 export { DayOfWeek } from "@packages/domain";

@@ -642,4 +642,67 @@ export class UserRepository implements IUserRepository {
       return false; // En caso de error, asumir que no es contacto (fail-safe)
     }
   }
+
+  // =============================================================================
+  // 📊 USER STATISTICS METHODS (Sprint #12 - User Stats Feature)
+  // =============================================================================
+
+  /**
+   * Obtiene el total de usuarios registrados en el sistema
+   * Retorna breakdown interno con conteos por tipo
+   * 
+   * NO aplica filtros: Cuenta TODOS los usuarios en la collection (Client, Provider, Admin, etc.)
+   * El use case decide qué información exponer al controller
+   * 
+   * Performance: Usa $facet para ejecutar múltiples aggregations en 1 query
+   */
+  async getTotalRegisteredUsers(): Promise<Result<{
+    totalUsers: number;
+    breakdown: {
+      clients: number;
+      providers: number;
+    };
+  }, DomainError>> {
+    try {
+      // Agregación eficiente con $facet para contar en 1 query
+      const result = await UserModel.aggregate([
+        {
+          $facet: {
+            total: [{ $count: 'count' }],
+            byType: [
+              {
+                $group: {
+                  _id: '$profile.type',
+                  count: { $sum: 1 }
+                }
+              }
+            ]
+          }
+        }
+      ]);
+
+      // Extraer conteos
+      const totalUsers = result[0]?.total[0]?.count || 0;
+      const byTypeArray = result[0]?.byType || [];
+
+      // Mapear conteos por tipo
+      const clientsCount = byTypeArray.find((item: any) => item._id === 'CLIENT')?.count || 0;
+      const providersCount = byTypeArray.find((item: any) => item._id === 'PROVIDER')?.count || 0;
+
+      return ok({
+        totalUsers,
+        breakdown: {
+          clients: clientsCount,
+          providers: providersCount
+        }
+      });
+    } catch (error: any) {
+      return err(
+        DomainError.create(
+          'PERSISTENCE_ERROR',
+          `Error getting total registered users: ${error.message}`
+        )
+      );
+    }
+  }
 }
