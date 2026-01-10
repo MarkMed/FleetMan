@@ -10,6 +10,7 @@ export const ROUTES = {
   // Main application routes
   DASHBOARD: '/dashboard',
   MACHINES: '/machines',
+  NEW_MACHINE: '/machines/new',
   MACHINE_DETAIL: (id: string) => `/machines/${id}`,
   MAINTENANCE: '/maintenance',
   QUICKCHECK: '/quickcheck',
@@ -20,7 +21,7 @@ export const ROUTES = {
   
   // User Communication (Sprint #12)
   CONTACT_DISCOVERY: '/contact-discovery',
-  MY_CONTACTS: '/my-contacts', // Module 2: User's contact list (renamed to avoid conflict with /contacts help route)
+  MY_CONTACTS: '/contacts', // Module 2: User's contact list (renamed to avoid conflict with /contacts help route)
   // TODO Sprint #12 Module 3: Messaging
   // MESSAGES: '/messages', // Messaging inbox (Module 3)
   // MESSAGE_THREAD: (userId: string) => `/messages/${userId}`, // Direct message thread

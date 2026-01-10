@@ -1,6 +1,7 @@
 import React from "react";
 import { useAuth } from "../../store/AuthProvider";
 import { useNavigate } from "react-router-dom";
+import { ROUTES } from "@constants/index";
 
 export const DashboardScreen: React.FC = () => {
   const { user, logout } = useAuth();
@@ -190,7 +191,7 @@ export const DashboardScreen: React.FC = () => {
                 </button>
 
                 <button
-                  onClick={() => navigate("/machines/new")}
+                  onClick={() => navigate(ROUTES.NEW_MACHINE)}
                   className="p-4 text-center rounded-lg border-2 border-dashed border-info hover:border-primary hover:bg-primary/10 transition-all transform hover:scale-105 bg-info/5"
                 >
                   <svg

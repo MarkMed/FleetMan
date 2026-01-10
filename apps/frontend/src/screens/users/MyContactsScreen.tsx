@@ -1,9 +1,11 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { Heading1, BodyText, Button, Card } from "@components/ui";
-import { Users, AlertCircle, UserPlus } from "lucide-react";
+import { Users, AlertCircle, UserPlus, Search } from "lucide-react";
 import { ContactCard } from "@components/users/ContactCard";
 import { useMyContactsViewModel } from "../../viewModels/users/useMyContactsViewModel";
 import { modal } from "@helpers/modal";
+import { ROUTES } from "@constants";
 
 /**
  * MyContactsScreen (View Layer - MVVM)
@@ -40,6 +42,12 @@ import { modal } from "@helpers/modal";
  * ```
  */
 export function MyContactsScreen() {
+  // ========================
+  // Hooks
+  // ========================
+  
+  const navigate = useNavigate();
+
   // ========================
   // ViewModel (Business Logic)
   // ========================
@@ -184,13 +192,27 @@ export function MyContactsScreen() {
   return (
     <div className="p-6">
       {/* Header */}
-      <div className="mb-6">
-        <Heading1 size="headline" className="tracking-tight text-foreground">
-          {vm.t("users.contacts.title")}
-        </Heading1>
-        <BodyText className="text-muted-foreground">
-          {vm.t("users.contacts.subtitle")}
-        </BodyText>
+      <div className="mb-6 flex justify-between items-center">
+        <div>
+          <Heading1 size="headline" className="tracking-tight text-foreground">
+            {vm.t("users.contacts.title")}
+          </Heading1>
+          <BodyText className="text-muted-foreground">
+            {vm.t("users.contacts.subtitle")}
+          </BodyText>
+        </div>
+        
+        {/* Navigate to Discovery Button (only when contacts exist) */}
+        {!vm.state.isEmpty && (
+          <Button
+            variant="filled"
+            size="default"
+            onPress={() => navigate(ROUTES.CONTACT_DISCOVERY)}
+          >
+            <Search className="w-4 h-4 mr-2" />
+            {vm.t("users.contacts.exploreUsers")}
+          </Button>
+        )}
       </div>
 
       {/* Content (dynamic based on state) */}

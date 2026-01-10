@@ -695,8 +695,10 @@
       "noCompanyName": "Sin nombre de empresa",
       "verifiedProvider": "Proveedor Verificado",
       "moreServiceAreas": "+{{count}} más",
-      "addContact": "Agregar Contacto",      "addingContact": "Agregando...",
-      "alreadyContact": "Ya es contacto",      "addingContact": "Agregando...",
+      "addContact": "Agregar Contacto",
+      "addingContact": "Agregando...",
+      "alreadyContact": "Ya es contacto",
+      "viewInContacts": "Ver en contactos",
       "searchTitle": "Buscar",
       "filterByType": "Filtrar por tipo"
     },

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Heading1, BodyText, Button, Card, CardContent, CardHeader, CardTitle } from "@components/ui";
 import { useMachinesViewModel } from "../../viewModels/machines";
 import { useMachineTypeResolver } from "@hooks";
+import { ROUTES } from "@constants/index";
 
 const statusVariants: Record<string, string> = {
   ACTIVE: "bg-success/10 text-success",
@@ -39,7 +40,7 @@ export const MachinesScreen: React.FC = () => {
         <Button
           variant="filled"
           size="default"
-          onPress={() => navigate("/machines/new")}
+          onPress={() => navigate(ROUTES.NEW_MACHINE)}
         >
           + Nueva Máquina
         </Button>
