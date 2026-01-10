@@ -4,6 +4,7 @@ import { useDiscoverUsers } from '@hooks/useUserDiscovery';
 import { useAddContact, useMyContacts } from '@hooks/useContacts';
 import { useUserStats } from '@hooks/useUserStats';
 import type { DiscoverUsersQuery, UserPublicProfile } from '@packages/contracts';
+import { modal } from '@helpers/modal';
 
 /**
  * ViewModel: UserDiscoveryScreen Business Logic
@@ -258,19 +259,23 @@ export function useUserDiscoveryViewModel() {
    * 
    * @param userId - The ID of the user to add as contact
    */
-  const handleAddContact = (userId: string) => {
+  const handleAddContact = async (userId: string) => {
     // Get user's company name for toast
     const user = users.find(u => u.id === userId);
     const companyName = user?.profile.companyName || t('users.discovery.noCompanyName');
     
+    modal.showLoading(t('users.contacts.addingContactLoading'));
+    await new Promise(resolve => setTimeout(resolve, 700)); // Small delay to show loading modal
     addContactMutation.mutate({ userId, companyName }, {
       onError: (error) => {
         // Error toast handled by useAddContact hook
         console.error('❌ [User Discovery] Failed to add contact:', error);
+        modal.hide();
       },
       onSuccess: () => {
         // Success toast handled by useAddContact hook
         console.log('✅ [User Discovery] Contact added successfully:', userId);
+        modal.hide();
       }
     });
   };

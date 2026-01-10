@@ -724,6 +724,7 @@
       "cancelRemoveButton": "Cancelar",
       "addSuccess": "{{companyName}} guardado como contacto",
       "addError": "Error al agregar contacto: {{message}}",
+      "addingContactLoading": "Guardando contacto...",
       "removeSuccess": "{{companyName}} eliminado de tus contactos",
       "removeError": "Error al eliminar contacto: {{message}}",
       "removeErrorTitle": "Error al eliminar contacto",
