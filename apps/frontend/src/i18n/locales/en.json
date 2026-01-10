@@ -697,7 +697,11 @@
       "alreadyContact": "Already Contact",
       "viewInContacts": "View in contacts",
       "searchTitle": "Search",
-      "filterByType": "Filter by type"
+      "filterByType": "Filter by type",
+      "visibility": "Visibility",
+      "hideContacts": "Hide saved contacts",
+      "contactsHidden": "{{count}} hidden",
+      "showingFiltered": "Showing {{shown}} of {{total}} users ({{hidden}} hidden)"
     },
     "contacts": {
       "title": "My Contacts",
@@ -705,7 +709,7 @@
       "totalCount": "{{count}} contact(s)",
       "noContacts": "You don't have any contacts yet",
       "noContactsDescription": "Explore users and add them to your personal list to keep in touch",
-      "exploreUsers": "Explore Users",
+      "exploreUsers": "Discover Contacts",
       "sendMessage": "Send message",
       "removeContact": "Remove contact",
       "viewProfile": "View profile",

@@ -71,6 +71,14 @@ export function useUserDiscoveryViewModel() {
   
   // Items per page (default 20, max 50)
   const limit = 20;
+  
+  // Hide saved contacts filter (Module 2: Filter Enhancement)
+  // Persisted in localStorage so user doesn't have to toggle each session
+  // Default: false (show all users for better discovery)
+  const [hideContacts, setHideContacts] = useState<boolean>(() => {
+    const stored = localStorage.getItem('discovery.hideContacts');
+    return stored === 'true';
+  });
 
   // ========================
   // DATA FETCHING
@@ -124,8 +132,21 @@ export function useUserDiscoveryViewModel() {
     return ids;
   }, [contactsData?.contacts]);
   
+  // Filter users client-side to hide saved contacts (Module 2: Filter Enhancement)
+  // NOTE: Client-side filtering for MVP - see TODO below for server-side migration
+  const displayedUsers = useMemo(() => {
+    if (!hideContacts) return users; // Show all if filter not active
+    return users.filter(user => !contactIds.has(user.id));
+  }, [users, hideContacts, contactIds]);
+  
+  // Count how many contacts are hidden (for badge feedback)
+  const hiddenCount = useMemo(() => {
+    if (!hideContacts) return 0;
+    return users.length - displayedUsers.length;
+  }, [hideContacts, users.length, displayedUsers.length]);
+  
   // Check if any filters are active (useful for showing "Clear filters" button)
-  const hasActiveFilters = searchTerm.trim().length > 0 || userType !== undefined;
+  const hasActiveFilters = searchTerm.trim().length > 0 || userType !== undefined || hideContacts;
 
   // ========================
   // BUSINESS LOGIC ACTIONS
@@ -166,7 +187,27 @@ export function useUserDiscoveryViewModel() {
     setSearchInput('');
     setSearchTerm('');
     setUserType(undefined);
+    setHideContacts(false); // Also reset hide contacts filter
+    localStorage.setItem('discovery.hideContacts', 'false');
     setPage(1);
+  };
+  
+  /**
+   * Toggle hide saved contacts filter
+   * Persists preference in localStorage for future sessions
+   * Resets to page 1 when filter changes (like other filters)
+   * 
+   * Module 2: Filter Enhancement
+   * MVP: Client-side filtering
+   * Post-MVP: Consider server-side when user base > 1000 (see TODO below)
+   */
+  const handleToggleHideContacts = () => {
+    setHideContacts(prev => {
+      const newValue = !prev;
+      localStorage.setItem('discovery.hideContacts', String(newValue));
+      return newValue;
+    });
+    setPage(1); // Reset to first page when filter changes
   };
 
   /**
@@ -238,14 +279,16 @@ export function useUserDiscoveryViewModel() {
     state: {
       isLoading,
       error: error as Error | null,
-      isEmpty: !isLoading && isEmpty,
+      isEmpty: !isLoading && displayedUsers.length === 0, // Use displayedUsers for empty check (respects filter)
       hasActiveFilters,
       isAddingContact: addContactMutation.isPending, // Module 2: Track add contact loading
     },
     
     // Data for rendering
     data: {
-      users,
+      users: displayedUsers, // Module 2: Return filtered users instead of raw users
+      allUsersCount: users.length, // Original count before filtering (for counters)
+      hiddenContactsCount: hiddenCount, // How many contacts are hidden by filter
       total,
       currentPage: page,
       totalPages,
@@ -266,6 +309,7 @@ export function useUserDiscoveryViewModel() {
       searchInput, // Current value in search input (controlled)
       searchTerm, // Applied search term in query (read-only for display)
       userType,
+      hideContacts, // Module 2: Hide saved contacts filter
     },
     
     // User actions
@@ -274,6 +318,7 @@ export function useUserDiscoveryViewModel() {
       handleSearch, // Execute search (triggers API call)
       handleTypeFilterChange,
       handleClearFilters,
+      handleToggleHideContacts, // Module 2: Toggle hide contacts filter
       handleNextPage,
       handlePreviousPage,
       handleGoToPage,
@@ -343,7 +388,27 @@ export type UserDiscoveryViewModel = ReturnType<typeof useUserDiscoveryViewModel
 //       mutualContactCount: 0,
 //       tags: []
 //     });
-//   });
+//   });Server-side "Hide Contacts" filter (Post-MVP Migration)
+// Current: Client-side filtering (MVP approach)
+// When: User base > 1000 OR if >70% of users enable this filter
+// Why migrate:
+//   1. Performance: Large user lists slow client-side filter
+//   2. Data efficiency: Don't fetch contacts if user always hides them
+//   3. Pagination accuracy: Current approach breaks counts (shows "50 of 100" but only 30 visible)
+//
+// Implementation plan:
+//   - Backend: Add `excludeContacts` query param to /users/discover endpoint
+//   - Backend: Filter SQL query with NOT IN (SELECT contact_id FROM contacts WHERE user_id = ?)
+//   - Frontend: Pass excludeContacts to useDiscoverUsers({ excludeContacts: true })
+//   - Frontend: Remove client-side filter logic (keep localStorage for preference)
+//   - Metrics: Track usage % in analytics to justify migration
+//
+// Decision criteria:
+//   - <30% usage = Keep client-side (not worth backend complexity)
+//   - 30-70% usage = Evaluate based on user base size
+//   - >70% usage = Migrate to server-side (most users expect this)
+
+// TODO: 
 //   return map;
 // }, [contactsData]);
 

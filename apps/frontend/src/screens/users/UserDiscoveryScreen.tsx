@@ -1,5 +1,5 @@
 import React from 'react';
-import { Heading1, BodyText, Button, Card, Input } from '@components/ui';
+import { Heading1, BodyText, Button, Card, Input, Checkbox } from '@components/ui';
 import { Search, AlertCircle, Users } from 'lucide-react';
 import { UserCard } from '@components/users/UserCard';
 import { useUserDiscoveryViewModel } from '../../viewModels/users/useUserDiscoveryViewModel';
@@ -130,11 +130,21 @@ export function UserDiscoveryScreen() {
         {/* Results Summary */}
         <div className="flex items-center justify-between">
           <BodyText size="small" className="text-muted-foreground">
-            {vm.t('users.discovery.resultsCount', {
-              start: vm.data.pagination.rangeStart,
-              end: vm.data.pagination.rangeEnd,
-              total: vm.data.total,
-            })}
+            {vm.filters.hideContacts && vm.data.hiddenContactsCount > 0 ? (
+              // Show filtered count when hiding contacts
+              vm.t('users.discovery.showingFiltered', {
+                shown: vm.data.users.length,
+                total: vm.data.allUsersCount,
+                hidden: vm.data.hiddenContactsCount,
+              })
+            ) : (
+              // Normal count
+              vm.t('users.discovery.resultsCount', {
+                start: vm.data.pagination.rangeStart,
+                end: vm.data.pagination.rangeEnd,
+                total: vm.data.total,
+              })
+            )}
           </BodyText>
           
           {vm.state.hasActiveFilters && (
@@ -250,6 +260,35 @@ export function UserDiscoveryScreen() {
                 >
                   <Search className="w-4 h-4" />
                 </Button>
+              </div>
+            </div>
+
+            {/* Divider */}
+            <div className="border-t" />
+
+            {/* Hide Contacts Filter Section (Module 2: Filter Enhancement) */}
+            <div className="space-y-2">
+              <BodyText weight="medium" size="small" className="text-foreground">
+                {vm.t('users.discovery.visibility')}
+              </BodyText>
+              <div className="flex items-start gap-2">
+                <Checkbox
+                  id="hideContacts"
+                  checked={vm.filters.hideContacts}
+                  onCheckedChange={vm.actions.handleToggleHideContacts}
+                  aria-label={vm.t('users.discovery.hideContacts')}
+                />
+                <label
+                  htmlFor="hideContacts"
+                  className="text-sm cursor-pointer select-none leading-tight"
+                >
+                  {vm.t('users.discovery.hideContacts')}
+                  {vm.data.hiddenContactsCount > 0 && (
+                    <span className="ml-2 text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
+                      {vm.t('users.discovery.contactsHidden', { count: vm.data.hiddenContactsCount })}
+                    </span>
+                  )}
+                </label>
               </div>
             </div>
 

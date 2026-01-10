@@ -700,7 +700,11 @@
       "alreadyContact": "Ya es contacto",
       "viewInContacts": "Ver en contactos",
       "searchTitle": "Buscar",
-      "filterByType": "Filtrar por tipo"
+      "filterByType": "Filtrar por tipo",
+      "visibility": "Visibilidad",
+      "hideContacts": "Ocultar contactos guardados",
+      "contactsHidden": "{{count}} ocultos",
+      "showingFiltered": "Mostrando {{shown}} de {{total}} usuarios ({{hidden}} ocultos)"
     },
     "contacts": {
       "title": "Mis Contactos",
@@ -708,7 +712,7 @@
       "totalCount": "{{count}} contacto(s)",
       "noContacts": "No tienes contactos aún",
       "noContactsDescription": "Explora usuarios y agrégalos a tu agenda personal para mantener comunicación",
-      "exploreUsers": "Explorar Usuarios",
+      "exploreUsers": "Descubrir Contactos",
       "sendMessage": "Enviar mensaje",
       "removeContact": "Eliminar contacto",
       "viewProfile": "Ver perfil",
