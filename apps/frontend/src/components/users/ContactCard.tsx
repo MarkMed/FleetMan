@@ -152,15 +152,13 @@ export const ContactCard: React.FC<ContactCardProps> = ({
 
       {/* Action Buttons Section (Module 2: Contact Management) */}
       <div className="mt-4 pt-3 border-t flex gap-2">
-        {/* Send Message Button (Placeholder for Module 3) */}
+        {/* Send Message Button (Module 3: Enabled) */}
         {onSendMessage && (
           <Button
             size="sm"
             variant="outline"
             onPress={() => onSendMessage(user.id)}
-            disabled={true} // TODO Module 3: Enable when messaging implemented
             className="flex-1"
-            title={t('users.contacts.messagingComingSoon')}
           >
             <MessageCircle className="w-4 h-4 mr-2" />
             {t('users.contacts.sendMessage')}

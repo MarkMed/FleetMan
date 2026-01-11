@@ -20,8 +20,9 @@ import { BrowserNotificationBanner } from '@components/notifications';
 /**
  * Notification badge color mapping based on notification type
  * Pure presentation logic - stays in View
+ * Sprint #12 Module 3: Added 'new_message' for messaging system
  */
-const getNotificationStyles = (type: 'success' | 'warning' | 'error' | 'info') => {
+const getNotificationStyles = (type: 'success' | 'warning' | 'error' | 'info' | 'new_message') => {
   const styles = {
     success: {
       border: 'border-l-success',
@@ -50,6 +51,13 @@ const getNotificationStyles = (type: 'success' | 'warning' | 'error' | 'info') =
       dot: 'bg-info',
       badge: 'text-info bg-info/10',
       label: 'INFO',
+    },
+    new_message: {
+      border: 'border-l-primary',
+      bg: 'bg-primary/5',
+      dot: 'bg-primary',
+      badge: 'text-primary bg-primary/10',
+      label: 'MENSAJE',
     },
   };
   return styles[type];

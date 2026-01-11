@@ -38,9 +38,9 @@ export class UserRepository implements IUserRepository {
         return err(DomainError.notFound(`User with ID ${id.getValue()} not found`));
       }
 
-      // TODO: Implement proper document to entity conversion
-      // For now, return an error indicating incomplete implementation
-      return err(DomainError.create('INCOMPLETE_IMPLEMENTATION', 'UserRepository.findById needs complete implementation'));
+      // Convertir documento MongoDB → entidad de dominio
+      const userEntity = await this.documentToEntity(userDoc);
+      return ok(userEntity);
     } catch (error: any) {
       return err(DomainError.create('PERSISTENCE_ERROR', `Error finding user by ID: ${error.message}`));
     }

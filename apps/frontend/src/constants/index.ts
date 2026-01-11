@@ -21,12 +21,9 @@ export const ROUTES = {
   
   // User Communication (Sprint #12)
   CONTACT_DISCOVERY: '/contact-discovery',
-  MY_CONTACTS: '/contacts', // Module 2: User's contact list (renamed to avoid conflict with /contacts help route)
-  // TODO Sprint #12 Module 3: Messaging
-  // MESSAGES: '/messages', // Messaging inbox (Module 3)
-  // MESSAGE_THREAD: (userId: string) => `/messages/${userId}`, // Direct message thread
-  // Note: '/contacts' route for user-to-user contacts (Module 2)
-  // Distinct from '/help/contacts' which is help/support info (ContactsScreen in screens/help/)
+  MY_CONTACTS: '/contacts', // Module 2: User's contact list
+  MESSAGES: '/messages', // Module 3: Messaging inbox (conversations list)
+  CHAT: (otherUserId: string) => `/messages/${otherUserId}`, // Direct message thread
 } as const;
 
 // Re-export navigation constants
@@ -59,12 +56,20 @@ export const API_ENDPOINTS = {
   // User Statistics (Sprint #12 - User Stats Feature)
   USER_STATS_TOTAL: '/users/stats/total',
   
+  // Messaging (Sprint #12 - Module 3: 1-to-1 Messaging)
+  MESSAGES: '/messages',
+  CONVERSATION_HISTORY: (otherUserId: string) => `/messages/conversations/${otherUserId}`,
+  
   // TODO: Endpoints estratégicos futuros
   // USER_PUBLIC_PROFILE: (userId: string) => `/users/${userId}/public-profile`,
   // USER_STATS: (userId: string) => `/users/${userId}/stats`,
   // MY_CONTACT_DETAILS: (contactUserId: string) => `/users/me/contacts/${contactUserId}/details`,
   // MY_CONTACTS_BULK: '/users/me/contacts/bulk',
   // MY_CONTACT_MUTUAL: (contactUserId: string) => `/users/me/contacts/${contactUserId}/mutual`,
+  // MESSAGE: (messageId: string) => `/messages/${messageId}`, // For edit/delete (Future)
+  // MARK_CONVERSATION_READ: (otherUserId: string) => `/messages/conversations/${otherUserId}/mark-as-read`,
+  // CONVERSATIONS: '/messages/conversations', // List all conversations with metadata
+  // SEARCH_CONVERSATION: (otherUserId: string) => `/messages/conversations/${otherUserId}/search`,
   
   // Machines
   MACHINES: '/machines',
@@ -238,11 +243,18 @@ export const QUERY_KEYS = {
   // User Statistics (Sprint #12 - User Stats Feature)
   USER_STATS_TOTAL: ['users', 'stats', 'total'],
   
+  // Messaging (Sprint #12 - Module 3: 1-to-1 Messaging)
+  MESSAGES: (otherUserId: string, page?: number) => 
+    page ? ['messages', otherUserId, { page }] : ['messages', otherUserId],
+  CONVERSATIONS: ['conversations'],
+  
   // TODO: Query keys estratégicas futuras
   // USER_PUBLIC_PROFILE: (userId: string) => ['users', userId, 'public-profile'],
   // USER_STATS: (userId: string) => ['users', userId, 'stats'],
   // CONTACTS_BULK: ['contacts', 'bulk'],
   // CONTACT_MUTUAL: (contactUserId: string) => ['contacts', contactUserId, 'mutual'],
+  // CONVERSATION_METADATA: (otherUserId: string) => ['conversations', otherUserId, 'metadata'],
+  // MESSAGE_SEARCH: (otherUserId: string, query: string) => ['messages', otherUserId, 'search', query],
   
   // Spare Parts
   SPARE_PARTS: ['spare-parts'],

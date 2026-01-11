@@ -5,7 +5,8 @@ import {
   DomainError,
   ok,
   err,
-  type IMessage
+  type IMessage,
+  NOTIFICATION_SOURCE_TYPES
 } from '@packages/domain';
 import { MessageRepository, UserRepository } from '@packages/persistence';
 import { AddNotificationUseCase } from '../notifications/add-notification.use-case';
@@ -203,7 +204,7 @@ export class SendMessageUseCase {
           {
             notificationType: 'new_message', // Tipo específico para mensajes (lowercase según NOTIFICATION_TYPES)
             message: `New message from ${senderName}`,
-            sourceType: 'MESSAGING',
+            sourceType: NOTIFICATION_SOURCE_TYPES[4], // 'MESSAGING' - usando enum de domain (SSOT)
             metadata: {
               messageId: savedMessage.id,
               senderId: input.senderId,

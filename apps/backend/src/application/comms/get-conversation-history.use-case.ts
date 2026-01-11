@@ -15,26 +15,29 @@ import type { ConversationHistoryQuery, ConversationHistoryResponse } from '@pac
  * Responsabilidades:
  * 1. Validar formato de userId (autenticado) y otherUserId
  * 2. Verificar que ambos usuarios existen
- * 3. Obtener historial paginado con query bidireccional
- * 4. Retornar resultado estructurado con metadata de paginación
+ * 3. Validar que el usuario autenticado tiene al otro usuario como contacto
+ * 4. Obtener historial paginado con query bidireccional (puede ser vacío)
+ * 5. Retornar resultado estructurado con metadata de paginación
  * 
  * Reglas de negocio:
  * - Query bidireccional: mensajes donde (A→B) OR (B→A)
  * - Orden: sentAt DESC (más recientes primero)
  * - Paginación obligatoria: min 1 mensaje, max 50 por página
- * - NO valida relación de contacto actual (historial histórico inmutable)
- * - Permite ver mensajes antiguos aunque ya no sean contactos
+ * - SÍ valida relación de contacto actual antes de mostrar historial
+ * - Si no son contactos → 403 Forbidden
+ * - Si son contactos pero no tienen mensajes → 200 OK con array vacío
  * 
- * Decisión de diseño (historial histórico):
- * - Si usuario A remueve a usuario B como contacto, PUEDE seguir viendo mensajes antiguos
- * - Historial es registro inmutable (auditoría)
- * - NO se borra al remover contacto
+ * Casos de uso válidos:
+ * 1. Usuario A y B son contactos con mensajes previos → Retorna historial
+ * 2. Usuario A y B son contactos SIN mensajes previos → Retorna array vacío (OK)
+ * 3. Usuario A y B NO son contactos → 403 Forbidden (aunque tuvieran mensajes antiguos)
+ * 4. Usuario B no existe → 404 Not Found
  * 
  * @example
  * const useCase = new GetConversationHistoryUseCase();
  * const result = await useCase.execute(
  *   'user_abc123',     // userId autenticado (JWT)
- *   'user_def456',     // otherUserId con quien conversó
+ *   'user_def456',     // otherUserId (debe ser contacto)
  *   { page: 1, limit: 20 }
  * );
  */
@@ -93,16 +96,19 @@ export class GetConversationHistoryUseCase {
       // 2. VERIFICAR QUE AMBOS USUARIOS EXISTEN
       // =================================================================
       // Verificar usuario autenticado existe
+      logger.debug({ userId }, 'Looking up authenticated user');
       const userResult = await this.userRepository.findById(userIdResult.data);
       if (!userResult.success) {
         logger.warn({ 
           userId, 
           error: userResult.error.message 
-        }, 'User not found');
+        }, 'Authenticated user not found');
         return err(DomainError.notFound('User not found'));
       }
+      logger.debug({ userId }, 'Authenticated user found');
 
       // Verificar otro usuario existe
+      logger.debug({ otherUserId }, 'Looking up other user');
       const otherUserResult = await this.userRepository.findById(otherUserIdResult.data);
       if (!otherUserResult.success) {
         logger.warn({ 
@@ -111,9 +117,27 @@ export class GetConversationHistoryUseCase {
         }, 'Other user not found');
         return err(DomainError.notFound('Other user not found'));
       }
+      logger.debug({ otherUserId }, 'Other user found');
 
       // =================================================================
-      // 3. VALIDAR LÍMITES DE PAGINACIÓN
+      // 3. VALIDAR RELACIÓN DE CONTACTO
+      // =================================================================
+      // Verificar que el usuario autenticado tiene al otro usuario como contacto
+      logger.debug({ userId, otherUserId }, 'Checking contact relationship');
+      const isContact = await this.userRepository.isContact(userIdResult.data, otherUserIdResult.data);
+      logger.debug({ userId, otherUserId, isContact }, 'Contact relationship check result');
+      
+      if (!isContact) {
+        logger.warn({ 
+          userId, 
+          otherUserId 
+        }, 'User is not your contact');
+        return err(DomainError.create('FORBIDDEN', 'User is not your contact'));
+      }
+      logger.debug({ userId, otherUserId }, 'Contact relationship confirmed');
+
+      // =================================================================
+      // 4. VALIDAR LÍMITES DE PAGINACIÓN
       // =================================================================
       // Aplicar límites de seguridad (prevenir queries masivas)
       const page = Math.max(1, query.page); // Min 1 (primera página)
@@ -127,7 +151,7 @@ export class GetConversationHistoryUseCase {
       }, 'Pagination limits applied');
 
       // =================================================================
-      // 4. OBTENER HISTORIAL PAGINADO (QUERY BIDIRECCIONAL)
+      // 5. OBTENER HISTORIAL PAGINADO (QUERY BIDIRECCIONAL)
       // =================================================================
       const historyResult = await this.messageRepository.getConversationHistory(
         userIdResult.data,
@@ -145,7 +169,7 @@ export class GetConversationHistoryUseCase {
       }
 
       // =================================================================
-      // 5. CONSTRUIR RESPUESTA CON METADATA DE PAGINACIÓN
+      // 6. CONSTRUIR RESPUESTA CON METADATA DE PAGINACIÓN
       // =================================================================
       const historyData = historyResult.data;
       const response: ConversationHistoryResponse = {
