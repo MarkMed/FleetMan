@@ -625,14 +625,14 @@ Distribución por categoría:
 | Gestión | 20.2 Demo/UAT de Sprint #11 | 1 | 1.5 | 1.2 |
 | Gestión | 20.3 Sprint Planning de Sprint #12 | 2 | 1.3 | 2 |
 | Documentación | 20.1 Reporte Académico del Sprint #11 | 3 | 5 | 5.1 |
-| Desarrollo | 9.1a Domain+Contracts+Persistence UserDirectory | 4 | 2 | |
-| Desarrollo | 9.1b Application Layer Backend UserDirectory | 6 | 3 | |
-| Desarrollo | 9.1c Frontend UI+Integration UserDiscovery | 8 | 3 | |
-| Desarrollo | 9.2a Domain+Contracts+Persistence Contacts | 5 | 3 | |
-| Desarrollo | 9.2b Application Layer Backend Contacts | 7 | 4 | |
-| Desarrollo | 9.2c Frontend UI+Integration MyContacts | 9 | 4 | |
-| Desarrollo | 9.3a Domain+Contracts+Persistence Messages | 10 | 3 | |
-| Desarrollo | 9.3b Application Layer Backend Messages | 11 | 3 | |
+| Desarrollo | 9.1a Domain+Contracts+Persistence UserDirectory | 4 | 2 | 2.1 |
+| Desarrollo | 9.1b Application Layer Backend UserDirectory | 6 | 3 | 3 |
+| Desarrollo | 9.1c Frontend UI+Integration UserDiscovery | 8 | 3 | 4.9 |
+| Desarrollo | 9.2a Domain+Contracts+Persistence Contacts | 5 | 3 | 2.3 |
+| Desarrollo | 9.2b Application Layer Backend Contacts | 7 | 4 | 3.4 |
+| Desarrollo | 9.2c Frontend UI+Integration MyContacts | 9 | 4 | 5.2 |
+| Desarrollo | 9.3a Domain+Contracts+Persistence Messages | 10 | 3 | 2.5 |
+| Desarrollo | 9.3b Application Layer Backend Messages | 11 | 3 | 2 |
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales | Consumo |
 |:---:|:----------:|:-------:|

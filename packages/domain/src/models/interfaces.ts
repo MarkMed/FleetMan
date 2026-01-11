@@ -323,7 +323,36 @@ export interface IQuickCheckTemplate extends IBaseEntity {
 }
 
 /**
- * Interface pública para InternalMessage
+ * Constante para límite de caracteres en contenido de mensajes
+ * Sprint #12 - Módulo 3: Messaging System
+ */
+export const MESSAGE_CONTENT_MAX_LENGTH = 1000;
+
+/**
+ * Interface pública para Mensaje 1-a-1
+ * Adaptado de IInternalMessage para sistema de mensajería simple entre contactos
+ * 
+ * Sprint #12 - Módulo 3: Messaging System
+ */
+export interface IMessage extends IBaseEntity {
+  readonly senderId: string;
+  readonly recipientId: string;
+  readonly content: string;
+  readonly sentAt: Date;
+  
+  // TODO: Features POST-MVP
+  // readonly isRead?: boolean;           // Estado de lectura del mensaje
+  // readonly readAt?: Date;              // Timestamp cuando fue leído
+  // readonly parentMessageId?: string;   // Para threading/respuestas
+  // readonly attachmentUrls?: string[];  // Para multimedia (imágenes, documentos)
+  // readonly isEdited?: boolean;         // Flag si fue editado
+  // readonly editedAt?: Date;            // Timestamp de última edición
+}
+
+/**
+ * Interface pública para InternalMessage (Sistema interno diferente al chat 1-a-1)
+ * DEPRECATED: Mantener por compatibilidad, pero usar IMessage para chat
+ * @deprecated Use IMessage for 1-to-1 chat messaging instead
  */
 export interface IInternalMessage extends IBaseEntity {
   readonly fromUserId: string;

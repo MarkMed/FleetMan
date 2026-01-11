@@ -82,4 +82,8 @@ export const DomainErrorCodes = {
   
   // Maintenance errors
   INVALID_MAINTENANCE_INTERVAL: 'INVALID_MAINTENANCE_INTERVAL',
+  
+  // Message errors (Sprint #12 Module 3)
+  INVALID_INPUT: 'INVALID_INPUT',
+  PERSISTENCE_ERROR: 'PERSISTENCE_ERROR',
 } as const;
