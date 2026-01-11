@@ -158,7 +158,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
           onPress={handleSend}
           disabled={isLoading || !text.trim() || isOverLimit}
           size="icon"
-          className="flex-shrink-0 mb-[34px]" // Align with textarea (accounting for character counter)
+          className="flex-shrink-0" // Align with textarea (accounting for character counter)
           aria-label={t('messages.send')}
         >
           {isLoading ? (
@@ -170,7 +170,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
       </div>
       
       {/* Helper text */}
-      <p className="text-xs text-muted-foreground">
+      <p className="text-xs text-muted-foreground -mt-[25px]">
         {t('messages.sendHint', 'Enter para enviar, Shift+Enter para nueva línea')}
       </p>
       
