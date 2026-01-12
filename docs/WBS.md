@@ -272,13 +272,40 @@ Grupo de mejoras al modelo y formulario de máquina implementadas en una sola pa
 		- PERT: Optimista 10hs, Probable 12hs, Pesimista 15hs
 		- **Tareas agrupadas:** [5] Asignar a, [6] Fix display tipo, [7] Fix powerSource, [8] UsageRate, [NUEVA] machinePhotoUrl
 
-	- 3.3 **Edición con historial** (RF-006).
-Edición + auditoría básica de cambios.
-		- Horas estimadas: **8**hs
-		- Margen: ±**1.5**hs (P80)
-		- Incertidumbre: **Media**
+	- 3.3 **Edición de Máquinas con Historial** (RF-006).
+Funcionalidad completa de edición de máquinas con auditoría de cambios. Desglosada en subtareas por capa para mejor tracking y estimación.
+		- Horas estimadas: **7**hs (total desglosado en 3.3a/b/c)
+		- Margen: ±**1.4**hs (P80)
+		- Incertidumbre: **Baja-Media**
 		- Dependencias: 3.2 (FS)
 		- Spike: **No**
+
+	- 3.3a **Machine Editing - Domain + Persistence**.
+Capa de dominio y persistencia para edición de máquinas. Domain: Extender IMachineRepository con método updateMachine(id, updates), validaciones de integridad (ej. no cambiar ownerId sin permisos). Persistence: Implementar updateMachine en MachineRepository usando findByIdAndUpdate con validación de ownership, manejo de campos opcionales (assignedTo, machinePhotoUrl, usageRate), timestamps automáticos (updatedAt). Opcionalmente agregar historial básico de cambios como subdocumento [{field, oldValue, newValue, changedAt, changedBy}] en Machine.changeHistory. Mapper: Asegurar conversión correcta Document ↔ Domain para campos actualizados.
+		- Horas estimadas: **2**hs
+		- Margen: ±**0.4**hs (P80)
+		- Incertidumbre: **Baja-Media**
+		- Dependencias: 3.2, 1.2 (FS)
+		- Spike: **No**
+		- PERT: Optimista 1.5hs, Probable 2hs, Pesimista 3hs
+
+	- 3.3b **Machine Editing - Application Layer Backend**.
+Lógica de negocio y endpoints REST para edición de máquinas. Use Case: UpdateMachineUseCase con validaciones (ownership, campos permitidos), construcción de updates, invocación a MachineRepository.updateMachine, registro de cambio en historial si aplica. Controller: PATCH /api/machines/:id endpoint con validaciones Zod (UpdateMachineRequestSchema), autorización (middleware ownership), respuesta estructurada con máquina actualizada. DI con tsyringe. Result pattern para manejo de errores (NotFound, Forbidden, ValidationError).
+		- Horas estimadas: **2**hs
+		- Margen: ±**0.4**hs (P80)
+		- Incertidumbre: **Baja-Media**
+		- Dependencias: 3.3a (FS)
+		- Spike: **No**
+		- PERT: Optimista 1.5hs, Probable 2hs, Pesimista 3hs
+
+	- 3.3c **Machine Editing - Frontend UI**.
+Interfaz de usuario para edición de máquinas. Componente: EditMachineForm o modal reutilizando estructura de 3.1 (ReactHookForm + validaciones), pre-población de valores actuales, estados loading/success/error, confirmación antes de guardar. Integración: Botón "Editar" en MachineDetail, navegación a /machines/:id/edit o modal overlay, useUpdateMachine hook con TanStack Query mutation, actualización optimista de caché, toast notifications, redirección a detalle tras éxito. Mostrar historial de cambios si está disponible (lista simple con timestamps).
+		- Horas estimadas: **3**hs
+		- Margen: ±**0.6**hs (P80)
+		- Incertidumbre: **Baja-Media**
+		- Dependencias: 3.3b, 3.1 (FS)
+		- Spike: **No**
+		- PERT: Optimista 2hs, Probable 3hs, Pesimista 4hs
 
 	- 3.4 **QuickActions Dashboard** (UX).
 Componente de acciones rápidas en Dashboard con overlay blur. Incluye: QuickCheck, Reportar Evento, Solicitar Repuesto, Nueva Máquina. Modal intermedio para selección de máquina en las primeras 3 acciones.
@@ -852,9 +879,100 @@ Sistema de chat básico 1-a-1 entre contactos. NO incluir features avanzadas (gr
 			- Spike: **No**
 			- PERT: Optimista 2hs, Probable 3hs, Pesimista 4hs
 
-10. **Búsqueda & Filtros** (RF-018) [Post-MVP]
+10. **Enriquecimiento de Usuarios & Datos**
 
-	- 10.1 **Query service + índices**.
+	- 10.1 **Edición de Perfil de Usuario**.
+Funcionalidad completa para que usuarios editen su información de perfil. Desglosada por capas arquitectónicas.
+		- Horas estimadas: **8**hs (total desglosado en 10.1a/b/c)
+		- Margen: ±**1.5**hs (P80)
+		- Incertidumbre: **Media**
+		- Dependencias: 2.2, 2.5 (FS)
+		- Spike: **No**
+
+	- 10.1a **User Profile Editing - Domain + Persistence**.
+Capa de dominio y persistencia para edición de perfil. Domain: Extender IUserRepository con método updateUserProfile(userId, updates), validaciones de integridad (email único si cambia, rol NO editable por usuario). Persistence: Implementar updateUserProfile en UserRepository usando findByIdAndUpdate, validación de unicidad de email, manejo de campos editables (name, email, company?, phone?, avatar?), timestamps automáticos (updatedAt). Mapper: Asegurar conversión correcta Document ↔ Domain.
+		- Horas estimadas: **2**hs
+		- Margen: ±**0.4**hs (P80)
+		- Incertidumbre: **Baja-Media**
+		- Dependencias: 2.2, 1.2 (FS)
+		- Spike: **No**
+		- PERT: Optimista 1.5hs, Probable 2hs, Pesimista 3hs
+
+	- 10.1b **User Profile Editing - Application Layer Backend**.
+Lógica de negocio y endpoints REST para edición de perfil. Use Case: UpdateUserProfileUseCase con validaciones (user_id match con token, campos permitidos, email único), construcción de updates, invocación a UserRepository.updateUserProfile. Controller: PATCH /api/users/me/profile endpoint con validaciones Zod (UpdateUserProfileRequestSchema), autenticación requerida (middleware), autorización (solo propio perfil), respuesta estructurada con usuario actualizado. DI con tsyringe. Result pattern para manejo de errores (NotFound, Conflict email, ValidationError).
+		- Horas estimadas: **3**hs
+		- Margen: ±**0.6**hs (P80)
+		- Incertidumbre: **Media**
+		- Dependencias: 10.1a (FS)
+		- Spike: **No**
+		- PERT: Optimista 2hs, Probable 3hs, Pesimista 4hs
+
+	- 10.1c **User Profile Editing - Frontend UI**.
+Interfaz de usuario para edición de perfil. Componente: EditProfileForm o ProfileSettings con ReactHookForm, validaciones tiempo real, pre-población de valores actuales, estados loading/success/error. Campos editables: name, email, company, phone, avatar (opcional con 10.3). Integración: Ruta /profile/edit o modal desde header/settings, useUpdateProfile hook con TanStack Query mutation, actualización de contexto de autenticación tras éxito, toast notifications, redirección o cierre modal. Validaciones frontend: email formato válido, campos requeridos.
+		- Horas estimadas: **3**hs
+		- Margen: ±**0.6**hs (P80)
+		- Incertidumbre: **Media**
+		- Dependencias: 10.1b, 2.2 (FS)
+		- Spike: **No**
+		- PERT: Optimista 2hs, Probable 3hs, Pesimista 4hs
+
+	- 10.2 **Sistema de Bio & Tags de Usuario**.
+Sistema de biografía y etiquetas para perfiles de usuario, mejorando discovery y contexto profesional.
+		- Horas estimadas: **8**hs (total desglosado en 10.2a/b/c)
+		- Margen: ±**1.5**hs (P80)
+		- Incertidumbre: **Media**
+		- Dependencias: 10.1 (FS)
+		- Spike: **No**
+
+	- 10.2a **Bio & Tags - Domain + Persistence**.
+Agregar campos bio y tags al modelo de usuario. Domain: Extender User entity con campos {bio?: string (max 300 chars), tags?: string[] (max 10 tags, cada tag max 20 chars)}. Persistence: Actualizar UserSchema en Mongoose con validaciones (longitud bio, límites tags, formato tags lowercase/trim), índice de texto en tags para búsqueda futura. Migrations: Script opcional para agregar campos a usuarios existentes con valores por defecto vacíos. Mapper: Incluir bio/tags en conversión Document ↔ Domain.
+		- Horas estimadas: **2**hs
+		- Margen: ±**0.4**hs (P80)
+		- Incertidumbre: **Baja-Media**
+		- Dependencias: 10.1a, 1.2 (FS)
+		- Spike: **No**
+		- PERT: Optimista 1.5hs, Probable 2hs, Pesimista 3hs
+
+	- 10.2b **Bio & Tags - Application Layer Backend**.
+Extender funcionalidad de edición de perfil para incluir bio/tags. Use Case: Actualizar UpdateUserProfileUseCase (10.1b) para manejar campos bio y tags con validaciones (longitud, límites, formato). Controller: Extender PATCH /api/users/me/profile para aceptar bio y tags en UpdateUserProfileRequestSchema. Opcionalmente crear GET /api/tags/suggestions endpoint para autocompletado de tags comunes (basado en tags más usados). Validaciones Zod: bio maxLength 300, tags array max 10 items, cada tag maxLength 20.
+		- Horas estimadas: **2**hs
+		- Margen: ±**0.4**hs (P80)
+		- Incertidumbre: **Baja-Media**
+		- Dependencias: 10.2a, 10.1b (FS)
+		- Spike: **No**
+		- PERT: Optimista 1.5hs, Probable 2hs, Pesimista 3hs
+
+	- 10.2c **Bio & Tags - Frontend UI**.
+UI para edición de bio y tags en perfil. Componente: Extender EditProfileForm (10.1c) con textarea para bio (contador de caracteres 0/300) y componente TagInput para tags (chips editables, agregar/eliminar tags, autocompletado opcional si hay endpoint). Mostrar bio y tags en UserProfile/UserCard/UserDirectory (9.1c). Integración: Mismo flujo de edición que 10.1c, validaciones frontend (longitud bio, límite tags), estados loading/success/error. UI: Bio como textarea expandible, Tags como chips con botón "+" para agregar, "x" para eliminar.
+		- Horas estimadas: **2**hs
+		- Margen: ±**0.4**hs (P80)
+		- Incertidumbre: **Baja-Media**
+		- Dependencias: 10.2b, 10.1c (FS)
+		- Spike: **No**
+		- PERT: Optimista 1.5hs, Probable 2hs, Pesimista 3hs
+
+	- 10.3 **Adaptación de Image Upload Component**.
+Implementar/adaptar el componente de upload de imágenes existente de otro proyecto. Frontend: Copiar componente ImageUploader ya implementado, adaptar props/interfaces a contratos de FleetMan (User.avatarUrl, Machine.machinePhotoUrl), conectar con endpoints de Cloudinary a traves de llamadas API (en front). Integración: Incorporar en EditProfileForm (10.1c) para avatar de usuario, incorporar en EditMachineForm (3.3c) para foto de máquina. Testing: Upload → preview → obtener URL de Cloudinary → guardar en BD. Validaciones: Formato (jpg, png, webp), tamaño máximo (5MB), estados loading/error. NO incluye: Implementación de backend (ya existe), creación de ImageService (ya configurado), endpoints REST nuevos. Alcance 100% frontend: adaptación de componente existente + integración en formularios.
+		- Horas estimadas: **3**hs
+		- Margen: ±**0.6**hs (P80)
+		- Incertidumbre: **Baja**
+		- Dependencias: 0.5 (Cloudinary setup), 3.6 (machinePhotoUrl field), 10.1c (EditProfileForm), 3.3c (EditMachineForm) (FS)
+		- Spike: **No**
+		- PERT: Optimista 2hs, Probable 3hs, Pesimista 4hs
+		- Nota: **Tarea simplificada** - reutiliza componente existente de otro proyecto con adaptaciones menores, no requiere implementación desde cero
+
+	- 10.4 **Enriquecimiento de Onboarding**.
+Mejoras al flujo de onboarding existente (2.3) para capturar información adicional de perfil. Extender OnboardingWizard con step adicional o expandir step actual para incluir: bio opcional, tags (sugerencias predefinidas: "Operador", "Técnico", "Supervisor", "Mantenimiento"), avatar opcional (usando ImageUploader de 10.3). NO crear nuevo flujo, solo extender el existente agregando campos opcionales. Guardar datos extendidos en backend usando endpoints de 10.1 y 10.2. UX: Mantener onboarding rápido, campos opcionales con opción "Saltar" o "Completar después". Integración: Actualizar useOnboarding hook, validaciones opcionales, persistencia en perfil de usuario.
+		- Horas estimadas: **4**hs
+		- Margen: ±**0.8**hs (P80)
+		- Incertidumbre: **Media**
+		- Dependencias: 2.3, 10.1c, 10.2c, 10.3 (FS)
+		- Spike: **No**
+		- PERT: Optimista 3hs, Probable 4hs, Pesimista 6hs
+
+11. **Búsqueda & Filtros** (RF-018) [Post-MVP]
+
+	- 11.1 **Query service + índices**.
 Texto simple/estado y endpoints de búsqueda.
 		- Horas estimadas: **9**hs
 		- Margen: ±**1.8**hs (P80)
@@ -862,15 +980,15 @@ Texto simple/estado y endpoints de búsqueda.
 		- Dependencias: 1.2 (FS)
 		- Spike: **No**
 
-	- 10.2 **UI de búsqueda global**.
+	- 11.2 **UI de búsqueda global**.
 Barra, filtros y resultados.
 		- Horas estimadas: **10**hs
 		- Margen: ±**2.0**hs (P80)
 		- Incertidumbre: **Media**
-		- Dependencias: 10.1 (FS)
+		- Dependencias: 11.1 (FS)
 		- Spike: **No**
 
-11. **Ayuda & Guías** (RF-019)
+12. **Ayuda & Guías** (RF-019)
 
 	- 11.1 **Ayuda inline mínima** / "cómo usar esta página" [NiceToHave].
 Tooltips/accordions por pantalla.
@@ -885,12 +1003,12 @@ Onboarding guiado paso a paso.
 		- Horas estimadas: **12**hs
 		- Margen: ±**2.5**hs (P80)
 		- Incertidumbre: **Media**
-		- Dependencias: 11.1 (FS)
+		- Dependencias: 12.1 (FS)
 		- Spike: **No**
 
-12. **Accesibilidad & UX**
+13. **Accesibilidad & UX**
 
-	- 12.1 **Responsive grid & breakpoints**.
+	- 13.1 **Responsive grid & breakpoints**.
 Layouts móviles/desktop.
 		- Horas estimadas: **6**hs
 		- Margen: ±**1.0**hs (P80)
@@ -898,7 +1016,7 @@ Layouts móviles/desktop.
 		- Dependencias: 0.10 (FS)
 		- Spike: **No**
 
-	- 12.2 **A11y mínima** (focus, labels, contraste).
+	- 13.2 **A11y mínima** (focus, labels, contraste).
 Roles/ARIA y navegación con teclado.
 		- Horas estimadas: **6**hs
 		- Margen: ±**1.0**hs (P80)
@@ -906,15 +1024,15 @@ Roles/ARIA y navegación con teclado.
 		- Dependencias: 0.10 (FS)
 		- Spike: **No**
 
-	- 12.3 **Pruebas visuales móviles/desktop**.
+	- 13.3 **Pruebas visuales móviles/desktop**.
 Validación en 2–3 navegadores + móvil.
 		- Horas estimadas: **5**hs
 		- Margen: ±**1.0**hs (P80)
 		- Incertidumbre: **Baja**
-		- Dependencias: 12.1 (FS)
+		- Dependencias: 13.1 (FS)
 		- Spike: **No**
 
-	- 12.4a **Setup navegación básica + React Router**.
+	- 13.4a **Setup navegación básica + React Router**.
 Frontend: Configuración básica de React Router con definición de rutas principales, navegación entre páginas, actualización de URLs, rutas protegidas simples por autenticación, y layout básico. Establece la navegación fundamental para cambio de páginas y URLs sin complejidades adicionales.
 		- Horas estimadas: **4**hs
 		- Margen: ±**0.8**hs (P80)
@@ -922,15 +1040,15 @@ Frontend: Configuración básica de React Router con definición de rutas princi
 		- Dependencias: 0.14, 2.2 (FS)
 		- Spike: **No**
 
-	- 12.4b **Navegación avanzada + UX**.
+	- 13.4b **Navegación avanzada + UX**.
 	Frontend: Extensión del routing con lazy loading de rutas, breadcrumbs, guards de navegación por rol, navegación programática con hooks personalizados, layouts anidados, y utilidades para transiciones. Mejoras de UX y patrones escalables para desarrollo posterior.
 		- Horas estimadas: **4**hs
 		- Margen: ±**0.8**hs (P80)
 		- Incertidumbre: **Media**
-		- Dependencias: 12.4a, 2.5 (FS)
+		- Dependencias: 13.4a, 2.5 (FS)
 		- Spike: **No**
 
-	- 12.5 **Theme toggle** (UI + persistencia).
+	- 13.5 **Theme toggle** (UI + persistencia).
 	Implementación del selector de tema claro/oscuro: configuración de Tailwind dark mode, variables CSS para theming, hook `useTheme` para gestión de estado, persistencia en localStorage, toggle UI en header/navbar, y pruebas en componentes principales.
 		- Horas estimadas: **2**hs
 		- Margen: ±**0.4**hs (P80)
@@ -938,24 +1056,24 @@ Frontend: Configuración básica de React Router con definición de rutas princi
 		- Dependencias: 0.9, 0.14 (FS)
 		- Spike: **No**
 
-	- 12.6 **Settings screen** (pantalla de ajustes: tema + idioma + prefs).
+	- 13.6 **Settings screen** (pantalla de ajustes: tema + idioma + prefs).
 	Pantalla de configuración de la app: ruta `/settings`, UI para gestión de preferencias (tema claro/oscuro, idioma español/inglés, otras configuraciones básicas), integración con hooks de tema e i18n, botones para guardar/restaurar defaults, y pruebas de navegación y persistencia.
 		- Horas estimadas: **4**hs
 		- Margen: ±**0.8**hs (P80)
 		- Incertidumbre: **Media**
-		- Dependencias: 12.4a, 12.5, 0.15 (FS)
+		- Dependencias: 13.4a, 13.5, 0.15 (FS)
 		- Spike: **No**
 
-	- 12.7 **Navigation Drawer Global**.
+	- 13.7 **Navigation Drawer Global**.
 	Implementar componente NavigationDrawer/Sidebar para navegación global accesible desde todas las páginas. Tecnología: React Aria o componente custom. Funcionalidad: Estado persistente (abierto/cerrado) con Zustand, responsive (desktop: sidebar, mobile: drawer), links a secciones principales (Dashboard, Máquinas, Mantenimientos, QuickCheck, Notificaciones), animaciones smooth. Integración: Layout wrapper para todas las rutas autenticadas.
 		- Horas estimadas: **7**hs
 		- Margen: ±**1.2**hs (P80)
 		- Incertidumbre: **Media**
-		- Dependencias: 12.4a, 0.10 (FS)
+		- Dependencias: 13.4a, 0.10 (FS)
 		- Spike: **No**
 		- PERT: Optimista 5hs, Probable 7hs, Pesimista 10hs
 
-	- 12.8 **UI Polish - QuickCheck & Wizard**.
+	- 13.8 **UI Polish - QuickCheck & Wizard**.
 	Mejoras rápidas de interfaz usuario. Animaciones de entrada (fade-in/slide-up) para items en QuickCheck results list usando Framer Motion o CSS transitions. Reordenar inputs en MachineRegistrationWizard Step 1 para flujo más natural (Marca → Modelo → Type → Nombre de referencia). Cambios solo en capa de presentación, sin lógica de backend.
 		- Horas estimadas: **0.75**hs
 		- Margen: ±**0.25**hs (P80)
@@ -964,20 +1082,20 @@ Frontend: Configuración básica de React Router con definición de rutas princi
 		- Spike: **No**
 		- **Tareas agrupadas:** [2] Animaciones, [4] Reorder inputs
 
-	- 12.9 **UI/UX Enhancement - Simplicidad y Progressive Disclosure** (NFR).
+	- 13.9 **UI/UX Enhancement - Simplicidad y Progressive Disclosure** (NFR).
 Refinamiento holístico de la experiencia de usuario en todas las pantallas existentes de la aplicación, con foco en simplicidad visual y cognitiva. Objetivo: Mejorar la calidad de uso, comprensión y navegación del sistema sin agregar nuevas funcionalidades core. Aplicar principio de Progressive Disclosure: mostrar primero lo esencial, revelar información adicional de forma gradual y contextual, facilitar exploración sin abrumar. Alcance: (1) Auditoría UX de pantallas principales (Dashboard, Máquinas List/Detail, QuickCheck, Mantenimientos, Notificaciones, Settings), (2) Identificar puntos de sobrecarga cognitiva o información redundante, (3) Rediseño/simplificación de layouts con jerarquía visual clara (tipografía, espaciado, agrupación), (4) Implementar patrones de Progressive Disclosure: tooltips informativos, collapsible sections, tabs/accordions para contenido secundario, estados empty con CTAs claros, (5) Consistencia de componentes: botones, cards, forms, modals con misma estructura y estilo, (6) Testing con usuario (informal) para validar mejoras. NO incluye: nuevas funcionalidades, refactor de backend, cambios en lógica de negocio, rediseño total de identidad visual (mantener guía de estilos existente). Tecnologías: Tailwind CSS utilities, ShadCN UI components (Accordion, Tooltip, Collapsible), Framer Motion para transiciones suaves. Entregables: Pantallas simplificadas con Progressive Disclosure aplicado, documentación de patrones UX adoptados, notas de mejoras implementadas por pantalla.
 		- Horas estimadas: **12**hs
 		- Margen: ±**2.5**hs (P80)
 		- Incertidumbre: **Media-Alta**
-		- Dependencias: 12.7, 4.1f, 4.2d, 8.4 (FS) - Requiere features principales implementadas
+		- Dependencias: 13.7, 4.1f, 4.2d, 8.4 (FS) - Requiere features principales implementadas
 		- Spike: **No** (refinamiento iterativo sobre código existente)
 		- PERT: Optimista 9hs, Probable 12hs, Pesimista 16hs
 		- Nota: **Tarea planificada para Sprint #13 o #14** (post-MVP), enfocada en pulido de calidad de uso antes de entregas finales. Se considera requerimiento NO funcional (NFR) que mejora usabilidad sin alterar funcionalidad core.
 		- **Tareas conceptuales agrupadas:** [Auditoría UX], [Simplificación layouts], [Progressive Disclosure], [Consistencia componentes], [Testing usuario]
 
-13. **Calidad & Pruebas** (alineado a SQA)
+14. **Calidad & Pruebas** (alineado a SQA)
 
-	- 13.1 **Estrategia & DoD QA**.
+	- 14.1 **Estrategia & DoD QA**.
 Criterios de listo y enfoque de pruebas.
 		- Horas estimadas: **5**hs
 		- Margen: ±**1.0**hs (P80)
@@ -985,7 +1103,7 @@ Criterios de listo y enfoque de pruebas.
 		- Dependencias: 0.2 (FS)
 		- Spike: **No**
 
-	- 13.2 **Config Jest** (front/back, TS, coverage).
+	- 14.2 **Config Jest** (front/back, TS, coverage).
 Presets, scripts y coverage.
 		- Horas estimadas: **6**hs
 		- Margen: ±**1.0**hs (P80)
@@ -993,7 +1111,7 @@ Presets, scripts y coverage.
 		- Dependencias: 0.2 (FS)
 		- Spike: **No**
 
-	- 13.3a **Unit tests Backend**.
+	- 14.3a **Unit tests Backend**.
 Casos de uso, servicios, validaciones y errores.
 		- Horas estimadas: **12**hs
 		- Margen: ±**2.5**hs (P80)
@@ -1001,7 +1119,7 @@ Casos de uso, servicios, validaciones y errores.
 		- Dependencias: SS con 2–8
 		- Spike: **No**
 
-	- 13.3b **Unit tests Frontend**.
+	- 14.3b **Unit tests Frontend**.
 Hooks, utils y lógica de módulos.
 		- Horas estimadas: **10**hs
 		- Margen: ±**2.0**hs (P80)
@@ -1009,7 +1127,7 @@ Hooks, utils y lógica de módulos.
 		- Dependencias: SS con 2–8
 		- Spike: **No**
 
-	- 13.4 **Datos de prueba** (semillas y factories).
+	- 14.4 **Datos de prueba** (semillas y factories).
 Fixtures y factories para tests.
 		- Horas estimadas: **4**hs
 		- Margen: ±**0.7**hs (P80)
@@ -1017,7 +1135,7 @@ Fixtures y factories para tests.
 		- Dependencias: 1.4 (FS)
 		- Spike: **No**
 
-	- 13.5 **Sanitización manual por feature**.
+	- 14.5 **Sanitización manual por feature**.
 Checklist de smoke por pantalla/flujo.
 		- Horas estimadas: **8**hs
 		- Margen: ±**1.5**hs (P80)
@@ -1025,15 +1143,15 @@ Checklist de smoke por pantalla/flujo.
 		- Dependencias: SS con 2–9
 		- Spike: **No**
 
-	- 13.7 **Triage & fix post-UAT**.
+	- 14.7 **Triage & fix post-UAT**.
 Registro, severidades, fixes y verificación.
 		- Horas estimadas: **10**hs
 		- Margen: ±**2.0**hs (P80)
 		- Incertidumbre: **Media**
-		- Dependencias: 20.2 (FS)
+		- Dependencias: 21.2 (FS)
 		- Spike: **No**
 
-	- 13.8 **Smoke E2E de flujos críticos**.
+	- 14.8 **Smoke E2E de flujos críticos**.
 Auth → máquina → recordatorio → notificación → QC.
 		- Horas estimadas: **6**hs
 		- Margen: ±**1.0**hs (P80)
@@ -1041,17 +1159,17 @@ Auth → máquina → recordatorio → notificación → QC.
 		- Dependencias: 2–8 (FS)
 		- Spike: **No**
 
-	- 13.9 **Gestión de defectos**.
+	- 14.9 **Gestión de defectos**.
 Triage continuo, hotfix path y mini-regresión.
 		- Horas estimadas: **6**hs
 		- Margen: ±**1.0**hs (P80)
 		- Incertidumbre: **Media**
-		- Dependencias: SS con 13.5–13.8
+		- Dependencias: SS con 14.5–14.8
 		- Spike: **No**
 
-14. **Seguridad & Hardening**
+15. **Seguridad & Hardening**
 
-	- 14.1 **Hashing, rate-limit, CORS**.
+	- 15.1 **Hashing, rate-limit, CORS**.
 Config seguro básico en API.
 		- Horas estimadas: **6**hs
 		- Margen: ±**1.0**hs (P80)
@@ -1059,7 +1177,7 @@ Config seguro básico en API.
 		- Dependencias: 2.2 (FS)
 		- Spike: **No**
 
-	- 14.2 **Validaciones Zod en controllers**.
+	- 15.2 **Validaciones Zod en controllers**.
 Validación exhaustiva en endpoints.
 		- Horas estimadas: **8**hs
 		- Margen: ±**1.5**hs (P80)
@@ -1067,7 +1185,7 @@ Validación exhaustiva en endpoints.
 		- Dependencias: 1.3 (FS)
 		- Spike: **No**
 
-	- 14.3 **Permisos por endpoint** (RBAC ligero).
+	- 15.3 **Permisos por endpoint** (RBAC ligero).
 Chequeos de rol en rutas.
 		- Horas estimadas: **6**hs
 		- Margen: ±**1.0**hs (P80)
@@ -1075,9 +1193,9 @@ Chequeos de rol en rutas.
 		- Dependencias: 2.5 (FS)
 		- Spike: **No**
 
-15. **Observabilidad ligera**
+16. **Observabilidad ligera**
 
-	- 15.1 **Logger estructurado** (niveles, request-id).
+	- 16.1 **Logger estructurado** (niveles, request-id).
 Logging JSON y correlación simple.
 		- Horas estimadas: **5**hs
 		- Margen: ±**1.0**hs (P80)
@@ -1085,17 +1203,17 @@ Logging JSON y correlación simple.
 		- Dependencias: 0.2, 0.12 (FS)
 		- Spike: **No**
 
-	- 15.2 **Métricas mínimas en logs** (contadores) [Post-MVP].
+	- 16.2 **Métricas mínimas en logs** (contadores) [Post-MVP].
 Contadores por evento/acción en logs.
 		- Horas estimadas: **6**hs
 		- Margen: ±**1.0**hs (P80)
 		- Incertidumbre: **Media**
-		- Dependencias: 15.1 (FS)
+		- Dependencias: 16.1 (FS)
 		- Spike: **No**
 
-16. **Deploy & Demo**
+17. **Deploy & Demo**
 
-	- 16.1 **Taller Deploy - Conceptos Generales** (Sesión 1).
+	- 17.1 **Taller Deploy - Conceptos Generales** (Sesión 1).
 Primera sesión de conceptos fundamentales de deploy y DevOps.
 		- Horas estimadas: **3**hs
 		- Margen: ±**0.5**hs (P80)
@@ -1103,7 +1221,7 @@ Primera sesión de conceptos fundamentales de deploy y DevOps.
 		- Dependencias: —
 		- Spike: **No**
 
-	- 16.2 **Taller Deploy - Conceptos Generales** (Sesión 2).
+	- 17.2 **Taller Deploy - Conceptos Generales** (Sesión 2).
 Segunda sesión de conceptos fundamentales de deploy y DevOps.
 		- Horas estimadas: **3**hs
 		- Margen: ±**0.5**hs (P80)
@@ -1111,7 +1229,7 @@ Segunda sesión de conceptos fundamentales de deploy y DevOps.
 		- Dependencias: —
 		- Spike: **No**
 
-	- 16.3 **Taller Deploy - AWS** (Sesión 1).
+	- 17.3 **Taller Deploy - AWS** (Sesión 1).
 Primera sesión de capacitación en servicios AWS para deploy.
 		- Horas estimadas: **3**hs
 		- Margen: ±**0.5**hs (P80)
@@ -1119,7 +1237,7 @@ Primera sesión de capacitación en servicios AWS para deploy.
 		- Dependencias: —
 		- Spike: **No**
 
-	- 16.4 **Taller Deploy - AWS** (Sesión 2).
+	- 17.4 **Taller Deploy - AWS** (Sesión 2).
 Segunda sesión de capacitación en servicios AWS para deploy.
 		- Horas estimadas: **3**hs
 		- Margen: ±**0.5**hs (P80)
@@ -1127,7 +1245,7 @@ Segunda sesión de capacitación en servicios AWS para deploy.
 		- Dependencias: —
 		- Spike: **No**
 
-	- 16.5 **Taller Deploy - Azure** (Sesión 1).
+	- 17.5 **Taller Deploy - Azure** (Sesión 1).
 Primera sesión de capacitación en servicios Azure para deploy.
 		- Horas estimadas: **3**hs
 		- Margen: ±**0.5**hs (P80)
@@ -1135,7 +1253,7 @@ Primera sesión de capacitación en servicios Azure para deploy.
 		- Dependencias: —
 		- Spike: **No**
 
-	- 16.6 **Taller Deploy - Azure** (Sesión 2).
+	- 17.6 **Taller Deploy - Azure** (Sesión 2).
 Segunda sesión de capacitación en servicios Azure para deploy.
 		- Horas estimadas: **3**hs
 		- Margen: ±**0.5**hs (P80)
@@ -1143,7 +1261,7 @@ Segunda sesión de capacitación en servicios Azure para deploy.
 		- Dependencias: —
 		- Spike: **No**
 
-	- 16.7 **Taller Deploy - Deploy en Práctica**.
+	- 17.7 **Taller Deploy - Deploy en Práctica**.
 Sesión práctica de implementación de deploy en entorno real.
 		- Horas estimadas: **3**hs
 		- Margen: ±**0.5**hs (P80)
@@ -1151,15 +1269,15 @@ Sesión práctica de implementación de deploy en entorno real.
 		- Dependencias: —
 		- Spike: **No**
 
-	- 16.8 **Build & deploy demo** (front estático + API).
+	- 17.8 **Build & deploy demo** (front estático + API).
 Empaquetado, hosting y health-check simple.
 		- Horas estimadas: **8**hs
 		- Margen: ±**1.5**hs (P80)
 		- Incertidumbre: **Media**
-		- Dependencias: 0.4, 13.2 (FS)
+		- Dependencias: 0.4, 14.2 (FS)
 		- Spike: **No**
 
-	- 16.9 **Semillas demo** (usar 1.4).
+	- 17.9 **Semillas demo** (usar 1.4).
 Carga inicial del dataset de demo.
 		- Horas estimadas: **3**hs
 		- Margen: ±**0.5**hs (P80)
@@ -1167,34 +1285,34 @@ Carga inicial del dataset de demo.
 		- Dependencias: 1.4 (FS)
 		- Spike: **No**
 
-	- 16.10 **Script "reset demo"** [NiceToHave].
+	- 17.10 **Script "reset demo"** [NiceToHave].
 	Script idempotente de reinicialización.
 		- Horas estimadas: **4**hs
 		- Margen: ±**0.7**hs (P80)
 		- Incertidumbre: **Baja**
-		- Dependencias: 16.9 (FS)
+		- Dependencias: 17.9 (FS)
 		- Spike: **No**
 
-	- 16.11 **Azure Deploy - Config práctica** (Azure App Service).
+	- 17.11 **Azure Deploy - Config práctica** (Azure App Service).
 		Configuración práctica de deploy en Azure App Service: creación de recursos (App Service + MongoDB Atlas o Cosmos), configuración de variables de entorno, conexión con repositorio GitHub para CI/CD básico, configuración de dominios y SSL, y pruebas de deploy del frontend + backend. Aprovecha el taller universitario del 27 nov.
 		- Horas estimadas: **9**hs
 		- Margen: ±**1.8**hs (P80)
 		- Incertidumbre: **Media**
-		- Dependencias: 16.5, 16.6, 16.8 (FS)
+		- Dependencias: 17.5, 17.6, 17.8 (FS)
 		- Spike: **No**
 
-	- 16.12 **Azure Static Web App - Fix 404 en Refresh**.
+	- 17.12 **Azure Static Web App - Fix 404 en Refresh**.
 		Configurar fallback routing para SPA en Azure Static Web App. Crear archivo staticwebapp.config.json con navigationFallback apuntando a index.html. Soluciona error 404 al refrescar página o acceder directamente a rutas internas (/machines, /quickcheck, etc.). Crítico para usabilidad en producción (compartir links, bookmarks, refresh).
 		- Horas estimadas: **1**hs
 		- Margen: ±**0.5**hs (P80)
 		- Incertidumbre: **Baja**
-		- Dependencias: 16.11 (FS)
+		- Dependencias: 17.11 (FS)
 		- Spike: **No**
 		- **Tarea agrupada:** [3] Azure routing fix
 
-17. **Documentación & Capacitación**
+18. **Documentación & Capacitación**
 
-	- 17.1 **README + guía arranque dev**.
+	- 18.1 **README + guía arranque dev**.
 Setup, scripts y troubleshooting breve.
 		- Horas estimadas: **4**hs
 		- Margen: ±**0.7**hs (P80)
@@ -1202,7 +1320,7 @@ Setup, scripts y troubleshooting breve.
 		- Dependencias: 0.1 (FS)
 		- Spike: **No**
 
-	- 17.2 **API docs** (OpenAPI simple).
+	- 18.2 **API docs** (OpenAPI simple).
 Endpoints principales y ejemplos.
 		- Horas estimadas: **6**hs
 		- Margen: ±**1.0**hs (P80)
@@ -1210,17 +1328,17 @@ Endpoints principales y ejemplos.
 		- Dependencias: 2–9 (FS)
 		- Spike: **No**
 
-	- 17.3 **Manual breve de usuario** [NiceToHave].
+	- 18.3 **Manual breve de usuario** [NiceToHave].
 Guía funcional mínima por pantalla.
 		- Horas estimadas: **6**hs
 		- Margen: ±**1.0**hs (P80)
 		- Incertidumbre: **Media**
-		- Dependencias: 11.1 (FS)
+		- Dependencias: 12.1 (FS)
 		- Spike: **No**
 
-18. **Gobernanza de Alcance** (MVP)
+19. **Gobernanza de Alcance** (MVP)
 
-	- 18.1 **Scope freeze** (MoSCoW).
+	- 19.1 **Scope freeze** (MoSCoW).
 Cierre de alcance y criterios.
 		- Horas estimadas: **2**hs
 		- Margen: ±**0.3**hs (P80)
@@ -1228,15 +1346,15 @@ Cierre de alcance y criterios.
 		- Dependencias: —
 		- Spike: **No**
 
-	- 18.2 **Control de cambios**.
+	- 19.2 **Control de cambios**.
 Registro de desvíos y pases a Post-MVP.
 		- Horas estimadas: **3**hs
 		- Margen: ±**0.5**hs (P80)
 		- Incertidumbre: **Baja**
-		- Dependencias: 18.1 (FS)
+		- Dependencias: 19.1 (FS)
 		- Spike: **No**
 
-	- 18.3 **Feature toggles**.
+	- 19.3 **Feature toggles**.
 Flags para diferir capacidades.
 		- Horas estimadas: **5**hs
 		- Margen: ±**1.0**hs (P80)
@@ -1244,9 +1362,9 @@ Flags para diferir capacidades.
 		- Dependencias: 0.2 (FS)
 		- Spike: **No**
 
-19. **Backlog Post-MVP (consolidado)**
+20. **Backlog Post-MVP (consolidado)**
 
-	- 19.1 **Consolidación y tracking del backlog Post-MVP**.
+	- 20.1 **Consolidación y tracking del backlog Post-MVP**.
 Curaduría y priorización para fases futuras.
 		- Horas estimadas: **2**hs
 		- Margen: ±**0.3**hs (P80)
@@ -1254,9 +1372,9 @@ Curaduría y priorización para fases futuras.
 		- Dependencias: 18.2 (FS)
 		- Spike: **No**
 
-20. **Gestión del Proyecto & Scrumban** (LOE dominical encadenado)
+21. **Gestión del Proyecto & Scrumban** (LOE dominical encadenado)
 
-	- 20.1 **Reporte Académico** (dominical).
+	- 21.1 **Reporte Académico** (dominical).
 Informe semanal de avances/bloqueos y decisiones; "precalienta" la demo.
 		- Horas estimadas: **0.9**hs/sprint
 		- Margen: ±**0.1**hs (P80)
@@ -1264,23 +1382,23 @@ Informe semanal de avances/bloqueos y decisiones; "precalienta" la demo.
 		- Dependencias: Cierre sprint previo (FS)
 		- Spike: **No**
 
-	- 20.2 **Demo/UAT con cliente** (dominical).
+	- 21.2 **Demo/UAT con cliente** (dominical).
 Demostración, sincronización y feedback/UAT inmediato.
 		- Horas estimadas: **1.5**hs/sprint
 		- Margen: ±**0.1**hs (P80)
 		- Incertidumbre: **Baja**
-		- Dependencias: 20.1 (FS)
+		- Dependencias: 21.1 (FS)
 		- Spike: **No**
 
-	- 20.3 **Sprint Planning de Sprint #x** (donde x es el número del sprint correspondiente).
+	- 21.3 **Sprint Planning de Sprint #x** (donde x es el número del sprint correspondiente).
 Planificación de la iteración con foco en ruta crítica.
 		- Horas estimadas: **1.3**hs/sprint
 		- Margen: ±**0.1**hs (P80)
 		- Incertidumbre: **Baja**
-		- Dependencias: 20.2 (FS)
+		- Dependencias: 21.2 (FS)
 		- Spike: **No**
 
-	- 20.4 **Informe de avance** (académico).
+	- 21.4 **Informe de avance** (académico).
 Documento extenso que resume y explica todo lo realizado en un conjunto de semanas. Propósito 100% académico, describe progreso, decisiones técnicas, arquitectura implementada, lecciones aprendidas y próximos pasos del proyecto.
 		- Horas estimadas: **No aplica** (tarea ya realizada)
 		- Horas reales: **1.2**hs
@@ -1289,9 +1407,9 @@ Documento extenso que resume y explica todo lo realizado en un conjunto de seman
 		- Dependencias: Cierre de período de múltiples sprints (FS)
 		- Spike: **No**
 
-21. **Pre-Proyecto / Anteproyecto**
+22. **Pre-Proyecto / Anteproyecto**
 
-	- 21.1 **Talleres** (instancias de guía general).
+	- 22.1 **Talleres** (instancias de guía general).
 Participación en sesiones de taller para guía general del proyecto.
 		- Horas estimadas: **3**hs
 		- Margen: **No est.**
@@ -1299,7 +1417,7 @@ Participación en sesiones de taller para guía general del proyecto.
 		- Dependencias: —
 		- Spike: **No**
 
-	- 21.2 **Tutorías** (guía con tutor asignado).
+	- 22.2 **Tutorías** (guía con tutor asignado).
 Sesiones individuales de tutoría con el tutor asignado.
 		- Horas estimadas: **1**hs
 		- Margen: **No est.**
@@ -1307,151 +1425,151 @@ Sesiones individuales de tutoría con el tutor asignado.
 		- Dependencias: —
 		- Spike: **No**
 
-	- 21.3 **Refinamiento de estructura**.
+	- 22.3 **Refinamiento de estructura**.
 Refinamiento de la estructura general del documento de anteproyecto.
 		- Horas estimadas: **No est.**
 		- Margen: **No est.**
 		- Incertidumbre: **No est.**
-		- Dependencias: 21.1, 21.2 (FS)
+		- Dependencias: 22.1, 22.2 (FS)
 		- Spike: **No**
 
-	- 21.4 **Refinar descripción de cliente**.
+	- 22.4 **Refinar descripción de cliente**.
 Mejora y refinamiento de la descripción del cliente objetivo.
 		- Horas estimadas: **No est.**
 		- Margen: **No est.**
 		- Incertidumbre: **No est.**
-		- Dependencias: 21.3 (FS)
+		- Dependencias: 22.3 (FS)
 		- Spike: **No**
 
-	- 21.5 **Refinar introducción**.
+	- 22.5 **Refinar introducción**.
 Refinamiento de la introducción del proyecto.
 		- Horas estimadas: **No est.**
 		- Margen: **No est.**
 		- Incertidumbre: **No est.**
-		- Dependencias: 21.3 (FS)
+		- Dependencias: 22.3 (FS)
 		- Spike: **No**
 
-	- 21.6 **Refinar presentación del problema**.
+	- 22.6 **Refinar presentación del problema**.
 Mejora en la presentación y definición del problema a resolver.
 		- Horas estimadas: **No est.**
 		- Margen: **No est.**
 		- Incertidumbre: **No est.**
-		- Dependencias: 21.4, 21.5 (FS)
+		- Dependencias: 22.4, 22.5 (FS)
 		- Spike: **No**
 
-	- 21.7 **Investigar competencia**.
+	- 22.7 **Investigar competencia**.
 Análisis y documentación de la competencia existente.
 		- Horas estimadas: **No est.**
 		- Margen: **No est.**
 		- Incertidumbre: **No est.**
-		- Dependencias: 21.6 (FS)
+		- Dependencias: 22.6 (FS)
 		- Spike: **No**
 
-	- 21.8 **Redactar alternativas a la solución**.
+	- 22.8 **Redactar alternativas a la solución**.
 Documentación de alternativas consideradas para la solución.
 		- Horas estimadas: **No est.**
 		- Margen: **No est.**
 		- Incertidumbre: **No est.**
-		- Dependencias: 21.7 (FS)
+		- Dependencias: 22.7 (FS)
 		- Spike: **No**
 
-	- 21.9 **Refinar arquitectura**.
+	- 22.9 **Refinar arquitectura**.
 Refinamiento de la propuesta de arquitectura del sistema.
 		- Horas estimadas: **No est.**
 		- Margen: **No est.**
 		- Incertidumbre: **No est.**
-		- Dependencias: 21.8 (FS)
+		- Dependencias: 22.8 (FS)
 		- Spike: **No**
 
-	- 21.10 **Refinar tecnologías**.
+	- 22.10 **Refinar tecnologías**.
 Refinamiento de la selección y justificación de tecnologías.
 		- Horas estimadas: **No est.**
 		- Margen: **No est.**
 		- Incertidumbre: **No est.**
-		- Dependencias: 21.9 (FS)
+		- Dependencias: 22.9 (FS)
 		- Spike: **No**
 
-	- 21.11 **Refinar lista de necesidades**.
+	- 22.11 **Refinar lista de necesidades**.
 Mejora y completitud de la lista de necesidades del cliente.
 		- Horas estimadas: **No est.**
 		- Margen: **No est.**
 		- Incertidumbre: **No est.**
-		- Dependencias: 21.4 (FS)
+		- Dependencias: 22.4 (FS)
 		- Spike: **No**
 
-	- 21.12 **Crear sección de procesos identificados**.
+	- 22.12 **Crear sección de procesos identificados**.
 Documentación de los procesos de negocio identificados.
 		- Horas estimadas: **No est.**
 		- Margen: **No est.**
 		- Incertidumbre: **No est.**
-		- Dependencias: 21.11 (FS)
+		- Dependencias: 22.11 (FS)
 		- Spike: **No**
 
-	- 21.13 **Refinar objetivos del proyecto**.
+	- 22.13 **Refinar objetivos del proyecto**.
 Refinamiento de los objetivos generales y específicos del proyecto.
 		- Horas estimadas: **No est.**
 		- Margen: **No est.**
 		- Incertidumbre: **No est.**
-		- Dependencias: 21.6 (FS)
+		- Dependencias: 22.6 (FS)
 		- Spike: **No**
 
-	- 21.14 **Redactar actores involucrados**.
+	- 22.14 **Redactar actores involucrados**.
 Identificación y documentación de todos los actores del sistema.
 		- Horas estimadas: **No est.**
 		- Margen: **No est.**
 		- Incertidumbre: **No est.**
-		- Dependencias: 21.12 (FS)
+		- Dependencias: 22.12 (FS)
 		- Spike: **No**
 
-	- 21.15 **Refinar requerimientos**.
+	- 22.15 **Refinar requerimientos**.
 Refinamiento de los requerimientos funcionales y no funcionales.
 		- Horas estimadas: **No est.**
 		- Margen: **No est.**
 		- Incertidumbre: **No est.**
-		- Dependencias: 21.13, 21.14 (FS)
+		- Dependencias: 22.13, 22.14 (FS)
 		- Spike: **No**
 
-	- 21.16 **Refinar alcances y limitaciones**.
+	- 22.16 **Refinar alcances y limitaciones**.
 Definición clara de alcances y limitaciones del proyecto.
 		- Horas estimadas: **No est.**
 		- Margen: **No est.**
 		- Incertidumbre: **No est.**
-		- Dependencias: 21.15 (FS)
+		- Dependencias: 22.15 (FS)
 		- Spike: **No**
 
-	- 21.17 **Diagramar arquitectura**.
+	- 22.17 **Diagramar arquitectura**.
 Creación de diagramas de la arquitectura propuesta.
 		- Horas estimadas: **No est.**
 		- Margen: **No est.**
 		- Incertidumbre: **No est.**
-		- Dependencias: 21.9 (FS)
+		- Dependencias: 22.9 (FS)
 		- Spike: **No**
 
-	- 21.18 **Hacer diagrama Conceptual de Dominio**.
+	- 22.18 **Hacer diagrama Conceptual de Dominio**.
 Creación del diagrama conceptual del dominio del problema.
 		- Horas estimadas: **No est.**
 		- Margen: **No est.**
 		- Incertidumbre: **No est.**
-		- Dependencias: 21.14, 21.12 (FS)
+		- Dependencias: 22.14, 22.12 (FS)
 		- Spike: **No**
 
-	- 21.19 **Planear tareas y sprints**.
+	- 22.19 **Planear tareas y sprints**.
 Planificación inicial de tareas y sprints del proyecto.
 		- Horas estimadas: **No est.**
 		- Margen: **No est.**
 		- Incertidumbre: **No est.**
-		- Dependencias: 21.16, 21.17, 21.18 (FS)
+		- Dependencias: 22.16, 22.17, 22.18 (FS)
 		- Spike: **No**
 
-	- 21.20 **Refinamientos varios**.
+	- 22.20 **Refinamientos varios**.
 Refinamientos menores y ajustes finales del documento.
 		- Horas estimadas: **No est.**
 		- Margen: **No est.**
 		- Incertidumbre: **No est.**
-		- Dependencias: 21.19 (FS)
+		- Dependencias: 22.19 (FS)
 		- Spike: **No**
 
-	- 21.21 **Buffer de entrega final**.
+	- 22.21 **Buffer de entrega final**.
 Instancia comodín para refinar últimos detalles del proyecto, completar documentación pendiente, finalizar features en curso, realizar verificaciones finales de calidad y atender ajustes de último momento previos a la entrega académica.
 		- Horas estimadas: **10**hs
 		- Margen: ±**2.0**hs (P80)
@@ -1459,39 +1577,39 @@ Instancia comodín para refinar últimos detalles del proyecto, completar docume
 		- Dependencias: Cierre Sprint 16 (FS)
 		- Spike: **No**
 
-22. **Eventos Académicos** (Hitos sin horas de desarrollo)
+23. **Eventos Académicos** (Hitos sin horas de desarrollo)
 
-	- 22.1 **Entrega Primera Instancia**.
+	- 23.1 **Entrega Primera Instancia**.
 Presentación de primera instancia del proyecto para revisión académica.
 		- Fecha: **Noviembre 2025**
 		- Horas de desarrollo: **0**hs (Evento/Hito)
 		- Dependencias: Finalización Sprint correspondiente
 		- Preparación: Incluida en tareas de documentación existentes
 
-	- 22.2 **Entrega Segunda Instancia**.
+	- 23.2 **Entrega Segunda Instancia**.
 Presentación de segunda instancia con correcciones y mejoras.
 		- Fecha: **Diciembre 2025**
 		- Horas de desarrollo: **0**hs (Evento/Hito)
-		- Dependencias: 22.1, avances del MVP
+		- Dependencias: 23.1, avances del MVP
 		- Preparación: Incluida en tareas de documentación existentes
 
-	- 22.3 **Entrega Final del Proyecto**.
+	- 23.3 **Entrega Final del Proyecto**.
 Entrega completa del MVP y documentación final del proyecto.
 		- Fecha: **Febrero 2026**
 		- Horas de desarrollo: **0**hs (Evento/Hito)
 		- Dependencias: Finalización de todos los sprints del MVP
 		- Preparación: Incluida en sprint final
 
-	- 22.4 **Defensa del Proyecto**.
+	- 23.4 **Defensa del Proyecto**.
 Presentación oral y defensa del proyecto ante tribunal académico.
 		- Fecha: **Marzo-Abril 2026**
 		- Horas de desarrollo: **0**hs (Evento/Hito)
-		- Dependencias: 22.3 (FS)
+		- Dependencias: 23.3 (FS)
 		- Preparación: Requiere preparación de presentación (incluida en documentación)
 
-	- 22.5 **Cierre Académico**.
+	- 23.5 **Cierre Académico**.
 Finalización formal del proceso académico y entrega de calificaciones.
 		- Fecha: **Abril 2026**
 		- Horas de desarrollo: **0**hs (Evento/Hito)
-		- Dependencias: 22.4 (FS)
+		- Dependencias: 23.4 (FS)
 		- Preparación: No requiere trabajo adicional de desarrollo

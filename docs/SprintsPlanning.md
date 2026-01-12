@@ -703,32 +703,98 @@ Distribución por categoría:
 
 **Riesgos:** Feature social nueva requiere considerar UX de interacción. Validar con cliente que relación unidireccional de contactos es aceptable para MVP.
 
-### **Sprint #13**: dom 11 ene → sáb 17 ene 2026
+### **Sprint #13**: dom 12 ene → sáb 18 ene 2026
 
-**Objetivo:** 💬 Completar Chat UI + Testing - Finalizar mensajería con interfaz de usuario y smoke tests.
+**Objetivo:** 🧪 Quality & Refinement Sprint - Mejoras de calidad de vida, complementos al chat, ediciones de entidades, y enriquecimiento de perfiles de usuario.
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
 | Documentación | 20.1 Reporte Académico del Sprint #12 | 1 | 5 | |
 | Gestión | 20.2 Demo/UAT de Sprint #12 | 2 | 1.5 | 1.2 |
-| Gestión | 20.3 Sprint Planning de Sprint #13 | 3 | 1.3 | |
+| Gestión | 20.3 Sprint Planning de Sprint #13 | 3 | 1.3 | 2.5 |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | |
-| Desarrollo | 9.3c Frontend UI Chat Components | 5 | 4 | |
-| Desarrollo | 9.3d Frontend Integration + Polling Chat | 6 | 3 | |
-| QA | 13.3b Unit tests Frontend | 7 | 10 | |
-| Desarrollo | 16.1 Build & deploy demo (front estático + API) | 8 | 8 | |
+| Desarrollo | 10.1a User Editing - Domain + Persistence | 5 | 2 | |
+| Desarrollo | 10.1b User Editing - Application Backend | 6 | 3 | |
+| Desarrollo | 10.1c User Editing - Frontend UI | 7 | 3 | |
+| Desarrollo | 10.2a Bio & Tags - Domain + Persistence | 8 | 2 | |
+| Desarrollo | 10.2b Bio & Tags - Application Backend | 9 | 2 | |
+| Desarrollo | 10.2c Bio & Tags - Frontend UI | 10 | 2 | |
+| Desarrollo | 9.3e Chat Access Control - Accept Requests | 11 | 4 | |
+| Desarrollo | 9.3f Chat Access Control - Block Users | 12 | 3 | |
+| Desarrollo | 9.3g Chat Access Control - Request Tracking | 13 | 2 | |
+| Desarrollo | 9.3h Chat Access Control - UI Integration | 14 | 3 | |
+| Desarrollo | 3.3a Machine Editing - Domain + Persistence (condicional) | 15 | 2 | |
+| Desarrollo | 3.3b Machine Editing - Application Backend (condicional) | 16 | 2 | |
+| Desarrollo | 3.3c Machine Editing - Frontend UI (condicional) | 17 | 3 | |
+| Desarrollo | 10.3 Adaptación de Image Upload Component (condicional) | 18 | 3 | |
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales | Consumo |
 |:---:|:----------:|:-------:|
 | **33.8**hs | **0**hs | **0.0%** |
 
-Buffer reservado: **1.2**hs ✅
+Buffer reservado: **+1.2**hs ✅
 Total con buffer: **35**hs
+
+```mermaid
+xychart-beta
+    title "Sprint #13: Horas Estimadas (azul) vs Reales (verde)"
+    x-axis "Tareas" ["20.1", "20.2", "20.3", "21.2", "10.1a", "10.1b", "10.1c", "10.2a", "10.2b", "10.2c", "9.3e", "9.3f", "9.3g", "9.3h", "TOTAL"]
+    y-axis "Horas" 0 --> 36
+    
+    line [5, 1.5, 1.3, 1, 2, 3, 3, 2, 2, 2, 4, 3, 2, 3, 33.8]
+    line [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+```
 
 Distribución por categoría:
 | Documentación | Desarrollo | QA | Capacitación | Gestión |
 |:-------:|:----------:|:--:|:------------:|:-------------:|
-| **5**hs | **15**hs | **10**hs | **1**hs | **2.8**hs |
+| **5**hs | **26**hs | **0**hs | **1**hs | **2.8**hs |
+
+**Notas del Sprint:**
+- **Sprint de calidad y refinamiento** NO de nuevas features core, enfocado en mejorar UX y completar funcionalidades existentes
+- **Estrategia conservadora con condicionales:** Tareas 10.1-10.2 + 9.3e-h garantizadas (26hs desarrollo + 8.8hs overhead = 34.8hs), tareas 3.3 y 10.3 condicionales según progreso
+- **Orden de ejecución inteligente (victorias rápidas primero):**
+  1. **User Editing (10.1a/b/c - 8hs):** Base simple, reutiliza formularios, dispone frontend para siguiente tarea
+  2. **Bio & Tags (10.2a/b/c - 6hs):** Extiende 10.1, tareas simples, boost de moral
+  3. **Chat Access Control (9.3e/f/g/h - 12hs):** Feature crítica BLOQUEANTE, 9.3c ya implementado
+  4. **Machine Editing (3.3a/b/c - 7hs, condicional):** Si tiempo permite, hay cosas parcialmente implementadas
+  5. **Image Component (10.3 - 3hs, condicional):** Quick win final, solo UI + API calls
+- **Punto de decisión Day 4 EOD:** Si User Editing + Bio/Tags + Chat Access on track → agregar Machine Editing
+- **Punto de decisión Day 5 EOD:** Si todo on track → agregar Image Component
+
+**Fortalezas:**
+- ✅ **User Editing:** Extiende 2.1 (registro), reutiliza ReactHookForm y validaciones existentes
+- ✅ **Bio & Tags:** Extensión natural de User Editing, campos simples (textarea + chips)
+- ✅ **Chat Access Control:** Completa feature crítica de Sprint #12, sin esto los chats no son usables (403 Forbidden)
+- ✅ **Machine Editing:** Parte de la lógica puede estar implementada en 3.2a, solo falta exponer UI de edición
+- ✅ **Image Component:** Ya existe en otro proyecto, solo requiere port + adaptación de props
+- ✅ **Cloudinary configurado:** Tareas 0.5 y 3.6 ya completadas en Sprints anteriores
+
+**Riesgos y Mitigaciones:**
+- ⚠️ **Chat Access Control crítico:** Sin esto, usuarios reciben 403 al intentar abrir chat (UX bug grave)
+- ⚠️ **Machine Editing condicional:** Si no se completa en Sprint #13, defer a Sprint #14
+- ⚠️ **Image Component condicional:** Nice-to-have, no bloquea features core
+- ✅ **Mitigación:** Orden simple→complejo asegura victorias tempranas y momentum
+- ✅ **Mitigación:** Buffer positivo (+1.2hs) permite absorber pequeños overruns
+- ✅ **Mitigación:** Tareas condicionales documentadas claramente, no se comprometen
+
+**Consideraciones técnicas:**
+- **10.1 User Editing:** PATCH /api/users/:userId, EditProfileForm reutiliza estructura de 2.1, autorización (usuario solo edita su perfil o admin), NO incluye cambio de contraseña (flujo separado en 2.4)
+- **10.2 Bio & Tags:** Extender User con bio (max 300 chars) y tags (max 10 strings de max 20 chars), autocompletado opcional de tags, UI con textarea + chips componente
+- **9.3e-h Chat Access Control:** AcceptChatRequest, BlockUser, RequestTracking (status: pending/accepted/rejected), UI badges/filters en ContactsList y ChatScreen
+- **3.3 Machine Editing:** ReactHookForm reutilizando 3.1, UpdateMachineUseCase, historial de cambios opcional como subdocumento
+- **10.3 Image Component:** Port ImageUploader existente, adaptar a User.avatarUrl y Machine.machinePhotoUrl, integrar en EditProfileForm (10.1c) y EditMachineForm (3.3c)
+
+**Dependencias críticas:**
+1. 10.1a → 10.1b → 10.1c (secuencial por capas)
+2. 10.1a → 10.2a (bio/tags requieren User schema extendido)
+3. 10.1b → 10.2b (extender Use Case existente)
+4. 10.1c → 10.2c (extender formulario existente)
+5. 9.3e-h dependen de 9.2 y 9.3a/b completos (Sprint #12)
+6. 3.3 depende de 3.2 completo (máquinas registradas)
+7. 10.3 depende de 0.5, 3.6, 10.1c, 3.3c (Cloudinary + formularios receptores)
+
+**Riesgos:** Sprint en período post-navideño, posible fatiga del equipo. Mantener motivación con victorias tempranas.
 
 ### **Sprint #14**: dom 18 ene → sáb 24 ene 2026
 
