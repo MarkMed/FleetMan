@@ -3,8 +3,6 @@ import { Heading1, BodyText, Button, Card } from '@components/ui';
 import { ArrowLeft, AlertCircle, UserX, Loader2, MessageSquare } from 'lucide-react';
 import { MessageBubble, ChatInput } from '@components/messaging';
 import { useChatViewModel } from '../../viewModels/messaging/useChatViewModel';
-import { useNavigate } from 'react-router-dom';
-import { ROUTES } from '@constants';
 import type { ConversationHistoryResponse } from '@packages/contracts';
 
 // Extract message type
@@ -47,7 +45,6 @@ type Message = ConversationHistoryResponse['messages'][number];
  * ```
  */
 export function ChatScreen() {
-  const navigate = useNavigate();
   
   // ========================
   // ViewModel (Business Logic)

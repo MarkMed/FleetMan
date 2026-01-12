@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { sendMessage, getConversationHistory } from '@services/api/messageService';
 import { QUERY_KEYS } from '@constants';
 import type { SendMessageRequest, ConversationHistoryResponse } from '@packages/contracts';

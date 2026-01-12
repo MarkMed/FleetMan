@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '@store/AuthProvider';
@@ -6,7 +6,6 @@ import { useMessagingStore } from '@store';
 import { useSendMessage, useMessages } from '@hooks/useMessages';
 import { useIsContact } from '@hooks/useContacts';
 import { toast } from '@hooks/useToast';
-import type { UserPublicProfile } from '@packages/contracts';
 
 /**
  * ViewModel: ChatScreen Business Logic

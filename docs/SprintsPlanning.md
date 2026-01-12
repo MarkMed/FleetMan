@@ -710,7 +710,7 @@ Distribución por categoría:
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
 | Documentación | 20.1 Reporte Académico del Sprint #12 | 1 | 5 | |
-| Gestión | 20.2 Demo/UAT de Sprint #12 | 2 | 1.5 | |
+| Gestión | 20.2 Demo/UAT de Sprint #12 | 2 | 1.5 | 1.2 |
 | Gestión | 20.3 Sprint Planning de Sprint #13 | 3 | 1.3 | |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | |
 | Desarrollo | 9.3c Frontend UI Chat Components | 5 | 4 | |

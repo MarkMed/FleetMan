@@ -69,7 +69,6 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
   senderName,
   className = '',
 }) => {
-  const { t } = useTranslation();
   
   // Format timestamp adaptively (simple format without date-fns)
   const messageDate = new Date(message.createdAt);

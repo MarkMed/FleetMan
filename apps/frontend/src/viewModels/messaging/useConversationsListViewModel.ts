@@ -1,8 +1,7 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMyContacts } from '@hooks/useContacts';
 import { useMessagingStore } from '@store';
-import type { UserPublicProfile } from '@packages/contracts';
 
 /**
  * ViewModel: ConversationsListScreen Business Logic
