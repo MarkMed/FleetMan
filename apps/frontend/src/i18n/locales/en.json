@@ -477,6 +477,13 @@
     "markAllAsRead": "Mark All as Read",
     "configure": "Configure",
     "allNotifications": "All Notifications",
+    "types": {
+      "messaging": "Message",
+      "quickcheck": "QuickCheck",
+      "event": "Event",
+      "maintenance": "Maintenance",
+      "system": "System"
+    },
     "loadMore": "Load more notifications",
     "loading": "Loading...",
     "filters": "Filters",
@@ -526,14 +533,6 @@
       }
     },
     "new": "New notification",
-    "types": {
-      "quickcheck": "QuickCheck Completed",
-      "machine": "Machine",
-      "event": "Event Reported",
-      "maintenance": "Maintenance",
-      "user": "User",
-      "system": "System"
-    },
     "quickcheck": {
       "completed": {
         "approved": "Machine {{machineName}} approved by {{responsibleName}}",
@@ -672,6 +671,42 @@
     "forbidden": "Forbidden",
     "serverError": "Server error",
     "unknownError": "Unknown error"
+  },
+  "messages": {
+    "title": "Messages",
+    "subtitle": "Chat with your contacts",
+    "searchPlaceholder": "Search contacts...",
+    "noContacts": "No contacts",
+    "noContactsDescription": "You don't have any contacts yet. Add users from the discovery section to start chatting.",
+    "discoverUsers": "Discover users",
+    "noSearchResults": "No results found",
+    "noSearchResultsDescription": "No contacts match your search.",
+    "totalContacts": "{{count}} contacts total",
+    "chatWith": "Conversation",
+    "messagesCount": "{{count}} messages",
+    "newMessage": "New message from {{senderName}}",
+    "typeMessage": "Type a message...",
+    "send": "Send",
+    "sendHint": "Press Enter to send, Shift+Enter for new line",
+    "sent": "Message sent",
+    "sendError": "Error sending message",
+    "loading": "Loading conversation...",
+    "loadError": "Error loading messages",
+    "loadMore": "Load more messages",
+    "loadingMore": "Loading...",
+    "noMessagesYet": "No messages yet",
+    "startConversation": "Send a message to start the conversation",
+    "notContact": "Not your contact",
+    "notContactDescription": "You cannot send messages to this user because they are not in your contact list.",
+    "backToConversations": "Back to messages",
+    "userNotFoundTitle": "User not found",
+    "userNotFoundDescription": "This user doesn't exist or has been deleted. Please verify the ID is correct or try another contact.",
+    "otherUser": "Contact",
+    "you": "You",
+    "noMessages": "No messages yet",
+    "typing": "Typing...",
+    "edited": "(edited)",
+    "allMarkedRead": "All messages marked as read"
   },
   "users": {
     "type": {

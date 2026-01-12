@@ -625,26 +625,36 @@ Distribución por categoría:
 | Gestión | 20.2 Demo/UAT de Sprint #11 | 1 | 1.5 | 1.2 |
 | Gestión | 20.3 Sprint Planning de Sprint #12 | 2 | 1.3 | 2 |
 | Documentación | 20.1 Reporte Académico del Sprint #11 | 3 | 5 | 5.1 |
-| Desarrollo | 9.1a Domain+Contracts+Persistence UserDirectory | 4 | 2 | |
-| Desarrollo | 9.1b Application Layer Backend UserDirectory | 6 | 3 | |
-| Desarrollo | 9.1c Frontend UI+Integration UserDiscovery | 8 | 3 | |
-| Desarrollo | 9.2a Domain+Contracts+Persistence Contacts | 5 | 3 | |
-| Desarrollo | 9.2b Application Layer Backend Contacts | 7 | 4 | |
-| Desarrollo | 9.2c Frontend UI+Integration MyContacts | 9 | 4 | |
-| Desarrollo | 9.3a Domain+Contracts+Persistence Messages | 10 | 3 | |
-| Desarrollo | 9.3b Application Layer Backend Messages | 11 | 3 | |
+| Desarrollo | 9.1a Domain+Contracts+Persistence UserDirectory | 4 | 2 | 2.1 |
+| Desarrollo | 9.1b Application Layer Backend UserDirectory | 6 | 3 | 3 |
+| Desarrollo | 9.1c Frontend UI+Integration UserDiscovery | 8 | 3 | 4.9 |
+| Desarrollo | 9.2a Domain+Contracts+Persistence Contacts | 5 | 3 | 2.3 |
+| Desarrollo | 9.2b Application Layer Backend Contacts | 7 | 4 | 3.4 |
+| Desarrollo | 9.2c Frontend UI+Integration MyContacts | 9 | 4 | 5.2 |
+| Desarrollo | 9.3a Domain+Contracts+Persistence Messages | 10 | 3 | 2.6 |
+| Desarrollo | 9.3b Application Layer Backend Messages | 11 | 3 | 3.7 |
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales | Consumo |
 |:---:|:----------:|:-------:|
-| **34.8**hs | **0**hs | **0.0%** |
+| **34.8**hs | **35.5**hs | **102.0%** |
 
-Buffer reservado: **0.2**hs
+Buffer reservado: **+0.2**hs
 Total con buffer: **35**hs
+
+```mermaid
+xychart-beta
+    title "Sprint #12: Horas Estimadas (azul) vs Reales (verde)"
+    x-axis "Tareas" ["20.2", "20.3", "20.1", "9.1a", "9.1b", "9.1c", "9.2a", "9.2b", "9.2c", "9.3a", "9.3b", "TOTAL"]
+    y-axis "Horas" 0 --> 36
+    
+    line [1.5, 1.3, 5, 2, 3, 3, 3, 4, 4, 3, 3, 34.8]
+    line [1.2, 2, 5.1, 2.1, 3, 4.9, 2.3, 3.4, 5.2, 2.6, 3.7, 35.5]
+```
 
 Distribución por categoría:
 | Documentación | Desarrollo | QA | Capacitación | Gestión |
 |:-------:|:----------:|:--:|:------------:|:-------------:|
-| **5**hs | **25**hs | **0**hs | **0**hs | **2.8**hs |
+| **5.1**hs | **27.2**hs | **0**hs | **0**hs | **3.2**hs |
 
 **Notas del Sprint:**
 - **Sprint enfocado en feature social básica** siguiendo patrón full-stack modular (Domain → Application → Presentation)
@@ -700,7 +710,7 @@ Distribución por categoría:
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
 | Documentación | 20.1 Reporte Académico del Sprint #12 | 1 | 5 | |
-| Gestión | 20.2 Demo/UAT de Sprint #12 | 2 | 1.5 | |
+| Gestión | 20.2 Demo/UAT de Sprint #12 | 2 | 1.5 | 1.2 |
 | Gestión | 20.3 Sprint Planning de Sprint #13 | 3 | 1.3 | |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | |
 | Desarrollo | 9.3c Frontend UI Chat Components | 5 | 4 | |

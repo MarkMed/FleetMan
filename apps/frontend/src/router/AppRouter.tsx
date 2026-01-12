@@ -23,6 +23,7 @@ import { ProfileScreen } from '../screens/profile/ProfileScreen';
 import { ConfigurationsScreen } from '../screens/settings/ConfigurationsScreen';
 import { ExamplesScreen } from '../screens/ExamplesScreen';
 import { UserDiscoveryScreen, MyContactsScreen } from '../screens/users';
+import { ConversationsListScreen, ChatScreen } from '../screens/messaging';
 
 // Route components
 import { ProtectedRoute } from '../router/ProtectedRoute';
@@ -74,6 +75,8 @@ export const AppRouter: React.FC = () => {
           <Route path="notifications" element={<NotificationsScreen />} />
           <Route path="contact-discovery" element={<UserDiscoveryScreen />} />
           <Route path="contacts" element={<MyContactsScreen />} />
+          <Route path="messages" element={<ConversationsListScreen />} />
+          <Route path="messages/:otherUserId" element={<ChatScreen />} />
           <Route path="profile" element={<ProfileScreen />} />
           <Route path="settings" element={<ConfigurationsScreen />} />
 

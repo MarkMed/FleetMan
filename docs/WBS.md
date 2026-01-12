@@ -816,6 +816,42 @@ Sistema de chat básico 1-a-1 entre contactos. NO incluir features avanzadas (gr
 			- PERT: Optimista 2hs, Probable 3hs, Pesimista 4hs
 			- Nota: Reducido de 4hs a 3hs por eliminar useConversations, markAsRead, badge unread
 
+		- 9.3e **Domain + Persistence - Chat Access Control**.
+		Extender entidad User en Domain con dos nuevas propiedades: acceptedChatsFrom (array de UserId) y usersBlackList (array de UserId). Implementar tres métodos de dominio en User: acceptChatFrom(userId: UserId) que agrega userId a acceptedChatsFrom validando que no esté en blacklist y retorna Result, blockUser(userId: UserId) que agrega a blacklist y remueve de acceptedChatsFrom si existe retornando Result, y dos getters hasChatAcceptedFrom(userId: UserId) y isBlocked(userId: UserId) para verificar estados. Validaciones: evitar duplicados en arrays, no aceptar chat de usuario bloqueado, no bloquear usuario ya bloqueado. En Persistence actualizar UserModel schema agregando acceptedChatsFrom: [String] default [], usersBlackList: [String] default [], y crear índices en MongoDB para optimizar queries. Implementar en UserRepository cuatro métodos: hasChatAcceptedFrom(userId, fromUserId) boolean, isBlocked(userId, blockedUserId) boolean, acceptChatFrom(userId, fromUserId) usando updateOne con $addToSet, blockUser(userId, blockedUserId) usando updateOne con $addToSet en blacklist y $pull de acceptedChatsFrom en operación atómica.
+			- Horas estimadas: **4**hs
+			- Margen: ±**0.7**hs (P80)
+			- Incertidumbre: **Media**
+			- Dependencias: 9.2a (FS) - Requiere User entity existente
+			- Spike: **No**
+			- PERT: Optimista 3hs, Probable 4hs, Pesimista 5hs
+
+		- 9.3f **Application Layer Backend - Accept/Block Use Cases**.
+		Implementar dos Use Cases nuevos: AcceptChatUseCase que recibe userId autenticado y fromUserId del chat a aceptar, valida ambos IDs con UserId.create, llama a userRepository.acceptChatFrom y retorna Result<void> con error si fromUserId está bloqueado o no existe. BlockUserUseCase similar recibiendo userId y userIdToBlock, validando que existan y llamando a userRepository.blockUser. Actualizar SendMessageUseCase para agregar validación ANTES de enviar mensaje: llamar a userRepository.isBlocked(recipientId, senderId) y si retorna true, retornar error 403 "No puedes enviar mensajes a este usuario" sin crear el mensaje. Actualizar GetConversationHistoryUseCase para que la validación de permisos no solo checkee isContact bidireccional sino TAMBIÉN verifique userRepository.hasChatAcceptedFrom(authenticatedUserId, otherUserId), permitiendo ver conversación si cualquiera de estas condiciones es true: (userIsContactOfOther O otherIsContactOfUser O userAcceptedChatFromOther). Retornar 403 "No tienes permiso para ver esta conversación" si ninguna condición cumple.
+			- Horas estimadas: **3**hs
+			- Margen: ±**0.5**hs (P80)
+			- Incertidumbre: **Media**
+			- Dependencias: 9.3e, 9.3b (FS)
+			- Spike: **No**
+			- PERT: Optimista 2hs, Probable 3hs, Pesimista 4hs
+
+		- 9.3g **Interfaces Layer Backend - Accept/Block Endpoints**.
+		Crear dos contratos Zod en packages/contracts: AcceptChatRequestSchema que valida {userId: string} con zod string uuid, y BlockUserRequestSchema idéntico. Exportar tipos TypeScript inferidos AcceptChatRequest y BlockUserRequest. En backend crear dos endpoints REST en message.routes.ts: POST /api/v1/messages/chats/:userId/accept con authMiddleware, validación Zod del userId de params, y llamada a AcceptChatUseCase.execute(authenticatedUserId, paramsUserId). POST /api/v1/messages/chats/:userId/block similar llamando a BlockUserUseCase. MessageController implementar dos métodos: acceptChat(req, res) que unwrapea Result del use case y retorna 200 {success: true, message: "Chat aceptado"} o error apropiado (400, 403, 404, 500), y blockUser(req, res) similar retornando "Usuario bloqueado". Documentación Swagger completa para ambos endpoints con tags "Messages", security bearer, parámetros path userId, responses 200/400/403/404/500.
+			- Horas estimadas: **2**hs
+			- Margen: ±**0.3**hs (P80)
+			- Incertidumbre: **Baja**
+			- Dependencias: 9.3f (FS)
+			- Spike: **No**
+			- PERT: Optimista 1.5hs, Probable 2hs, Pesimista 3hs
+
+		- 9.3h **Frontend - Accept/Block Chat UI**.
+		Actualizar messageService agregando dos métodos: acceptChat(otherUserId) que hace POST a /api/v1/messages/chats/:otherUserId/accept usando apiClient y handleBackendApiResponse, y blockUser(otherUserId) que hace POST a /api/v1/messages/chats/:otherUserId/block. En ChatScreen component agregar lógica de detección primera conversación: obtener acceptedChatsFrom del usuario autenticado desde AuthContext, checkear si otherUserId NO está en acceptedChatsFrom Y existen mensajes en historial. Si es primera conversación, renderizar Banner o Modal especial arriba del chat (sticky top o modal overlay) con mensaje: "Primera conversación con [nombreUsuario]. ¿Deseas aceptar este chat?" y dos botones estilizados: "Aceptar Chat" (primario/verde) que llama acceptChat del service, actualiza estado local agregando otherUserId a acceptedChatsFrom, cierra banner/modal y permite chatear normalmente, y "Bloquear Usuario" (secundario/rojo) que llama blockUser del service, actualiza estado, muestra toast "Usuario bloqueado", y redirecciona a /contacts. Si acceptedChatsFrom incluye otherUserId O existe relación de contacto mutua, renderizar chat normalmente sin banner. Estilos: Banner con fondo amarillo suave, bordes redondeados, padding generoso, botones con spacing claro.
+			- Horas estimadas: **3**hs
+			- Margen: ±**0.5**hs (P80)
+			- Incertidumbre: **Media**
+			- Dependencias: 9.3g, 9.3d (FS)
+			- Spike: **No**
+			- PERT: Optimista 2hs, Probable 3hs, Pesimista 4hs
+
 10. **Búsqueda & Filtros** (RF-018) [Post-MVP]
 
 	- 10.1 **Query service + índices**.

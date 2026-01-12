@@ -223,15 +223,13 @@ export function useMyContactsViewModel() {
   /**
    * Handle send message button click
    * 
-   * Module 2: Placeholder (logs to console)
-   * Module 3: Will navigate to message thread or open message composer
+   * Module 3: Navigate to chat screen
    * 
    * @param userId - ID of contact to message
    */
   const handleSendMessage = (userId: string) => {
-    console.log('📨 [My Contacts] Send message to:', userId);
-    // TODO Module 3: Implement messaging
-    // navigate(ROUTES.MESSAGE_THREAD(userId));
+    console.log('📨 [My Contacts] Opening chat with:', userId);
+    navigate(ROUTES.CHAT(userId));
     // Or: setMessageComposerOpen(true); setMessageRecipient(userId);
   };
 

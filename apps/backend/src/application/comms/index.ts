@@ -1,7 +1,5 @@
-// /apps/backend/src/application/comms/index.ts
-// Casos de uso para comunicaciones y notificaciones
+// Sprint #12 - Module 3: Messaging System
+// Use Cases para sistema de mensajería 1-a-1 entre contactos
 
-// TODO: Implementar casos de uso:
-// - SendNotification
-// - ContactProvider
-// - ManageNotificationPreferences
+export { SendMessageUseCase } from './send-message.use-case';
+export { GetConversationHistoryUseCase } from './get-conversation-history.use-case';

@@ -39,6 +39,11 @@ export * from "./user-discovery.contract";
 // Contact Management contracts (Sprint #12 - Module 2)
 export * from "./contact.contract";
 
+// Message contracts (Sprint #12 - Module 3 - Messaging System)
+// SSOT Architecture: ConversationHistoryResponse es el tipo base
+// Use Cases retornan ConversationHistoryResponse, Controllers envuelven en ApiResponse<ConversationHistoryResponse>
+export * from "./message.contract";
+
 // User Statistics contracts (Sprint #12 - User Stats Feature)
 export * from "./user-stats.contract";
 
