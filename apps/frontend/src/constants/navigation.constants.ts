@@ -6,7 +6,9 @@ import {
   Users, 
   User, 
   Settings,
-  Menu
+  Menu,
+  UserSearch,
+  MessageCircle
 } from 'lucide-react';
 
 export interface NavigationItem {
@@ -57,6 +59,22 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
 //     requiresAuth: true,
 //     showInMobile: false, // Only in drawer
 //   },
+  {
+    id: 'messages',
+    label: 'Mensajes',
+    icon: MessageCircle,
+    href: '/messages',
+    requiresAuth: true,
+    showInMobile: false, // Only in drawer
+  },
+  {
+    id: 'contact-discovery',
+    label: 'Explorar Contactos',
+    icon: UserSearch,
+    href: '/contact-discovery',
+    requiresAuth: true,
+    showInMobile: false, // Only in drawer
+  },
   {
     id: 'contacts',
     label: 'Contactos',

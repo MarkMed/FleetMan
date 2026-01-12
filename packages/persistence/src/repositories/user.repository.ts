@@ -38,9 +38,9 @@ export class UserRepository implements IUserRepository {
         return err(DomainError.notFound(`User with ID ${id.getValue()} not found`));
       }
 
-      // TODO: Implement proper document to entity conversion
-      // For now, return an error indicating incomplete implementation
-      return err(DomainError.create('INCOMPLETE_IMPLEMENTATION', 'UserRepository.findById needs complete implementation'));
+      // Convertir documento MongoDB → entidad de dominio
+      const userEntity = await this.documentToEntity(userDoc);
+      return ok(userEntity);
     } catch (error: any) {
       return err(DomainError.create('PERSISTENCE_ERROR', `Error finding user by ID: ${error.message}`));
     }
@@ -418,6 +418,291 @@ export class UserRepository implements IUserRepository {
       return ok(unreadCount);
     } catch (error: any) {
       return err(DomainError.create('PERSISTENCE_ERROR', `Error counting unread notifications: ${error.message}`));
+    }
+  }
+
+  // =============================================================================
+  // 👥 USER DISCOVERY METHODS (Sprint #12 - Module 1)
+  // =============================================================================
+
+  /**
+   * Finds users for discovery (User Discovery)
+   * Returns active users excluding the logged-in user
+   * Supports search by company name and filter by type
+   * @returns Result.success() with paginated data or Result.fail() with infrastructure error
+   */
+  async findForDiscovery(excludeUserId: UserId, options: {
+    page: number;
+    limit: number;
+    searchTerm?: string;
+    type?: 'CLIENT' | 'PROVIDER';
+  }): Promise<Result<{
+    items: User[];
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  }, DomainError>> {
+    try {
+      // 1. Build query: active users excluding logged-in user
+      const query: any = {
+        isActive: true,
+        _id: { $ne: excludeUserId.getValue() }
+      };
+
+      // 2. Optional filter: user type
+      if (options.type) {
+        query.type = options.type;
+      }
+
+      // 3. Optional filter: search by company name
+      if (options.searchTerm) {
+        query['profile.companyName'] = { 
+          $regex: options.searchTerm, 
+          $options: 'i' // Case-insensitive
+        };
+      }
+
+      // 4. Get total count for pagination
+      const total = await UserModel.countDocuments(query);
+
+      // 5. Calculate pagination
+      const skip = (options.page - 1) * options.limit;
+      const totalPages = Math.ceil(total / options.limit);
+
+      // 6. Execute query with projection to exclude sensitive fields
+      // ⚠️ IMPORTANT: Use lean() for performance (30-50% faster than full Mongoose docs)
+      // Note: lean() returns plain objects without Mongoose virtuals, so we transform _id → id manually
+      const docs = await UserModel.find(query)
+        .select('-passwordHash -notifications') // ⚠️ CRITICAL: Exclude sensitive data
+        .sort({ 'profile.companyName': 1, createdAt: -1 }) // Sort by company name, then most recent
+        .skip(skip)
+        .limit(options.limit)
+        .lean(); // Plain JS objects for performance
+
+      // 7. Transform _id to id (required by documentToEntity)
+      // lean() returns MongoDB's _id (ObjectId), but domain entities expect id (string)
+      const docsWithId = docs.map(doc => ({
+        ...doc,
+        id: doc._id.toString() // Convert ObjectId to string
+      }));
+
+      // 8. Map documents to domain entities
+      const items = await Promise.all(
+        docsWithId.map(doc => this.documentToEntity(doc as unknown as IUserDocument))
+      );
+
+      return ok({
+        items,
+        total,
+        page: options.page,
+        limit: options.limit,
+        totalPages
+      });
+    } catch (error: any) {
+      console.error('Error finding users for discovery:', error);
+      // Return err() to propagate infrastructure errors to use case
+      // This allows proper error handling instead of silent failures
+      return err(
+        DomainError.create(
+          'PERSISTENCE_ERROR',
+          `Failed to find users for discovery: ${error.message}`
+        )
+      );
+    }
+  }
+
+  // =============================================================================
+  // 📇 CONTACT MANAGEMENT METHODS (Sprint #12 Module 2)
+  // =============================================================================
+
+  /**
+   * Agrega un contacto al array contacts del usuario
+   * Usa $addToSet para prevenir duplicados (idempotente)
+   * Valida que el contacto existe y está activo
+   */
+  async addContact(userId: UserId, contactUserId: UserId): Promise<Result<void, DomainError>> {
+    try {
+      // 1. Validar que contactUserId existe y está activo
+      const contactUser = await UserModel.findOne({
+        _id: contactUserId.getValue(),
+        isActive: true
+      }).select('_id'); // Solo necesitamos verificar existencia
+
+      if (!contactUser) {
+        return err(DomainError.notFound('Contact user not found or inactive'));
+      }
+
+      // 2. Agregar contacto usando $addToSet (previene duplicados automáticamente)
+      const result = await UserModel.findByIdAndUpdate(
+        userId.getValue(),
+        {
+          $addToSet: {
+            contacts: {
+              contactUserId: contactUserId.getValue(),
+              addedAt: new Date()
+            }
+          }
+        },
+        { new: true }
+      );
+
+      if (!result) {
+        return err(DomainError.notFound(`User with ID ${userId.getValue()} not found`));
+      }
+
+      return ok(undefined);
+    } catch (error: any) {
+      return err(DomainError.create('PERSISTENCE_ERROR', `Error adding contact: ${error.message}`));
+    }
+  }
+
+  /**
+   * Remueve un contacto del array contacts usando $pull
+   */
+  async removeContact(userId: UserId, contactUserId: UserId): Promise<Result<void, DomainError>> {
+    try {
+      const result = await UserModel.findByIdAndUpdate(
+        userId.getValue(),
+        {
+          $pull: {
+            contacts: { contactUserId: contactUserId.getValue() }
+          }
+        },
+        { new: true }
+      );
+
+      if (!result) {
+        return err(DomainError.notFound(`User with ID ${userId.getValue()} not found`));
+      }
+
+      return ok(undefined);
+    } catch (error: any) {
+      return err(DomainError.create('PERSISTENCE_ERROR', `Error removing contact: ${error.message}`));
+    }
+  }
+
+  /**
+   * Obtiene los contactos de un usuario con sus entidades completas
+   * Filtra solo usuarios activos
+   */
+  async getContacts(userId: UserId): Promise<Result<User[], DomainError>> {
+    try {
+      // 1. Obtener usuario con su array de contactos
+      const userDoc = await UserModel.findById(userId.getValue()).select('contacts');
+
+      if (!userDoc) {
+        return err(DomainError.notFound(`User with ID ${userId.getValue()} not found`));
+      }
+
+      // 2. Si no tiene contactos, retornar array vacío
+      if (!userDoc.contacts || userDoc.contacts.length === 0) {
+        return ok([]);
+      }
+
+      // 3. Extraer IDs de contactos del array
+      const contactIds = userDoc.contacts.map(c => c.contactUserId);
+
+      // 4. Buscar usuarios que son contactos (solo activos)
+      const contactDocs = await UserModel.find({
+        _id: { $in: contactIds },
+        isActive: true // Filtrar solo usuarios activos
+      }).lean();
+
+      // 5. Transform _id to id (required by documentToEntity)
+      const docsWithId = contactDocs.map(doc => ({
+        ...doc,
+        id: doc._id.toString()
+      }));
+
+      // 6. Mapear documentos a entidades de dominio
+      const contacts = await Promise.all(
+        docsWithId.map(doc => this.documentToEntity(doc as unknown as IUserDocument))
+      );
+
+      return ok(contacts);
+    } catch (error: any) {
+      return err(DomainError.create('PERSISTENCE_ERROR', `Error getting contacts: ${error.message}`));
+    }
+  }
+
+  /**
+   * Verifica si contactUserId está en el array contacts de userId
+   */
+  async isContact(userId: UserId, contactUserId: UserId): Promise<boolean> {
+    try {
+      const user = await UserModel.findOne({
+        _id: userId.getValue(),
+        'contacts.contactUserId': contactUserId.getValue()
+      }).select('_id');
+
+      return !!user; // true si encontró el documento, false si null
+    } catch (error: any) {
+      console.error('Error checking if is contact:', error);
+      return false; // En caso de error, asumir que no es contacto (fail-safe)
+    }
+  }
+
+  // =============================================================================
+  // 📊 USER STATISTICS METHODS (Sprint #12 - User Stats Feature)
+  // =============================================================================
+
+  /**
+   * Obtiene el total de usuarios registrados en el sistema
+   * Retorna breakdown interno con conteos por tipo
+   * 
+   * NO aplica filtros: Cuenta TODOS los usuarios en la collection (Client, Provider, Admin, etc.)
+   * El use case decide qué información exponer al controller
+   * 
+   * Performance: Usa $facet para ejecutar múltiples aggregations en 1 query
+   */
+  async getTotalRegisteredUsers(): Promise<Result<{
+    totalUsers: number;
+    breakdown: {
+      clients: number;
+      providers: number;
+    };
+  }, DomainError>> {
+    try {
+      // Agregación eficiente con $facet para contar en 1 query
+      const result = await UserModel.aggregate([
+        {
+          $facet: {
+            total: [{ $count: 'count' }],
+            byType: [
+              {
+                $group: {
+                  _id: '$profile.type',
+                  count: { $sum: 1 }
+                }
+              }
+            ]
+          }
+        }
+      ]);
+
+      // Extraer conteos
+      const totalUsers = result[0]?.total[0]?.count || 0;
+      const byTypeArray = result[0]?.byType || [];
+
+      // Mapear conteos por tipo
+      const clientsCount = byTypeArray.find((item: any) => item._id === 'CLIENT')?.count || 0;
+      const providersCount = byTypeArray.find((item: any) => item._id === 'PROVIDER')?.count || 0;
+
+      return ok({
+        totalUsers,
+        breakdown: {
+          clients: clientsCount,
+          providers: providersCount
+        }
+      });
+    } catch (error: any) {
+      return err(
+        DomainError.create(
+          'PERSISTENCE_ERROR',
+          `Error getting total registered users: ${error.message}`
+        )
+      );
     }
   }
 }

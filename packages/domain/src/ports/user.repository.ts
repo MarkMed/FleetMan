@@ -127,9 +127,108 @@ export interface IUserRepository {
    */
   countUnreadNotifications(userId: UserId): Promise<Result<number, DomainError>>;
 
+  // =============================================================================
+  // 👥 USER DISCOVERY METHODS (Sprint #12 - Module 1)
+  // =============================================================================
+
+  /**
+   * Busca usuarios para descubrimiento (User Discovery)
+   * Retorna usuarios activos excluyendo al usuario logueado
+   * Soporta búsqueda por nombre de empresa y filtro por tipo
+   * @param excludeUserId - ID del usuario logueado (se excluye de resultados)
+   * @param options - Filtros y paginación
+   * @returns Result<data, DomainError> - Success con datos paginados o Fail con error de infraestructura
+   */
+  findForDiscovery(excludeUserId: UserId, options: {
+    page: number;
+    limit: number;
+    searchTerm?: string; // Busca en profile.companyName
+    type?: 'CLIENT' | 'PROVIDER';
+  }): Promise<Result<{
+    items: User[]; // Entidades completas (el use case mapea a IUserPublicProfile)
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  }, DomainError>>;
+
+  // =============================================================================
+  // 📊 USER STATISTICS METHODS (Sprint #12 - User Stats Feature)
+  // =============================================================================
+
+  /**
+   * Obtiene el total de usuarios registrados en el sistema
+   * Retorna breakdown interno con conteos por tipo (CLIENT, PROVIDER, etc.)
+   * que el use case puede usar para decisiones internas
+   * 
+   * @returns Result<TotalUsersStats, DomainError> - Success con estadísticas completas o Fail con error
+   * 
+   * Purpose: Feature estratégica para transparencia del ecosistema y estimular networking
+   * Snowball effect: Mostrar cantidad total hookea a más usuarios y estimula negocios internos
+   */
+  getTotalRegisteredUsers(): Promise<Result<{
+    totalUsers: number; // Total absoluto de usuarios en la collection (sin filtros)
+    breakdown: {
+      clients: number; // Usuarios tipo CLIENT
+      providers: number; // Usuarios tipo PROVIDER
+      // Extensible: admins, iaAgents, etc. (futuro)
+    };
+  }, DomainError>>;
+
   // TODO: Métodos estratégicos a considerar:
   // findByCompanyName(name: string): Promise<User[]>; // Para buscar por empresa
   // findBySubscriptionLevel(level: string): Promise<User[]>; // Para ClientUser
   // findVerifiedProviders(): Promise<User[]>; // Para ProviderUser
   // updateLastLoginAt(id: UserId, date: Date): Promise<void>; // Para tracking
+  // findByServiceArea(serviceArea: string): Promise<User[]>; // Para búsquedas por especialidad
+  // getTotalActiveUsers(days: number): Promise<Result<number, DomainError>>; // Activos últimos N días (KPI)
+  // getTotalUsersByRegion(region: string): Promise<Result<number, DomainError>>; // Filtrar por geografía
+  // getUserGrowthStats(period: '7d' | '30d' | '90d'): Promise<Result<GrowthStats, DomainError>>; // Crecimiento temporal
+  // findNearby(location: {lat: number, lng: number}, radiusKm: number): Promise<User[]>; // Para búsquedas geográficas
+
+  // =============================================================================
+  // 📇 CONTACT MANAGEMENT METHODS (Sprint #12 - Module 2)
+  // =============================================================================
+
+  /**
+   * Agrega un contacto al array de contactos del usuario
+   * Relación unidireccional: userId agrega a contactUserId (no viceversa)
+   * Idempotente: no duplica si ya existe (usa $addToSet)
+   * @param userId - ID del usuario que agrega el contacto
+   * @param contactUserId - ID del usuario a agregar como contacto
+   * @returns Result<void, DomainError> - Success si se agregó o ya existía, Fail si error
+   */
+  addContact(userId: UserId, contactUserId: UserId): Promise<Result<void, DomainError>>;
+
+  /**
+   * Remueve un contacto del array de contactos del usuario
+   * @param userId - ID del usuario que remueve el contacto
+   * @param contactUserId - ID del usuario a remover de contactos
+   * @returns Result<void, DomainError> - Success si se removió (o no existía), Fail si error
+   */
+  removeContact(userId: UserId, contactUserId: UserId): Promise<Result<void, DomainError>>;
+
+  /**
+   * Obtiene los contactos de un usuario con sus perfiles completos
+   * Filtra solo usuarios activos (isActive: true)
+   * @param userId - ID del usuario del que se obtienen contactos
+   * @returns Result<User[], DomainError> - Lista de usuarios que son contactos (entidades completas)
+   */
+  getContacts(userId: UserId): Promise<Result<User[], DomainError>>;
+
+  /**
+   * Verifica si un usuario ya es contacto de otro
+   * Útil para evitar duplicados y validaciones en use cases
+   * @param userId - ID del usuario dueño de la lista de contactos
+   * @param contactUserId - ID del usuario a verificar si es contacto
+   * @returns boolean - true si contactUserId está en contacts de userId
+   */
+  isContact(userId: UserId, contactUserId: UserId): Promise<boolean>;
+
+  // TODO: Métodos estratégicos para futuro (Contact Management avanzado)
+  // getContactsByTag(userId: UserId, tag: string): Promise<Result<User[], DomainError>>; // Filtrar por tags
+  // getFavoriteContacts(userId: UserId): Promise<Result<User[], DomainError>>; // Solo favoritos
+  // searchContactsByName(userId: UserId, searchTerm: string): Promise<Result<User[], DomainError>>; // Buscar en agenda
+  // updateContactNickname(userId: UserId, contactUserId: UserId, nickname: string): Promise<Result<void, DomainError>>; // Personalizar
+  // getContactsAddedSince(userId: UserId, date: Date): Promise<Result<User[], DomainError>>; // Contactos recientes
 }

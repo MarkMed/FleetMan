@@ -3,10 +3,12 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@store/AuthProvider';
+import { useMessagingStore } from '@store';
 import { sseClient } from '@services/sseClient';
 import { QUERY_KEYS } from '@constants';
 import { toast } from './useToast';
 import { useBrowserNotification } from './useBrowserNotification';
+import type { NotificationType } from '@packages/domain';
 
 /**
  * Hook: Notification Observer for Real-Time SSE Events
@@ -53,6 +55,7 @@ export function useNotificationObserver() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const browserNotification = useBrowserNotification();
+  const { incrementUnread } = useMessagingStore();
 
   // Stabilize values with refs to prevent reconnection loop
   const userRef = useRef(user);
@@ -61,6 +64,7 @@ export function useNotificationObserver() {
   const navigateRef = useRef(navigate);
   const tRef = useRef(t);
   const browserNotificationRef = useRef(browserNotification);
+  const incrementUnreadRef = useRef(incrementUnread);
   
   // Store active notifications for cleanup (prevent memory leaks)
   const activeNotificationsRef = useRef<Notification[]>([]);
@@ -73,7 +77,8 @@ export function useNotificationObserver() {
     navigateRef.current = navigate;
     tRef.current = t;
     browserNotificationRef.current = browserNotification;
-  }, [user, token, queryClient, navigate, t, browserNotification]);
+    incrementUnreadRef.current = incrementUnread;
+  }, [user, token, queryClient, navigate, t, browserNotification, incrementUnread]);
 
   // SSE connection lifecycle - executes ONLY on mount/unmount
   useEffect(() => {
@@ -92,11 +97,87 @@ export function useNotificationObserver() {
       const currentQueryClient = queryClientRef.current;
       const currentNavigate = navigateRef.current;
       const currentT = tRef.current;
+      const currentIncrementUnread = incrementUnreadRef.current;
 
       if (!currentUser) {
         return;
       }
 
+      // SPRINT #12 - MODULE 3: Handle MESSAGING notifications (New Messages)
+      // SSE event: sourceType === 'MESSAGING'
+      // Metadata: { messageId, senderId, senderName, preview, sentAt }
+      if (event.sourceType === 'MESSAGING') {
+        const senderId = event.metadata?.senderId;
+        
+        if (senderId) {
+          // 1. Increment unread counter in Zustand
+          currentIncrementUnread(senderId);
+          
+          // 2. Invalidate conversation history to show new message
+          currentQueryClient.invalidateQueries({
+            queryKey: QUERY_KEYS.MESSAGES(senderId)
+          });
+          
+          // 3. Invalidate conversations list (when implemented)
+          currentQueryClient.invalidateQueries({
+            queryKey: QUERY_KEYS.CONVERSATIONS
+          });
+          
+          // 4. Show toast with message preview
+          const senderName = event.metadata?.senderName || 'Usuario';
+          const messagePreview = event.metadata?.preview || '';
+          
+          toast.info({
+            title: currentT('messages.newMessage', { senderName }),
+            description: messagePreview,
+            duration: 5000,
+            action: React.createElement(
+              'button',
+              {
+                className: 'text-sm font-medium underline',
+                onClick: () => currentNavigate(`/messages/${senderId}`)
+              },
+              currentT('common.view')
+            )
+          });
+          
+          // 5. Show browser notification if tab hidden
+          const currentBrowserNotif = browserNotificationRef.current;
+          
+          if (currentBrowserNotif.isGranted) {
+            const notification = currentBrowserNotif.showNotification(
+              currentT('messages.newMessage', { senderName }),
+              {
+                body: messagePreview,
+                tag: event.metadata?.messageId, // Prevent duplicates
+                data: { actionUrl: `/messages/${senderId}` },
+                requireInteraction: false,
+              }
+            );
+            
+            if (notification) {
+              activeNotificationsRef.current.push(notification);
+              
+              notification.addEventListener('click', () => {
+                window.focus();
+                currentNavigate(`/messages/${senderId}`);
+              });
+              
+              notification.addEventListener('close', () => {
+                const index = activeNotificationsRef.current.indexOf(notification);
+                if (index > -1) {
+                  activeNotificationsRef.current.splice(index, 1);
+                }
+              });
+            }
+          }
+        }
+        
+        // Early return - don't process as regular notification
+        return;
+      }
+
+      // EXISTING NOTIFICATION HANDLING (unchanged)
       // 1. Invalidate notifications query to trigger refetch
       currentQueryClient.invalidateQueries({
         queryKey: QUERY_KEYS.NOTIFICATIONS(currentUser.id)
@@ -108,7 +189,10 @@ export function useNotificationObserver() {
       });
 
       // 3. Show toast with appropriate variant
-      const toastVariant: 'success' | 'warning' | 'error' | 'info' = event.notificationType || 'info';
+      // Map NotificationType to toast variant (new_message → info for toast display)
+      const notificationType: NotificationType = event.notificationType || 'info';
+      const toastVariant: 'success' | 'warning' | 'error' | 'info' = 
+        notificationType === 'new_message' ? 'info' : notificationType as 'success' | 'warning' | 'error' | 'info';
 
       // Build toast title based on sourceType
       const title = event.sourceType

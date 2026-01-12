@@ -10,6 +10,7 @@ export * from './machine.model';
 export * from './machine-type.model';
 export * from './machine-event.model';
 export * from './machine-event-type.model';
+export * from './message.model'; // 🆕 Sprint #12 Module 3 - Message model
 
 // Re-export commonly used types for convenience
 export type { Document, Types } from 'mongoose';

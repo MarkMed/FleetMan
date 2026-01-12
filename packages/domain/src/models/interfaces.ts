@@ -18,6 +18,21 @@ export interface IBaseEntity {
 }
 
 /**
+ * Interface para contactos (Sprint #12 Module 2 - Contact Management)
+ * Relación unidireccional: un usuario guarda a otro en su agenda personal
+ * Subdocumento embebido en User (similar a notifications)
+ */
+export interface IContact {
+  readonly contactUserId: string; // ID del usuario agregado como contacto
+  readonly addedAt: Date; // Fecha en que se agregó el contacto
+  // TODO: Campos estratégicos para futuro (personalización de agenda)
+  // readonly nickname?: string; // Alias personalizado para el contacto
+  // readonly tags?: readonly string[]; // Etiquetas: ['proveedor-confiable', 'urgente', etc.]
+  // readonly notes?: string; // Notas privadas sobre el contacto
+  // readonly isFavorite?: boolean; // Marcar como favorito
+}
+
+/**
  * Interface pública para User
  */
 export interface IUser extends IBaseEntity {
@@ -30,6 +45,7 @@ export interface IUser extends IBaseEntity {
   readonly type: 'CLIENT' | 'PROVIDER';
   readonly isActive: boolean;
   readonly notifications?: readonly INotification[]; // 🆕 Sprint #9: Notificaciones embebidas
+  readonly contacts?: readonly IContact[]; // 🆕 Sprint #12 Module 2: Contactos embebidos
 }
 
 /**
@@ -49,6 +65,27 @@ export interface IProviderUser extends IUser {
   readonly serviceAreas: readonly string[];
   readonly isVerified: boolean;
   readonly verificationDate?: Date;
+}
+
+/**
+ * Interface para datos públicos de usuarios (User Discovery - Sprint #12)
+ * Subconjunto de datos de User expuestos para descubrimiento de usuarios
+ * Excluye información sensible: email, phone, subscriptions, notifications
+ */
+export interface IUserPublicProfile {
+  readonly id: string;
+  readonly profile: {
+    readonly companyName?: string;
+  };
+  readonly type: 'CLIENT' | 'PROVIDER';
+  // Provider-specific fields (opcionales, solo para type === 'PROVIDER')
+  // serviceAreas: Para ProviderUser se mapea desde specialties
+  readonly serviceAreas?: readonly string[];
+  readonly isVerified?: boolean;
+  // TODO: Campos estratégicos para futuro
+  // readonly machineCount?: number; // Cantidad de máquinas (para mostrar experiencia del cliente)
+  // readonly rating?: number; // Rating promedio (para proveedores verificados)
+  // readonly location?: string; // Ciudad/región (para búsquedas geográficas futuras)
 }
 
 /**
@@ -286,7 +323,36 @@ export interface IQuickCheckTemplate extends IBaseEntity {
 }
 
 /**
- * Interface pública para InternalMessage
+ * Constante para límite de caracteres en contenido de mensajes
+ * Sprint #12 - Módulo 3: Messaging System
+ */
+export const MESSAGE_CONTENT_MAX_LENGTH = 1000;
+
+/**
+ * Interface pública para Mensaje 1-a-1
+ * Adaptado de IInternalMessage para sistema de mensajería simple entre contactos
+ * 
+ * Sprint #12 - Módulo 3: Messaging System
+ */
+export interface IMessage extends IBaseEntity {
+  readonly senderId: string;
+  readonly recipientId: string;
+  readonly content: string;
+  readonly sentAt: Date;
+  
+  // TODO: Features POST-MVP
+  // readonly isRead?: boolean;           // Estado de lectura del mensaje
+  // readonly readAt?: Date;              // Timestamp cuando fue leído
+  // readonly parentMessageId?: string;   // Para threading/respuestas
+  // readonly attachmentUrls?: string[];  // Para multimedia (imágenes, documentos)
+  // readonly isEdited?: boolean;         // Flag si fue editado
+  // readonly editedAt?: Date;            // Timestamp de última edición
+}
+
+/**
+ * Interface pública para InternalMessage (Sistema interno diferente al chat 1-a-1)
+ * DEPRECATED: Mantener por compatibilidad, pero usar IMessage para chat
+ * @deprecated Use IMessage for 1-to-1 chat messaging instead
  */
 export interface IInternalMessage extends IBaseEntity {
   readonly fromUserId: string;

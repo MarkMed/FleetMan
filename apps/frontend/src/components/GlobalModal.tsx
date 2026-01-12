@@ -247,11 +247,11 @@ export function GlobalModal() {
               {/* Confirm Button */}
               {config.showConfirm && (
                 <Button
-                  variant={getConfirmButtonVariant()}
+                  variant={ config.confirmButtonVariant || getConfirmButtonVariant()}
                   onPress={handleConfirm}
                   loading={config.loading}
                   disabled={config.loading}
-                  className="flex-1 sm:flex-none"
+                  className={cn("flex-1 sm:flex-none", config.confirmButtonClassName)}
                 >
                   {config.confirmText || 'Confirmar'}
                 </Button>

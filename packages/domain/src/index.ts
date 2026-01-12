@@ -12,6 +12,7 @@ export * from "./entities/machine";
 export * from "./entities/machine-type";
 export * from "./entities/machine-event";
 export * from "./entities/machine-event-type";
+export * from "./entities/message/message.entity"; // 🆕 Sprint #12 Module 3 - Message entity
 
 // Value Objects
 export * from "./value-objects";
@@ -26,6 +27,11 @@ export * from "./events";
 // Puertos (interfaces) - Implementados
 export * from "./ports";
 export type { IGetNotificationsResult } from "./ports/user.repository";
+export type { 
+  IMessageRepository,
+  IGetConversationHistoryResult,
+  ConversationHistoryOptions
+} from "./ports/message.repository"; // 🆕 Sprint #12 Module 3 - Message repository port
 
 // Servicios de dominio - Implementados
 export * from "./services";
@@ -35,17 +41,19 @@ export {
   IUser,
   IClientUser, 
   IProviderUser,
+  IUserPublicProfile, // 🆕 Sprint #12 Module 1 - Public user profile for discovery
+  IContact, // 🆕 Sprint #12 Module 2 - Contact subdocument
+  IMessage, // 🆕 Sprint #12 Module 3 - Message for 1-to-1 chat
+  MESSAGE_CONTENT_MAX_LENGTH, // 🆕 Sprint #12 Module 3 - Content length constant
   IMachine,
   IMachineType,
   IMachineEvent,
   IMachineEventType,
   INotification,
-  NotificationType, // 🔔 Sprint #9 - notification types
-  NotificationSourceType, // 🔔 Sprint #9 - notification source types
   IMaintenanceAlarm, // 🔔 Sprint #11 - maintenance alarms embedded in Machine
   IQuickCheckTemplate, // OLD - not used in MVP
   IQuickCheckItemTemplate, // OLD - not used in MVP
-  IInternalMessage,
+  IInternalMessage, // DEPRECATED - use IMessage for 1-to-1 chat
   IRepuesto,
   IBaseEntity,
   IQuickCheckRecord, // NEW - embedded in Machine
@@ -56,6 +64,9 @@ export {
   QUICK_CHECK_ITEM_RESULTS, // SSOT constant for validation
   QUICK_CHECK_RESULTS // SSOT constant for validation
 } from "./models/interfaces";
+
+// Export enum types separately to avoid duplicate exports (Sprint #9)
+export { NotificationType, NotificationSourceType } from "./enums/NotificationEnums";
 
 // Export FUEL_TYPE const and type directly for internal package use (persistence/contracts layers)
 export { FUEL_TYPE, type FuelType } from "./models";

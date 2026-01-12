@@ -35,3 +35,5 @@ export { ContactsScreen } from './help/ContactsScreen';
 
 // Reports
 export { EventReportScreen } from './reports/EventReportScreen';
+// User Discovery Screens (Sprint #12 - Module 1)
+export { UserDiscoveryScreen } from './users/UserDiscoveryScreen';

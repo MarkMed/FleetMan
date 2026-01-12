@@ -1,3 +1,43 @@
+/**
+ * Truncate text to a maximum length with ellipsis
+ * 
+ * Intelligently truncates text at the nearest word boundary to avoid
+ * cutting words in half. Useful for displaying long names in toasts,
+ * notifications, and UI elements with space constraints.
+ * 
+ * @param text - The text to truncate
+ * @param maxLength - Maximum length before truncation (default: 35 for toasts)
+ * @returns Truncated text with "..." if it exceeds maxLength
+ * 
+ * @example
+ * ```ts
+ * truncateText("Very Long Company Name Here", 20);
+ * // => "Very Long Company..."
+ * 
+ * truncateText("Short Name", 30);
+ * // => "Short Name" (no truncation)
+ * ```
+ */
+export const truncateText = (text: string, maxLength: number = 35): string => {
+  if (!text || text.length <= maxLength) {
+    return text;
+  }
+  
+  // Truncate at maxLength
+  let truncated = text.slice(0, maxLength);
+  
+  // Try to cut at the last complete word (find last space)
+  const lastSpaceIndex = truncated.lastIndexOf(' ');
+  
+  // Only cut at word boundary if we found a space and it's not too early
+  // (avoid cutting too early like "Very..." when we could fit "Very Long...")
+  if (lastSpaceIndex > maxLength * 0.6) {
+    truncated = truncated.slice(0, lastSpaceIndex);
+  }
+  
+  return `${truncated.trim()}...`;
+};
+
 // Date utilities
 export const formatDate = (date: string | Date, locale: string = 'es-ES'): string => {
   const dateObj = typeof date === 'string' ? new Date(date) : date;

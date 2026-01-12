@@ -99,6 +99,33 @@ const NotificationSubSchema = new Schema({
 }, { _id: true }); // Auto-generate _id for each notification
 
 // =============================================================================
+// CONTACT SUBDOCUMENT SCHEMA (Sprint #12 Module 2)
+// =============================================================================
+
+/**
+ * Contact Subdocument Schema
+ * Embedded in User for personal contact list management
+ * Relación unidireccional: userId guarda a contactUserId (no viceversa)
+ */
+const ContactSubSchema = new Schema({
+  contactUserId: {
+    type: String, // UserId string (no ObjectId)
+    required: true,
+    index: true // Optimize queries: "is X a contact of Y?"
+  },
+  addedAt: {
+    type: Date,
+    default: Date.now,
+    required: true
+  }
+  // TODO: Campos estratégicos para futuro (personalización de agenda)
+  // nickname: { type: String, maxlength: 100 }, // Alias personalizado
+  // tags: [{ type: String, maxlength: 50 }], // Etiquetas: ['proveedor-confiable', 'urgente']
+  // notes: { type: String, maxlength: 500 }, // Notas privadas
+  // isFavorite: { type: Boolean, default: false } // Marcar como favorito
+}, { _id: false }); // No auto-generate _id (simplificar subdocumento)
+
+// =============================================================================
 // USER SCHEMA DEFINITION
 // =============================================================================
 
@@ -149,7 +176,13 @@ const userSchema = new Schema<IUserDocument>({
   },
 
   // 🔔 Sprint #9: Embedded notifications array
-  notifications: [NotificationSubSchema]
+  notifications: [NotificationSubSchema],
+
+  // 📏 Sprint #12 Module 2: Embedded contacts array
+  contacts: {
+    type: [ContactSubSchema],
+    default: []
+  }
 }, {
   timestamps: true, // Adds createdAt and updatedAt
   discriminatorKey: 'type',
@@ -173,6 +206,17 @@ userSchema.set('toJSON', {
 
 // Indexes for performance
 userSchema.index({ type: 1, isActive: 1 });
+
+// Sprint #12 User Discovery: Compound index for findForDiscovery queries
+// Optimizes queries with isActive + type filter + companyName regex search
+// Query pattern: { isActive: true, type: 'PROVIDER', 'profile.companyName': /regex/i }
+userSchema.index({ isActive: 1, type: 1, 'profile.companyName': 1 });
+
+// Sprint #12 Contact Management: Compound index for contact lookups
+// Optimizes queries: "is contactUserId in userId's contacts?"
+// Query pattern: { _id: userId, 'contacts.contactUserId': contactUserId }
+userSchema.index({ _id: 1, 'contacts.contactUserId': 1 });
+
 // Note: Notification queries use in-memory filtering (not MongoDB queries),
 // so a compound index on notification fields wouldn't be beneficial.
 // If we implement aggregation pipeline in the future, consider adding:
