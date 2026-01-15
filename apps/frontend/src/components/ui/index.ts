@@ -22,6 +22,7 @@ export {
 export { InputField } from './InputField';
 export { Select } from './Select';
 export { Textarea } from './Textarea';
+export { TagInput } from './TagInput';
 export { Checkbox } from './Checkbox';
 export { 
   TextBlock, 

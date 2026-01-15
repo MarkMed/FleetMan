@@ -72,7 +72,7 @@ export function GlobalModal() {
       }
       
       // Close modal
-      hideModal();
+      // hideModal();
     } catch (error) {
       console.error('Error in modal confirm handler:', error);
       // Don't close modal if there's an error
@@ -114,7 +114,6 @@ export function GlobalModal() {
   const getVariantStrategy = () => {
     const variant = config.variant !== "default" ? config.variant : (config.feedbackVariant !== undefined ? config.feedbackVariant : 'info');
     const strategyResult = modalVariantStrategyFactory.getStrategy(variant);
-    console.log('Using modal strategy for variant:', config, strategyResult);
     return strategyResult;
   };
 

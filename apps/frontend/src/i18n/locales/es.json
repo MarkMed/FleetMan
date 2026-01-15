@@ -50,6 +50,7 @@
     "success": "Éxito",
     "cancel": "Cancelar",
     "save": "Guardar",
+    "add": "Agregar",
     "edit": "Editar",
     "delete": "Eliminar",
     "create": "Crear",
@@ -87,6 +88,7 @@
     "notSpecified": "No especificado",
     "imageLoadError": "Error al cargar la imagen",
     "uses": "usos",
+    "tags": "etiquetas",
     "retry": "Reintentar",
     "description": "Descripción",
     "expand": "Expandir",
@@ -770,6 +772,76 @@
       "removing": "Eliminando...",
       "contactAdded": "Contacto agregado",
       "messagingComingSoon": "Mensajería disponible próximamente"
+    }
+  },
+  "profile": {
+    "title": "Mi Perfil",
+    "edit": {
+      "title": "Editar Perfil",
+      "subtitle": "Actualiza tu información personal y profesional",
+      "verificationTime": "¡Verifica los cambios!",
+      "steps": {
+        "basicInfo": {
+          "title": "Información Básica",
+          "description": "Datos de contacto de tu empresa"
+        },
+        "bioAndTags": {
+          "title": "Bio y Etiquetas",
+          "description": "Cuéntanos más sobre tu empresa"
+        },
+        "confirmation": {
+          "title": "Confirmación",
+          "description": "Revisa y confirma los cambios"
+        }
+      },
+      "confirmation": {
+        "title": "Confirma los cambios",
+        "subtitle": "Revisa toda la información antes de actualizar tu perfil",
+        "infoMessage": "Al hacer clic en \"Actualizar Perfil\", se guardarán los cambios. Podrás editar tu perfil nuevamente en cualquier momento.",
+        "errorsFound": "Se encontraron errores en la información:",
+        "goBackToFix": "Por favor, regresa a los pasos anteriores para corregir estos errores.",
+        "modal": {
+          "title": "Actualizar Perfil",
+          "description": "¿Seguro de actualizar tu perfil con estos datos?",
+          "confirmButton": "Actualizar Perfil",
+          "cancelButton": "Cancelar"
+        }
+      },
+      "fields": {
+        "companyName": "Nombre de Empresa",
+        "companyNamePlaceholder": "Ej: Transportes del Sur SpA",
+        "phone": "Teléfono",
+        "phonePlaceholder": "+56 9 1234 5678",
+        "address": "Dirección",
+        "addressPlaceholder": "Av. Principal 123, Santiago",
+        "bio": "Biografía",
+        "bioPlaceholder": "Cuéntanos sobre tu empresa, servicios que ofreces, experiencia...",
+        "bioHelper": "Una breve descripción de tu empresa (máximo 500 caracteres)",
+        "tags": "Etiquetas",
+        "tagsPlaceholder": "Escribe y presiona Enter o coma para agregar",
+        "tagsHelper": "Agrega hasta 5 etiquetas que describan tu empresa (ej: grúas, mantenimiento, transporte)"
+      },
+      "success": {
+        "title": "Perfil Actualizado",
+        "message": "Tu perfil ha sido actualizado exitosamente",
+        "description": "Los cambios se han guardado correctamente"
+      },
+      "errors": {
+        "title": "Error al actualizar perfil",
+        "update": "No se pudo actualizar el perfil. Intenta nuevamente.",
+        "noUser": "No se encontró el usuario autenticado",
+        "loadUser": "Error al cargar datos del usuario",
+        "loadUserTitle": "No se pudo cargar tu perfil"
+      },
+      "validation": {
+        "maxLength": "Máximo {{max}} caracteres permitidos",
+        "bioMaxLength": "La biografía debe tener máximo {{max}} caracteres",
+        "tagsMaxCount": "Máximo {{max}} etiquetas permitidas",
+        "duplicateTags": "No se permiten etiquetas duplicadas",
+        "invalid": "Valor inválido",
+        "invalidStep": "Paso de validación inválido",
+        "unexpectedError": "Error inesperado durante la validación"
+      }
     }
   }
 }

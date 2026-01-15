@@ -2,6 +2,24 @@ import { z } from 'zod';
 import { SortOrderSchema, PaginationSchema, BasePaginatedResponseSchema } from './common.types';
 
 // =============================================================================
+// Validation Constants (Sprint #13 Task 10.2)
+// =============================================================================
+
+/**
+ * Límites de validación para todos los campos de UserProfile
+ * SSOT: Centralizados en capa de contracts para reutilización en frontend/backend
+ * Sprint #13 Task 10.1 + 10.2
+ */
+export const USER_PROFILE_LIMITS = {
+  MAX_COMPANY_NAME_LENGTH: 100,
+  MAX_PHONE_LENGTH: 20,
+  MAX_ADDRESS_LENGTH: 200,
+  MAX_BIO_LENGTH: 500,
+  MAX_TAGS: 5,
+  MAX_TAG_LENGTH: 100
+} as const;
+
+// =============================================================================
 // User Types & Enums
 // =============================================================================
 
@@ -21,6 +39,8 @@ export interface UserProfile {
   phone?: string;
   companyName?: string;
   address?: string;
+  bio?: string; // 🆕 Sprint #13 Task 10.2: Biografía
+  tags?: string[]; // 🆕 Sprint #13 Task 10.2: Tags/etiquetas
 }
 
 /**
@@ -44,11 +64,43 @@ export const UserTypeSchema = z.nativeEnum(UserType);
 
 /**
  * Schema basado en la interfaz UserProfile
+ * 🆕 Sprint #13 Task 10.1 + 10.2: Validaciones completas para todos los campos
+ * SSOT: Única fuente de verdad para validación de perfil de usuario
  */
 export const UserProfileSchema = z.object({
-  phone: z.string().optional(),
-  companyName: z.string().optional(),
-  address: z.string().optional()
+  phone: z.string()
+    .max(USER_PROFILE_LIMITS.MAX_PHONE_LENGTH, `Phone must be max ${USER_PROFILE_LIMITS.MAX_PHONE_LENGTH} characters`)
+    .trim()
+    .optional(),
+  companyName: z.string()
+    .max(USER_PROFILE_LIMITS.MAX_COMPANY_NAME_LENGTH, `Company name must be max ${USER_PROFILE_LIMITS.MAX_COMPANY_NAME_LENGTH} characters`)
+    .trim()
+    .optional(),
+  address: z.string()
+    .max(USER_PROFILE_LIMITS.MAX_ADDRESS_LENGTH, `Address must be max ${USER_PROFILE_LIMITS.MAX_ADDRESS_LENGTH} characters`)
+    .trim()
+    .optional(),
+  bio: z.string()
+    .max(USER_PROFILE_LIMITS.MAX_BIO_LENGTH, `Bio must be max ${USER_PROFILE_LIMITS.MAX_BIO_LENGTH} characters`)
+    .trim()
+    .optional(),
+  tags: z.array(
+    z.string()
+      .max(USER_PROFILE_LIMITS.MAX_TAG_LENGTH, `Each tag must be max ${USER_PROFILE_LIMITS.MAX_TAG_LENGTH} characters`)
+      .trim()
+      .min(1, 'Tags cannot be empty')
+      .transform(val => val.toLowerCase()) // Normalize to lowercase
+  )
+    .max(USER_PROFILE_LIMITS.MAX_TAGS, `Maximum ${USER_PROFILE_LIMITS.MAX_TAGS} tags allowed`)
+    .optional()
+    .refine(
+      (tags) => {
+        if (!tags || tags.length === 0) return true;
+        const uniqueTags = new Set(tags);
+        return uniqueTags.size === tags.length;
+      },
+      { message: 'Duplicate tags are not allowed' }
+    )
 }) satisfies z.ZodType<UserProfile>;
 
 /**

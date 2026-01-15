@@ -28,6 +28,7 @@ interface AuthStore extends AuthState {
   clearError: () => void;
   setHydrated: (isHydrated: boolean) => void;
   markSessionExpired: () => void; // Mark session as expired (prevent duplicate modals)
+  updateUserProfile: (updatedUser: User) => void; // 🆕 Sprint #13 Task 10.1: Update user profile in store
 }
 
 export const useAuthStore = create<AuthStore>()(
@@ -251,6 +252,32 @@ export const useAuthStore = create<AuthStore>()(
 
       markSessionExpired: () => {
         set({ isSessionExpiredModalShown: true });
+      },
+
+      /**
+       * Updates user profile in store after successful edit
+       * Sprint #13 Task 10.1: User Profile Editing
+       * 
+       * @param updatedUser - Updated user data from API response
+       */
+      updateUserProfile: (updatedUser: User) => {
+        set((state) => ({
+          user: {
+            ...state.user,
+            ...updatedUser,
+            // Ensure we merge the profile object properly
+            profile: {
+              ...state.user?.profile,
+              ...updatedUser.profile,
+            },
+          },
+        }));
+        console.log('✅ User profile updated in AuthStore:', {
+          userId: updatedUser.id,
+          hasProfile: !!updatedUser.profile,
+          hasBio: !!updatedUser.profile?.bio,
+          tagsCount: updatedUser.profile?.tags?.length || 0,
+        });
       },
 
       // TODO: Future enhancement - Auto-refresh token before expiration

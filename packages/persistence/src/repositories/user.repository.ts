@@ -163,13 +163,55 @@ export class UserRepository implements IUserRepository {
   }
 
   /**
-   * Guarda un usuario (crear o actualizar)
+   * Guarda un usuario (actualizar existente)
+   * Convierte entidad de dominio → documento MongoDB y persiste usando findByIdAndUpdate
+   * 
+   * 🆕 Sprint #13 Task 10.1: Implementado para soportar actualización de perfil
+   * 
+   * @param user - Entidad User actualizada con cambios en memoria
+   * @returns Result<void> - Success si actualización exitosa, Error si falla
    */
   async save(user: User): Promise<Result<void, DomainError>> {
     try {
-      // TODO: Implement entity to document conversion and save logic
-      return err(DomainError.create('INCOMPLETE_IMPLEMENTATION', 'UserRepository.save needs complete implementation'));
+      // Preparar datos de actualización desde entidad de dominio
+      const updateData: any = {
+        email: user.email.getValue(),
+        profile: {
+          phone: user.profile.phone,
+          companyName: user.profile.companyName,
+          address: user.profile.address,
+          bio: user.profile.bio,
+          tags: user.profile.tags
+        },
+        isActive: user.isActive,
+        updatedAt: new Date() // Forzar actualización de timestamp
+      };
+
+      // Usar $set para actualización parcial (solo campos especificados)
+      // findByIdAndUpdate con runValidators: true ejecuta validaciones del schema
+      const result = await UserModel.findByIdAndUpdate(
+        user.id.getValue(),
+        { $set: updateData },
+        { 
+          new: true, // Retornar documento actualizado
+          runValidators: true // Ejecutar validaciones del schema
+        }
+      );
+      
+      if (!result) {
+        return err(DomainError.notFound(`User with ID ${user.id.getValue()} not found`));
+      }
+      
+      return ok(undefined);
     } catch (error: any) {
+      // Manejar errores de validación de Mongoose
+      if (error.name === 'ValidationError') {
+        const validationErrors = Object.values(error.errors)
+          .map((err: any) => err.message)
+          .join(', ');
+        return err(DomainError.validation(`Validation failed: ${validationErrors}`));
+      }
+      
       return err(DomainError.create('PERSISTENCE_ERROR', `Error saving user: ${error.message}`));
     }
   }

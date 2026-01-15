@@ -9,6 +9,7 @@ import {
   NOTIFICATION_TYPES,
   NOTIFICATION_SOURCE_TYPES
 } from '@packages/domain';
+import { USER_PROFILE_LIMITS } from '@packages/contracts';
 
 // =============================================================================
 // USER DOCUMENT INTERFACES
@@ -161,6 +162,32 @@ const userSchema = new Schema<IUserDocument>({
     address: {
       type: String,
       trim: true
+    },
+    // 🆕 Sprint #13 Task 10.2: Bio & Tags
+    bio: {
+      type: String,
+      trim: true,
+      maxlength: USER_PROFILE_LIMITS.MAX_BIO_LENGTH,
+      sparse: true // Índice sparse: solo indexa documentos donde bio existe
+    },
+    tags: {
+      type: [String],
+      default: undefined, // undefined permite distinguir "no set" vs "array vacío"
+      validate: {
+        validator: function(tags: string[] | undefined) {
+          if (!tags) return true; // undefined/null es válido
+          if (!Array.isArray(tags)) return false;
+          if (tags.length > USER_PROFILE_LIMITS.MAX_TAGS) return false;
+          
+          // Validar cada tag individualmente
+          return tags.every(tag => 
+            typeof tag === 'string' && 
+            tag.trim().length > 0 && 
+            tag.length <= USER_PROFILE_LIMITS.MAX_TAG_LENGTH
+          );
+        },
+        message: `Tags must be an array of max ${USER_PROFILE_LIMITS.MAX_TAGS} strings, each max ${USER_PROFILE_LIMITS.MAX_TAG_LENGTH} characters`
+      }
     }
   },
   
@@ -216,6 +243,11 @@ userSchema.index({ isActive: 1, type: 1, 'profile.companyName': 1 });
 // Optimizes queries: "is contactUserId in userId's contacts?"
 // Query pattern: { _id: userId, 'contacts.contactUserId': contactUserId }
 userSchema.index({ _id: 1, 'contacts.contactUserId': 1 });
+
+// 🆕 Sprint #13 Task 10.2: Tags index for future search functionality
+// Optimizes queries: { 'profile.tags': 'tag-value' } or { 'profile.tags': { $in: [...] } }
+// Sparse index: only indexes documents where tags array exists
+userSchema.index({ 'profile.tags': 1 }, { sparse: true });
 
 // Note: Notification queries use in-memory filtering (not MongoDB queries),
 // so a compound index on notification fields wouldn't be beneficial.

@@ -1,8 +1,33 @@
 import React from 'react';
-import { Heading1, Heading2, BodyText, Button, Card } from '@components/ui';
-import { User, Mail, Phone, Calendar, Shield, Edit } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../store/AuthProvider';
+import { Heading1, Heading2, BodyText, Button, Card, Badge, Skeleton } from '@components/ui';
+import { User, Mail, Phone, Calendar, Shield, Edit, Building2, MapPin, Tag } from 'lucide-react';
 
 export const ProfileScreen: React.FC = () => {
+  const navigate = useNavigate();
+  const { user, isLoading } = useAuth();
+
+  // Loading state
+  if (isLoading || !user) {
+    return (
+      <div className="space-y-8">
+        <Skeleton className="h-12 w-64" />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <Skeleton className="h-96" />
+          <div className="lg:col-span-2 space-y-6">
+            <Skeleton className="h-48" />
+            <Skeleton className="h-48" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const handleEditProfile = () => {
+    navigate('/profile/edit');
+  };
+
   return (
     <div className="space-y-8">
       <div className="flex justify-between items-center">
@@ -14,7 +39,7 @@ export const ProfileScreen: React.FC = () => {
             Gestiona tu información personal y preferencias de cuenta
           </BodyText>
         </div>
-        <Button variant="filled" size="default">
+        <Button variant="filled" size="default" onPress={handleEditProfile}>
           <Edit className="w-4 h-4 mr-2" />
           Editar Perfil
         </Button>
@@ -30,20 +55,25 @@ export const ProfileScreen: React.FC = () => {
               </div>
               <div>
                 <Heading2 size="large" weight="bold" className="text-foreground">
-                  Usuario Demo
+                  {user.profile?.companyName || 'Sin nombre de empresa'}
                 </Heading2>
                 <BodyText size="small" className="text-muted-foreground">
-                  Administrador de Flota
+                  {user.type === 'CLIENT' ? 'Cliente' : 'Proveedor de Servicios'}
                 </BodyText>
               </div>
               <div className="w-full pt-4 border-t border-border space-y-2">
                 <div className="flex items-center justify-center gap-2 text-muted-foreground">
                   <Shield className="w-4 h-4" />
-                  <BodyText size="small">Cuenta Verificada</BodyText>
+                  <BodyText size="small">Cuenta Activa</BodyText>
                 </div>
                 <div className="flex items-center justify-center gap-2 text-muted-foreground">
                   <Calendar className="w-4 h-4" />
-                  <BodyText size="small">Miembro desde Ene 2024</BodyText>
+                  <BodyText size="small">
+                    Miembro desde {new Date(user.createdAt).toLocaleDateString('es-ES', { 
+                      month: 'short', 
+                      year: 'numeric' 
+                    })}
+                  </BodyText>
                 </div>
               </div>
             </div>
@@ -52,49 +82,6 @@ export const ProfileScreen: React.FC = () => {
 
         {/* Information Cards */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Personal Information */}
-          <Card>
-            <div className="p-6">
-              <Heading2 size="large" weight="bold" className="mb-4">
-                Información Personal
-              </Heading2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <BodyText size="small" weight="medium" className="text-muted-foreground">
-                    Nombre Completo
-                  </BodyText>
-                  <BodyText className="text-foreground">
-                    Usuario Demo
-                  </BodyText>
-                </div>
-                <div className="space-y-2">
-                  <BodyText size="small" weight="medium" className="text-muted-foreground">
-                    RUT
-                  </BodyText>
-                  <BodyText className="text-foreground">
-                    12.345.678-9
-                  </BodyText>
-                </div>
-                <div className="space-y-2">
-                  <BodyText size="small" weight="medium" className="text-muted-foreground">
-                    Cargo
-                  </BodyText>
-                  <BodyText className="text-foreground">
-                    Administrador de Flota
-                  </BodyText>
-                </div>
-                <div className="space-y-2">
-                  <BodyText size="small" weight="medium" className="text-muted-foreground">
-                    Departamento
-                  </BodyText>
-                  <BodyText className="text-foreground">
-                    Operaciones
-                  </BodyText>
-                </div>
-              </div>
-            </div>
-          </Card>
-
           {/* Contact Information */}
           <Card>
             <div className="p-6">
@@ -111,69 +98,96 @@ export const ProfileScreen: React.FC = () => {
                       Email
                     </BodyText>
                     <BodyText weight="medium" className="text-foreground">
-                      usuario.demo@fleetman.cl
+                      {user.email}
                     </BodyText>
                   </div>
                 </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <Phone className="w-5 h-5 text-primary" />
+                
+                {user.profile?.phone && (
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <Phone className="w-5 h-5 text-primary" />
+                    </div>
+                    <div>
+                      <BodyText size="small" className="text-muted-foreground">
+                        Teléfono
+                      </BodyText>
+                      <BodyText weight="medium" className="text-foreground">
+                        {user.profile.phone}
+                      </BodyText>
+                    </div>
                   </div>
-                  <div>
-                    <BodyText size="small" className="text-muted-foreground">
-                      Teléfono
-                    </BodyText>
-                    <BodyText weight="medium" className="text-foreground">
-                      +56 9 1234 5678
-                    </BodyText>
+                )}
+
+                {user.profile?.companyName && (
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <Building2 className="w-5 h-5 text-primary" />
+                    </div>
+                    <div>
+                      <BodyText size="small" className="text-muted-foreground">
+                        Empresa
+                      </BodyText>
+                      <BodyText weight="medium" className="text-foreground">
+                        {user.profile.companyName}
+                      </BodyText>
+                    </div>
                   </div>
-                </div>
+                )}
+
+                {user.profile?.address && (
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <MapPin className="w-5 h-5 text-primary" />
+                    </div>
+                    <div>
+                      <BodyText size="small" className="text-muted-foreground">
+                        Dirección
+                      </BodyText>
+                      <BodyText weight="medium" className="text-foreground">
+                        {user.profile.address}
+                      </BodyText>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </Card>
 
-          {/* Account Stats */}
-          <Card>
-            <div className="p-6">
-              <Heading2 size="large" weight="bold" className="mb-4">
-                Estadísticas de Cuenta
-              </Heading2>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="text-center p-4 bg-muted/30 rounded-lg">
-                  <Heading2 size="large" weight="bold" className="text-primary">
-                    12
+          {/* Bio Section - NEW Sprint #13 */}
+          {user.profile?.bio && (
+            <Card>
+              <div className="p-6">
+                <Heading2 size="large" weight="bold" className="mb-3">
+                  Biografía
+                </Heading2>
+                <BodyText className="text-foreground whitespace-pre-wrap">
+                  {user.profile.bio}
+                </BodyText>
+              </div>
+            </Card>
+          )}
+
+          {/* Tags Section - NEW Sprint #13 */}
+          {user.profile?.tags && user.profile.tags.length > 0 && (
+            <Card>
+              <div className="p-6">
+                <div className="flex items-center gap-2 mb-3">
+                  <Tag className="w-5 h-5 text-primary" />
+                  <Heading2 size="large" weight="bold">
+                    Etiquetas
                   </Heading2>
-                  <BodyText size="small" className="text-muted-foreground">
-                    Máquinas
-                  </BodyText>
                 </div>
-                <div className="text-center p-4 bg-muted/30 rounded-lg">
-                  <Heading2 size="large" weight="bold" className="text-primary">
-                    48
-                  </Heading2>
-                  <BodyText size="small" className="text-muted-foreground">
-                    QuickChecks
-                  </BodyText>
-                </div>
-                <div className="text-center p-4 bg-muted/30 rounded-lg">
-                  <Heading2 size="large" weight="bold" className="text-primary">
-                    156
-                  </Heading2>
-                  <BodyText size="small" className="text-muted-foreground">
-                    Horas
-                  </BodyText>
-                </div>
-                <div className="text-center p-4 bg-muted/30 rounded-lg">
-                  <Heading2 size="large" weight="bold" className="text-primary">
-                    5
-                  </Heading2>
-                  <BodyText size="small" className="text-muted-foreground">
-                    Eventos
-                  </BodyText>
+                <div className="flex flex-wrap gap-2">
+                  {user.profile.tags.map((tag, index) => (
+                    <Badge key={index} variant="secondary" className="text-sm">
+                      {tag}
+                    </Badge>
+                  ))}
                 </div>
               </div>
-            </div>
-          </Card>
+            </Card>
+          )}
         </div>
       </div>
 

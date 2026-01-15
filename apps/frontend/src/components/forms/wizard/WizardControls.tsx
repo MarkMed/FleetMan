@@ -81,7 +81,7 @@ export const WizardControls: React.FC<WizardControlsProps> = ({
           <TimerButton
             doubleConfirmation={false}
             resetOnAction={true}
-            duration={5}
+            duration={3}
             onAction={onSubmit}
             label={submitLabel}
             timerLabel={() => timerLabel}

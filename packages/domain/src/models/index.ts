@@ -81,6 +81,8 @@ export interface IUserProfile {
   readonly phone?: string;
   readonly companyName?: string;
   readonly address?: string;
+  readonly bio?: string; // 🆕 Sprint #13 Task 10.2: Biografía (max 500 chars)
+  readonly tags?: readonly string[]; // 🆕 Sprint #13 Task 10.2: Tags/etiquetas (max 5, cada uno max 100 chars)
 }
 
 export interface IMachineSpecs {
