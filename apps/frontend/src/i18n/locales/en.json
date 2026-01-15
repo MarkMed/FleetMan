@@ -50,6 +50,7 @@
     "success": "Success",
     "cancel": "Cancel",
     "save": "Save",
+    "add": "Add",
     "edit": "Edit",
     "delete": "Delete",
     "create": "Create",
@@ -87,6 +88,7 @@
     "notSpecified": "Not specified",
     "imageLoadError": "Failed to load image",
     "uses": "uses",
+    "tags": "tags",
     "retry": "Retry",
     "description": "Description",
     "expand": "Expand",
@@ -768,6 +770,76 @@
       "removing": "Removing...",
       "contactAdded": "Contact added",
       "messagingComingSoon": "Messaging coming soon"
+    }
+  },
+  "profile": {
+    "title": "My Profile",
+    "edit": {
+      "title": "Edit Profile",
+      "subtitle": "Update your personal and professional information",
+      "verificationTime": "Verify the changes!",
+      "steps": {
+        "basicInfo": {
+          "title": "Basic Information",
+          "description": "Your company contact details"
+        },
+        "bioAndTags": {
+          "title": "Bio and Tags",
+          "description": "Tell us more about your company"
+        },
+        "confirmation": {
+          "title": "Confirmation",
+          "description": "Review and confirm your changes"
+        }
+      },
+      "confirmation": {
+        "title": "Confirm your changes",
+        "subtitle": "Review all information before updating your profile",
+        "infoMessage": "By clicking \"Update Profile\", your changes will be saved. You can edit your profile again at any time.",
+        "errorsFound": "Errors were found in the information:",
+        "goBackToFix": "Please go back to previous steps to fix these errors.",
+        "modal": {
+          "title": "Update Profile",
+          "description": "Are you sure you want to update your profile with the new information?",
+          "confirmButton": "Update Profile",
+          "cancelButton": "Cancel"
+        }
+      },
+      "fields": {
+        "companyName": "Company Name",
+        "companyNamePlaceholder": "e.g., South Transport Inc.",
+        "phone": "Phone",
+        "phonePlaceholder": "+1 555 123 4567",
+        "address": "Address",
+        "addressPlaceholder": "123 Main St, City",
+        "bio": "Biography",
+        "bioPlaceholder": "Tell us about your company, services you offer, experience...",
+        "bioHelper": "A brief description of your company (max 500 characters)",
+        "tags": "Tags",
+        "tagsPlaceholder": "Type and press Enter or comma to add",
+        "tagsHelper": "Add up to 5 tags that describe your company (e.g., cranes, maintenance, transport)"
+      },
+      "success": {
+        "title": "Profile Updated",
+        "message": "Your profile has been updated successfully",
+        "description": "Changes have been saved correctly"
+      },
+      "errors": {
+        "title": "Error updating profile",
+        "update": "Could not update profile. Please try again.",
+        "noUser": "Authenticated user not found",
+        "loadUser": "Error loading user data",
+        "loadUserTitle": "Could not load your profile"
+      },
+      "validation": {
+        "maxLength": "Maximum {{max}} characters allowed",
+        "bioMaxLength": "Biography must be maximum {{max}} characters",
+        "tagsMaxCount": "Maximum {{max}} tags allowed",
+        "duplicateTags": "Duplicate tags are not allowed",
+        "invalid": "Invalid value",
+        "invalidStep": "Invalid validation step",
+        "unexpectedError": "Unexpected error during validation"
+      }
     }
   }
 }

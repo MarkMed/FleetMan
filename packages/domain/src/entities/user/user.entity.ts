@@ -224,6 +224,40 @@ export abstract class User {
       }
     }
 
+    // 🆕 Sprint #13 Task 10.2: Validar bio si está presente
+    if (profile.bio !== undefined) {
+      if (profile.bio.trim().length === 0) {
+        return err(DomainError.validation('Bio cannot be empty when provided'));
+      }
+      if (profile.bio.length > 500) {
+        return err(DomainError.validation('Bio is too long (max 500 characters)'));
+      }
+    }
+
+    // 🆕 Sprint #13 Task 10.2: Validar tags si está presente
+    if (profile.tags !== undefined) {
+      if (profile.tags.length > 5) {
+        return err(DomainError.validation('Too many tags (max 5 tags)'));
+      }
+      
+      // Validar cada tag individualmente
+      for (const tag of profile.tags) {
+        if (typeof tag !== 'string' || tag.trim().length === 0) {
+          return err(DomainError.validation('Tags cannot be empty'));
+        }
+        if (tag.length > 100) {
+          return err(DomainError.validation('Tag is too long (max 100 characters)'));
+        }
+      }
+      
+      // Validar que no haya tags duplicados (case-insensitive)
+      // NOTE: Zod contract layer ya valida esto post-transform, pero mantenemos defensa en profundidad
+      const uniqueTags = new Set(profile.tags.map(t => t.toLowerCase().trim()));
+      if (uniqueTags.size !== profile.tags.length) {
+        return err(DomainError.validation('Duplicate tags are not allowed'));
+      }
+    }
+
     return ok(undefined);
   }
 
@@ -381,10 +415,16 @@ export abstract class User {
     createdAt: string;
     updatedAt: string;
   } {
+    // Convertir readonly string[] a string[] para compatibilidad con contratos
+    const profileCopy = { ...this.props.profile };
+    if (profileCopy.tags) {
+      (profileCopy as any).tags = [...profileCopy.tags]; // Cast de readonly a mutable
+    }
+    
     return {
       id: this.props.id.getValue(),
       email: this.props.email.getValue(),
-      profile: { ...this.props.profile },
+      profile: profileCopy,
       type: this.props.type,
       isActive: this.props.isActive,
       createdAt: this.props.createdAt.toISOString(),

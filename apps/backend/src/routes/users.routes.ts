@@ -2,13 +2,210 @@ import { Router } from 'express';
 import { requestSanitization } from '../middlewares/requestSanitization';
 import { authMiddleware } from '../middlewares/auth.middleware';
 import { requireRole } from '../middlewares/role-check.middleware';
+import { validateRequest } from '../middlewares/validation.middleware';
+import { UpdateMyProfileRequestSchema } from '@packages/contracts';
+import { UserController } from '../controllers/user.controller';
 
 const router = Router();
+const userController = new UserController();
 
 /**
  * RUTAS DE USUARIOS
- * Ejemplos de autorización combinada (rol + ownership)
+ * Sprint #13 Tasks 10.1 + 10.2: User Profile Editing + Bio & Tags
+ * 
+ * Nuevas rutas:
+ * - PATCH /me/profile - Actualizar perfil propio (phone, companyName, address, bio, tags)
+ * 
+ * Rutas legacy (ejemplos de autorización combinada rol + ownership):
+ * - GET / - List all users (admin only)
+ * - GET /:userId/profile - Get user profile (admin only, MVP)
+ * - GET /:userId/machines - Get user machines (provider/admin only, MVP)
+ * - GET /directory - Public user directory
  */
+
+/**
+ * @swagger
+ * /api/v1/users/me/profile:
+ *   patch:
+ *     summary: Update own user profile
+ *     description: |
+ *       Allows authenticated users to update their own profile information.
+ *       Ownership is enforced by authMiddleware (only authenticated user can edit their own profile).
+ *       
+ *       **Sprint #13 Tasks 10.1 + 10.2: User Profile Editing + Bio & Tags**
+ *       
+ *       Editable fields:
+ *       - phone (optional, max 20 chars, validated format)
+ *       - companyName (optional, max 100 chars)
+ *       - address (optional, max 200 chars)
+ *       - bio (optional, max 500 chars) - NEW in Sprint #13
+ *       - tags (optional, array max 5, each max 100 chars) - NEW in Sprint #13
+ *       
+ *       Non-editable fields (excluded from this endpoint):
+ *       - email (requires separate verification flow)
+ *       - isActive (admin-only operation)
+ *       - subscriptionLevel / serviceAreas (future functionality)
+ *       
+ *       Validation layers:
+ *       1. Zod schema (contracts) - format & structure validation
+ *       2. Domain entity - business rules validation
+ *       3. Mongoose schema - database constraint validation
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               profile:
+ *                 type: object
+ *                 properties:
+ *                   phone:
+ *                     type: string
+ *                     example: "+123456789"
+ *                     description: Phone number in international format
+ *                   companyName:
+ *                     type: string
+ *                     example: "Fleet Management Solutions Inc."
+ *                     maxLength: 100
+ *                   address:
+ *                     type: string
+ *                     example: "123 Main St, Springfield, USA"
+ *                     maxLength: 200
+ *                   bio:
+ *                     type: string
+ *                     example: "Fleet management company specializing in heavy machinery maintenance and tracking."
+ *                     maxLength: 500
+ *                     description: User/company biography (Sprint #13 Task 10.2)
+ *                   tags:
+ *                     type: array
+ *                     items:
+ *                       type: string
+ *                     example: ["construction", "heavy-machinery", "maintenance", "tracking"]
+ *                     maxItems: 5
+ *                     description: Tags for user discovery and categorization (Sprint #13 Task 10.2, each tag max 100 chars)
+ *           examples:
+ *             updateBioAndTags:
+ *               summary: Update bio and tags
+ *               value:
+ *                 profile:
+ *                   bio: "Leading provider of construction equipment maintenance services in North America."
+ *                   tags: ["construction", "excavators", "maintenance", "certified"]
+ *             updateContactInfo:
+ *               summary: Update contact information
+ *               value:
+ *                 profile:
+ *                   phone: "+1234567890"
+ *                   address: "456 Industrial Ave, Los Angeles, CA"
+ *     responses:
+ *       200:
+ *         description: Profile updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Profile updated successfully"
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                     email:
+ *                       type: string
+ *                     profile:
+ *                       type: object
+ *                       properties:
+ *                         phone:
+ *                           type: string
+ *                         companyName:
+ *                           type: string
+ *                         address:
+ *                           type: string
+ *                         bio:
+ *                           type: string
+ *                         tags:
+ *                           type: array
+ *                           items:
+ *                             type: string
+ *                     type:
+ *                       type: string
+ *                       enum: [CLIENT, PROVIDER]
+ *                     isActive:
+ *                       type: boolean
+ *                     createdAt:
+ *                       type: string
+ *                       format: date-time
+ *                     updatedAt:
+ *                       type: string
+ *                       format: date-time
+ *       400:
+ *         description: Validation error (Zod, domain rules, or Mongoose constraints)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Bio is too long (max 500 characters)"
+ *                 error:
+ *                   type: string
+ *                   example: "VALIDATION_ERROR"
+ *       401:
+ *         description: Not authenticated (missing or invalid token)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Access denied. Token required."
+ *                 error:
+ *                   type: string
+ *                   example: "MISSING_TOKEN"
+ *       403:
+ *         description: User account is deactivated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Cannot update deactivated user profile"
+ *                 error:
+ *                   type: string
+ *                   example: "USER_DEACTIVATED"
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Internal server error
+ */
+router.patch('/me/profile',
+  requestSanitization,
+  authMiddleware, // Garantiza req.user.userId existe
+  validateRequest({ body: UpdateMyProfileRequestSchema }), // Validación Zod (sin id, viene de JWT)
+  userController.updateProfile // Controller invoca use case
+);
 
 /**
  * @swagger

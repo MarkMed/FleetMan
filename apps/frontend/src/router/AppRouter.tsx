@@ -20,6 +20,7 @@ import { QuickCheckScreen } from '../screens/quickcheck/QuickCheckScreen';
 import { QuickCheckHistoryScreen } from '../screens/quickcheck/QuickCheckHistoryScreen';
 import { NotificationsScreen } from '../screens/notifications/NotificationsScreen';
 import { ProfileScreen } from '../screens/profile/ProfileScreen';
+import { EditProfileScreen } from '../screens/profile/EditProfileScreen';
 import { ConfigurationsScreen } from '../screens/settings/ConfigurationsScreen';
 import { ExamplesScreen } from '../screens/ExamplesScreen';
 import { UserDiscoveryScreen, MyContactsScreen } from '../screens/users';
@@ -78,6 +79,7 @@ export const AppRouter: React.FC = () => {
           <Route path="messages" element={<ConversationsListScreen />} />
           <Route path="messages/:otherUserId" element={<ChatScreen />} />
           <Route path="profile" element={<ProfileScreen />} />
+          <Route path="profile/edit" element={<EditProfileScreen />} />
           <Route path="settings" element={<ConfigurationsScreen />} />
 
           {/* Examples */}

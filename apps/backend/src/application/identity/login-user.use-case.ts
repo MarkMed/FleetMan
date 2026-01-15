@@ -81,10 +81,7 @@ export class LoginUserUseCase {
       // 4. Retornar respuesta usando método de dominio (SIN passwordHash)
       const publicData = user.toPublicData();
       return {
-        user: {
-          ...publicData,
-          type: publicData.type as UserType // Cast al tipo de contrato esperado
-        },
+        user: publicData as any, // Cast para compatibilidad readonly → mutable (Sprint #13 Task 10.2)
         token: tokens.accessToken,
         refreshToken: tokens.refreshToken,
       };

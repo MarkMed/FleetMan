@@ -10,13 +10,15 @@ import type { IUserPublicProfile } from '@packages/domain';
  * Exposes only non-sensitive user data for public discovery
  * Uses satisfies to ensure compile-time validation against domain IUserPublicProfile
  * 
- * EXCLUDED (sensitive): email, phone, passwordHash, subscriptionLevel, notifications
- * INCLUDED (public): id, companyName, type, serviceAreas (providers), isVerified (providers)
+ * EXCLUDED (sensitive): email, phone, passwordHash, subscriptionLevel, notifications, address
+ * INCLUDED (public): id, companyName, bio, tags, type, serviceAreas (providers), isVerified (providers)
  */
 export const UserPublicProfileSchema = z.object({
   id: z.string(),
   profile: z.object({
-    companyName: z.string().optional()
+    companyName: z.string().optional(),
+    bio: z.string().optional(), // 🆕 Sprint #13 Task 10.2: Biografía pública
+    tags: z.array(z.string()).readonly().optional() // 🆕 Sprint #13 Task 10.2: Tags públicos (readonly para coincidir con domain)
   }),
   type: z.enum(['CLIENT', 'PROVIDER']),
   // Provider-specific fields (optional, only when type === 'PROVIDER')
