@@ -3,7 +3,7 @@ import { requestSanitization } from '../middlewares/requestSanitization';
 import { authMiddleware } from '../middlewares/auth.middleware';
 import { requireRole } from '../middlewares/role-check.middleware';
 import { validateRequest } from '../middlewares/validation.middleware';
-import { UpdateUserRequestSchema } from '@packages/contracts';
+import { UpdateMyProfileRequestSchema } from '@packages/contracts';
 import { UserController } from '../controllers/user.controller';
 
 const router = Router();
@@ -203,7 +203,7 @@ const userController = new UserController();
 router.patch('/me/profile',
   requestSanitization,
   authMiddleware, // Garantiza req.user.userId existe
-  validateRequest({ body: UpdateUserRequestSchema }), // Validación Zod
+  validateRequest({ body: UpdateMyProfileRequestSchema }), // Validación Zod (sin id, viene de JWT)
   userController.updateProfile // Controller invoca use case
 );
 

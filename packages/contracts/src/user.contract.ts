@@ -93,6 +93,8 @@ export const UserProfileSchema = z.object({
   )
     .max(USER_PROFILE_LIMITS.MAX_TAGS, `Maximum ${USER_PROFILE_LIMITS.MAX_TAGS} tags allowed`)
     .optional()
+    // NOTE: Duplicate check AFTER transform is intentional
+    // Example: ['Tag', 'tag'] → ['tag', 'tag'] → detects duplicate correctly (case-insensitive)
     .refine(
       (tags) => {
         if (!tags || tags.length === 0) return true;
@@ -136,7 +138,7 @@ export const GetUserRequestSchema = z.object({
 export const GetUserResponseSchema = CreateUserResponseSchema;
 
 /**
- * Schema para actualizar usuario
+ * Schema para actualizar usuario (admin use case - requiere id)
  */
 export const UpdateUserRequestSchema = z.object({
   id: z.string(),
@@ -145,6 +147,16 @@ export const UpdateUserRequestSchema = z.object({
 });
 
 export const UpdateUserResponseSchema = CreateUserResponseSchema;
+
+/**
+ * Schema para actualizar perfil propio (Sprint #13 Task 10.1+10.2)
+ * Para endpoint PATCH /users/me/profile - sin id porque viene del JWT
+ */
+export const UpdateMyProfileRequestSchema = z.object({
+  profile: UserProfileSchema.partial().optional()
+});
+
+export const UpdateMyProfileResponseSchema = CreateUserResponseSchema;
 
 /**
  * Schema para listar usuarios
@@ -171,6 +183,9 @@ export type GetUserResponse = z.infer<typeof GetUserResponseSchema>;
 
 export type UpdateUserRequest = z.infer<typeof UpdateUserRequestSchema>;
 export type UpdateUserResponse = z.infer<typeof UpdateUserResponseSchema>;
+
+export type UpdateMyProfileRequest = z.infer<typeof UpdateMyProfileRequestSchema>;
+export type UpdateMyProfileResponse = z.infer<typeof UpdateMyProfileResponseSchema>;
 
 export type ListUsersRequest = z.infer<typeof ListUsersRequestSchema>;
 export type ListUsersResponse = z.infer<typeof ListUsersResponseSchema>;

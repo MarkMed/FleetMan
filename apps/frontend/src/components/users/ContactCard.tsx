@@ -169,7 +169,7 @@ export const ContactCard: React.FC<ContactCardProps> = ({
               size="sm"
               className="text-xs"
             >
-              #{tag}
+              {tag}
             </Badge>
           ))}
         </div>

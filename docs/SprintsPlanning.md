@@ -712,13 +712,13 @@ Distribución por categoría:
 | Documentación | 20.1 Reporte Académico del Sprint #12 | 1 | 5 | |
 | Gestión | 20.2 Demo/UAT de Sprint #12 | 2 | 1.5 | 1.2 |
 | Gestión | 20.3 Sprint Planning de Sprint #13 | 3 | 1.3 | 2.5 |
-| Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | |
-| Desarrollo | 10.1a User Editing - Domain + Persistence | 5 | 2 | |
-| Desarrollo | 10.1b User Editing - Application Backend | 6 | 3 | |
-| Desarrollo | 10.1c User Editing - Frontend UI | 7 | 3 | |
-| Desarrollo | 10.2a Bio & Tags - Domain + Persistence | 8 | 2 | |
-| Desarrollo | 10.2b Bio & Tags - Application Backend | 9 | 2 | |
-| Desarrollo | 10.2c Bio & Tags - Frontend UI | 10 | 2 | |
+| Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | 1 |
+| Desarrollo | 10.1a User Editing - Domain + Persistence | 5 | 2 | 0.9 |
+| Desarrollo | 10.1b User Editing - Application Backend | 6 | 3 | 1.3 |
+| Desarrollo | 10.1c User Editing - Frontend UI | 7 | 3 | 2.5 |
+| Desarrollo | 10.2a Bio & Tags - Domain + Persistence | 8 | 2 | 0.5 |
+| Desarrollo | 10.2b Bio & Tags - Application Backend | 9 | 2 | 1.25 |
+| Desarrollo | 10.2c Bio & Tags - Frontend UI | 10 | 2 | 1.8 |
 | Desarrollo | 9.3e Chat Access Control - Accept Requests | 11 | 4 | |
 | Desarrollo | 9.3f Chat Access Control - Block Users | 12 | 3 | |
 | Desarrollo | 9.3g Chat Access Control - Request Tracking | 13 | 2 | |

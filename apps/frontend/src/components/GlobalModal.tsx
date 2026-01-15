@@ -64,6 +64,7 @@ export function GlobalModal() {
       // Call onConfirm callback if provided
       if (config.onConfirm) {
         await config.onConfirm();
+        // callback should include the logic to close the modal
       }
       
       // Resolve promise for confirmation modals
@@ -71,8 +72,6 @@ export function GlobalModal() {
         resolver(true);
       }
       
-      // Close modal
-      // hideModal();
     } catch (error) {
       console.error('Error in modal confirm handler:', error);
       // Don't close modal if there's an error

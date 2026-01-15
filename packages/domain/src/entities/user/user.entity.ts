@@ -251,6 +251,7 @@ export abstract class User {
       }
       
       // Validar que no haya tags duplicados (case-insensitive)
+      // NOTE: Zod contract layer ya valida esto post-transform, pero mantenemos defensa en profundidad
       const uniqueTags = new Set(profile.tags.map(t => t.toLowerCase().trim()));
       if (uniqueTags.size !== profile.tags.length) {
         return err(DomainError.validation('Duplicate tags are not allowed'));

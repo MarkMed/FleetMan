@@ -1,4 +1,4 @@
-import { UpdateUserRequest } from '@packages/contracts';
+import { UpdateMyProfileRequest, UpdateMyProfileResponse } from '@packages/contracts';
 import { UserId } from '@packages/domain';
 import { UserRepository } from '@packages/persistence';
 import { logger } from '../../config/logger.config';
@@ -35,7 +35,7 @@ export class UpdateUserProfileUseCase {
    * Ejecuta la actualización del perfil del usuario
    * 
    * @param userId - ID del usuario a actualizar (debe coincidir con req.user.userId del JWT)
-   * @param request - Datos de actualización validados por Zod
+   * @param request - Datos de actualización validados por Zod (solo profile, sin id)
    * @returns Promise con datos del usuario actualizado o error
    * 
    * Flujo:
@@ -45,15 +45,7 @@ export class UpdateUserProfileUseCase {
    * 4. Persistir usando repository.save() (convierte entity → document y actualiza DB)
    * 5. Retornar usuario actualizado en formato público
    */
-  async execute(userId: string, request: UpdateUserRequest): Promise<{
-    id: string;
-    email: string;
-    profile: any;
-    type: string;
-    isActive: boolean;
-    createdAt: string;
-    updatedAt: string;
-  }> {
+  async execute(userId: string, request: UpdateMyProfileRequest): Promise<UpdateMyProfileResponse> {
     logger.info({ userId, updateFields: Object.keys(request.profile || {}) }, 'Starting user profile update');
 
     try {
@@ -115,16 +107,8 @@ export class UpdateUserProfileUseCase {
         tagsCount: request.profile?.tags?.length || 0
       }, '✅ User profile updated successfully');
 
-      // 6. Retornar datos actualizados en formato público
-      return {
-        id: user.id.getValue(),
-        email: user.email.getValue(),
-        profile: user.profile,
-        type: user.type,
-        isActive: user.isActive,
-        createdAt: user.createdAt.toISOString(),
-        updatedAt: user.updatedAt.toISOString()
-      };
+      // 6. Retornar datos actualizados en formato público (toPublicData hace cast readonly → mutable)
+      return user.toPublicData() as UpdateMyProfileResponse;
 
     } catch (error) {
       logger.error({ 

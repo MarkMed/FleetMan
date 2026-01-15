@@ -74,16 +74,17 @@ export class UserController {
       }
 
       const userId = req.user.userId;
-      const updateData = req.body;
+      // Extraer solo profile del body (ignorar campo id que viene por Zod pero no se usa)
+      const { profile } = req.body;
 
       logger.info({ 
         userId, 
-        updateFields: Object.keys(updateData.profile || {}),
+        updateFields: Object.keys(profile || {}),
         ip: req.ip 
       }, 'User profile update request received');
 
-      // Ejecutar use case
-      const updatedUser = await this.updateUserProfileUseCase.execute(userId, updateData);
+      // Ejecutar use case con solo el profile field
+      const updatedUser = await this.updateUserProfileUseCase.execute(userId, { profile });
 
       logger.info({ userId }, 'User profile updated successfully');
 
