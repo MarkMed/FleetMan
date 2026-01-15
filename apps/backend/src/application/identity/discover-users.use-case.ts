@@ -113,8 +113,8 @@ export class DiscoverUsersUseCase {
    * Mapea una entidad User a IUserPublicProfile
    * Extrae solo campos públicos, excluye datos sensibles
    * 
-   * EXCLUIDO: email, phone, passwordHash, subscription, notifications
-   * INCLUIDO: id, companyName, type, serviceAreas (providers), isVerified (providers)
+   * EXCLUIDO: email, phone, passwordHash, subscription, notifications, address
+   * INCLUIDO: id, companyName, bio, tags, type, serviceAreas (providers), isVerified (providers)
    * 
    * @private
    */
@@ -122,7 +122,9 @@ export class DiscoverUsersUseCase {
     const baseProfile: IUserPublicProfile = {
       id: user.id.getValue(),
       profile: {
-        companyName: user.profile.companyName
+        companyName: user.profile.companyName,
+        bio: user.profile.bio, // 🆕 Sprint #13 Task 10.2: Biografía pública
+        tags: user.profile.tags // 🆕 Sprint #13 Task 10.2: Tags públicos
       },
       type: user.type
     };
@@ -133,7 +135,7 @@ export class DiscoverUsersUseCase {
         ...baseProfile,
         serviceAreas: user.specialties, // Map specialties to serviceAreas for public API
         isVerified: user.isVerified
-      };
+      } as IUserPublicProfile;
     }
 
     // ClientUser: solo campos base
@@ -144,6 +146,15 @@ export class DiscoverUsersUseCase {
     //   return {
     //     ...baseProfile,
     //     machineCount: user.machineCount // Mostrar experiencia del cliente
+    //   };
+    // }
+    // TODO: Rating y estadísticas
+    // if (user instanceof ProviderUser) {
+    //   return {
+    //     ...baseProfile,
+    //     rating: user.averageRating, // Rating promedio de trabajos completados
+    //     completedJobs: user.completedJobsCount, // Contador de trabajos finalizados
+    //     responseTime: user.averageResponseTime // Tiempo promedio de respuesta (Module 3: Messaging)
     //   };
     // }
   }

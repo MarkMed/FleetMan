@@ -170,8 +170,8 @@ export function MyContactsScreen() {
           </BodyText>
         </div>
 
-        {/* Contacts List (vertical layout) */}
-        <div className="flex flex-col gap-3">
+        {/* Contacts List (responsive grid: 1 col mobile, 2 cols desktop) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {vm.data.contacts.map((contact) => (
             <ContactCard
               key={contact.id}

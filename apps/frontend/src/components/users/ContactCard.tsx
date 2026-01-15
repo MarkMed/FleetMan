@@ -150,6 +150,31 @@ export const ContactCard: React.FC<ContactCardProps> = ({
         </div>
       )}
 
+      {/* Bio Section - Show for all users if present (Sprint #13 Task 10.2) */}
+      {user.profile.bio && (
+        <div className="mt-3 pt-3 border-t">
+          <BodyText size="small" className="text-muted-foreground line-clamp-2">
+            {user.profile.bio}
+          </BodyText>
+        </div>
+      )}
+
+      {/* Tags Section - Show for all users if present (Sprint #13 Task 10.2) */}
+      {user.profile.tags && user.profile.tags.length > 0 && (
+        <div className="mt-2 flex flex-wrap gap-1.5">
+          {user.profile.tags.map((tag, index) => (
+            <Badge 
+              key={index} 
+              variant="secondary" 
+              size="sm"
+              className="text-xs"
+            >
+              #{tag}
+            </Badge>
+          ))}
+        </div>
+      )}
+
       {/* Action Buttons Section (Module 2: Contact Management) */}
       <div className="mt-4 pt-3 border-t flex gap-2">
         {/* Send Message Button (Module 3: Enabled) */}

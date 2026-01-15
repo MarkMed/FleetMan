@@ -144,6 +144,31 @@ export const UserCard: React.FC<UserCardProps> = ({
         </div>
       )}
 
+
+      {/* Tags Section - Show for all users if present (Sprint #13 Task 10.2) */}
+      {user.profile.tags && user.profile.tags.length > 0 && (
+        <div className="mt-2 flex flex-wrap gap-1.5">
+          {user.profile.tags.map((tag, index) => (
+            <Badge 
+              key={index} 
+              variant="secondary" 
+              size="sm"
+              className="text-xs"
+            >
+              {tag}
+            </Badge>
+          ))}
+        </div>
+      )}
+      {/* Bio Section - Show for all users if present (Sprint #13 Task 10.2) */}
+      {user.profile.bio && (
+        <div className="mt-3 pt-3 border-t">
+          <BodyText size="small" className="text-muted-foreground line-clamp-2">
+            {user.profile.bio}
+          </BodyText>
+        </div>
+      )}
+
       {/* Interaction Section (Module 2: Contact Management) */}
       {onAddContact && (
         <div className="mt-4 pt-3 border-t">
@@ -189,6 +214,23 @@ export const UserCard: React.FC<UserCardProps> = ({
       {/* TODO Module 3+: Additional interaction buttons */}
       {/* <Button onClick={() => onMessage?.(user.id)}>Send Message</Button> */}
       {/* <Button onClick={() => onClick?.(user)}>View Profile</Button> */}
+      
+      {/* TODO: Bio Expansion Feature (Strategic Enhancement)
+       * When bio is longer than 2 lines (line-clamp-2), add "Read more" button
+       * Opens full profile modal with complete bio, all tags, service areas, etc.
+       * 
+       * @example
+       * {user.profile.bio && isBioTruncated && (
+       *   <Button 
+       *     size="sm" 
+       *     variant="ghost" 
+       *     onClick={() => onViewFullProfile?.(user)}
+       *     className="mt-1"
+       *   >
+       *     {t('users.discovery.readMore')}
+       *   </Button>
+       * )}
+       */}
       
       {/* TODO: Quick Actions Menu (Optional Enhancement)
        * Add dropdown menu with additional actions for contacts:

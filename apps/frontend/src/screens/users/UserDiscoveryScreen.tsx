@@ -159,8 +159,20 @@ export function UserDiscoveryScreen() {
           )}
         </div>
 
-        {/* Users List (vertical layout per WBS 9.1c spec) */}
-        <div className="flex flex-col gap-3">
+        {/* Users List (responsive grid: 1 col mobile, 2 cols desktop) */}
+        {/* TODO: Enhance responsiveness for ultra-wide screens
+         * Current: grid-cols-1 md:grid-cols-2 (1 column mobile, 2 desktop)
+         * Enhancement: Add xl:grid-cols-3 for 3 columns on extra large screens (≥1280px)
+         * 
+         * @example
+         * <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+         * 
+         * Benefits:
+         * - Better space utilization on large monitors
+         * - More contacts visible without scrolling
+         * - Maintains readability (cards don't get too wide)
+         */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {vm.data.users.map((user) => {
             // O(1) lookup: Check if user is already a contact using Set
             // Fixes Rules of Hooks violation (was calling hook inside loop)
