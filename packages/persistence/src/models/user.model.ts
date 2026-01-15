@@ -172,10 +172,11 @@ const userSchema = new Schema<IUserDocument>({
     },
     tags: {
       type: [String],
-      default: undefined, // undefined permite distinguir "no set" vs "array vacío"
+      default: [], // Array vacío por default (idiomático Mongoose, consistente con contacts)
       validate: {
         validator: function(tags: string[] | undefined) {
-          if (!tags) return true; // undefined/null es válido
+          // Permitir undefined/null (edge case) y arrays válidos
+          if (!tags) return true;
           if (!Array.isArray(tags)) return false;
           if (tags.length > USER_PROFILE_LIMITS.MAX_TAGS) return false;
           
