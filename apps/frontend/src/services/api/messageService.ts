@@ -112,6 +112,85 @@ export async function getConversationHistory(
   };
 }
 
+/**
+ * Accept a chat request from a non-contact user
+ * Sprint #13 Task 9.3e - Chat Access Control
+ * 
+ * @param userId - ID of the user to accept chat from
+ * @returns Promise<void> - No response body (204 No Content)
+ * 
+ * Purpose:
+ * - Add userId to authenticated user's acceptedChatsFrom whitelist
+ * - Enable bidirectional messaging without adding as contact
+ * - Idempotent operation (safe to call multiple times)
+ * 
+ * Backend behavior:
+ * - POST /api/v1/messages/chats/:userId/accept
+ * - Validates both users exist
+ * - Updates acceptedChatsFrom array (atomic operation)
+ * - No-op if already accepted
+ * 
+ * Post-conditions:
+ * - canSendMessages becomes true in conversation history
+ * - User can send/receive messages freely
+ * - Does NOT add to contacts list (separate feature)
+ * 
+ * Use cases:
+ * - User receives first message from stranger → reviews → accepts
+ * - Temporary conversations that don't warrant contact status
+ * - Pre-contact screening mechanism
+ * 
+ * @throws {Error} If user not found or validation fails
+ */
+export async function acceptChat(userId: string): Promise<void> {
+  await apiClient.post<{ success: boolean; message: string }>(
+    API_ENDPOINTS.ACCEPT_CHAT(userId)
+  );
+  // No need to handle response, 204 No Content on success
+}
+
+/**
+ * Block a user from sending messages
+ * Sprint #13 Task 9.3f - Chat Access Control
+ * 
+ * @param userId - ID of the user to block
+ * @returns Promise<void> - No response body (204 No Content)
+ * 
+ * Purpose:
+ * - Add userId to authenticated user's usersBlackList
+ * - Remove from acceptedChatsFrom if present (atomic operation)
+ * - Prevent all future message delivery from blocked user
+ * 
+ * Backend behavior:
+ * - POST /api/v1/messages/chats/:userId/block
+ * - Validates both users exist
+ * - Updates usersBlackList and acceptedChatsFrom atomically
+ * - Blocked user gets 403 Forbidden when attempting to send
+ * 
+ * Post-conditions:
+ * - canSendMessages becomes false for blocked user
+ * - Blocked user cannot send messages (403 error)
+ * - Existing conversation history remains visible
+ * - No notification sent to blocked user (silent block)
+ * 
+ * Use cases:
+ * - Spam prevention
+ * - Harassment mitigation
+ * - Privacy control
+ * 
+ * Notes:
+ * - Block is one-directional (blocker can still see/send if needed)
+ * - Unblock feature deferred to Sprint #14 (Settings screen)
+ * 
+ * @throws {Error} If user not found or validation fails
+ */
+export async function blockUser(userId: string): Promise<void> {
+  await apiClient.post<{ success: boolean; message: string }>(
+    API_ENDPOINTS.BLOCK_USER(userId)
+  );
+  // No need to handle response, 204 No Content on success
+}
+
 // Strategic future features (commented for reference)
 
 /**

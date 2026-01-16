@@ -110,6 +110,16 @@ export interface ModalConfig {
    * Variant for the confirm button
    */
   confirmButtonVariant?:  "warning" | "success" | "secondary" | "link" | "destructive" | "outline" | "filled" | "ghost"; 
+
+  /**
+   * Styles for the cancel button
+   */
+  cancelButtonClassName?: string;
+
+  /**
+   * Variant for the cancel button
+   */
+  cancelButtonVariant?:  "warning" | "success" | "secondary" | "link" | "destructive" | "outline" | "filled" | "ghost";
 }
 
 /**

@@ -15,19 +15,23 @@ import type { SendMessageRequest } from '@packages/contracts';
 
 /**
  * Use Case: Send Message (Sprint #12 Module 3 - Messaging System)
+ * Sprint #13 Task 9.3f-h: Chat Access Control integration
  * 
  * Responsabilidades:
  * 1. Validar formato de senderId y recipientId
  * 2. Verificar que ambos usuarios existen y están activos
- * 3. Validar relación de contacto (solo mensajes entre contactos)
+ * 3. Validar permisos de envío: recipientId debe permitir mensajes de senderId
  * 4. Crear entidad Message con validaciones de dominio
  * 5. Persistir mensaje en base de datos
  * 6. Notificar a recipientId por SSE (fire-and-forget)
  * 7. Retornar mensaje guardado al sender
  * 
- * Reglas de negocio:
- * - Solo mensajes entre contactos: senderId debe tener a recipientId como contacto
- * - Relación unidireccional: NO requiere contacto mutuo
+ * Reglas de negocio (Sprint #13 Task 9.3f-h):
+ * - Bloqueo tiene prioridad: Si recipient bloqueó a sender → 403 Forbidden
+ * - Permisos de envío (OR lógico):
+ *   → recipientId tiene a senderId como contacto (unidireccional)
+ *   → recipientId aceptó chat de senderId (acceptedChatsFrom whitelist)
+ * - No requiere contacto mutuo: Solo recipient debe permitir sender
  * - No auto-mensajes: senderId ≠ recipientId (validado en Message.create)
  * - Content max 1000 chars (validado en Message.create)
  * - Usuarios deben existir y estar activos
@@ -38,12 +42,15 @@ import type { SendMessageRequest } from '@packages/contracts';
  * - Si SSE falla, mensaje YA está guardado y usuario puede refrescar
  * 
  * @example
- * const useCase = new SendMessageUseCase();
- * const result = await useCase.execute({ 
- *   senderId: 'user_abc123', 
- *   recipientId: 'user_def456', 
- *   content: 'Hola, necesito mantenimiento urgente' 
- * });
+ * // Caso 1: Contacto mutuo (ambos se tienen agregados)
+ * const result1 = await useCase.execute({ senderId: 'A', recipientId: 'B', content: 'Hola' });
+ * 
+ * // Caso 2: Contacto unidireccional (B tiene a A, pero A NO tiene a B)
+ * const result2 = await useCase.execute({ senderId: 'A', recipientId: 'B', content: 'Hola' });
+ * 
+ * // Caso 3: No contactos, pero B aceptó chat de A (Sprint #13)
+ * // B.acceptedChatsFrom = ['A']
+ * const result3 = await useCase.execute({ senderId: 'A', recipientId: 'B', content: 'Hola' });
  */
 export class SendMessageUseCase {
   private messageRepository: MessageRepository;
@@ -129,21 +136,82 @@ export class SendMessageUseCase {
       }
 
       // =================================================================
-      // 3. VALIDAR RELACIÓN DE CONTACTO
+      // 3. VALIDAR PERMISOS DE ENVÍO (Sprint #13 Task 9.3f-h)
       // =================================================================
-      // Solo senderId debe tener a recipientId como contacto (relación unidireccional)
-      const isContact = await this.userRepository.isContact(
+      /**
+       * LÓGICA DE PERMISOS PARA ENVIAR MENSAJE:
+       * 
+       * 1. BLOCKER (prioridad absoluta):
+       *    - Si recipient bloqueó a sender → 403 Forbidden
+       *    - Bloqueo prevalece sobre contactos y chats aceptados
+       * 
+       * 2. PERMISOS DE ENVÍO (OR lógico):
+       *    - senderId tiene a recipientId como contacto (unidireccional sender → recipient) [LÓGICA ORIGINAL]
+       *    - senderId aceptó chat de recipientId (whitelist acceptedChatsFrom) [SPRINT #13 NUEVA - permite responder]
+       * 
+       * Escenarios permitidos:
+       * - Caso A: A tiene a B como contacto → A puede enviar mensaje a B [✔️ Lógica original]
+       * - Caso B: B aceptó chat de A (Sprint #13) → B puede responder a A [✔️ Nueva funcionalidad]
+       * - Caso C: A tiene a B como contacto Y A aceptó chat de B → A puede enviar (redundante pero válido)
+       * 
+       * Escenarios bloqueados:
+       * - A NO tiene a B como contacto Y NO aceptó chat de B → 403 Forbidden
+       * - B bloqueó a A (usersBlackList) → 403 Forbidden (prioridad absoluta)
+       */
+      
+      logger.debug({ 
+        senderId: input.senderId, 
+        recipientId: input.recipientId 
+      }, 'Validating send permissions');
+
+      // 1. Verificar bloqueo (BLOCKER - prioridad absoluta)
+      const isBlockedByRecipient = await this.userRepository.isBlocked(
+        recipientIdResult.data,
+        senderIdResult.data
+      );
+
+      if (isBlockedByRecipient) {
+        logger.warn({ 
+          senderId: input.senderId, 
+          recipientId: input.recipientId 
+        }, 'Cannot send message: sender is blocked by recipient');
+        return err(DomainError.create('FORBIDDEN', 'Cannot send message to user who has blocked you'));
+      }
+
+      // 2. Verificar permisos de envío (OR lógico)
+      // senderIsContactOfRecipient: sender tiene a recipient como contacto (unidireccional - lógica ORIGINAL)
+      const senderIsContactOfRecipient = await this.userRepository.isContact(
         senderIdResult.data,
         recipientIdResult.data
       );
 
-      if (!isContact) {
+      // senderAcceptedChatFromRecipient: sender aceptó recibir chats de recipient (Sprint #13 whitelist - NUEVA)
+      // Esto permite que sender RESPONDA después de aceptar chat
+      const senderAcceptedChatFromRecipient = await this.userRepository.hasChatAcceptedFrom(
+        senderIdResult.data,
+        recipientIdResult.data
+      );
+
+      // Evaluar permisos con lógica OR
+      const canSendMessage = senderIsContactOfRecipient || senderAcceptedChatFromRecipient;
+
+      if (!canSendMessage) {
         logger.warn({ 
           senderId: input.senderId, 
-          recipientId: input.recipientId 
-        }, 'Cannot send message to non-contact user');
-        return err(DomainError.create('NOT_CONTACT', 'Cannot send message to non-contact user'));
+          recipientId: input.recipientId,
+          senderIsContactOfRecipient,
+          senderAcceptedChatFromRecipient
+        }, 'Cannot send message: sender must have recipient as contact or accept their chat');
+        return err(DomainError.create('FORBIDDEN', 'Cannot send message. You must add them as contact or accept their chat.'));
       }
+
+      logger.debug({ 
+        senderId: input.senderId, 
+        recipientId: input.recipientId,
+        senderIsContactOfRecipient,
+        senderAcceptedChatFromRecipient,
+        canSendMessage: true
+      }, 'Send permissions validated successfully');
 
       // =================================================================
       // 4. CREAR ENTIDAD MESSAGE

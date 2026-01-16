@@ -672,7 +672,11 @@
     "unauthorized": "Unauthorized",
     "forbidden": "Forbidden",
     "serverError": "Server error",
-    "unknownError": "Unknown error"
+    "unknownError": "Unknown error",
+    "sendMessageFailed": "Failed to send message",
+    "acceptChatFailed": "Failed to accept chat",
+    "blockUserFailed": "Failed to block user",
+    "addContactFailed": "Failed to add contact"
   },
   "messages": {
     "title": "Messages",
@@ -708,7 +712,26 @@
     "noMessages": "No messages yet",
     "typing": "Typing...",
     "edited": "(edited)",
-    "allMarkedRead": "All messages marked as read"
+    "allMarkedRead": "All messages marked as read",
+    "waitingForDecision": "Waiting for decision...",
+    "waitingForDecisionDesc": "Please select an action to continue",
+    "chatAccepted": "Chat accepted",
+    "chatAcceptedDesc": "You can now send and receive messages freely",
+    "userBlocked": "User blocked",
+    "userBlockedDesc": "This user can no longer send you messages",
+    "blockUser": "Block User?",
+    "blockUserConfirmation": "Messages will no longer be exchanged between you. Do you want to proceed?",
+    "cannotSendBlocked": "You cannot send messages to this user because they have blocked you.",
+    "chatOptions": {
+      "title": "Chat Options",
+      "selectAction": "Select an action for this chat",
+      "acceptChat": "Accept Chat",
+      "acceptChatDesc": "Allow conversation without adding as contact",
+      "addContact": "Save Contact",
+      "addContactDesc": "Add this user to your contact list",
+      "blockUser": "Block User",
+      "blockUserDesc": "Prevent this user from sending you messages"
+    }
   },
   "users": {
     "type": {

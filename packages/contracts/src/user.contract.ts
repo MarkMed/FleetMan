@@ -189,3 +189,65 @@ export type UpdateMyProfileResponse = z.infer<typeof UpdateMyProfileResponseSche
 
 export type ListUsersRequest = z.infer<typeof ListUsersRequestSchema>;
 export type ListUsersResponse = z.infer<typeof ListUsersResponseSchema>;
+
+// =============================================================================
+// Chat Access Control Schemas (Sprint #13 Task 9.3e-h)
+// =============================================================================
+
+/**
+ * Schema para validar parámetros de ruta en accept/block chat endpoints
+ * Sprint #13 Task 9.3g: Interfaces Layer Backend
+ * 
+ * Usado para validar el userId en rutas como:
+ * POST /api/v1/messages/chats/:userId/accept
+ * POST /api/v1/messages/chats/:userId/block
+ */
+export const ChatAccessControlParamsSchema = z.object({
+  userId: z.string().min(1, 'User ID is required').max(100, 'User ID too long')
+});
+
+/**
+ * Schema para request de aceptar chat
+ * Sprint #13 Task 9.3g
+ * 
+ * NOTE: El userId viene de params, no del body
+ * Body vacío, schema para consistencia con otros endpoints
+ */
+export const AcceptChatRequestSchema = z.object({});
+
+/**
+ * Schema para response de aceptar chat
+ * Sprint #13 Task 9.3g
+ */
+export const AcceptChatResponseSchema = z.object({
+  success: z.boolean(),
+  message: z.string()
+});
+
+/**
+ * Schema para request de bloquear usuario
+ * Sprint #13 Task 9.3g
+ * 
+ * NOTE: El userId viene de params, no del body
+ * Body vacío, schema para consistencia con otros endpoints
+ */
+export const BlockUserRequestSchema = z.object({});
+
+/**
+ * Schema para response de bloquear usuario
+ * Sprint #13 Task 9.3g
+ */
+export const BlockUserResponseSchema = z.object({
+  success: z.boolean(),
+  message: z.string()
+});
+
+// =============================================================================
+// Type Inference - Chat Access Control
+// =============================================================================
+
+export type ChatAccessControlParams = z.infer<typeof ChatAccessControlParamsSchema>;
+export type AcceptChatRequest = z.infer<typeof AcceptChatRequestSchema>;
+export type AcceptChatResponse = z.infer<typeof AcceptChatResponseSchema>;
+export type BlockUserRequest = z.infer<typeof BlockUserRequestSchema>;
+export type BlockUserResponse = z.infer<typeof BlockUserResponseSchema>;

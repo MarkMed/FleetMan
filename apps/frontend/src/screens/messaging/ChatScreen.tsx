@@ -1,7 +1,7 @@
 import React from 'react';
 import { Heading1, BodyText, Button, Card } from '@components/ui';
-import { ArrowLeft, AlertCircle, UserX, Loader2, MessageSquare } from 'lucide-react';
-import { MessageBubble, ChatInput } from '@components/messaging';
+import { ArrowLeft, AlertCircle, UserX, Loader2, MessageSquare, MoreVertical } from 'lucide-react';
+import { MessageBubble, ChatInput, ChatOptionsModal } from '@components/messaging';
 import { useChatViewModel } from '../../viewModels/messaging/useChatViewModel';
 import type { ConversationHistoryResponse } from '@packages/contracts';
 
@@ -56,34 +56,9 @@ export function ChatScreen() {
   // RENDER SECTIONS
   // ========================
 
-  // ========================
-  // NOT CONTACT WARNING
-  // ========================
-
-  if (vm.state.isNotContact) {
-    return (
-      <div className="container mx-auto max-w-4xl py-6 px-4">
-        <Card className="p-8">
-          <div className="flex flex-col items-center text-center space-y-4">
-            <UserX className="h-16 w-16 text-destructive" />
-            <Heading1 size="medium" className="text-destructive">
-              {vm.t('messages.notContact')}
-            </Heading1>
-            <BodyText className="text-muted-foreground max-w-md text-center">
-              {vm.t('messages.notContactDescription')}
-            </BodyText>
-            <Button 
-              variant="filled" 
-              onPress={vm.actions.handleBackToConversations}
-            >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              {vm.t('messages.backToConversations')}
-            </Button>
-          </div>
-        </Card>
-      </div>
-    );
-  }
+  // Sprint #13: Removed "Not Contact" blocking screen
+  // Now we always show the chat, just disable input if canSendMessages === false
+  // Modal opens automatically on first conversation from non-contact
 
   // ========================
   // ERROR STATE
@@ -148,13 +123,44 @@ export function ChatScreen() {
       </div>
     );
   }
+  
+  // ========================
+  // WAITING FOR DECISION (Modal Open)
+  // ========================
+  
+  // Sprint #13: When chat options modal is open, hide chat and show spinner
+  if (vm.modals.chatOptions.isOpen) {
+    return (
+      <div className="container mx-auto max-w-4xl py-6 px-4">
+        <div className="flex flex-col items-center justify-center h-96 space-y-4">
+          <Loader2 className="h-12 w-12 text-primary animate-spin" />
+          <BodyText className="text-muted-foreground">
+            {vm.t('messages.waitingForDecision', 'Esperando decisión...')}
+          </BodyText>
+          <BodyText size="small" className="text-muted-foreground">
+            {vm.t('messages.waitingForDecisionDesc', 'Por favor, selecciona una acción para continuar')}
+          </BodyText>
+        </div>
+        
+        {/* Sprint #13: Chat Options Modal */}
+        <ChatOptionsModal
+          open={vm.modals.chatOptions.isOpen}
+          onOpenChange={vm.modals.chatOptions.onOpenChange}
+          onAcceptChat={vm.actions.handleAcceptChat}
+          onAddContact={vm.actions.handleAddContact}
+          onBlockUser={vm.actions.handleBlockUser}
+          isContact={!vm.state.isNotContact}
+        />
+      </div>
+    );
+  }
 
   // ========================
   // MAIN CHAT RENDER
   // ========================
 
   return (
-    <div className="flex flex-col h-[calc(100vh-4rem)]">
+    <div className="flex flex-col h-[calc(90vh-4rem)]">
       {/* Header */}
       <div className="border-b bg-background px-4 py-3 flex items-center gap-3">
         <Button
@@ -175,7 +181,15 @@ export function ChatScreen() {
           </BodyText>
         </div>
         
-        {/* TODO: Future - Menu with options (mute, block, report) */}
+        {/* Sprint #13: Chat Options Button (three dots) */}
+        <Button
+          variant="ghost"
+          size="icon"
+          onPress={vm.actions.handleOpenChatOptions}
+          aria-label={vm.t('messages.chatOptions.title')}
+        >
+          <MoreVertical className="h-5 w-5" />
+        </Button>
       </div>
 
       {/* Messages Container */}
@@ -231,12 +245,30 @@ export function ChatScreen() {
         <div ref={vm.refs.messagesEndRef} />
       </div>
 
-      {/* Input Area */}
-      <ChatInput
-        onSend={vm.actions.handleSendMessage}
-        isLoading={vm.state.isSending}
-        placeholder={vm.t('messages.typeMessage', 'Escribe un mensaje...')}
-        maxLength={1000}
+      {/* Sprint #13: Conditional Input Area based on canSendMessages */}
+      {vm.state.canSendMessages ? (
+        <ChatInput
+          onSend={vm.actions.handleSendMessage}
+          isLoading={vm.state.isSending}
+          placeholder={vm.t('messages.typeMessage', 'Escribe un mensaje...')}
+          maxLength={1000}
+        />
+      ) : (
+        <div className="border-t bg-muted/50 px-4 py-4 text-center">
+          <BodyText size="small" className="text-muted-foreground">
+            {vm.t('messages.cannotSendBlocked', 'Noooo puedes enviar mensajes a este usuario porque te ha bloqueado.')}
+          </BodyText>
+        </div>
+      )}
+      
+      {/* Sprint #13: Chat Options Modal */}
+      <ChatOptionsModal
+        open={vm.modals.chatOptions.isOpen}
+        onOpenChange={vm.modals.chatOptions.onOpenChange}
+        onAcceptChat={vm.actions.handleAcceptChat}
+        onAddContact={vm.actions.handleAddContact}
+        onBlockUser={vm.actions.handleBlockUser}
+        isContact={!vm.state.isNotContact}
       />
     </div>
   );

@@ -48,6 +48,8 @@ export interface IUser extends IBaseEntity {
   readonly isActive: boolean;
   readonly notifications?: readonly INotification[]; // 🆕 Sprint #9: Notificaciones embebidas
   readonly contacts?: readonly IContact[]; // 🆕 Sprint #12 Module 2: Contactos embebidos
+  readonly acceptedChatsFrom?: readonly string[]; // 🆕 Sprint #13 Task 9.3e: Whitelist de chats aceptados (UserIds)
+  readonly usersBlackList?: readonly string[]; // 🆕 Sprint #13 Task 9.3e: Blacklist de usuarios bloqueados (UserIds)
 }
 
 /**

@@ -60,6 +60,10 @@ export const API_ENDPOINTS = {
   MESSAGES: '/messages',
   CONVERSATION_HISTORY: (otherUserId: string) => `/messages/conversations/${otherUserId}`,
   
+  // Chat Access Control (Sprint #13 Task 9.3e-f)
+  ACCEPT_CHAT: (userId: string) => `/messages/chats/${userId}/accept`,
+  BLOCK_USER: (userId: string) => `/messages/chats/${userId}/block`,
+  
   // TODO: Endpoints estratégicos futuros
   // USER_PUBLIC_PROFILE: (userId: string) => `/users/${userId}/public-profile`,
   // USER_STATS: (userId: string) => `/users/${userId}/stats`,

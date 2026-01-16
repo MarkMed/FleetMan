@@ -1,8 +1,15 @@
 import { Response } from 'express';
 import { logger } from '../config/logger.config';
+import { 
+  DOMAIN_ERROR_HTTP_MAPPINGS, 
+  ERROR_MESSAGE_KEYWORDS, 
+  HTTP_STATUS 
+} from '../config/error-mappings';
 import {
   SendMessageUseCase,
-  GetConversationHistoryUseCase
+  GetConversationHistoryUseCase,
+  AcceptChatUseCase,
+  BlockUserUseCase
 } from '../application/comms';
 import type { AuthenticatedRequest } from '../middlewares/auth.middleware';
 import type { 
@@ -32,45 +39,83 @@ import type {
 export class MessageController {
   private sendMessageUseCase: SendMessageUseCase;
   private getConversationHistoryUseCase: GetConversationHistoryUseCase;
+  private acceptChatUseCase: AcceptChatUseCase;
+  private blockUserUseCase: BlockUserUseCase;
 
   constructor() {
     this.sendMessageUseCase = new SendMessageUseCase();
     this.getConversationHistoryUseCase = new GetConversationHistoryUseCase();
+    this.acceptChatUseCase = new AcceptChatUseCase();
+    this.blockUserUseCase = new BlockUserUseCase();
   }
 
   /**
    * Maps domain errors to HTTP response with status code and error code
+   * 
+   * Sprint #13 Task 9.3f-h: Improved error mapping using DomainError.code
+   * Uses centralized DOMAIN_ERROR_HTTP_MAPPINGS for SSOT
+   * 
+   * Strategy:
+   * 1. Check if error has 'code' property (DomainError)
+   * 2. Use DOMAIN_ERROR_HTTP_MAPPINGS for precise mapping
+   * 3. Fallback to message-based keyword detection
+   * 4. Default to 500 Internal Server Error
    */
   private handleError(error: Error): { statusCode: number; errorCode: string } {
+    // Step 1: Check if it's a DomainError with code property
+    const isDomainError = error instanceof Error && 'code' in error;
+    const domainErrorCode = isDomainError ? (error as any).code : null;
+
+    // Step 2: Use centralized mapping for DomainError codes
+    if (domainErrorCode && DOMAIN_ERROR_HTTP_MAPPINGS[domainErrorCode]) {
+      const mapping = DOMAIN_ERROR_HTTP_MAPPINGS[domainErrorCode];
+      logger.debug({ 
+        domainErrorCode, 
+        statusCode: mapping.statusCode, 
+        errorCode: mapping.errorCode 
+      }, 'Mapped DomainError to HTTP response');
+      return mapping;
+    }
+
+    // Step 3: Fallback to message-based keyword detection for non-DomainErrors
     const errorMessage = error.message.toLowerCase();
 
-    // Not found errors (user not found, recipient not found)
-    if (errorMessage.includes('not found')) {
-      return { statusCode: 404, errorCode: 'NOT_FOUND' };
+    // Not found errors
+    if (ERROR_MESSAGE_KEYWORDS.notFound.some(keyword => errorMessage.includes(keyword))) {
+      return { statusCode: HTTP_STATUS.NOT_FOUND, errorCode: 'NOT_FOUND' };
     }
 
-    // Invalid input errors (invalid ID format, validation errors)
-    if (errorMessage.includes('invalid') || errorMessage.includes('format')) {
-      return { statusCode: 400, errorCode: 'INVALID_INPUT' };
+    // Invalid input errors
+    if (ERROR_MESSAGE_KEYWORDS.invalidInput.some(keyword => errorMessage.includes(keyword))) {
+      return { statusCode: HTTP_STATUS.BAD_REQUEST, errorCode: 'INVALID_INPUT' };
     }
 
-    // Contact validation errors (not a contact)
-    if (errorMessage.includes('not_contact') || errorMessage.includes('non-contact')) {
-      return { statusCode: 403, errorCode: 'NOT_CONTACT' };
+    // Forbidden/access denied errors (Sprint #13: includes "blocked")
+    if (ERROR_MESSAGE_KEYWORDS.forbidden.some(keyword => errorMessage.includes(keyword))) {
+      return { statusCode: HTTP_STATUS.FORBIDDEN, errorCode: 'FORBIDDEN' };
+    }
+
+    // Contact validation errors
+    if (ERROR_MESSAGE_KEYWORDS.notContact.some(keyword => errorMessage.includes(keyword))) {
+      return { statusCode: HTTP_STATUS.FORBIDDEN, errorCode: 'NOT_CONTACT' };
     }
 
     // User inactive errors
-    if (errorMessage.includes('not active') || errorMessage.includes('inactive')) {
-      return { statusCode: 403, errorCode: 'INVALID_STATE' };
+    if (ERROR_MESSAGE_KEYWORDS.inactive.some(keyword => errorMessage.includes(keyword))) {
+      return { statusCode: HTTP_STATUS.FORBIDDEN, errorCode: 'INVALID_STATE' };
     }
 
-    // Forbidden/access denied errors
-    if (errorMessage.includes('forbidden') || errorMessage.includes('access denied')) {
-      return { statusCode: 403, errorCode: 'FORBIDDEN' };
+    // Conflict errors
+    if (ERROR_MESSAGE_KEYWORDS.conflict.some(keyword => errorMessage.includes(keyword))) {
+      return { statusCode: HTTP_STATUS.CONFLICT, errorCode: 'CONFLICT' };
     }
 
-    // Default internal error
-    return { statusCode: 500, errorCode: 'INTERNAL_ERROR' };
+    // Step 4: Default to 500 Internal Server Error
+    logger.warn({ 
+      errorMessage: error.message, 
+      errorCode: domainErrorCode 
+    }, 'Unmapped error, defaulting to 500 Internal Server Error');
+    return { statusCode: HTTP_STATUS.INTERNAL_SERVER_ERROR, errorCode: 'INTERNAL_ERROR' };
   }
 
   /**
@@ -254,7 +299,164 @@ export class MessageController {
   }
 
   // =============================================================================
-  // 🔮 POST-MVP: ENDPOINTS ESTRATÉGICOS (COMENTADOS)
+  // � CHAT ACCESS CONTROL ENDPOINTS (Sprint #13 Task 9.3g)
+  // =============================================================================
+
+  /**
+   * POST /api/v1/messages/chats/:userId/accept
+   * Accept chat from a specific user (whitelist)
+   * 
+   * Sprint #13 Task 9.3g: Interfaces Layer Backend
+   * 
+   * Params validated by Zod middleware (ChatAccessControlParamsSchema):
+   * - userId: string - ID of the user to accept chats from
+   * 
+   * Authenticated user (from JWT) accepts receiving chats from userId
+   * 
+   * Validations (enforced by use case):
+   * - Both users must exist and be active
+   * - Cannot accept chat from yourself
+   * - Cannot accept chat from blocked user (unblock first)
+   * - Idempotent: OK if already accepted
+   */
+  async acceptChat(req: AuthenticatedRequest, res: Response): Promise<void> {
+    try {
+      // Extract authenticated userId from JWT token
+      const userId = req.user!.userId;
+      
+      // Extract fromUserId from path params (already validated by Zod)
+      const { userId: fromUserId } = req.params;
+
+      logger.info({ 
+        userId, 
+        fromUserId
+      }, 'Accepting chat via HTTP controller');
+
+      // Execute use case
+      const result = await this.acceptChatUseCase.execute(userId, fromUserId);
+
+      // Handle domain errors
+      if (!result.success) {
+        const { statusCode, errorCode } = this.handleError(result.error);
+        logger.warn({ 
+          userId,
+          fromUserId,
+          error: result.error.message,
+          errorCode
+        }, 'Failed to accept chat');
+
+        res.status(statusCode).json({
+          success: false,
+          message: result.error.message,
+          error: errorCode
+        });
+        return;
+      }
+
+      // Success response
+      res.status(200).json({
+        success: true,
+        message: 'Chat accepted successfully'
+      });
+
+    } catch (error) {
+      const { statusCode, errorCode } = this.handleError(error as Error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+
+      logger.error({ 
+        error: errorMessage,
+        userId: req.user?.userId,
+        fromUserId: req.params?.userId
+      }, 'Unexpected error accepting chat');
+
+      res.status(statusCode).json({
+        success: false,
+        message: errorMessage,
+        error: errorCode
+      });
+    }
+  }
+
+  /**
+   * POST /api/v1/messages/chats/:userId/block
+   * Block a specific user (blacklist)
+   * 
+   * Sprint #13 Task 9.3g: Interfaces Layer Backend
+   * 
+   * Params validated by Zod middleware (ChatAccessControlParamsSchema):
+   * - userId: string - ID of the user to block
+   * 
+   * Authenticated user (from JWT) blocks userId
+   * Blocked user cannot send messages to authenticated user (403 Forbidden)
+   * 
+   * Atomic operation: Adds to blacklist AND removes from whitelist
+   * 
+   * Validations (enforced by use case):
+   * - Both users must exist and be active
+   * - Cannot block yourself
+   * - Idempotent: OK if already blocked
+   * - Removes from acceptedChatsFrom if exists
+   */
+  async blockUser(req: AuthenticatedRequest, res: Response): Promise<void> {
+    try {
+      // Extract authenticated userId from JWT token
+      const userId = req.user!.userId;
+      
+      // Extract userIdToBlock from path params (already validated by Zod)
+      const { userId: userIdToBlock } = req.params;
+
+      logger.info({ 
+        userId, 
+        userIdToBlock
+      }, 'Blocking user via HTTP controller');
+
+      // Execute use case
+      const result = await this.blockUserUseCase.execute(userId, userIdToBlock);
+
+      // Handle domain errors
+      if (!result.success) {
+        const { statusCode, errorCode } = this.handleError(result.error);
+        logger.warn({ 
+          userId,
+          userIdToBlock,
+          error: result.error.message,
+          errorCode
+        }, 'Failed to block user');
+
+        res.status(statusCode).json({
+          success: false,
+          message: result.error.message,
+          error: errorCode
+        });
+        return;
+      }
+
+      // Success response
+      res.status(200).json({
+        success: true,
+        message: 'User blocked successfully'
+      });
+
+    } catch (error) {
+      const { statusCode, errorCode } = this.handleError(error as Error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+
+      logger.error({ 
+        error: errorMessage,
+        userId: req.user?.userId,
+        userIdToBlock: req.params?.userId
+      }, 'Unexpected error blocking user');
+
+      res.status(statusCode).json({
+        success: false,
+        message: errorMessage,
+        error: errorCode
+      });
+    }
+  }
+
+  // =============================================================================
+  // �🔮 POST-MVP: ENDPOINTS ESTRATÉGICOS (COMENTADOS)
   // =============================================================================
 
   /**

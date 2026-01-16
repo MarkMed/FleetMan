@@ -34,6 +34,28 @@ export const ConversationParamsSchema = z.object({
 });
 
 /**
+ * Schema para path params de aceptar chat
+ * Usado en: POST /api/v1/messages/chats/:userId/accept
+ * Sprint #13 Task 9.3e: Agrega userId a lista blanca (acceptedChatsFrom)
+ */
+export const AcceptChatParamsSchema = z.object({
+  userId: z.string()
+    .min(1, 'User ID is required')
+    .max(100, 'User ID too long')
+});
+
+/**
+ * Schema para path params de bloquear usuario
+ * Usado en: POST /api/v1/messages/chats/:userId/block
+ * Sprint #13 Task 9.3f: Agrega userId a lista negra (usersBlackList)
+ */
+export const BlockUserParamsSchema = z.object({
+  userId: z.string()
+    .min(1, 'User ID is required')
+    .max(100, 'User ID too long')
+});
+
+/**
  * Schema para query params de historial de conversación
  * Usado en: GET /api/v1/messages/conversations/:otherUserId?page=1&limit=20
  * 
@@ -84,13 +106,21 @@ export const SendMessageResponseSchema = z.object({
  * 
  * PRINCIPIO DRY: Esta estructura se define UNA sola vez
  * PRINCIPIO SSOT: Cualquier cambio aquí se propaga automáticamente
+ * 
+ * Sprint #13 Task 9.3f-h: Agregado campos para Chat Access Control:
+ * - canSendMessages: indica si puede enviar mensajes (contacto OR chat aceptado) AND !bloqueado
+ * - hasAcceptedChat: indica si usuario ya aceptó chat del otro
+ * - isBlockedByOther: indica si usuario está bloqueado por el otro (para mostrar banner en frontend)
  */
 export const ConversationHistoryResponseSchema = z.object({
   messages: z.array(MessageSchema),
   total: z.number().int().nonnegative(),
   page: z.number().int().positive(),
   limit: z.number().int().positive(),
-  totalPages: z.number().int().nonnegative()
+  totalPages: z.number().int().nonnegative(),
+  canSendMessages: z.boolean(), // Sprint #13: true si puede enviar, false si bloqueado o sin permisos
+  hasAcceptedChat: z.boolean(), // Sprint #13: true si usuario ya aceptó chat del otro
+  isBlockedByOther: z.boolean() // Sprint #13 UX: true si usuario está bloqueado (mostrar banner en frontend)
 });
 
 // =============================================================================
@@ -102,6 +132,8 @@ export type ConversationParams = z.infer<typeof ConversationParamsSchema>;
 export type ConversationHistoryQuery = z.infer<typeof ConversationHistoryQuerySchema>;
 export type MessageDTO = z.infer<typeof MessageSchema>;
 export type SendMessageResponse = z.infer<typeof SendMessageResponseSchema>;
+export type AcceptChatParams = z.infer<typeof AcceptChatParamsSchema>;
+export type BlockUserParams = z.infer<typeof BlockUserParamsSchema>;
 
 /**
  * Tipo para datos paginados de mensajes (SSOT)

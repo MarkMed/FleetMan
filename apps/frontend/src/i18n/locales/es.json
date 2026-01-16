@@ -674,7 +674,11 @@
     "unauthorized": "No autorizado",
     "forbidden": "Prohibido",
     "serverError": "Error del servidor",
-    "unknownError": "Error desconocido"
+    "unknownError": "Error desconocido",
+    "sendMessageFailed": "Error al enviar mensaje",
+    "acceptChatFailed": "Error al aceptar chat",
+    "blockUserFailed": "Error al bloquear usuario",
+    "addContactFailed": "Error al agregar contacto"
   },
   "messages": {
     "title": "Mensajes",
@@ -710,7 +714,26 @@
     "noMessages": "Sin mensajes aún",
     "typing": "Escribiendo...",
     "edited": "(editado)",
-    "allMarkedRead": "Todos los mensajes marcados como leídos"
+    "allMarkedRead": "Todos los mensajes marcados como leídos",
+    "waitingForDecision": "Esperando decisión...",
+    "waitingForDecisionDesc": "Por favor, selecciona una acción para continuar",
+    "chatAccepted": "Chat aceptado",
+    "chatAcceptedDesc": "Ahora puedes enviar y recibir mensajes libremente",
+    "userBlocked": "Usuario bloqueado",
+    "userBlockedDesc": "Este usuario ya no podrá enviarte mensajes",
+    "blockUser": "¿Bloquear Usuario?",
+    "blockUserConfirmation": "No podrán enviarse mensajes entre ustedes. ¿Desea proceder?",
+    "cannotSendBlocked": "No puedes enviar mensajes a este usuario porque te ha bloqueado.",
+    "chatOptions": {
+      "title": "Opciones de Chat",
+      "selectAction": "Selecciona una acción para este chat",
+      "acceptChat": "Aceptar Chat",
+      "acceptChatDesc": "Permitir conversación sin agregar como contacto",
+      "addContact": "Guardar Contacto",
+      "addContactDesc": "Agregar este usuario a tu lista de contactos",
+      "blockUser": "Bloquear Usuario",
+      "blockUserDesc": "Impedir que este usuario te envíe mensajes"
+    }
   },
   "users": {
     "type": {

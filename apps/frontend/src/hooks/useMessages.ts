@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { sendMessage, getConversationHistory } from '@services/api/messageService';
+import { sendMessage, getConversationHistory, acceptChat, blockUser } from '@services/api/messageService';
 import { QUERY_KEYS } from '@constants';
 import type { SendMessageRequest, ConversationHistoryResponse } from '@packages/contracts';
 
@@ -151,6 +151,117 @@ export function useAllMessages(otherUserId: string, totalPages: number) {
     gcTime: 5 * 60 * 1000,
     refetchOnWindowFocus: true,
     refetchOnMount: 'always',
+  });
+}
+
+/**
+ * Hook: Accept Chat Request Mutation
+ * Sprint #13 Task 9.3e - Chat Access Control
+ * 
+ * Handles accepting chat requests from non-contact users.
+ * Adds user to acceptedChatsFrom whitelist, enabling bidirectional messaging.
+ * 
+ * Features:
+ * - Mutation for POST /messages/chats/:userId/accept
+ * - Auto-invalidates conversation history to update canSendMessages
+ * - Idempotent operation (safe to call multiple times)
+ * - Success feedback via parent component (toast/modal)
+ * 
+ * Post-conditions:
+ * - canSendMessages becomes true
+ * - ChatInput becomes enabled
+ * - User can send/receive messages freely
+ * 
+ * @example
+ * ```tsx
+ * const { mutate: accept, isPending } = useAcceptChat();
+ * 
+ * accept('user_123', {
+ *   onSuccess: () => toast.success('Chat aceptado'),
+ *   onError: (err) => toast.error(err.message)
+ * });
+ * ```
+ */
+export function useAcceptChat() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (userId: string) => acceptChat(userId),
+    
+    onSuccess: (_, userId) => {
+      // Invalidate conversation history to refetch with updated canSendMessages
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.MESSAGES(userId)
+      });
+      
+      // Invalidate conversations list to update access status (when implemented)
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.CONVERSATIONS
+      });
+    },
+  });
+}
+
+/**
+ * Hook: Block User Mutation
+ * Sprint #13 Task 9.3f - Chat Access Control
+ * 
+ * Handles blocking users from sending messages.
+ * Adds user to usersBlackList and removes from acceptedChatsFrom.
+ * 
+ * Features:
+ * - Mutation for POST /messages/chats/:userId/block
+ * - Auto-invalidates conversation history to update canSendMessages
+ * - Atomic operation (blacklist + whitelist removal)
+ * - Silent block (no notification to blocked user)
+ * 
+ * Post-conditions:
+ * - canSendMessages becomes false for blocked user
+ * - Blocked user gets 403 when attempting to send
+ * - Conversation history remains visible
+ * - Parent component should navigate away (e.g., to /messages)
+ * 
+ * Notes:
+ * - Parent component should show confirmation modal before calling
+ * - Parent component handles navigation after block
+ * - Unblock feature deferred to Sprint #14
+ * 
+ * @example
+ * ```tsx
+ * const { mutate: block, isPending } = useBlockUser();
+ * 
+ * // With confirmation modal
+ * modal.confirm({
+ *   title: 'Bloquear Usuario',
+ *   description: '¿Estás seguro?',
+ *   onConfirm: () => {
+ *     block('user_123', {
+ *       onSuccess: () => {
+ *         toast.success('Usuario bloqueado');
+ *         navigate('/messages');
+ *       }
+ *     });
+ *   }
+ * });
+ * ```
+ */
+export function useBlockUser() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (userId: string) => blockUser(userId),
+    
+    onSuccess: (_, userId) => {
+      // Invalidate conversation history to refetch with updated canSendMessages
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.MESSAGES(userId)
+      });
+      
+      // Invalidate conversations list (when implemented)
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.CONVERSATIONS
+      });
+    },
   });
 }
 
