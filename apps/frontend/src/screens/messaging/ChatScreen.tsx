@@ -125,11 +125,11 @@ export function ChatScreen() {
   }
   
   // ========================
-  // WAITING FOR DECISION (Modal Open)
+  // WAITING FOR DECISION (Modal Open or Block Confirmation Open)
   // ========================
   
-  // Sprint #13: When chat options modal is open, hide chat and show spinner
-  if (vm.modals.chatOptions.isOpen) {
+  // Sprint #13: When chat options modal OR block confirmation modal is open, hide chat and show spinner
+  if (vm.modals.chatOptions.isOpen || vm.modals.blockConfirmation.isOpen) {
     return (
       <div className="container mx-auto max-w-4xl py-6 px-4">
         <div className="flex flex-col items-center justify-center h-96 space-y-4">
@@ -149,6 +149,7 @@ export function ChatScreen() {
           onAcceptChat={vm.actions.handleAcceptChat}
           onAddContact={vm.actions.handleAddContact}
           onBlockUser={vm.actions.handleBlockUser}
+          onIgnoreForNow={vm.actions.handleIgnoreForNow}
           isContact={!vm.state.isNotContact}
         />
       </div>
@@ -159,7 +160,38 @@ export function ChatScreen() {
   // MAIN CHAT RENDER
   // ========================
 
-  return (
+  // ========================
+  // NO DECISION MADE STATE
+  // ========================
+  
+  // Sprint #13: If user closed modal without taking a decision, show message with options
+  return (!vm.data.hasAcceptedChat && !vm.modals.chatOptions.isOpen && !vm.modals.blockConfirmation.isOpen) ?
+  (
+    <div className="container mx-auto max-w-4xl py-6 px-4">
+      <Card className="p-6">
+        <div className="flex flex-col items-center text-center space-y-4">
+          <MessageSquare className="h-12 w-12 text-warning" />
+          <Heading1 size="medium" className="text-warning">
+            {vm.t('messages.noDecisionMade', 'No has decidido sobre este chat')}
+          </Heading1>
+          <BodyText size="small" className="text-muted-foreground max-w-md">
+            {vm.t('messages.noDecisionMadeDesc', 'Puedes volver a la lista de mensajes o tomar una decisión ahora')}
+          </BodyText>
+          <div className="flex gap-2">
+            <Button variant="outline" onPress={vm.actions.handleBackToConversations}>
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              {vm.t('messages.backToConversations', 'Volver a mensajes')}
+            </Button>
+            <Button variant="filled" onPress={vm.actions.handleOpenChatOptions}>
+              {vm.t('messages.makeDecision', 'Tomar decisión')}
+            </Button>
+          </div>
+        </div>
+      </Card>
+    </div>
+  )
+  :
+  (
     <div className="flex flex-col h-[calc(90vh-4rem)]">
       {/* Header */}
       <div className="border-b bg-background px-4 py-3 flex items-center gap-3">
@@ -268,6 +300,7 @@ export function ChatScreen() {
         onAcceptChat={vm.actions.handleAcceptChat}
         onAddContact={vm.actions.handleAddContact}
         onBlockUser={vm.actions.handleBlockUser}
+        onIgnoreForNow={vm.actions.handleIgnoreForNow}
         isContact={!vm.state.isNotContact}
       />
     </div>

@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Modal, Button, BodyText } from '@components/ui';
-import { UserPlus, ShieldBan } from 'lucide-react';
+import { UserPlus, ShieldBan, Timer } from 'lucide-react';
 
 /**
  * ChatOptionsModal Component
@@ -42,6 +42,7 @@ interface ChatOptionsModalProps {
   onAcceptChat: () => void; // Sprint #13: Accept chat from non-contact
   onAddContact: () => void;
   onBlockUser: () => void;
+  onIgnoreForNow: () => void; // Sprint #13: Ignore decision temporarily
   isContact: boolean; // Hide "Add Contact" and "Accept Chat" if already contact
 }
 
@@ -51,6 +52,7 @@ export const ChatOptionsModal = ({
   onAcceptChat,
   onAddContact,
   onBlockUser,
+  onIgnoreForNow,
   isContact,
 }: ChatOptionsModalProps) => {
   const { t } = useTranslation();
@@ -59,7 +61,8 @@ export const ChatOptionsModal = ({
     // Sprint #13: Reordered for first-conversation flow
     // 1. Accept Chat (CTA - primary action for non-contacts)
     // 2. Add Contact (secondary action)
-    // 3. Block User (destructive, always last)
+    // 3. Ignore for Now (escape hatch)
+    // 4. Block User (destructive, always last)
     
     // Only show "Accept Chat" if not contact (will be hidden after accepting)
     ...(!isContact
@@ -84,6 +87,20 @@ export const ChatOptionsModal = ({
             description: t('messages.chatOptions.addContactDesc'),
             onClick: onAddContact,
             variant: 'outline' as const, // Secondary styling
+            isDestructive: false,
+            isCTA: false,
+          },
+        ]
+      : []),
+    // Ignore for now - escape hatch for users who don't want to decide yet
+    ...(!isContact
+      ? [
+          {
+            icon: Timer,
+            title: t('messages.chatOptions.ignoreForNow'),
+            description: t('messages.chatOptions.ignoreForNowDesc'),
+            onClick: onIgnoreForNow,
+            variant: 'ghost' as const, // Subtle styling
             isDestructive: false,
             isCTA: false,
           },
@@ -118,6 +135,7 @@ export const ChatOptionsModal = ({
       onOpenChange={onOpenChange}
       title={t('messages.chatOptions.title')}
       description={t('messages.chatOptions.selectAction')}
+      showCloseButton={false}
     >
       <div className="flex flex-col gap-2">
         {actions.map((action, index) => {

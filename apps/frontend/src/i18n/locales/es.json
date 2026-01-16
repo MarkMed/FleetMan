@@ -717,6 +717,9 @@
     "allMarkedRead": "Todos los mensajes marcados como leídos",
     "waitingForDecision": "Esperando decisión...",
     "waitingForDecisionDesc": "Por favor, selecciona una acción para continuar",
+    "noDecisionMade": "No has decidido sobre este chat",
+    "noDecisionMadeDesc": "Puedes volver a la lista de mensajes o tomar una decisión ahora",
+    "makeDecision": "Tomar decisión",
     "chatAccepted": "Chat aceptado",
     "chatAcceptedDesc": "Ahora puedes enviar y recibir mensajes libremente",
     "userBlocked": "Usuario bloqueado",
@@ -731,6 +734,8 @@
       "acceptChatDesc": "Permitir conversación sin agregar como contacto",
       "addContact": "Guardar Contacto",
       "addContactDesc": "Agregar este usuario a tu lista de contactos",
+      "ignoreForNow": "Ignorar por ahora",
+      "ignoreForNowDesc": "Decidir más tarde, cerrar este mensaje",
       "blockUser": "Bloquear Usuario",
       "blockUserDesc": "Impedir que este usuario te envíe mensajes"
     }

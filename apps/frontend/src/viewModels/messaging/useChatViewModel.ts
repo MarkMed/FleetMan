@@ -93,6 +93,10 @@ export function useChatViewModel() {
   // Sprint #13: Flag to prevent modal re-opening after user makes a decision
   // Tracks if user has already accepted, added as contact, or blocked in this session
   const [hasUserTakenDecision, setHasUserTakenDecision] = useState(false);
+  
+  // Sprint #13: Track if block confirmation modal is open
+  // Used to hide chat while user decides whether to block
+  const [isBlockConfirmationOpen, setIsBlockConfirmationOpen] = useState(false);
 
   // ========================
   // VALIDATION
@@ -202,11 +206,14 @@ export function useChatViewModel() {
       !hasUserTakenDecision && // Frontend: User hasn't taken decision in THIS session
       !isLoadingInitial;
     
+    // Only auto-open if modal is not already open AND should open
+    // This prevents re-opening when closing for other actions (like block confirmation)
     if (isFirstConversationFromNonContact && !isChatOptionsModalOpen) {
       // Auto-open modal to let user decide: Accept, Add Contact, or Block
       handleOpenChatOptions();
     }
-  }, [isContact, isCheckingContact, messages.length, hasAcceptedChat, hasUserTakenDecision, isLoadingInitial, isChatOptionsModalOpen]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [isContact, isCheckingContact, messages.length, hasAcceptedChat, hasUserTakenDecision, isLoadingInitial]); // eslint-disable-line react-hooks/exhaustive-deps
+  // IMPORTANT: DO NOT add isChatOptionsModalOpen to dependencies to avoid re-opening loop
   
   // Detect user scroll (disable auto-scroll if scrolling up)
   useEffect(() => {
@@ -349,35 +356,43 @@ export function useChatViewModel() {
   const handleBlockUser = () => {
     if (!otherUserId) return;
     
-    // Mark that user has taken a decision (prevent modal re-opening)
-    // MUST be done BEFORE closing modal to prevent useEffect from re-opening it
-    setHasUserTakenDecision(true);
-    
     // Close chat options modal immediately (will open confirmation modal)
     setIsChatOptionsModalOpen(false);
+    modal.hide();
     
-    modal.show({
-      title: t('messages.blockUser'),
-      description: t('messages.blockUserConfirmation'),
-      variant: 'danger',
-      showCancel: true,
-      confirmButtonVariant: 'ghost',
-      confirmButtonClassName: 'border-red-600 text-red-600 hover:bg-red-600 hover:text-white',
-      cancelButtonVariant: 'outline',
-      cancelButtonClassName: 'border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white',
-      onConfirm: () => {
-        blockUserMutation(otherUserId, {
-          onSuccess: () => {
-            toast.success({
-              title: t('messages.userBlocked'),
-              description: t('messages.userBlockedDesc'),
-            });
-            
-            // Close confirmation modal before navigating
-            modal.hide();
-            
-            // Navigate away from conversation after blocking
-            navigate('/messages');
+    // Small delay to ensure ChatOptionsModal closes before confirmation opens
+    setTimeout(() => {
+      // Mark that confirmation modal is now open
+      setIsBlockConfirmationOpen(true);
+      
+      modal.show({
+        title: t('messages.blockUser'),
+        description: t('messages.blockUserConfirmation'),
+        variant: 'danger',
+        showCancel: true,
+        confirmButtonVariant: 'ghost',
+        confirmButtonClassName: 'border-red-600 text-red-600 hover:bg-red-600 hover:text-white',
+        cancelButtonVariant: 'outline',
+        cancelButtonClassName: 'border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white',
+        onConfirm: () => {
+          blockUserMutation(otherUserId, {
+            onSuccess: () => {
+              // Mark decision ONLY after successful block
+              setHasUserTakenDecision(true);
+              
+              // Mark that confirmation modal is closed
+              setIsBlockConfirmationOpen(false);
+              
+              toast.success({
+                title: t('messages.userBlocked'),
+                description: t('messages.userBlockedDesc'),
+              });
+              
+              // Close confirmation modal before navigating
+              modal.hide();
+              
+              // Navigate away from conversation after blocking
+              navigate('/messages');
           },
           onError: (error: any) => {
             const errorMessage = error?.response?.data?.message || t('errors.unknownError');
@@ -388,7 +403,17 @@ export function useChatViewModel() {
           },
         });
       },
+      onCancel: () => {
+        // Mark that confirmation modal is closed
+        setIsBlockConfirmationOpen(false);
+        
+        // User cancelled block - reopen chat options modal after a small delay
+        setTimeout(() => {
+          setIsChatOptionsModalOpen(true);
+        }, 100);
+      },
     });
+    }, 100);
   };
   
   /**
@@ -443,6 +468,25 @@ export function useChatViewModel() {
   const handleCloseChatOptions = () => {
     setIsChatOptionsModalOpen(false);
   };
+  
+  /**
+   * Ignore chat decision for now
+   * Closes modal and navigates back to messages list
+   * Decision flag prevents modal from reopening in THIS session
+   * Modal will reappear on page reload (no backend persistence)
+   */
+  const handleIgnoreForNow = () => {
+    // Mark that user has taken a decision (prevent modal re-opening in this session)
+    setHasUserTakenDecision(true);
+    
+    // Close modal
+    setIsChatOptionsModalOpen(false);
+    
+    // Navigate back to messages list
+    navigate('/messages');
+    
+    // No toast needed - silent action
+  };
 
   // ========================
   // RETURN VIEWMODEL
@@ -475,6 +519,7 @@ export function useChatViewModel() {
       currentUserId,
       otherUserId: otherUserId!,
       currentPage,
+      hasAcceptedChat
       // otherUser: UserPublicProfile | undefined (fetch from contacts list if needed)
     },
     
@@ -496,6 +541,7 @@ export function useChatViewModel() {
       handleAddContact,
       handleOpenChatOptions,
       handleCloseChatOptions,
+      handleIgnoreForNow,
     },
     
     // Sprint #13: Chat options modal state
@@ -503,6 +549,9 @@ export function useChatViewModel() {
       chatOptions: {
         isOpen: isChatOptionsModalOpen,
         onOpenChange: setIsChatOptionsModalOpen,
+      },
+      blockConfirmation: {
+        isOpen: isBlockConfirmationOpen,
       },
     },
     
