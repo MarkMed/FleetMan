@@ -869,7 +869,7 @@ export class UserRepository implements IUserRepository {
   // }
 
   // =============================================================================
-  // �📊 USER STATISTICS METHODS (Sprint #12 - User Stats Feature)
+  // 📊 USER STATISTICS METHODS (Sprint #12 - User Stats Feature)
   // =============================================================================
 
   /**

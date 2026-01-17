@@ -205,18 +205,6 @@ export class MessageRepository implements IMessageRepository {
       const skip = (page - 1) * limit;
       const userIdValue = userId.getValue();
 
-      // Debug logging para verificar tipos de datos
-      console.log('=== getRecentConversations DEBUG START ===');
-      console.log('userId from parameter:', userId);
-      console.log('typeof userId:', typeof userId);
-      console.log('userIdValue (getValue()):', userIdValue);
-      console.log('typeof userIdValue:', typeof userIdValue);
-      console.log('page:', page, 'typeof:', typeof page);
-      console.log('limit:', limit, 'typeof:', typeof limit);
-      console.log('skip:', skip, 'typeof:', typeof skip);
-      console.log('onlyContacts:', onlyContacts, 'typeof:', typeof onlyContacts);
-      console.log('search:', search, 'typeof:', typeof search);
-
       // Build aggregation pipeline
       const pipeline: any[] = [
         // Stage 1: Match messages where userId is sender OR recipient
@@ -379,31 +367,16 @@ export class MessageRepository implements IMessageRepository {
         }
       });
 
-      console.log('Pipeline stages count:', pipeline.length);
-      console.log('Executing aggregation pipeline...');
-
       // Execute aggregation
       const result = await MessageModel.aggregate(pipeline);
-
-      console.log('Aggregation result:', result);
-      console.log('typeof result:', typeof result);
-      console.log('result.length:', result.length);
-      console.log('result[0]:', result[0]);
 
       // Extract results from facet
       const metadata = result[0]?.metadata[0];
       const data = result[0]?.data || [];
       const total = metadata?.total || 0;
 
-      console.log('metadata:', metadata);
-      console.log('data:', data);
-      console.log('typeof data:', typeof data);
-      console.log('data.length:', data.length);
-      console.log('total:', total, 'typeof:', typeof total);
-
       // Map aggregation results to domain interface
       const conversations: IConversationSummary[] = data.map((doc: any) => {
-        console.log('Mapping doc:', doc);
         return {
           otherUserId: doc.otherUserId,
           displayName: doc.displayName,
@@ -415,11 +388,6 @@ export class MessageRepository implements IMessageRepository {
       });
 
       const totalPages = Math.ceil(total / limit);
-
-      console.log('conversations mapped:', conversations);
-      console.log('conversations.length:', conversations.length);
-      console.log('totalPages:', totalPages);
-      console.log('=== getRecentConversations DEBUG END ===');
 
       return ok({
         conversations,

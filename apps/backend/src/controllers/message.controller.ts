@@ -304,7 +304,7 @@ export class MessageController {
   }
 
   // =============================================================================
-  // � CHAT ACCESS CONTROL ENDPOINTS (Sprint #13 Task 9.3g)
+  // 🔐 CHAT ACCESS CONTROL ENDPOINTS (Sprint #13 Task 9.3g)
   // =============================================================================
 
   /**
