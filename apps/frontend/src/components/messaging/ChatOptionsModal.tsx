@@ -165,7 +165,7 @@ export const ChatOptionsModal = ({
       onOpenChange={onOpenChange}
       title={t('messages.chatOptions.title')}
       description={t('messages.chatOptions.selectAction')}
-      showCloseButton={false}
+      // showCloseButton={false}
     >
       <div className="flex flex-col gap-2">
         {actions.map((action, index) => {
@@ -185,9 +185,9 @@ export const ChatOptionsModal = ({
               }`}
               onPress={() => handleActionClick(action.onClick)}
             >
-              <div className="flex items-start gap-3 w-full">
-                <div className="mt-0.5">
-                  <Icon className={`h-5 w-5 ${
+              <div className="flex items-center gap-4 w-full">
+                <div className="ml-1">
+                  <Icon className={`h-7 w-7 ${
                     action.isCTA 
                       ? 'text-primary-foreground' 
                       : action.isDestructive 
@@ -197,9 +197,10 @@ export const ChatOptionsModal = ({
                       : ''
                   }`} />
                 </div>
-                <div className="flex flex-col gap-1">
+                <div className="flex flex-col">
                   <BodyText 
                     weight="medium" 
+                    size='large'
                     className={
                       action.isCTA 
                         ? 'text-primary-foreground' 
@@ -213,7 +214,7 @@ export const ChatOptionsModal = ({
                     {action.title}
                   </BodyText>
                   <BodyText
-                    size="small"
+                    weight='medium'
                     className={
                       action.isCTA 
                         ? 'text-primary-foreground/80' 
