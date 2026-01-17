@@ -11,6 +11,7 @@ import type { IMessage } from '../models/interfaces';
  * Sprint #12 - Módulo 3: Messaging System
  */
 export interface IGetConversationHistoryResult {
+  recipientName?: string; // Nombre para mostrar del destinatario
   messages: IMessage[];
   total: number;
   page: number;

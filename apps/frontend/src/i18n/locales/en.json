@@ -734,6 +734,8 @@
       "addContactDesc": "Add this user to your contact list",
       "ignoreForNow": "Ignore for now",
       "ignoreForNowDesc": "Decide later, close this message",
+      "clearChat": "Clear Chat",
+      "clearChatDesc": "Delete all message history",
       "blockUser": "Block User",
       "blockUserDesc": "Prevent this user from sending you messages"
     },

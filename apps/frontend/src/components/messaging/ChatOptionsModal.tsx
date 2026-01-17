@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Modal, Button, BodyText } from '@components/ui';
-import { UserPlus, ShieldBan, Timer } from 'lucide-react';
+import { UserPlus, ShieldBan, Timer, Trash2 } from 'lucide-react';
 
 /**
  * ChatOptionsModal Component
@@ -43,7 +43,9 @@ interface ChatOptionsModalProps {
   onAddContact: () => void;
   onBlockUser: () => void;
   onIgnoreForNow: () => void; // Sprint #13: Ignore decision temporarily
+  onClearChat: () => void; // Sprint #13: Clear chat history (coming soon)
   isContact: boolean; // Hide "Add Contact" and "Accept Chat" if already contact
+  hasAcceptedChat: boolean; // Sprint #13: Check if user already accepted this chat
 }
 
 export const ChatOptionsModal = ({
@@ -53,70 +55,98 @@ export const ChatOptionsModal = ({
   onAddContact,
   onBlockUser,
   onIgnoreForNow,
+  onClearChat,
   isContact,
+  hasAcceptedChat,
 }: ChatOptionsModalProps) => {
   const { t } = useTranslation();
 
-  const actions = [
-    // Sprint #13: Reordered for first-conversation flow
-    // 1. Accept Chat (CTA - primary action for non-contacts)
-    // 2. Add Contact (secondary action)
-    // 3. Ignore for Now (escape hatch)
-    // 4. Block User (destructive, always last)
-    
-    // Only show "Accept Chat" if not contact (will be hidden after accepting)
-    ...(!isContact
-      ? [
-          {
-            icon: UserPlus, // TODO: Consider UserCheck icon for "Accept"
-            title: t('messages.chatOptions.acceptChat'),
-            description: t('messages.chatOptions.acceptChatDesc'),
-            onClick: onAcceptChat,
-            variant: 'filled' as const, // CTA styling (primary blue)
-            isDestructive: false,
-            isCTA: true,
-          },
-        ]
-      : []),
-    // Only show "Add Contact" if not already a contact
-    ...(!isContact
-      ? [
-          {
-            icon: UserPlus,
-            title: t('messages.chatOptions.addContact'),
-            description: t('messages.chatOptions.addContactDesc'),
-            onClick: onAddContact,
-            variant: 'outline' as const, // Secondary styling
-            isDestructive: false,
-            isCTA: false,
-          },
-        ]
-      : []),
-    // Ignore for now - escape hatch for users who don't want to decide yet
-    ...(!isContact
-      ? [
-          {
-            icon: Timer,
-            title: t('messages.chatOptions.ignoreForNow'),
-            description: t('messages.chatOptions.ignoreForNowDesc'),
-            onClick: onIgnoreForNow,
-            variant: 'ghost' as const, // Subtle styling
-            isDestructive: false,
-            isCTA: false,
-          },
-        ]
-      : []),
-    // Block user always at the bottom with destructive styling
+  // Sprint #13: Contextual actions based on chat state
+  // Different options for different scenarios:
+  // 1. First conversation from non-contact: Accept, Add Contact, Ignore, Block
+  // 2. Accepted chat (non-contact): Add Contact, Clear Chat, Block
+  // 3. Contact chat: Clear Chat, Block
+  const actions = [];
+  
+  // SCENARIO 1: First conversation from non-contact (decision required)
+  // Show: Accept Chat (CTA), Add Contact, Ignore for Now
+  if (!isContact && !hasAcceptedChat) {
+    actions.push(
+      {
+        icon: UserPlus,
+        title: t('messages.chatOptions.acceptChat'),
+        description: t('messages.chatOptions.acceptChatDesc'),
+        onClick: onAcceptChat,
+        variant: 'filled' as const,
+        isDestructive: false,
+        isCTA: true,
+      },
+      {
+        icon: UserPlus,
+        title: t('messages.chatOptions.addContact'),
+        description: t('messages.chatOptions.addContactDesc'),
+        onClick: onAddContact,
+        variant: 'outline' as const,
+        isDestructive: false,
+        isCTA: false,
+      },
+      {
+        icon: Timer,
+        title: t('messages.chatOptions.ignoreForNow'),
+        description: t('messages.chatOptions.ignoreForNowDesc'),
+        onClick: onIgnoreForNow,
+        variant: 'ghost' as const,
+        isDestructive: false,
+        isCTA: false,
+      }
+    );
+  }
+  
+  // SCENARIO 2: Accepted chat but not contact yet
+  // Show: Add Contact only (user already accepted, can add as contact)
+  else if (!isContact && hasAcceptedChat) {
+    actions.push(
+      {
+        icon: UserPlus,
+        title: t('messages.chatOptions.addContact'),
+        description: t('messages.chatOptions.addContactDesc'),
+        onClick: onAddContact,
+        variant: 'outline' as const,
+        isDestructive: false,
+        isCTA: false,
+      }
+    );
+  }
+  
+  // SCENARIO 3: Any active chat (accepted or contact)
+  // Show: Clear Chat (warning style, coming soon)
+  if (hasAcceptedChat || isContact) {
+    actions.push(
+      {
+        icon: Trash2,
+        title: t('messages.chatOptions.clearChat', 'Limpiar Chat'),
+        description: t('messages.chatOptions.clearChatDesc', 'Eliminar todo el historial de mensajes'),
+        onClick: onClearChat,
+        variant: 'outline' as const,
+        isDestructive: false,
+        isWarning: true, // New flag for warning styling (yellow)
+        isCTA: false,
+      }
+    );
+  }
+  
+  // ALWAYS: Block User at the bottom (destructive action)
+  actions.push(
     {
       icon: ShieldBan,
       title: t('messages.chatOptions.blockUser'),
       description: t('messages.chatOptions.blockUserDesc'),
       onClick: onBlockUser,
-      variant: 'outline' as const, // Outline with red text
+      variant: 'outline' as const,
       isDestructive: true,
       isCTA: false,
-    },
-  ];
+    }
+  );
 
   const handleActionClick = (onClick: () => void) => {
     // Execute action handler
@@ -148,7 +178,9 @@ export const ChatOptionsModal = ({
                 action.isCTA 
                   ? 'bg-primary text-primary-foreground hover:bg-primary/90' 
                   : action.isDestructive 
-                  ? 'text-destructive hover:text-destructive hover:bg-destructive/10' 
+                  ? 'text-destructive hover:text-destructive hover:bg-destructive/10'
+                  : (action as any).isWarning
+                  ? 'text-warning hover:text-warning hover:bg-warning/10'
                   : 'hover:bg-accent'
               }`}
               onPress={() => handleActionClick(action.onClick)}
@@ -159,14 +191,24 @@ export const ChatOptionsModal = ({
                     action.isCTA 
                       ? 'text-primary-foreground' 
                       : action.isDestructive 
-                      ? 'text-destructive' 
+                      ? 'text-destructive'
+                      : (action as any).isWarning
+                      ? 'text-warning'
                       : ''
                   }`} />
                 </div>
                 <div className="flex flex-col gap-1">
                   <BodyText 
                     weight="medium" 
-                    className={action.isCTA ? 'text-primary-foreground' : action.isDestructive ? 'text-destructive' : ''}
+                    className={
+                      action.isCTA 
+                        ? 'text-primary-foreground' 
+                        : action.isDestructive 
+                        ? 'text-destructive'
+                        : (action as any).isWarning
+                        ? 'text-warning'
+                        : ''
+                    }
                   >
                     {action.title}
                   </BodyText>
@@ -176,7 +218,9 @@ export const ChatOptionsModal = ({
                       action.isCTA 
                         ? 'text-primary-foreground/80' 
                         : action.isDestructive 
-                        ? 'text-destructive/80' 
+                        ? 'text-destructive/80'
+                        : (action as any).isWarning
+                        ? 'text-warning/80'
                         : 'text-muted-foreground'
                     }
                   >

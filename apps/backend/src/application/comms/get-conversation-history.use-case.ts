@@ -273,6 +273,7 @@ export class GetConversationHistoryUseCase {
       // =================================================================
       const historyData = historyResult.data;
       const response: ConversationHistoryResponse = {
+        recipientName: otherUserResult.data.getDisplayName() || otherUserResult.data.email.toString(),
         messages: historyData.messages,
         total: historyData.total,
         page: historyData.page,
@@ -287,6 +288,7 @@ export class GetConversationHistoryUseCase {
         userId, 
         otherUserId,
         messagesReturned: response.messages.length,
+        recipientName: response.recipientName,
         total: response.total,
         page: response.page,
         totalPages: response.totalPages,

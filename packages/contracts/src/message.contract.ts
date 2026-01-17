@@ -113,6 +113,7 @@ export const SendMessageResponseSchema = z.object({
  * - isBlockedByOther: indica si usuario está bloqueado por el otro (para mostrar banner en frontend)
  */
 export const ConversationHistoryResponseSchema = z.object({
+  recipientName: z.string().optional(), // Nombre para mostrar del destinatario
   messages: z.array(MessageSchema),
   total: z.number().int().nonnegative(),
   page: z.number().int().positive(),

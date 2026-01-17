@@ -736,6 +736,8 @@
       "addContactDesc": "Agregar este usuario a tu lista de contactos",
       "ignoreForNow": "Ignorar por ahora",
       "ignoreForNowDesc": "Decidir más tarde, cerrar este mensaje",
+      "clearChat": "Limpiar Chat",
+      "clearChatDesc": "Eliminar todo el historial de mensajes",
       "blockUser": "Bloquear Usuario",
       "blockUserDesc": "Impedir que este usuario te envíe mensajes"
     },

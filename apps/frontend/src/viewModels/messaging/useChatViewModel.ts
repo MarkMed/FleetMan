@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
@@ -149,6 +149,31 @@ export function useChatViewModel() {
   // For MVP: Single page load, no combination needed
   // (If using multiple pages, would need to fetch all pages and merge)
   const messages = messagesData?.messages || [];
+  
+  // Get other user's display name from backend response
+  // Backend now provides recipientName field (Sprint #13 enhancement)
+  const otherUserDisplayName = useMemo(() => {
+    // Priority 1: Use recipientName from backend (most reliable)
+    if (messagesData?.recipientName) {
+      return messagesData.recipientName;
+    }
+    
+    // Priority 2: Fallback for loading state or missing data
+    if (!otherUserId) {
+      return t('messages.unknownUser', 'Usuario desconocido');
+    }
+    
+    // Priority 3: Show partial ID while loading (temporary)
+    return t('messages.userIdFallback', { 
+      id: otherUserId.slice(0, 8), 
+      defaultValue: `Usuario ${otherUserId.slice(0, 8)}` 
+    });
+  }, [messagesData?.recipientName, otherUserId, t]);
+  
+  // NOTE: Backend recipientName resolution priority:
+  // 1. Company name (profile.companyName) - most common
+  // 2. Email address - fallback for users without company
+  // 3. User ID - last resort (shouldn't happen in production)
   const hasMore = messagesData ? messagesData.page < messagesData.totalPages : false;
   const total = messagesData?.total || 0;
   
@@ -487,6 +512,47 @@ export function useChatViewModel() {
     
     // No toast needed - silent action
   };
+  
+  /**
+   * Clear chat history (Coming Soon Feature)
+   * Deletes all messages in this conversation
+   * 
+   * Sprint #13: Placeholder for future feature
+   * Shows toast notification that feature is in development
+   * 
+   * Future implementation:
+   * - Call DELETE /messages/conversations/:otherUserId
+   * - Invalidate messages query
+   * - Show confirmation modal before deleting
+   * - Support selective deletion (last N messages, date range, etc.)
+   */
+  const handleClearChat = () => {
+    // Close modal first
+    setIsChatOptionsModalOpen(false);
+    
+    // Show coming soon notification
+    toast.info({
+      title: t('common.comingSoon', 'Próximamente'),
+      description: t('common.featureComingSoon', 'Esta funcionalidad estará disponible próximamente'),
+    });
+    
+    // TODO POST-MVP: Implement clear chat functionality
+    // const handleClearChatConfirmed = async () => {
+    //   try {
+    //     await messageService.clearConversation(otherUserId);
+    //     queryClient.invalidateQueries({ queryKey: QUERY_KEYS.MESSAGES(otherUserId) });
+    //     toast.success({
+    //       title: t('messages.chatCleared'),
+    //       description: t('messages.chatClearedDesc'),
+    //     });
+    //   } catch (error) {
+    //     toast.error({
+    //       title: t('errors.clearChatFailed'),
+    //       description: error.message,
+    //     });
+    //   }
+    // };
+  };
 
   // ========================
   // RETURN VIEWMODEL
@@ -518,10 +584,11 @@ export function useChatViewModel() {
       total,
       currentUserId,
       otherUserId: otherUserId!,
+      otherUserDisplayName, // Sprint #13: Display name for chat header
       currentPage,
       hasAcceptedChat,
       canSendMessages, // means that user has the other user as contact or has accepted chat (regardless of contact hasAcceptedChat)
-      // otherUser: UserPublicProfile | undefined (fetch from contacts list if needed)
+      // otherUser: UserPublicProfile | undefined (future: fetch full profile for avatar, bio, etc.)
     },
     
     // Refs for View
@@ -543,6 +610,7 @@ export function useChatViewModel() {
       handleOpenChatOptions,
       handleCloseChatOptions,
       handleIgnoreForNow,
+      handleClearChat, // Sprint #13: Clear chat history (coming soon)
     },
     
     // Sprint #13: Chat options modal state

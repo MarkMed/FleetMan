@@ -150,7 +150,9 @@ export function ChatScreen() {
           onAddContact={vm.actions.handleAddContact}
           onBlockUser={vm.actions.handleBlockUser}
           onIgnoreForNow={vm.actions.handleIgnoreForNow}
+          onClearChat={vm.actions.handleClearChat}
           isContact={!vm.state.isNotContact}
+          hasAcceptedChat={vm.data.hasAcceptedChat}
         />
       </div>
     );
@@ -206,7 +208,7 @@ export function ChatScreen() {
         
         <div className="flex-1">
           <BodyText weight="medium">
-            {vm.t('messages.chatWith', 'Conversación')}
+            {vm.data.otherUserDisplayName}
           </BodyText>
           <BodyText size="small" className="text-muted-foreground">
             {vm.data.total > 0 && vm.t('messages.messagesCount', { count: vm.data.total, defaultValue: `${vm.data.total} mensajes` })}
@@ -301,7 +303,9 @@ export function ChatScreen() {
         onAddContact={vm.actions.handleAddContact}
         onBlockUser={vm.actions.handleBlockUser}
         onIgnoreForNow={vm.actions.handleIgnoreForNow}
+        onClearChat={vm.actions.handleClearChat}
         isContact={!vm.state.isNotContact}
+        hasAcceptedChat={vm.data.hasAcceptedChat}
       />
     </div>
   );

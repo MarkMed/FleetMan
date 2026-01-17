@@ -79,25 +79,26 @@ export class MessageRepository implements IMessageRepository {
    * Obtiene el historial de conversación entre dos usuarios (query bidireccional)
    * Ordena por sentAt descendente (más recientes primero)
    * 
-   * @param userId1 - ID del primer usuario
-   * @param userId2 - ID del segundo usuario
+   * @param senderUserId - ID del primer usuario (usuario autenticado)
+   * @param recipientUserId - ID del segundo usuario (otro usuario - destinatario)
    * @param options - Opciones de paginación (page, limit)
    * @returns Result con mensajes paginados o error
    */
   async getConversationHistory(
-    userId1: UserId,
-    userId2: UserId,
+    senderUserId: UserId, 
+    recipientUserId: UserId,
     options: ConversationHistoryOptions
   ): Promise<Result<IGetConversationHistoryResult, DomainError>> {
     try {
       const { page, limit } = options;
       const skip = (page - 1) * limit;
+      const recipientIdValue = recipientUserId.getValue();
 
       // Query bidireccional: mensajes donde (A→B) OR (B→A)
       const query = {
         $or: [
-          { senderId: userId1.getValue(), recipientId: userId2.getValue() },
-          { senderId: userId2.getValue(), recipientId: userId1.getValue() }
+          { senderId: senderUserId.getValue(), recipientId: recipientIdValue },
+          { senderId: recipientIdValue, recipientId: senderUserId.getValue() }
         ]
       };
 
@@ -111,6 +112,41 @@ export class MessageRepository implements IMessageRepository {
           .lean(),
         MessageModel.countDocuments(query)
       ]);
+
+      // Obtener datos del otro usuario (recipientUserId) para displayName
+      // CRITICAL: Usar aggregation con $toObjectId porque MessageModel usa strings, UserModel usa ObjectId
+      const UserModel = require('../models/user.model').UserModel;
+      const userLookup = await UserModel.aggregate([
+        {
+          $match: {
+            $expr: { 
+              $eq: ['$_id', { $toObjectId: recipientIdValue }]
+            }
+          }
+        },
+        {
+          $project: {
+            displayName: {
+              $cond: {
+                if: {
+                  $and: [
+                    { $ne: ['$profile.companyName', null] },
+                    { $ne: ['$profile.companyName', ''] }
+                  ]
+                },
+                then: '$profile.companyName',
+                else: '$email'
+              }
+            }
+          }
+        },
+        {
+          $limit: 1
+        }
+      ]);
+
+      // Extraer recipientName (displayName del otro usuario)
+      const recipientName = userLookup[0]?.displayName || recipientIdValue;
 
       // Mapear documentos a IMessage interface (para frontend)
       const messages: IMessage[] = messageDocs.map(doc => ({
@@ -127,6 +163,7 @@ export class MessageRepository implements IMessageRepository {
       const totalPages = Math.ceil(total / limit);
 
       const result: IGetConversationHistoryResult = {
+        recipientName,
         messages,
         total,
         page,
