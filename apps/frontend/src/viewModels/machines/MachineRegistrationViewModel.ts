@@ -13,7 +13,7 @@ import { machineService } from '../../services/api/machineService';
 import { getSessionToken } from '../../store/slices/authSlice';
 import { useAuthStore } from '../../store/slices/authSlice';
 import { WizardStep } from '../../components/forms/wizard';
-import { BasicInfoStep, TechnicalSpecsStep, ConfirmationStep } from '../../screens/machines/machine-registration/steps';
+import { BasicInfoStep, PhotoStep, TechnicalSpecsStep, ConfirmationStep } from '../../screens/machines/machine-registration/steps';
 import { useZodForm } from '../../hooks/useZodForm';
 import { useMachineTypes } from '../../hooks';
 import type { MachineTypeResponse } from '@contracts';
@@ -112,6 +112,19 @@ export function useMachineRegistrationViewModel(): MachineRegistrationViewModel 
         
         // 3. Both conditions must be met
         return !hasErrors && !!hasRequiredValues;
+      },
+    },
+    {
+      title: 'Foto de la Máquina',
+      description: 'Imagen representativa',
+      component: PhotoStep,
+      isValid: () => {
+        // Valid if either photo uploaded OR "add later" checked
+        const formValues = form.getValues();
+        const hasPhoto = !!formValues.technicalSpecs?.machinePhotoUrl?.trim();
+        const addLater = formValues.addPhotoLater === true;
+        
+        return hasPhoto || addLater;
       },
     },
     {

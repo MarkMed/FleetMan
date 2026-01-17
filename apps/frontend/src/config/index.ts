@@ -38,6 +38,14 @@ export const config = {
     LANGUAGE: 'fleetman_language',
     THEME: 'fleetman_theme',
   },
+
+  // Cloudinary Configuration
+  CLOUDINARY: {
+    CLOUD_NAME: import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || '',
+    UPLOAD_PRESET: import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || '',
+    MAX_FILE_SIZE: 5 * 1024 * 1024, // 5MB in bytes
+    ACCEPTED_FORMATS: ['image/jpeg', 'image/png', 'image/webp'] as const,
+  },
 } as const;
 
 // Debug final config

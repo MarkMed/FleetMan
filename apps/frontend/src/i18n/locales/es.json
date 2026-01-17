@@ -215,6 +215,16 @@
         "cancelButton": "Cancelar",
         "confirmButton": "Registrar Máquina"
       },
+      "photo": {
+        "title": "Foto de la Máquina",
+        "description": "Agrega una foto representativa de la máquina para facilitar su identificación.",
+        "label": "Foto",
+        "helperText": "Formatos soportados: JPEG, PNG, WebP. Tamaño máximo: 5MB",
+        "addLater": "Agregaré la foto más tarde",
+        "addLaterDescription": "Podrás subir la foto desde la página de detalles de la máquina después del registro.",
+        "required": "Acción requerida",
+        "requiredDescription": "Debes subir una foto o marcar la casilla para continuar."
+      },
       "success": {
         "title": "Máquina Registrada",
         "description": "La máquina \"{{machineName}}\" fue registrada exitosamente."
