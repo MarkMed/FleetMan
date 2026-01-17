@@ -2,32 +2,25 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Card, BodyText, Badge } from '@components/ui';
-import { MessageSquare } from 'lucide-react';
+import { MessageSquare, UserPlus } from 'lucide-react';
 import { cn } from '@utils/cn';
 import { ROUTES } from '@constants';
-import type { UserPublicProfile } from '@packages/contracts';
+import { useAuthStore } from '@store';
+import type { ConversationSummary } from '@packages/contracts';
 
 interface ConversationPreviewProps {
   /**
-   * Contact user's public profile
+   * Conversation data from backend
+   * Sprint #13 - Recent Conversations Inbox Feature
    */
-  contact: UserPublicProfile;
+  conversation: ConversationSummary;
   
   /**
    * Unread message count for this conversation
-   * Shows badge if > 0
+   * MVP: From client-side Zustand store
+   * Future: Will come from backend
    */
   unreadCount?: number;
-  
-  /**
-   * Optional last message preview (Future Feature)
-   * For MVP: Not implemented (no backend endpoint)
-   */
-  lastMessage?: {
-    content: string;
-    createdAt: Date;
-    senderId: string;
-  };
   
   /**
    * Optional onClick handler (overrides default navigation)
@@ -43,77 +36,78 @@ interface ConversationPreviewProps {
 /**
  * ConversationPreview Component
  * 
- * Displays a contact in the conversations list (messages inbox).
- * Shows user info, unread badge, and optionally last message preview.
+ * Sprint #13 - Recent Conversations Inbox Feature
  * 
- * Features:
- * - Contact name and company
- * - User type badge (CLIENT | PROVIDER)
- * - Unread messages badge
- * - Last message preview (future)
- * - Timestamp (future)
- * - Hover effect
- * - Click to navigate to chat screen
+ * Displays a conversation in the messages inbox with last message preview.
+ * 
+ * Features (Sprint #13):
+ * - ✅ Display name (companyName or email fallback)
+ * - ✅ Last message content preview (truncated)
+ * - ✅ Relative timestamp ("hace 5m", "ayer")
+ * - ✅ Unread badge (client-side count)
+ * - ✅ Contact vs non-contact indicator badge
+ * - ✅ "You: " prefix if current user sent last message
+ * - ✅ Hover effect for better UX
  * 
  * MVP Scope:
- * - ✅ Display all contacts (no filtering)
- * - ✅ Unread badge from client-side counter
- * - ❌ NO last message preview (no backend endpoint)
- * - ❌ NO last activity timestamp
+ * - ✅ Last message preview and timestamp
+ * - ✅ isContact badge visual indicator
+ * - ✅ Unread count from Zustand
  * - ❌ NO online/offline status
+ * - ❌ NO typing indicators
+ * - ❌ NO pinned conversations
  * 
  * Design:
- * - Similar to UserCard but optimized for list view
- * - Horizontal layout with clear visual hierarchy
- * - Badge placement: type (left), unread (right)
+ * - Horizontal layout optimized for list view
+ * - Clear visual hierarchy (name → message → timestamp)
+ * - Badge placement: isContact (left), unread (right)
+ * - Highlight background if unread
  * 
  * @example
  * ```tsx
  * <ConversationPreview
- *   contact={contact}
- *   unreadCount={unreadCounts[contact.id]}
+ *   conversation={convo}
+ *   unreadCount={unreadCounts[convo.otherUserId]}
  * />
  * ```
  */
 export const ConversationPreview: React.FC<ConversationPreviewProps> = ({
-  contact,
+  conversation,
   unreadCount = 0,
-  lastMessage,
   onClick,
   className = '',
 }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { user } = useAuthStore();
   
   const handleClick = () => {
     if (onClick) {
-      onClick(contact.id);
+      onClick(conversation.otherUserId);
     } else {
-      navigate(ROUTES.CHAT(contact.id));
+      navigate(ROUTES.CHAT(conversation.otherUserId));
     }
   };
   
-  // Type badge colors
-  const typeBadgeVariant = contact.type === 'CLIENT' ? 'secondary' : 'success';
+  // Format relative timestamp
+  const formattedTime = formatRelativeTime(conversation.lastMessageAt, t);
   
-  // Format last message timestamp (future)
-  let formattedTime = '';
-  if (lastMessage) {
-    const messageDate = new Date(lastMessage.createdAt);
-    const now = new Date();
-    const isToday = messageDate.toDateString() === now.toDateString();
-    
-    formattedTime = isToday 
-      ? messageDate.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })
-      : messageDate.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit' });
-  }
+  // Check if current user sent the last message
+  const isSentByMe = conversation.lastMessageSenderId === user?.id;
+  
+  // Truncate message content (max 60 chars)
+  const truncatedMessage = conversation.lastMessageContent
+    ? conversation.lastMessageContent.length > 60
+      ? conversation.lastMessageContent.substring(0, 60) + '...'
+      : conversation.lastMessageContent
+    : t('messages.noMessages', 'Sin mensajes');
   
   return (
     <Card
       className={cn(
         'p-4 hover:shadow-md transition-all cursor-pointer',
         'hover:bg-accent/5',
-        unreadCount > 0 && 'bg-accent/10', // Highlight if unread
+        unreadCount > 0 && 'bg-blue-50/50 dark:bg-blue-950/10 border-blue-200 dark:border-blue-800', // Highlight if unread
         className
       )}
       onClick={handleClick}
@@ -128,78 +122,91 @@ export const ConversationPreview: React.FC<ConversationPreviewProps> = ({
         
         {/* Center: User info + last message */}
         <div className="flex-1 min-w-0">
-          {/* Top row: Name + Type badge */}
+          {/* Top row: Name + isContact badge */}
           <div className="flex items-center gap-2 mb-1">
             <BodyText weight="medium" className="truncate">
-              {contact.profile.companyName || t('users.noCompanyName')}
+              {conversation.displayName}
             </BodyText>
-            <Badge variant={typeBadgeVariant} className="flex-shrink-0 text-xs">
-              {t(`users.type.${contact.type.toLowerCase()}`)}
-            </Badge>
+            {!conversation.isContact && (
+              <Badge variant="secondary" className="flex-shrink-0 text-xs">
+                <UserPlus className="w-3 h-3 mr-1" />
+                {t('messages.newChat', 'Nuevo')}
+              </Badge>
+            )}
           </div>
           
-          {/* Last message preview (future) */}
-          {lastMessage ? (
-            <p className="text-sm text-muted-foreground truncate">
-              {lastMessage.senderId === contact.id ? '' : t('messages.you') + ': '}
-              {lastMessage.content}
-            </p>
-          ) : (
-            <p className="text-sm text-muted-foreground italic">
-              {t('messages.noMessages', 'Sin mensajes aún')}
-            </p>
-          )}
+          {/* Last message preview */}
+          <p className={cn(
+            "text-sm truncate",
+            unreadCount > 0 ? "text-foreground font-medium" : "text-muted-foreground"
+          )}>
+            {isSentByMe && (
+              <span className="text-muted-foreground">{t('messages.you', 'Tú')}: </span>
+            )}
+            {truncatedMessage}
+          </p>
         </div>
         
         {/* Right: Timestamp + Unread badge */}
         <div className="flex flex-col items-end gap-1 flex-shrink-0">
-          {/* Timestamp (future) */}
-          {lastMessage && (
-            <span className="text-xs text-muted-foreground">
-              {formattedTime}
-            </span>
-          )}
+          {/* Timestamp */}
+          <span className="text-xs text-muted-foreground whitespace-nowrap">
+            {formattedTime}
+          </span>
           
           {/* Unread badge */}
           {unreadCount > 0 && (
-            <Badge variant="default" className="rounded-full px-2 py-0.5 text-xs font-bold">
+            <Badge variant="default" className="rounded-full px-2 py-0.5 text-xs font-bold bg-blue-600">
               {unreadCount > 99 ? '99+' : unreadCount}
             </Badge>
           )}
         </div>
       </div>
-      
-      {/* TODO: Future features (commented for reference) */}
-      
-      {/* Online/Offline Status Indicator
-       * Green dot for online, gray for offline
-       * Requires WebSocket presence tracking
-       * @future Sprint #14 - Online Status
-       */}
-      {/* <div className={cn(
-        'w-2 h-2 rounded-full',
-        contact.isOnline ? 'bg-green-500' : 'bg-gray-400'
-      )} /> */}
-      
-      {/* Typing Indicator
-       * Show "Typing..." when other user is composing
-       * Requires WebSocket typing events
-       * @future Sprint #13 - Typing Indicators
-       */}
-      {/* {contact.isTyping && (
-        <p className="text-xs text-muted-foreground italic animate-pulse">
-          {t('messages.typing')}
-        </p>
-      )} */}
-      
-      {/* Pinned Conversation Indicator
-       * Pin icon for pinned conversations
-       * Requires backend support for pinning
-       * @future Sprint #15 - Conversation Management
-       */}
-      {/* {conversation.isPinned && (
-        <Pin className="w-4 h-4 text-primary" />
-      )} */}
     </Card>
   );
 };
+
+/**
+ * Format relative timestamp
+ * 
+ * Examples:
+ * - "hace 2m" (2 minutes ago)
+ * - "hace 3h" (3 hours ago)
+ * - "ayer" (yesterday)
+ * - "15 Ene" (15 January)
+ * 
+ * @param date - Message timestamp
+ * @param t - i18n translation function
+ * @returns Formatted relative time string
+ */
+function formatRelativeTime(date: Date, t: (key: string, options?: any) => string): string {
+  const now = new Date();
+  const messageDate = new Date(date);
+  const diffMs = now.getTime() - messageDate.getTime();
+  const diffMinutes = Math.floor(diffMs / 60000);
+  const diffHours = Math.floor(diffMs / 3600000);
+  const diffDays = Math.floor(diffMs / 86400000);
+  
+  // Less than 1 hour: "hace Xm"
+  if (diffMinutes < 60) {
+    return t('messages.timeAgo.minutes', { count: diffMinutes, defaultValue: 'hace {{count}}m' });
+  }
+  
+  // Less than 24 hours: "hace Xh"
+  if (diffHours < 24) {
+    return t('messages.timeAgo.hours', { count: diffHours, defaultValue: 'hace {{count}}h' });
+  }
+  
+  // Yesterday: "ayer"
+  if (diffDays === 1) {
+    return t('messages.timeAgo.yesterday', 'ayer');
+  }
+  
+  // Less than 7 days: "hace Xd"
+  if (diffDays < 7) {
+    return t('messages.timeAgo.days', { count: diffDays, defaultValue: 'hace {{count}}d' });
+  }
+  
+  // Older: "15 Ene" or "15/01"
+  return messageDate.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
+}

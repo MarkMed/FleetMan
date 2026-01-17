@@ -2,6 +2,9 @@ import {
   type IMessageRepository,
   type IGetConversationHistoryResult,
   type ConversationHistoryOptions,
+  type IGetRecentConversationsResult,
+  type IConversationSummary,
+  type RecentConversationsOptions,
   type IMessage,
   Message,
   MessageId,
@@ -134,6 +137,266 @@ export class MessageRepository implements IMessageRepository {
       return ok(result);
     } catch (error: any) {
       return err(DomainError.create('PERSISTENCE_ERROR', `Error getting conversation history: ${error.message}`));
+    }
+  }
+
+  /**
+   * Obtiene lista de conversaciones recientes del usuario
+   * Query optimizado: obtiene ÚLTIMO mensaje de cada conversación única
+   * 
+   * Business Logic:
+   * - Una conversación es un par de usuarios (userA ↔ userB)
+   * - Solo retorna el mensaje más reciente de cada conversación
+   * - Soporta filtrado por isContact (onlyContacts param)
+   * - Soporta búsqueda por displayName del otro usuario (search param)
+   * - Ordenado por lastMessageAt DESC (conversación más reciente primero)
+   * 
+   * Performance: Usa aggregation pipeline con $group, $lookup, $facet
+   * 
+   * @param userId - ID del usuario autenticado
+   * @param options - Opciones de paginación y filtros
+   * @returns Result con lista de conversaciones paginadas o error
+   * 
+   * Sprint #13 - Recent Conversations Inbox Feature
+   */
+  async getRecentConversations(
+    userId: UserId,
+    options: RecentConversationsOptions
+  ): Promise<Result<IGetRecentConversationsResult, DomainError>> {
+    try {
+      const { page, limit, onlyContacts, search } = options;
+      const skip = (page - 1) * limit;
+      const userIdValue = userId.getValue();
+
+      // Debug logging para verificar tipos de datos
+      console.log('=== getRecentConversations DEBUG START ===');
+      console.log('userId from parameter:', userId);
+      console.log('typeof userId:', typeof userId);
+      console.log('userIdValue (getValue()):', userIdValue);
+      console.log('typeof userIdValue:', typeof userIdValue);
+      console.log('page:', page, 'typeof:', typeof page);
+      console.log('limit:', limit, 'typeof:', typeof limit);
+      console.log('skip:', skip, 'typeof:', typeof skip);
+      console.log('onlyContacts:', onlyContacts, 'typeof:', typeof onlyContacts);
+      console.log('search:', search, 'typeof:', typeof search);
+
+      // Build aggregation pipeline
+      const pipeline: any[] = [
+        // Stage 1: Match messages where userId is sender OR recipient
+        {
+          $match: {
+            $or: [
+              { senderId: userIdValue },
+              { recipientId: userIdValue }
+            ]
+          }
+        },
+
+        // Stage 2: Add otherUserId field (the user we're conversing with)
+        {
+          $addFields: {
+            otherUserId: {
+              $cond: {
+                if: { $eq: ['$senderId', userIdValue] },
+                then: '$recipientId',
+                else: '$senderId'
+              }
+            }
+          }
+        },
+
+        // Stage 3: Sort by sentAt DESC BEFORE grouping (important for $first to get latest)
+        {
+          $sort: { sentAt: -1 }
+        },
+
+        // Stage 4: Group by otherUserId, keep FIRST (latest) message per conversation
+        {
+          $group: {
+            _id: '$otherUserId',
+            lastMessageAt: { $first: '$sentAt' },
+            lastMessageContent: { $first: '$content' },
+            lastMessageSenderId: { $first: '$senderId' }
+          }
+        },
+
+        // Stage 5: Lookup User collection to get otherUser data
+        // CRITICAL FIX: Use pipeline with $toObjectId because:
+        // - MessageModel stores senderId/recipientId as strings
+        // - UserModel uses _id as ObjectId
+        // - Need to convert string to ObjectId for $match to work
+        {
+          $lookup: {
+            from: 'users', // MongoDB collection name
+            let: { otherUserId: '$_id' }, // Pass otherUserId (string) to pipeline
+            pipeline: [
+              {
+                $match: {
+                  $expr: { 
+                    $eq: ['$_id', { $toObjectId: '$$otherUserId' }] // Convert string to ObjectId
+                  }
+                }
+              },
+              {
+                $project: {
+                  _id: 1,
+                  email: 1,
+                  'profile.companyName': 1,
+                  contacts: 1
+                }
+              }
+            ],
+            as: 'otherUserData'
+          }
+        },
+
+        // Stage 6: Unwind otherUserData (convert array to object)
+        // preserveNullAndEmptyArrays: false = exclude if user deleted
+        {
+          $unwind: {
+            path: '$otherUserData',
+            preserveNullAndEmptyArrays: false
+          }
+        },
+
+        // Stage 7: Add computed fields (displayName, isContact)
+        {
+          $addFields: {
+            displayName: {
+              $cond: {
+                if: {
+                  $and: [
+                    { $ne: ['$otherUserData.profile.companyName', null] },
+                    { $ne: ['$otherUserData.profile.companyName', ''] }
+                  ]
+                },
+                then: '$otherUserData.profile.companyName',
+                else: '$otherUserData.email'
+              }
+            },
+            isContact: {
+              $in: [
+                userIdValue, 
+                { 
+                  $map: {
+                    input: { $ifNull: ['$otherUserData.contacts', []] },
+                    as: 'contact',
+                    in: '$$contact.contactUserId'
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ];
+
+      // Stage 8: Conditional match for onlyContacts filter
+      if (onlyContacts !== undefined) {
+        console.log('Adding onlyContacts filter:', onlyContacts);
+        pipeline.push({
+          $match: {
+            isContact: onlyContacts
+          }
+        });
+      }
+
+      // Stage 9: Conditional match for search filter (regex case-insensitive)
+      if (search) {
+        console.log('Adding search filter:', search);
+        pipeline.push({
+          $match: {
+            displayName: {
+              $regex: search,
+              $options: 'i' // case-insensitive
+            }
+          }
+        });
+      }
+
+      // Stage 10: Sort by lastMessageAt DESC
+      pipeline.push({
+        $sort: { lastMessageAt: -1 }
+      });
+
+      // Stage 11: Facet for pagination (count + data in single query)
+      pipeline.push({
+        $facet: {
+          metadata: [
+            { $count: 'total' }
+          ],
+          data: [
+            { $skip: skip },
+            { $limit: limit },
+            {
+              $project: {
+                otherUserId: '$_id',
+                displayName: 1,
+                lastMessageAt: 1,
+                lastMessageContent: 1,
+                lastMessageSenderId: 1,
+                isContact: 1,
+                _id: 0
+              }
+            }
+          ]
+        }
+      });
+
+      console.log('Pipeline stages count:', pipeline.length);
+      console.log('Executing aggregation pipeline...');
+
+      // Execute aggregation
+      const result = await MessageModel.aggregate(pipeline);
+
+      console.log('Aggregation result:', result);
+      console.log('typeof result:', typeof result);
+      console.log('result.length:', result.length);
+      console.log('result[0]:', result[0]);
+
+      // Extract results from facet
+      const metadata = result[0]?.metadata[0];
+      const data = result[0]?.data || [];
+      const total = metadata?.total || 0;
+
+      console.log('metadata:', metadata);
+      console.log('data:', data);
+      console.log('typeof data:', typeof data);
+      console.log('data.length:', data.length);
+      console.log('total:', total, 'typeof:', typeof total);
+
+      // Map aggregation results to domain interface
+      const conversations: IConversationSummary[] = data.map((doc: any) => {
+        console.log('Mapping doc:', doc);
+        return {
+          otherUserId: doc.otherUserId,
+          displayName: doc.displayName,
+          lastMessageAt: doc.lastMessageAt,
+          lastMessageContent: doc.lastMessageContent,
+          lastMessageSenderId: doc.lastMessageSenderId,
+          isContact: doc.isContact
+        };
+      });
+
+      const totalPages = Math.ceil(total / limit);
+
+      console.log('conversations mapped:', conversations);
+      console.log('conversations.length:', conversations.length);
+      console.log('totalPages:', totalPages);
+      console.log('=== getRecentConversations DEBUG END ===');
+
+      return ok({
+        conversations,
+        total,
+        page,
+        limit,
+        totalPages
+      });
+    } catch (error: any) {
+      console.error('=== getRecentConversations ERROR ===');
+      console.error('error:', error);
+      console.error('error.message:', error.message);
+      console.error('error.stack:', error.stack);
+      return err(DomainError.create('PERSISTENCE_ERROR', `Error getting recent conversations: ${error.message}`));
     }
   }
 

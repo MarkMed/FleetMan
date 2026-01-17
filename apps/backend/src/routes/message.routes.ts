@@ -7,7 +7,8 @@ import {
   SendMessageRequestSchema,
   ConversationParamsSchema,
   ConversationHistoryQuerySchema,
-  ChatAccessControlParamsSchema
+  ChatAccessControlParamsSchema,
+  RecentConversationsQuerySchema
 } from '@packages/contracts';
 
 /**
@@ -15,6 +16,7 @@ import {
  * 
  * Endpoints:
  * - POST   /api/v1/messages                                   - Send message to contact
+ * - GET    /api/v1/messages/conversations                     - List recent conversations (Sprint #13 Inbox)
  * - GET    /api/v1/messages/conversations/:otherUserId        - Get conversation history
  * - POST   /api/v1/messages/chats/:userId/accept              - Accept chat from user (Sprint #13 Task 9.3g)
  * - POST   /api/v1/messages/chats/:userId/block               - Block user (Sprint #13 Task 9.3g)
@@ -112,6 +114,138 @@ router.post(
   authMiddleware,
   validateRequest({ body: SendMessageRequestSchema }),
   controller.sendMessage.bind(controller)
+);
+
+// =============================================================================
+// CONVERSATIONS ROUTES (Sprint #13 - Recent Conversations Inbox)
+// =============================================================================
+
+/**
+ * @swagger
+ * /api/v1/messages/conversations:
+ *   get:
+ *     summary: List recent conversations (inbox view)
+ *     description: |
+ *       Get paginated list of unique conversations ordered by last message timestamp.
+ *       
+ *       Sprint #13 - Recent Conversations Inbox Feature
+ *       
+ *       Business Logic:
+ *       - Returns ÚNICO último mensaje de cada conversación (par de usuarios)
+ *       - Ordenado por lastMessageAt DESC (más reciente primero)
+ *       - Soporta filtrado por contactos (onlyContacts)
+ *       - Soporta búsqueda por displayName (search)
+ *       
+ *       Query agregada con MongoDB aggregation pipeline:
+ *       1. Match mensajes del usuario (sender OR recipient)
+ *       2. Group by conversación única (otherUserId)
+ *       3. Lookup User para displayName
+ *       4. Compute isContact flag
+ *       5. Apply filters y sort
+ *       6. Paginate con $facet
+ *     tags: [Messages]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 1
+ *         description: Page number
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 50
+ *           default: 20
+ *         description: Conversations per page (max 50)
+ *       - in: query
+ *         name: onlyContacts
+ *         schema:
+ *           type: boolean
+ *         description: |
+ *           Filter conversations:
+ *           - true: Only show contacts
+ *           - false: Only show non-contacts
+ *           - undefined (omit): Show all conversations
+ *         example: true
+ *       - in: query
+ *         name: search
+ *         schema:
+ *           type: string
+ *           minLength: 1
+ *           maxLength: 100
+ *         description: Search by other user's displayName (companyName or email)
+ *         example: "John"
+ *     responses:
+ *       200:
+ *         description: Success - Conversations retrieved
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Conversations retrieved successfully"
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     conversations:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           otherUserId:
+ *                             type: string
+ *                             example: "user_abc123"
+ *                           displayName:
+ *                             type: string
+ *                             example: "Acme Corp"
+ *                           lastMessageAt:
+ *                             type: string
+ *                             format: date-time
+ *                             example: "2026-01-16T14:30:00.000Z"
+ *                           lastMessageContent:
+ *                             type: string
+ *                             example: "Do you have the machine specs?"
+ *                           lastMessageSenderId:
+ *                             type: string
+ *                             example: "user_xyz789"
+ *                           isContact:
+ *                             type: boolean
+ *                             example: true
+ *                     total:
+ *                       type: integer
+ *                       example: 45
+ *                     page:
+ *                       type: integer
+ *                       example: 1
+ *                     limit:
+ *                       type: integer
+ *                       example: 20
+ *                     totalPages:
+ *                       type: integer
+ *                       example: 3
+ *       400:
+ *         description: Invalid input (malformed page/limit)
+ *       401:
+ *         description: Unauthorized (missing/invalid JWT token)
+ *       500:
+ *         description: Internal server error
+ */
+router.get(
+  '/conversations',
+  requestSanitization,
+  authMiddleware,
+  validateRequest({ query: RecentConversationsQuerySchema }),
+  controller.listConversations.bind(controller)
 );
 
 /**

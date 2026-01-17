@@ -1,35 +1,42 @@
 import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useMyContacts } from '@hooks/useContacts';
+import { useRecentConversations } from '@hooks/useMessages';
 import { useMessagingStore } from '@store';
+import type { RecentConversationsQuery } from '@packages/contracts';
 
 /**
  * ViewModel: ConversationsListScreen Business Logic
  * 
+ * Sprint #13 - Recent Conversations Inbox Feature
+ * 
  * Responsibilities (MVVM-lite):
- * - Fetch contacts list (all contacts are potential conversations)
- * - Access unread counters from Zustand
- * - Handle search/filter for contacts
+ * - Fetch recent conversations with last message preview
+ * - Handle search/filter for conversations (onlyContacts, search term)
+ * - Manage pagination state
  * - Navigate to specific chat
  * - Provide i18n access for View
  * 
+ * Architecture Changes (Sprint #13):
+ * - REPLACED: useMyContacts() → useRecentConversations()
+ * - ADDED: Backend-driven filtering (onlyContacts query param)
+ * - ADDED: Backend search by displayName
+ * - ADDED: Last message preview and timestamp
+ * - IMPROVED: Shows ALL conversations (contacts + non-contacts with messages)
+ * 
  * MVP Scope:
- * - ✅ Show ALL contacts as conversations
- * - ✅ Display unread badge from client-side counter
- * - ❌ NO last message preview (no backend endpoint)
- * - ❌ NO last activity sorting
- * - ❌ NO conversation filtering (all/unread/archived)
+ * - ✅ Show conversations ordered by most recent message
+ * - ✅ Display last message preview with timestamp
+ * - ✅ Filter by contact status (All/Contacts/Non-Contacts)
+ * - ✅ Search by user display name
+ * - ✅ Pagination (backend-driven)
+ * - ✅ Real-time updates via SSE
+ * - ❌ NO unread count (MVP - uses client-side store only)
  * 
- * Architecture:
- * - View (ConversationsListScreen.tsx) calls this hook
- * - ViewModel returns { state, data, actions, t }
+ * Pattern (Updated):
+ * - Backend returns conversations with isContact flag
+ * - All filtering/searching done by backend (no client-side filtering)
+ * - Pagination handled by backend with totalPages calculation
  * - View renders based on ViewModel output
- * 
- * Pattern (Opción B per backend bot):
- * - No specific "active conversations" endpoint
- * - Fetch all contacts from Module 2 endpoint
- * - Display all contacts as potential conversations
- * - Show unread badge if messages exist
  * 
  * @example
  * ```tsx
@@ -41,15 +48,12 @@ import { useMessagingStore } from '@store';
  *   
  *   return (
  *     <>
- *       <SearchBar value={vm.filters.search} onChange={vm.actions.handleSearchChange} />
- *       {vm.data.conversations.map(contact => (
- *         <ConversationPreview
- *           key={contact.id}
- *           contact={contact}
- *           unreadCount={vm.data.unreadCounts[contact.id]}
- *           onClick={vm.actions.handleConversationClick}
- *         />
+ *       <SearchBar value={vm.filters.searchInput} onChange={vm.actions.handleSearchInputChange} onSearch={vm.actions.handleSearch} />
+ *       <FilterTabs value={vm.filters.contactFilter} onChange={vm.actions.handleContactFilterChange} />
+ *       {vm.data.conversations.map(convo => (
+ *         <ConversationPreview key={convo.otherUserId} conversation={convo} />
  *       ))}
+ *       <Pagination {...vm.data.pagination} {...vm.actions} />
  *     </>
  *   );
  * }
@@ -62,89 +66,143 @@ export function useConversationsListViewModel() {
   // STATE MANAGEMENT
   // ========================
   
-  // Search input for filtering contacts by name
+  // Search input (controlled by user typing)
   const [searchInput, setSearchInput] = useState<string>('');
+  
+  // Search term (applied to query when user presses Search button or Enter)
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  
+  // Contact filter (undefined = All, true = Contacts only, false = Non-contacts only)
+  const [contactFilter, setContactFilter] = useState<boolean | undefined>(undefined);
+  
+  // Pagination (current page)
+  const [page, setPage] = useState(1);
+  
+  // Items per page (default 20, max 50)
+  const limit = 20;
 
   // ========================
   // DATA FETCHING
   // ========================
   
-  // Fetch all contacts (these become our conversations list)
+  // Build query params
+  const query: RecentConversationsQuery = useMemo(() => {
+    const params: RecentConversationsQuery = {
+      page,
+      limit,
+    };
+    
+    // Add onlyContacts filter if selected (undefined = show all)
+    if (contactFilter !== undefined) {
+      params.onlyContacts = contactFilter;
+    }
+    
+    // Add search term if it has at least 1 character (defensive check for undefined)
+    const trimmedSearch = searchTerm?.trim() || '';
+    if (trimmedSearch.length > 0) {
+      params.search = trimmedSearch;
+    }
+    
+    return params;
+  }, [page, limit, contactFilter, searchTerm]);
+  
+  // Fetch conversations from API
   const {
-    data: contactsData,
+    data: conversationsData,
     isLoading,
     isError,
     error,
     refetch,
-  } = useMyContacts();
+  } = useRecentConversations(query);
   
-  // Access unread counters from Zustand
+  // Access unread counters from Zustand (still used for badges)
   const { unreadCounts, totalUnread } = useMessagingStore();
 
   // ========================
   // DERIVED DATA
   // ========================
   
-  // Filter contacts by search input (local client-side filter)
-  const filteredContacts = useMemo(() => {
-    if (!contactsData?.contacts) {
-      return [];
-    }
-    
-    if (!searchInput.trim()) {
-      return contactsData.contacts;
-    }
-    
-    const searchLower = searchInput.toLowerCase().trim();
-    
-    return contactsData.contacts.filter((contact) => {
-      const companyName = contact.profile.companyName?.toLowerCase() || '';
-      
-      return companyName.includes(searchLower);
-    });
-  }, [contactsData, searchInput]);
+  const conversations = conversationsData?.conversations || [];
+  const isEmpty = conversations.length === 0;
+  const total = conversationsData?.total || 0;
+  const totalPages = conversationsData?.totalPages || 0;
   
-  // Sort conversations: Unread first, then alphabetically by company name
-  const sortedConversations = useMemo(() => {
-    return [...filteredContacts].sort((a, b) => {
-      const aUnread = unreadCounts[a.id] || 0;
-      const bUnread = unreadCounts[b.id] || 0;
-      
-      // First: Sort by unread (desc)
-      if (aUnread !== bUnread) {
-        return bUnread - aUnread;
-      }
-      
-      // Then: Sort alphabetically by company name
-      const aName = a.profile.companyName || '';
-      const bName = b.profile.companyName || '';
-      return aName.localeCompare(bName);
-    });
-  }, [filteredContacts, unreadCounts]);
+  // Check if any filters are active (useful for showing "Clear filters" button)
+  const hasActiveFilters = (searchTerm?.trim() || '').length > 0 || contactFilter !== undefined;
   
-  // Empty state flags
-  const hasNoContacts = !contactsData?.contacts || contactsData.contacts.length === 0;
-  const hasNoResults = !hasNoContacts && filteredContacts.length === 0;
-  const isEmpty = hasNoContacts || hasNoResults;
+  // Calculate pagination ranges for display
+  const rangeStart = conversations.length > 0 ? (page - 1) * limit + 1 : 0;
+  const rangeEnd = rangeStart + conversations.length - 1;
+  const canGoPrevious = page > 1;
+  const canGoNext = page < totalPages;
 
   // ========================
-  // ACTIONS
+  // BUSINESS LOGIC ACTIONS
   // ========================
   
-  const handleSearchChange = (value: string) => {
+  /**
+   * Handle search input change (user typing)
+   * Updates local input state without triggering API call
+   */
+  const handleSearchInputChange = (value: string) => {
     setSearchInput(value);
   };
-  
-  const handleClearSearch = () => {
+
+  /**
+   * Execute search (when user presses Search button or Enter key)
+   * Updates searchTerm which triggers API call via query dependency
+   * Resets to page 1 when search executes
+   */
+  const handleSearch = () => {
+    setSearchTerm(searchInput);
+    setPage(1); // Reset to first page on search
+  };
+
+  /**
+   * Handle contact filter change
+   * undefined = All, true = Contacts only, false = Non-contacts only
+   * Resets to page 1 when filter changes
+   */
+  const handleContactFilterChange = (filter: boolean | undefined) => {
+    setContactFilter(filter);
+    setPage(1); // Reset to first page on filter change
+  };
+
+  /**
+   * Clear all filters and reset to initial state
+   * Clears both input field and applied search term
+   */
+  const handleClearFilters = () => {
     setSearchInput('');
+    setSearchTerm('');
+    setContactFilter(undefined);
+    setPage(1);
   };
   
+  /**
+   * Handle pagination - next page
+   */
+  const handleNextPage = () => {
+    if (canGoNext) {
+      setPage(prev => prev + 1);
+    }
+  };
+  
+  /**
+   * Handle pagination - previous page
+   */
+  const handlePreviousPage = () => {
+    if (canGoPrevious) {
+      setPage(prev => prev - 1);
+    }
+  };
+  
+  /**
+   * Retry fetching conversations (on error)
+   */
   const handleRetry = () => {
     refetch();
   };
-  
-  // Conversation click navigation (handled by ConversationPreview component)
-  // No need for explicit handler here - component navigates via ROUTES.CHAT(userId)
 
   // ========================
   // RETURN VIEWMODEL
@@ -157,27 +215,40 @@ export function useConversationsListViewModel() {
       isError,
       error: error as Error | null,
       isEmpty,
-      hasNoContacts,
-      hasNoResults,
+      hasActiveFilters,
     },
     
     // Data for rendering
     data: {
-      conversations: sortedConversations,
-      unreadCounts,
+      conversations,
+      unreadCounts, // Still from Zustand for MVP
       totalUnread,
-      total: contactsData?.total || 0,
+      total,
+      totalPages,
+      currentPage: page,
+      pagination: {
+        rangeStart,
+        rangeEnd,
+        canGoPrevious,
+        canGoNext,
+      },
     },
     
     // Filters
     filters: {
       searchInput,
+      searchTerm,
+      contactFilter,
     },
     
     // Actions
     actions: {
-      handleSearchChange,
-      handleClearSearch,
+      handleSearchInputChange,
+      handleSearch,
+      handleContactFilterChange,
+      handleClearFilters,
+      handleNextPage,
+      handlePreviousPage,
       handleRetry,
     },
     
@@ -189,68 +260,43 @@ export function useConversationsListViewModel() {
 // Strategic future enhancements (commented for reference)
 
 /**
- * Filter by conversation status (Future Feature)
+ * Real-time unread count from backend (Future Feature)
  * 
- * Options:
- * - All conversations
- * - Unread only
- * - Archived
- * - Pinned
+ * Sprint #13 MVP uses client-side unreadCounts from Zustand.
+ * Future: Backend can return unreadCount per conversation in ConversationSummary schema.
+ * 
+ * Benefits:
+ * - Accurate unread count across devices
+ * - No client-side state management needed
+ * - Survives browser refresh
  * 
  * Implementation:
- * - Add conversationFilter state
- * - Filter sortedConversations based on selected filter
- * - UI: Tabs or dropdown selector
+ * - Backend adds unreadCount field to ConversationSummarySchema
+ * - Frontend uses data.conversations[i].unreadCount instead of unreadCounts[userId]
+ * - Remove useMessagingStore dependency
  * 
- * @future Sprint #15 - Conversation Filtering
+ * @future Sprint #14 - Read Receipts & Unread Tracking
  */
-// const [conversationFilter, setConversationFilter] = useState<'all' | 'unread' | 'archived' | 'pinned'>('all');
+// const unreadCount = conversation.unreadCount; // From backend instead of Zustand
 
 /**
- * Sort by last activity (Future Feature)
+ * Debounced search (Future Feature)
  * 
- * Requires backend endpoint with conversation metadata:
- * - lastMessageAt timestamp
- * - Sort DESC (most recent first)
+ * Auto-search as user types instead of requiring Search button click.
  * 
- * Implementation:
- * - Replace useMyContacts with useConversations hook
- * - Backend returns conversations with lastMessage, lastActivity
- * - Sort by lastActivity instead of unread + alphabetically
- * 
- * @future Sprint #13 - Conversation Metadata
- */
-// const { data: conversationsData } = useConversations({ sortBy: 'lastActivity' });
-
-/**
- * Pagination support (Future Feature)
- * 
- * For users with 50+ contacts, pagination improves performance.
+ * Benefits:
+ * - Faster search experience
+ * - No button click needed
+ * - Real-time filtering
  * 
  * Implementation:
- * - Add page state
- * - Pass page to useMyContacts (or useConversations)
- * - Render pagination controls
- * - Alternatively: Infinite scroll with useInfiniteQuery
+ * - Use useDebouncedValue hook (300-500ms delay)
+ * - Apply debounced value to searchTerm directly
+ * - Remove Search button (optional, keep for accessibility)
  * 
- * @future Sprint #14 - Pagination
+ * @future Sprint #14 - UX Improvements
  */
-// const [page, setPage] = useState(1);
-// const { data: contactsData } = useMyContacts({ page, limit: 20 });
-
-/**
- * Mark all as read action (Future Feature)
- * 
- * Bulk operation to clear all unread badges.
- * 
- * Implementation:
- * - Call resetUnread() from Zustand
- * - Optionally: Backend endpoint to update lastReadAt for all conversations
- * - Show toast confirmation
- * 
- * @future Sprint #13 - Read Management
- */
-// const handleMarkAllAsRead = () => {
-//   resetUnread();
-//   toast.success({ title: t('messages.allMarkedRead') });
-// };
+// const debouncedSearch = useDebouncedValue(searchInput, 300);
+// useEffect(() => {
+//   setSearchTerm(debouncedSearch);
+// }, [debouncedSearch]);

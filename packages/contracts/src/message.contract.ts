@@ -143,21 +143,52 @@ export type BlockUserParams = z.infer<typeof BlockUserParamsSchema>;
 export type ConversationHistoryResponse = z.infer<typeof ConversationHistoryResponseSchema>;
 
 // =============================================================================
-// TODO: SCHEMAS POST-MVP
+// RECENT CONVERSATIONS SCHEMAS (Sprint #13 - Conversations Inbox)
 // =============================================================================
 
 /**
- * Schema para listar conversaciones recientes (inbox)
- * Usado en: GET /api/v1/messages/conversations
+ * Schema para query params de lista de conversaciones recientes
+ * Usado en: GET /api/v1/messages/conversations?page=1&limit=20&onlyContacts=true&search=John
  * 
- * TODO: Implementar cuando se agregue vista de inbox
+ * Sprint #13 - Recent Conversations Inbox Feature
  */
-// export const ConversationSummarySchema = z.object({
-//   otherUser: UserPublicProfileSchema, // Reutilizar de user-discovery
-//   lastMessage: MessageSchema,
-//   unreadCount: z.number().int().nonnegative(),
-//   lastMessageAt: z.coerce.date()
-// });
+export const RecentConversationsQuerySchema = z.object({
+  page: z.coerce.number().int().positive().default(1),
+  limit: z.coerce.number().int().positive().min(1).max(50).default(20),
+  onlyContacts: z.coerce.boolean().optional(), // true = solo contactos, false = solo no-contactos, undefined = todos
+  search: z.string().trim().min(1).max(100).optional() // Búsqueda por displayName (companyName o email)
+});
+
+/**
+ * Schema para un resumen de conversación individual
+ * Sprint #13 - Recent Conversations Inbox Feature
+ */
+export const ConversationSummarySchema = z.object({
+  otherUserId: z.string(),
+  displayName: z.string(),
+  lastMessageAt: z.coerce.date(),
+  lastMessageContent: z.string(),
+  lastMessageSenderId: z.string(),
+  isContact: z.boolean()
+  // TODO POST-MVP: unreadCount: z.number().int().nonnegative()
+});
+
+/**
+ * Schema para response de lista de conversaciones
+ * Sprint #13 - Recent Conversations Inbox Feature
+ */
+export const RecentConversationsResponseSchema = z.object({
+  conversations: z.array(ConversationSummarySchema),
+  total: z.number().int().nonnegative(),
+  page: z.number().int().positive(),
+  limit: z.number().int().positive(),
+  totalPages: z.number().int().nonnegative()
+}) satisfies z.ZodType<any>; // Type inference compatible
+
+// Type exports
+export type RecentConversationsQuery = z.infer<typeof RecentConversationsQuerySchema>;
+export type ConversationSummary = z.infer<typeof ConversationSummarySchema>;
+export type RecentConversationsResponse = z.infer<typeof RecentConversationsResponseSchema>;
 
 // export const ConversationsListResponseSchema = z.object({
 //   conversations: z.array(ConversationSummarySchema),

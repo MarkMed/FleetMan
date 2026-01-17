@@ -9,14 +9,17 @@ import {
   SendMessageUseCase,
   GetConversationHistoryUseCase,
   AcceptChatUseCase,
-  BlockUserUseCase
+  BlockUserUseCase,
+  ListConversationsUseCase
 } from '../application/comms';
 import type { AuthenticatedRequest } from '../middlewares/auth.middleware';
 import type { 
   SendMessageRequest,
   ConversationHistoryQuery,
   ConversationHistoryResponse,
-  MessageDTO
+  MessageDTO,
+  RecentConversationsQuery,
+  RecentConversationsResponse
 } from '@packages/contracts';
 
 /**
@@ -41,12 +44,14 @@ export class MessageController {
   private getConversationHistoryUseCase: GetConversationHistoryUseCase;
   private acceptChatUseCase: AcceptChatUseCase;
   private blockUserUseCase: BlockUserUseCase;
+  private listConversationsUseCase: ListConversationsUseCase;
 
   constructor() {
     this.sendMessageUseCase = new SendMessageUseCase();
     this.getConversationHistoryUseCase = new GetConversationHistoryUseCase();
     this.acceptChatUseCase = new AcceptChatUseCase();
     this.blockUserUseCase = new BlockUserUseCase();
+    this.listConversationsUseCase = new ListConversationsUseCase();
   }
 
   /**
@@ -455,13 +460,93 @@ export class MessageController {
     }
   }
 
+  /**
+   * GET /api/v1/messages/conversations
+   * List recent conversations (inbox view)
+   * 
+   * Returns paginated list of unique conversations ordered by last message timestamp.
+   * Supports filtering by contacts and search by displayName.
+   * 
+   * Sprint #13 - Recent Conversations Inbox Feature
+   */
+  async listConversations(req: AuthenticatedRequest, res: Response): Promise<void> {
+    try {
+      // Extract userId from JWT token
+      const userId = req.user!.userId;
+      
+      // Query params already validated and coerced by Zod middleware
+      const query = req.query as unknown as RecentConversationsQuery;
+
+      logger.info({ 
+        userId, 
+        page: query.page, 
+        limit: query.limit,
+        onlyContacts: query.onlyContacts,
+        search: query.search
+      }, 'Listing recent conversations via HTTP controller');
+
+      // Execute use case
+      const result = await this.listConversationsUseCase.execute(userId, query);
+
+      // Handle domain errors
+      if (!result.success) {
+        const { statusCode, errorCode } = this.handleError(result.error);
+        logger.warn({ 
+          userId, 
+          error: result.error.message, 
+          errorCode 
+        }, 'Failed to list recent conversations');
+
+        res.status(statusCode).json({
+          success: false,
+          message: result.error.message,
+          error: errorCode
+        });
+        return;
+      }
+
+      // Success response
+      logger.info({ 
+        userId, 
+        conversationsCount: result.data.conversations.length,
+        total: result.data.total,
+        page: result.data.page
+      }, 'Recent conversations retrieved successfully');
+
+      res.status(200).json({
+        success: true,
+        message: 'Conversations retrieved successfully',
+        data: result.data
+      });
+
+    } catch (error) {
+      const { statusCode, errorCode } = this.handleError(error as Error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      
+      logger.error({ 
+        userId: req.user?.userId, 
+        error: errorMessage 
+      }, 'Unexpected error in listConversations controller');
+
+      res.status(statusCode).json({
+        success: false,
+        message: errorMessage,
+        error: errorCode
+      });
+    }
+  }
+
   // =============================================================================
-  // �🔮 POST-MVP: ENDPOINTS ESTRATÉGICOS (COMENTADOS)
+  // 🔮 POST-MVP: ENDPOINTS ESTRATÉGICOS (COMENTADOS)
   // =============================================================================
 
   /**
-   * TODO: GET /api/v1/messages/conversations
-   * List recent conversations with unread counts
+   * ✅ IMPLEMENTED: GET /api/v1/messages/conversations
+   * List recent conversations with pagination and filters
+   * 
+   * See listConversations() method above (Sprint #13)
+   * 
+   * Original TODO: List recent conversations with unread counts
    * 
    * Use case: Display inbox/conversation list screen
    * 

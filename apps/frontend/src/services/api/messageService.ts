@@ -1,6 +1,12 @@
 import { apiClient, handleBackendApiResponse } from './apiClient';
 import { API_ENDPOINTS } from '../../constants';
-import type { SendMessageRequest, SendMessageResponse, ConversationHistoryResponse } from '@packages/contracts';
+import type { 
+  SendMessageRequest, 
+  SendMessageResponse, 
+  ConversationHistoryResponse,
+  RecentConversationsQuery,
+  RecentConversationsResponse
+} from '@packages/contracts';
 
 /**
  * Messaging Service
@@ -245,8 +251,87 @@ export async function blockUser(userId: string): Promise<void> {
 //   return handleBackendApiResponse(response);
 // }
 
-/**
- * Delete a message (soft delete) (Future Feature)
+/** * Get Recent Conversations List
+ * 
+ * Sprint #13 - Recent Conversations Inbox Feature
+ * 
+ * Purpose:
+ * - Display paginated list of all user's conversations
+ * - Show last message preview and timestamp
+ * - Filter by contact status (contacts/non-contacts/all)
+ * - Search by user display name
+ * 
+ * Features:
+ * - GET /api/v1/messages/conversations
+ * - Backend handles all filtering, sorting, and pagination
+ * - Returns conversations ordered by lastMessageAt DESC (most recent first)
+ * - Includes isContact flag for UI badges
+ * - displayName already calculated (companyName or email fallback)
+ * 
+ * Query Parameters:
+ * @param query.page - Page number (default: 1, min: 1)
+ * @param query.limit - Items per page (default: 20, max: 50, min: 1)
+ * @param query.onlyContacts - Filter by contact status:
+ *   - true: only conversations with contacts
+ *   - false: only conversations with non-contacts
+ *   - undefined: all conversations (no filter)
+ * @param query.search - Search by displayName (email or companyName)
+ *   - Case-insensitive
+ *   - Max 100 characters
+ * 
+ * @returns Promise<RecentConversationsResponse> - Paginated conversations with metadata
+ * 
+ * Backend Logic:
+ * - Groups messages by unique user pairs (bidirectional)
+ * - Takes most recent message per conversation
+ * - Excludes deleted users automatically
+ * - Calculates isContact flag per conversation
+ * - Handles null lastMessageContent/senderId gracefully
+ * 
+ * SSE Integration:
+ * - When NEW_MESSAGE event arrives, invalidate CONVERSATIONS query
+ * - This refreshes the list automatically
+ * 
+ * @example
+ * ```tsx
+ * // Get all conversations, page 1
+ * const data = await getRecentConversations({ page: 1, limit: 20 });
+ * 
+ * // Get only contact conversations
+ * const contacts = await getRecentConversations({ page: 1, onlyContacts: true });
+ * 
+ * // Search conversations
+ * const results = await getRecentConversations({ search: 'acme', page: 1 });
+ * ```
+ */
+export async function getRecentConversations(
+  query: RecentConversationsQuery
+): Promise<RecentConversationsResponse> {
+  // Build query string params manually (convert to strings)
+  const params: Record<string, string> = {
+    page: String(query.page),
+    limit: String(query.limit),
+  };
+  
+  // Only add optional params if they exist
+  if (query.onlyContacts !== undefined) {
+    params.onlyContacts = String(query.onlyContacts);
+  }
+  
+  if (query.search) {
+    params.search = query.search;
+  }
+
+  const response = await apiClient.get<{
+    success: boolean;
+    message: string;
+    data: RecentConversationsResponse;
+  }>(API_ENDPOINTS.CONVERSATIONS, params);
+
+  return handleBackendApiResponse(response);
+}
+
+/** * Delete a message (soft delete) (Future Feature)
  * 
  * Purpose:
  * - Allow users to delete sent messages

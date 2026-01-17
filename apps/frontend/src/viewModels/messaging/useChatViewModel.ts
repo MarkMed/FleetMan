@@ -519,7 +519,8 @@ export function useChatViewModel() {
       currentUserId,
       otherUserId: otherUserId!,
       currentPage,
-      hasAcceptedChat
+      hasAcceptedChat,
+      canSendMessages, // means that user has the other user as contact or has accepted chat (regardless of contact hasAcceptedChat)
       // otherUser: UserPublicProfile | undefined (fetch from contacts list if needed)
     },
     

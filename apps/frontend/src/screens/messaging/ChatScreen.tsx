@@ -165,7 +165,7 @@ export function ChatScreen() {
   // ========================
   
   // Sprint #13: If user closed modal without taking a decision, show message with options
-  return (!vm.data.hasAcceptedChat && !vm.modals.chatOptions.isOpen && !vm.modals.blockConfirmation.isOpen) ?
+  return (!vm.data.hasAcceptedChat && !vm.data.canSendMessages && !vm.modals.chatOptions.isOpen && !vm.modals.blockConfirmation.isOpen) ?
   (
     <div className="container mx-auto max-w-4xl py-6 px-4">
       <Card className="p-6">

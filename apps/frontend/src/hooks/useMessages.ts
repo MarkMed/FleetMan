@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { sendMessage, getConversationHistory, acceptChat, blockUser } from '@services/api/messageService';
+import { sendMessage, getConversationHistory, acceptChat, blockUser, getRecentConversations } from '@services/api/messageService';
 import { QUERY_KEYS } from '@constants';
-import type { SendMessageRequest, ConversationHistoryResponse } from '@packages/contracts';
+import type { SendMessageRequest, ConversationHistoryResponse, RecentConversationsQuery } from '@packages/contracts';
 
 /**
  * Hook: Send Message Mutation
@@ -262,6 +262,59 @@ export function useBlockUser() {
         queryKey: QUERY_KEYS.CONVERSATIONS
       });
     },
+  });
+}
+
+/**
+ * Hook: Get Recent Conversations List
+ * 
+ * Sprint #13 - Recent Conversations Inbox Feature
+ * 
+ * Fetches paginated list of all user's conversations with last message preview.
+ * Supports filtering by contact status and searching by display name.
+ * 
+ * Features:
+ * - Query for GET /api/v1/messages/conversations
+ * - Backend handles all filtering, sorting, and pagination
+ * - Auto-refetch on window focus for fresh data
+ * - Real-time updates via SSE invalidation (NEW_MESSAGE event)
+ * - Conversations ordered by lastMessageAt DESC (most recent first)
+ * 
+ * Query Parameters:
+ * @param query.page - Page number (default: 1)
+ * @param query.limit - Items per page (default: 20, max: 50)
+ * @param query.onlyContacts - Filter by contact status (true/false/undefined)
+ * @param query.search - Search by displayName (optional)
+ * 
+ * Cache Configuration:
+ * - staleTime: 30s (conversations don't change frequently)
+ * - gcTime: 5min (keep in cache for quick back navigation)
+ * - refetchOnWindowFocus: true (ensure fresh data when user returns)
+ * 
+ * SSE Integration:
+ * - useNotificationObserver invalidates CONVERSATIONS on NEW_MESSAGE
+ * - This keeps the list updated in real-time
+ * 
+ * @example
+ * ```tsx
+ * // Get all conversations
+ * const { data, isLoading } = useRecentConversations({ page: 1, limit: 20 });
+ * 
+ * // Filter only contacts
+ * const { data } = useRecentConversations({ page: 1, onlyContacts: true });
+ * 
+ * // Search conversations
+ * const { data } = useRecentConversations({ search: 'acme', page: 1 });
+ * ```
+ */
+export function useRecentConversations(query: RecentConversationsQuery) {
+  return useQuery({
+    queryKey: [...QUERY_KEYS.CONVERSATIONS, query],
+    queryFn: () => getRecentConversations(query),
+    staleTime: 30_000, // 30 seconds
+    gcTime: 5 * 60 * 1000, // 5 minutes
+    refetchOnWindowFocus: true,
+    refetchOnMount: 'always',
   });
 }
 

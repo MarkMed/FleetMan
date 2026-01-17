@@ -64,6 +64,9 @@ export const API_ENDPOINTS = {
   ACCEPT_CHAT: (userId: string) => `/messages/chats/${userId}/accept`,
   BLOCK_USER: (userId: string) => `/messages/chats/${userId}/block`,
   
+  // Recent Conversations List (Sprint #13 - Conversations Inbox)
+  CONVERSATIONS: '/messages/conversations', // List all conversations with metadata
+  
   // TODO: Endpoints estratégicos futuros
   // USER_PUBLIC_PROFILE: (userId: string) => `/users/${userId}/public-profile`,
   // USER_STATS: (userId: string) => `/users/${userId}/stats`,
@@ -72,7 +75,6 @@ export const API_ENDPOINTS = {
   // MY_CONTACT_MUTUAL: (contactUserId: string) => `/users/me/contacts/${contactUserId}/mutual`,
   // MESSAGE: (messageId: string) => `/messages/${messageId}`, // For edit/delete (Future)
   // MARK_CONVERSATION_READ: (otherUserId: string) => `/messages/conversations/${otherUserId}/mark-as-read`,
-  // CONVERSATIONS: '/messages/conversations', // List all conversations with metadata
   // SEARCH_CONVERSATION: (otherUserId: string) => `/messages/conversations/${otherUserId}/search`,
   
   // Machines
