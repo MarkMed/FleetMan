@@ -290,7 +290,7 @@ export function ChatScreen() {
       ) : (
         <div className="border-t bg-muted/50 px-4 py-4 text-center">
           <BodyText size="small" className="text-muted-foreground">
-            {vm.t('messages.cannotSendBlocked', 'Noooo puedes enviar mensajes a este usuario porque te ha bloqueado.')}
+            {vm.t('messages.cannotSendBlocked', "You can't send messages to this user.")}
           </BodyText>
         </div>
       )}
