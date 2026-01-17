@@ -34,6 +34,28 @@ export const ConversationParamsSchema = z.object({
 });
 
 /**
+ * Schema para path params de aceptar chat
+ * Usado en: POST /api/v1/messages/chats/:userId/accept
+ * Sprint #13 Task 9.3e: Agrega userId a lista blanca (acceptedChatsFrom)
+ */
+export const AcceptChatParamsSchema = z.object({
+  userId: z.string()
+    .min(1, 'User ID is required')
+    .max(100, 'User ID too long')
+});
+
+/**
+ * Schema para path params de bloquear usuario
+ * Usado en: POST /api/v1/messages/chats/:userId/block
+ * Sprint #13 Task 9.3f: Agrega userId a lista negra (usersBlackList)
+ */
+export const BlockUserParamsSchema = z.object({
+  userId: z.string()
+    .min(1, 'User ID is required')
+    .max(100, 'User ID too long')
+});
+
+/**
  * Schema para query params de historial de conversación
  * Usado en: GET /api/v1/messages/conversations/:otherUserId?page=1&limit=20
  * 
@@ -84,13 +106,22 @@ export const SendMessageResponseSchema = z.object({
  * 
  * PRINCIPIO DRY: Esta estructura se define UNA sola vez
  * PRINCIPIO SSOT: Cualquier cambio aquí se propaga automáticamente
+ * 
+ * Sprint #13 Task 9.3f-h: Agregado campos para Chat Access Control:
+ * - canSendMessages: indica si puede enviar mensajes (contacto OR chat aceptado) AND !bloqueado
+ * - hasAcceptedChat: indica si usuario ya aceptó chat del otro
+ * - isBlockedByOther: indica si usuario está bloqueado por el otro (para mostrar banner en frontend)
  */
 export const ConversationHistoryResponseSchema = z.object({
+  recipientName: z.string().optional(), // Nombre para mostrar del destinatario
   messages: z.array(MessageSchema),
   total: z.number().int().nonnegative(),
   page: z.number().int().positive(),
   limit: z.number().int().positive(),
-  totalPages: z.number().int().nonnegative()
+  totalPages: z.number().int().nonnegative(),
+  canSendMessages: z.boolean(), // Sprint #13: true si puede enviar, false si bloqueado o sin permisos
+  hasAcceptedChat: z.boolean(), // Sprint #13: true si usuario ya aceptó chat del otro
+  isBlockedByOther: z.boolean() // Sprint #13 UX: true si usuario está bloqueado (mostrar banner en frontend)
 });
 
 // =============================================================================
@@ -102,6 +133,8 @@ export type ConversationParams = z.infer<typeof ConversationParamsSchema>;
 export type ConversationHistoryQuery = z.infer<typeof ConversationHistoryQuerySchema>;
 export type MessageDTO = z.infer<typeof MessageSchema>;
 export type SendMessageResponse = z.infer<typeof SendMessageResponseSchema>;
+export type AcceptChatParams = z.infer<typeof AcceptChatParamsSchema>;
+export type BlockUserParams = z.infer<typeof BlockUserParamsSchema>;
 
 /**
  * Tipo para datos paginados de mensajes (SSOT)
@@ -111,21 +144,52 @@ export type SendMessageResponse = z.infer<typeof SendMessageResponseSchema>;
 export type ConversationHistoryResponse = z.infer<typeof ConversationHistoryResponseSchema>;
 
 // =============================================================================
-// TODO: SCHEMAS POST-MVP
+// RECENT CONVERSATIONS SCHEMAS (Sprint #13 - Conversations Inbox)
 // =============================================================================
 
 /**
- * Schema para listar conversaciones recientes (inbox)
- * Usado en: GET /api/v1/messages/conversations
+ * Schema para query params de lista de conversaciones recientes
+ * Usado en: GET /api/v1/messages/conversations?page=1&limit=20&onlyContacts=true&search=John
  * 
- * TODO: Implementar cuando se agregue vista de inbox
+ * Sprint #13 - Recent Conversations Inbox Feature
  */
-// export const ConversationSummarySchema = z.object({
-//   otherUser: UserPublicProfileSchema, // Reutilizar de user-discovery
-//   lastMessage: MessageSchema,
-//   unreadCount: z.number().int().nonnegative(),
-//   lastMessageAt: z.coerce.date()
-// });
+export const RecentConversationsQuerySchema = z.object({
+  page: z.coerce.number().int().positive().default(1),
+  limit: z.coerce.number().int().positive().min(1).max(50).default(20),
+  onlyContacts: z.coerce.boolean().optional(), // true = solo contactos, false = solo no-contactos, undefined = todos
+  search: z.string().trim().min(1).max(100).optional() // Búsqueda por displayName (companyName o email)
+});
+
+/**
+ * Schema para un resumen de conversación individual
+ * Sprint #13 - Recent Conversations Inbox Feature
+ */
+export const ConversationSummarySchema = z.object({
+  otherUserId: z.string(),
+  displayName: z.string(),
+  lastMessageAt: z.coerce.date(),
+  lastMessageContent: z.string(),
+  lastMessageSenderId: z.string(),
+  isContact: z.boolean()
+  // TODO POST-MVP: unreadCount: z.number().int().nonnegative()
+});
+
+/**
+ * Schema para response de lista de conversaciones
+ * Sprint #13 - Recent Conversations Inbox Feature
+ */
+export const RecentConversationsResponseSchema = z.object({
+  conversations: z.array(ConversationSummarySchema),
+  total: z.number().int().nonnegative(),
+  page: z.number().int().positive(),
+  limit: z.number().int().positive(),
+  totalPages: z.number().int().nonnegative()
+}) satisfies z.ZodType<any>; // Type inference compatible
+
+// Type exports
+export type RecentConversationsQuery = z.infer<typeof RecentConversationsQuerySchema>;
+export type ConversationSummary = z.infer<typeof ConversationSummarySchema>;
+export type RecentConversationsResponse = z.infer<typeof RecentConversationsResponseSchema>;
 
 // export const ConversationsListResponseSchema = z.object({
 //   conversations: z.array(ConversationSummarySchema),

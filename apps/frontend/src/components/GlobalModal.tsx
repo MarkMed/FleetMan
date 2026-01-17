@@ -233,10 +233,10 @@ export function GlobalModal() {
               {/* Cancel Button */}
               {config.showCancel && (
                 <Button
-                  variant={getCancelButtonVariant()}
+                  variant={config.cancelButtonVariant || getCancelButtonVariant()}
                   onPress={handleCancel}
                   disabled={config.loading}
-                  className="flex-1 sm:flex-none"
+                  className={cn("flex-1 sm:flex-none", config.cancelButtonClassName)}
                 >
                   {config.cancelText || 'Cancelar'}
                 </Button>

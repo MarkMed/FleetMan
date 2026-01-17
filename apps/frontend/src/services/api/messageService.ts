@@ -1,6 +1,12 @@
 import { apiClient, handleBackendApiResponse } from './apiClient';
 import { API_ENDPOINTS } from '../../constants';
-import type { SendMessageRequest, SendMessageResponse, ConversationHistoryResponse } from '@packages/contracts';
+import type { 
+  SendMessageRequest, 
+  SendMessageResponse, 
+  ConversationHistoryResponse,
+  RecentConversationsQuery,
+  RecentConversationsResponse
+} from '@packages/contracts';
 
 /**
  * Messaging Service
@@ -112,6 +118,85 @@ export async function getConversationHistory(
   };
 }
 
+/**
+ * Accept a chat request from a non-contact user
+ * Sprint #13 Task 9.3e - Chat Access Control
+ * 
+ * @param userId - ID of the user to accept chat from
+ * @returns Promise<void> - No response body (204 No Content)
+ * 
+ * Purpose:
+ * - Add userId to authenticated user's acceptedChatsFrom whitelist
+ * - Enable bidirectional messaging without adding as contact
+ * - Idempotent operation (safe to call multiple times)
+ * 
+ * Backend behavior:
+ * - POST /api/v1/messages/chats/:userId/accept
+ * - Validates both users exist
+ * - Updates acceptedChatsFrom array (atomic operation)
+ * - No-op if already accepted
+ * 
+ * Post-conditions:
+ * - canSendMessages becomes true in conversation history
+ * - User can send/receive messages freely
+ * - Does NOT add to contacts list (separate feature)
+ * 
+ * Use cases:
+ * - User receives first message from stranger → reviews → accepts
+ * - Temporary conversations that don't warrant contact status
+ * - Pre-contact screening mechanism
+ * 
+ * @throws {Error} If user not found or validation fails
+ */
+export async function acceptChat(userId: string): Promise<void> {
+  await apiClient.post<{ success: boolean; message: string }>(
+    API_ENDPOINTS.ACCEPT_CHAT(userId)
+  );
+  // No need to handle response, 204 No Content on success
+}
+
+/**
+ * Block a user from sending messages
+ * Sprint #13 Task 9.3f - Chat Access Control
+ * 
+ * @param userId - ID of the user to block
+ * @returns Promise<void> - No response body (204 No Content)
+ * 
+ * Purpose:
+ * - Add userId to authenticated user's usersBlackList
+ * - Remove from acceptedChatsFrom if present (atomic operation)
+ * - Prevent all future message delivery from blocked user
+ * 
+ * Backend behavior:
+ * - POST /api/v1/messages/chats/:userId/block
+ * - Validates both users exist
+ * - Updates usersBlackList and acceptedChatsFrom atomically
+ * - Blocked user gets 403 Forbidden when attempting to send
+ * 
+ * Post-conditions:
+ * - canSendMessages becomes false for blocked user
+ * - Blocked user cannot send messages (403 error)
+ * - Existing conversation history remains visible
+ * - No notification sent to blocked user (silent block)
+ * 
+ * Use cases:
+ * - Spam prevention
+ * - Harassment mitigation
+ * - Privacy control
+ * 
+ * Notes:
+ * - Block is one-directional (blocker can still see/send if needed)
+ * - Unblock feature deferred to Sprint #14 (Settings screen)
+ * 
+ * @throws {Error} If user not found or validation fails
+ */
+export async function blockUser(userId: string): Promise<void> {
+  await apiClient.post<{ success: boolean; message: string }>(
+    API_ENDPOINTS.BLOCK_USER(userId)
+  );
+  // No need to handle response, 204 No Content on success
+}
+
 // Strategic future features (commented for reference)
 
 /**
@@ -166,8 +251,87 @@ export async function getConversationHistory(
 //   return handleBackendApiResponse(response);
 // }
 
-/**
- * Delete a message (soft delete) (Future Feature)
+/** * Get Recent Conversations List
+ * 
+ * Sprint #13 - Recent Conversations Inbox Feature
+ * 
+ * Purpose:
+ * - Display paginated list of all user's conversations
+ * - Show last message preview and timestamp
+ * - Filter by contact status (contacts/non-contacts/all)
+ * - Search by user display name
+ * 
+ * Features:
+ * - GET /api/v1/messages/conversations
+ * - Backend handles all filtering, sorting, and pagination
+ * - Returns conversations ordered by lastMessageAt DESC (most recent first)
+ * - Includes isContact flag for UI badges
+ * - displayName already calculated (companyName or email fallback)
+ * 
+ * Query Parameters:
+ * @param query.page - Page number (default: 1, min: 1)
+ * @param query.limit - Items per page (default: 20, max: 50, min: 1)
+ * @param query.onlyContacts - Filter by contact status:
+ *   - true: only conversations with contacts
+ *   - false: only conversations with non-contacts
+ *   - undefined: all conversations (no filter)
+ * @param query.search - Search by displayName (email or companyName)
+ *   - Case-insensitive
+ *   - Max 100 characters
+ * 
+ * @returns Promise<RecentConversationsResponse> - Paginated conversations with metadata
+ * 
+ * Backend Logic:
+ * - Groups messages by unique user pairs (bidirectional)
+ * - Takes most recent message per conversation
+ * - Excludes deleted users automatically
+ * - Calculates isContact flag per conversation
+ * - Handles null lastMessageContent/senderId gracefully
+ * 
+ * SSE Integration:
+ * - When NEW_MESSAGE event arrives, invalidate CONVERSATIONS query
+ * - This refreshes the list automatically
+ * 
+ * @example
+ * ```tsx
+ * // Get all conversations, page 1
+ * const data = await getRecentConversations({ page: 1, limit: 20 });
+ * 
+ * // Get only contact conversations
+ * const contacts = await getRecentConversations({ page: 1, onlyContacts: true });
+ * 
+ * // Search conversations
+ * const results = await getRecentConversations({ search: 'acme', page: 1 });
+ * ```
+ */
+export async function getRecentConversations(
+  query: RecentConversationsQuery
+): Promise<RecentConversationsResponse> {
+  // Build query string params manually (convert to strings)
+  const params: Record<string, string> = {
+    page: String(query.page),
+    limit: String(query.limit),
+  };
+  
+  // Only add optional params if they exist
+  if (query.onlyContacts !== undefined) {
+    params.onlyContacts = String(query.onlyContacts);
+  }
+  
+  if (query.search) {
+    params.search = query.search;
+  }
+
+  const response = await apiClient.get<{
+    success: boolean;
+    message: string;
+    data: RecentConversationsResponse;
+  }>(API_ENDPOINTS.CONVERSATIONS, params);
+
+  return handleBackendApiResponse(response);
+}
+
+/** * Delete a message (soft delete) (Future Feature)
  * 
  * Purpose:
  * - Allow users to delete sent messages

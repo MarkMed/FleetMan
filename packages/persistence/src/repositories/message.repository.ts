@@ -2,6 +2,9 @@ import {
   type IMessageRepository,
   type IGetConversationHistoryResult,
   type ConversationHistoryOptions,
+  type IGetRecentConversationsResult,
+  type IConversationSummary,
+  type RecentConversationsOptions,
   type IMessage,
   Message,
   MessageId,
@@ -76,25 +79,26 @@ export class MessageRepository implements IMessageRepository {
    * Obtiene el historial de conversación entre dos usuarios (query bidireccional)
    * Ordena por sentAt descendente (más recientes primero)
    * 
-   * @param userId1 - ID del primer usuario
-   * @param userId2 - ID del segundo usuario
+   * @param senderUserId - ID del primer usuario (usuario autenticado)
+   * @param recipientUserId - ID del segundo usuario (otro usuario - destinatario)
    * @param options - Opciones de paginación (page, limit)
    * @returns Result con mensajes paginados o error
    */
   async getConversationHistory(
-    userId1: UserId,
-    userId2: UserId,
+    senderUserId: UserId, 
+    recipientUserId: UserId,
     options: ConversationHistoryOptions
   ): Promise<Result<IGetConversationHistoryResult, DomainError>> {
     try {
       const { page, limit } = options;
       const skip = (page - 1) * limit;
+      const recipientIdValue = recipientUserId.getValue();
 
       // Query bidireccional: mensajes donde (A→B) OR (B→A)
       const query = {
         $or: [
-          { senderId: userId1.getValue(), recipientId: userId2.getValue() },
-          { senderId: userId2.getValue(), recipientId: userId1.getValue() }
+          { senderId: senderUserId.getValue(), recipientId: recipientIdValue },
+          { senderId: recipientIdValue, recipientId: senderUserId.getValue() }
         ]
       };
 
@@ -108,6 +112,41 @@ export class MessageRepository implements IMessageRepository {
           .lean(),
         MessageModel.countDocuments(query)
       ]);
+
+      // Obtener datos del otro usuario (recipientUserId) para displayName
+      // CRITICAL: Usar aggregation con $toObjectId porque MessageModel usa strings, UserModel usa ObjectId
+      const UserModel = require('../models/user.model').UserModel;
+      const userLookup = await UserModel.aggregate([
+        {
+          $match: {
+            $expr: { 
+              $eq: ['$_id', { $toObjectId: recipientIdValue }]
+            }
+          }
+        },
+        {
+          $project: {
+            displayName: {
+              $cond: {
+                if: {
+                  $and: [
+                    { $ne: ['$profile.companyName', null] },
+                    { $ne: ['$profile.companyName', ''] }
+                  ]
+                },
+                then: '$profile.companyName',
+                else: '$email'
+              }
+            }
+          }
+        },
+        {
+          $limit: 1
+        }
+      ]);
+
+      // Extraer recipientName (displayName del otro usuario)
+      const recipientName = userLookup[0]?.displayName || recipientIdValue;
 
       // Mapear documentos a IMessage interface (para frontend)
       const messages: IMessage[] = messageDocs.map(doc => ({
@@ -124,6 +163,7 @@ export class MessageRepository implements IMessageRepository {
       const totalPages = Math.ceil(total / limit);
 
       const result: IGetConversationHistoryResult = {
+        recipientName,
         messages,
         total,
         page,
@@ -134,6 +174,234 @@ export class MessageRepository implements IMessageRepository {
       return ok(result);
     } catch (error: any) {
       return err(DomainError.create('PERSISTENCE_ERROR', `Error getting conversation history: ${error.message}`));
+    }
+  }
+
+  /**
+   * Obtiene lista de conversaciones recientes del usuario
+   * Query optimizado: obtiene ÚLTIMO mensaje de cada conversación única
+   * 
+   * Business Logic:
+   * - Una conversación es un par de usuarios (userA ↔ userB)
+   * - Solo retorna el mensaje más reciente de cada conversación
+   * - Soporta filtrado por isContact (onlyContacts param)
+   * - Soporta búsqueda por displayName del otro usuario (search param)
+   * - Ordenado por lastMessageAt DESC (conversación más reciente primero)
+   * 
+   * Performance: Usa aggregation pipeline con $group, $lookup, $facet
+   * 
+   * @param userId - ID del usuario autenticado
+   * @param options - Opciones de paginación y filtros
+   * @returns Result con lista de conversaciones paginadas o error
+   * 
+   * Sprint #13 - Recent Conversations Inbox Feature
+   */
+  async getRecentConversations(
+    userId: UserId,
+    options: RecentConversationsOptions
+  ): Promise<Result<IGetRecentConversationsResult, DomainError>> {
+    try {
+      const { page, limit, onlyContacts, search } = options;
+      const skip = (page - 1) * limit;
+      const userIdValue = userId.getValue();
+
+      // Build aggregation pipeline
+      const pipeline: any[] = [
+        // Stage 1: Match messages where userId is sender OR recipient
+        {
+          $match: {
+            $or: [
+              { senderId: userIdValue },
+              { recipientId: userIdValue }
+            ]
+          }
+        },
+
+        // Stage 2: Add otherUserId field (the user we're conversing with)
+        {
+          $addFields: {
+            otherUserId: {
+              $cond: {
+                if: { $eq: ['$senderId', userIdValue] },
+                then: '$recipientId',
+                else: '$senderId'
+              }
+            }
+          }
+        },
+
+        // Stage 3: Sort by sentAt DESC BEFORE grouping (important for $first to get latest)
+        {
+          $sort: { sentAt: -1 }
+        },
+
+        // Stage 4: Group by otherUserId, keep FIRST (latest) message per conversation
+        {
+          $group: {
+            _id: '$otherUserId',
+            lastMessageAt: { $first: '$sentAt' },
+            lastMessageContent: { $first: '$content' },
+            lastMessageSenderId: { $first: '$senderId' }
+          }
+        },
+
+        // Stage 5: Lookup User collection to get otherUser data
+        // CRITICAL FIX: Use pipeline with $toObjectId because:
+        // - MessageModel stores senderId/recipientId as strings
+        // - UserModel uses _id as ObjectId
+        // - Need to convert string to ObjectId for $match to work
+        {
+          $lookup: {
+            from: 'users', // MongoDB collection name
+            let: { otherUserId: '$_id' }, // Pass otherUserId (string) to pipeline
+            pipeline: [
+              {
+                $match: {
+                  $expr: { 
+                    $eq: ['$_id', { $toObjectId: '$$otherUserId' }] // Convert string to ObjectId
+                  }
+                }
+              },
+              {
+                $project: {
+                  _id: 1,
+                  email: 1,
+                  'profile.companyName': 1,
+                  contacts: 1
+                }
+              }
+            ],
+            as: 'otherUserData'
+          }
+        },
+
+        // Stage 6: Unwind otherUserData (convert array to object)
+        // preserveNullAndEmptyArrays: false = exclude if user deleted
+        {
+          $unwind: {
+            path: '$otherUserData',
+            preserveNullAndEmptyArrays: false
+          }
+        },
+
+        // Stage 7: Add computed fields (displayName, isContact)
+        {
+          $addFields: {
+            displayName: {
+              $cond: {
+                if: {
+                  $and: [
+                    { $ne: ['$otherUserData.profile.companyName', null] },
+                    { $ne: ['$otherUserData.profile.companyName', ''] }
+                  ]
+                },
+                then: '$otherUserData.profile.companyName',
+                else: '$otherUserData.email'
+              }
+            },
+            isContact: {
+              $in: [
+                userIdValue, 
+                { 
+                  $map: {
+                    input: { $ifNull: ['$otherUserData.contacts', []] },
+                    as: 'contact',
+                    in: '$$contact.contactUserId'
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ];
+
+      // Stage 8: Conditional match for onlyContacts filter
+      if (onlyContacts !== undefined) {
+        console.log('Adding onlyContacts filter:', onlyContacts);
+        pipeline.push({
+          $match: {
+            isContact: onlyContacts
+          }
+        });
+      }
+
+      // Stage 9: Conditional match for search filter (regex case-insensitive)
+      if (search) {
+        console.log('Adding search filter:', search);
+        pipeline.push({
+          $match: {
+            displayName: {
+              $regex: search,
+              $options: 'i' // case-insensitive
+            }
+          }
+        });
+      }
+
+      // Stage 10: Sort by lastMessageAt DESC
+      pipeline.push({
+        $sort: { lastMessageAt: -1 }
+      });
+
+      // Stage 11: Facet for pagination (count + data in single query)
+      pipeline.push({
+        $facet: {
+          metadata: [
+            { $count: 'total' }
+          ],
+          data: [
+            { $skip: skip },
+            { $limit: limit },
+            {
+              $project: {
+                otherUserId: '$_id',
+                displayName: 1,
+                lastMessageAt: 1,
+                lastMessageContent: 1,
+                lastMessageSenderId: 1,
+                isContact: 1,
+                _id: 0
+              }
+            }
+          ]
+        }
+      });
+
+      // Execute aggregation
+      const result = await MessageModel.aggregate(pipeline);
+
+      // Extract results from facet
+      const metadata = result[0]?.metadata[0];
+      const data = result[0]?.data || [];
+      const total = metadata?.total || 0;
+
+      // Map aggregation results to domain interface
+      const conversations: IConversationSummary[] = data.map((doc: any) => {
+        return {
+          otherUserId: doc.otherUserId,
+          displayName: doc.displayName,
+          lastMessageAt: doc.lastMessageAt,
+          lastMessageContent: doc.lastMessageContent,
+          lastMessageSenderId: doc.lastMessageSenderId,
+          isContact: doc.isContact
+        };
+      });
+
+      const totalPages = Math.ceil(total / limit);
+
+      return ok({
+        conversations,
+        total,
+        page,
+        limit,
+        totalPages
+      });
+    } catch (error: any) {
+      console.error('=== getRecentConversations ERROR ===');
+      console.error('error:', error);
+      console.error('error.message:', error.message);
+      console.error('error.stack:', error.stack);
+      return err(DomainError.create('PERSISTENCE_ERROR', `Error getting recent conversations: ${error.message}`));
     }
   }
 
