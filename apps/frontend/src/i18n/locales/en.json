@@ -304,7 +304,9 @@
         "noPhotoNote": "No photo currently loaded. Select an image below.",
         "selectPhotoLabel": "Select Photo",
         "helperText": "Supported formats: JPEG, PNG, WebP. Maximum size: 5MB. Image will be uploaded on confirmation.",
-        "tip": "Photo is optional. You can update other data and keep or remove the current photo."
+        "tip": "Photo is optional. You can update other data and keep or remove the current photo.",
+        "changeNote": "Select a new photo to replace the current one.",
+        "newFileSelected": "New photo selected"
       }
     },
     "events": {

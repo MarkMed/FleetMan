@@ -129,14 +129,9 @@ export function useMachineEditViewModel(machineId: string): MachineEditViewModel
   // Update mutation
   const updateMutation = useUpdateMachine(machineId);
 
-  // Cleanup: Revoke object URLs to prevent memory leaks
-  useEffect(() => {
-    return () => {
-      if (photoFile) {
-        setPhotoFile(null);
-      }
-    };
-  }, [photoFile]);
+  // REMOVED: Cleanup useEffect causaba que photoFile se reseteara a null
+  // al cambiar de una imagen a otra, porque el cleanup se ejecutaba en cada cambio
+  // El cleanup de blob URLs no es crítico aquí ya que el navegador los libera automáticamente
 
   // Pre-populate form when machine data loads
   useEffect(() => {

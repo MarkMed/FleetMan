@@ -306,7 +306,9 @@
         "noPhotoNote": "No hay foto cargada actualmente. Selecciona una imagen abajo.",
         "selectPhotoLabel": "Seleccionar Foto",
         "helperText": "Formatos soportados: JPEG, PNG, WebP. Tamaño máximo: 5MB. La imagen se subirá al confirmar.",
-        "tip": "La foto es opcional. Puedes actualizar otros datos y mantener o eliminar la foto actual."
+        "tip": "La foto es opcional. Puedes actualizar otros datos y mantener o eliminar la foto actual.",
+        "changeNote": "Selecciona una nueva foto para reemplazar la actual.",
+        "newFileSelected": "Nueva foto seleccionada"
       }
     },
     "events": {

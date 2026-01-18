@@ -83,9 +83,20 @@ export function PhotoStepEdit() {
 
   // Memoize the preview URL to avoid creating new URLs on every render
   const photoPreviewUrl = useMemo(() => {
-    const url = photoFile ? URL.createObjectURL(photoFile) : '';
-    console.log('🟢 [PhotoStepEdit] Creando photoPreviewUrl (memoized):', url ? 'blob URL creada' : 'vacío');
-    return url;
+    console.log('🖼️ [photoPreviewUrl] Recalculando...', { 
+      hasPhotoFile: !!photoFile, 
+      fileName: photoFile?.name,
+      blobSize: photoFile?.size 
+    });
+    
+    if (photoFile) {
+      const url = URL.createObjectURL(photoFile);
+      console.log('🖼️ [photoPreviewUrl] Nueva URL creada:', url);
+      return url;
+    }
+    
+    console.log('🖼️ [photoPreviewUrl] No hay photoFile, retornando vacío');
+    return '';
   }, [photoFile]);
 
   // Debug logging (can be removed in production)
@@ -99,16 +110,6 @@ export function PhotoStepEdit() {
     photoPreviewUrl: photoPreviewUrl ? 'presente' : 'vacío'
   });
   console.log('🟢 [PhotoStepEdit] =============================');
-
-  /**
-   * Handle "Change Photo" button click
-   * Hides existing photo and shows ImagePicker
-   */
-  const handleChangePhoto = () => {
-    console.log('🔄 User clicked Change Photo');
-    setShowImagePicker(true);
-    setShouldRemovePhoto(false); // Reset removal flag
-  };
 
   /**
    * Handle "Remove Photo" button click
@@ -126,7 +127,6 @@ export function PhotoStepEdit() {
    * Stores File in ViewModel and resets removal flag
    */
   const handleFileSelect = (file: File | null) => {
-    console.log('📸 File selected:', file?.name);
     setPhotoFile(file);
     
     if (file) {
@@ -150,7 +150,7 @@ export function PhotoStepEdit() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Header */}
       <div className="space-y-2">
         <TextBlock as="h2" size="large" weight="medium">
@@ -166,9 +166,16 @@ export function PhotoStepEdit() {
 
       {/* Show existing photo with action buttons */}
       {existingPhotoUrl && !showImagePicker && (
-        <div className="space-y-4">
+        <div className="space-y-2">
           {/* Existing Photo Preview */}
           <div className="relative">
+            
+            {/* Label */}
+            <div className="mt-2">
+              <TextBlock size="small" weight="medium" className="text-gray-700">
+                {t('machines.edit.photo.currentLabel', 'Foto actuall')}
+              </TextBlock>
+            </div>
             <div className="aspect-video rounded-lg overflow-hidden bg-muted border-2 border-gray-200">
               <img
                 src={existingPhotoUrl}
@@ -176,27 +183,12 @@ export function PhotoStepEdit() {
                 className="w-full h-full object-cover"
               />
             </div>
-            
-            {/* Label */}
-            <div className="mt-2">
-              <TextBlock size="small" weight="medium" className="text-gray-700">
-                {t('machines.edit.photo.currentLabel', 'Foto actual')}
-              </TextBlock>
-            </div>
           </div>
 
           {/* Action Buttons */}
-          <div className="flex gap-3">
+          <div className="flex justify-end">
             <Button
-              variant="outline"
-              size="default"
-              onPress={handleChangePhoto}
-            >
-              <RefreshCw className="w-4 h-4 mr-2" />
-              {t('machines.edit.photo.changeButton', 'Cambiar Foto')}
-            </Button>
-            <Button
-              variant="outline"
+              variant="ghost"
               size="default"
               onPress={handleRemovePhoto}
               className="border-destructive/30 text-destructive hover:bg-destructive/10"
