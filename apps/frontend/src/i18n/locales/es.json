@@ -209,6 +209,17 @@
     },
     "registration": {
       "verificationTime": "¡Verifica los datos!",
+      "uploadingPhoto": "Subiendo foto a Cloudinary...",
+      "photoSaved": "Foto guardada exitosamente",
+      "savingData": "Guardando datos de la máquina...",
+      "uploadError": {
+        "title": "Error al subir foto",
+        "message": "No se pudo subir la foto al servicio de almacenamiento",
+        "retry": "Reintentar",
+        "skipPhoto": "Omitir foto y continuar",
+        "cancel": "Cancelar registro",
+        "tooManyRetries": "Demasiados intentos fallidos. Por favor, intenta más tarde o continúa sin foto."
+      },
       "confirmation": {
         "title": "Confirmar Registro",
         "description": "¿Estás seguro de que deseas registrar esta máquina? Esta acción creará un nuevo registro en el sistema.",

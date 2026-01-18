@@ -1,24 +1,21 @@
-import React, { useState, useRef, forwardRef } from 'react';
+import React, { useState, useRef, forwardRef, useEffect } from 'react';
 import { cn } from '@utils/cn';
 import { Button } from './Button';
-import { Spinner } from './Spinner';
-import { Upload, X, Image as ImageIcon, Camera } from 'lucide-react';
-import { uploadImageToCloudinary } from '../../services/cloudinary/cloudinaryService';
+import { X, Image as ImageIcon, Camera } from 'lucide-react';
 import { config } from '../../config';
 
 /**
  * ImagePickerField Component
  * 
  * Generic image picker component for use in any form context.
- * Handles file selection, preview, compression, and upload to Cloudinary.
+ * Handles file selection and preview. Upload logic managed externally.
  * 
  * Features:
  * - File selection from device (mobile: camera/gallery, desktop: file explorer)
  * - Image preview with responsive sizing
- * - Automatic upload to Cloudinary with compression
- * - Loading states with progress indicator
+ * - File object exposure via callback for external upload handling
  * - Error handling with descriptive messages
- * - Clear/retry functionality
+ * - Clear/change functionality
  * - Fully accessible (keyboard navigation, ARIA labels)
  * 
  * @example
@@ -32,8 +29,9 @@ import { config } from '../../config';
  *       label="Foto de la máquina"
  *       value={value || ''}
  *       onChangeText={onChange}
+ *       onFileSelect={(file) => setPhotoFile(file)}
  *       error={errors.machinePhotoUrl?.message}
- *       helperText="Sube una foto representativa"
+ *       helperText="Selecciona una foto representativa"
  *     />
  *   )}
  * />
@@ -74,8 +72,23 @@ export interface ImagePickerFieldProps {
   /** Custom placeholder text when no image selected */
   placeholder?: string;
   
-  /** Whether to show upload button separately (true) or auto-upload on select (false) */
-  manualUpload?: boolean;
+  /** Called when file is selected or cleared (exposes File object for external upload) */
+  onFileSelect?: (file: File | null) => void;
+  
+  // Future Enhancement: Callback hooks for advanced integration
+  // /** Called when upload starts (useful for showing loading states in parent) */
+  // onUploadStart?: () => void;
+  // 
+  // /** Called when upload completes successfully (useful for analytics, logging) */
+  // onUploadSuccess?: (url: string) => void;
+  // 
+  // /** Called when upload fails (useful for custom error handling) */
+  // onUploadError?: (error: Error) => void;
+  //
+  // /** Multi-image support for galleries */
+  // multiple?: boolean;
+  // maxImages?: number;
+  // onMultiFileSelect?: (files: File[]) => void;
 }
 
 type UploadState = 'idle' | 'selecting' | 'uploading' | 'success' | 'error';
@@ -94,19 +107,42 @@ export const ImagePickerField = forwardRef<HTMLInputElement, ImagePickerFieldPro
       acceptedFormats = config.CLOUDINARY.ACCEPTED_FORMATS,
       className,
       placeholder = 'Ninguna imagen seleccionada',
-      manualUpload = true, // Default: require explicit upload button click
+      onFileSelect, // NEW: Callback to expose File object
     },
     ref
   ) => {
     // State
     const [uploadState, setUploadState] = useState<UploadState>('idle');
-    const [uploadProgress, setUploadProgress] = useState<number>(0);
     const [errorMessage, setErrorMessage] = useState<string>('');
     const [previewUrl, setPreviewUrl] = useState<string | null>(value || null);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
     // Refs
     const fileInputRef = useRef<HTMLInputElement>(null);
+
+    /**
+     * Sync external value changes with internal state
+     * Important for React Hook Form integration:
+     * - When form.setValue() is called externally (e.g., clearing value)
+     * - When form resets or loads saved data
+     * - When "Add later" checkbox clears the photo URL
+     */
+    useEffect(() => {
+      // If external value is empty and we have a preview, clear it
+      if (!value && previewUrl) {
+        setPreviewUrl(null);
+        setSelectedFile(null);
+        setUploadState('idle');
+        setErrorMessage('');
+      }
+      
+      // If external value exists and it's different from current preview, update it
+      // This handles cases where value is set externally (e.g., loading saved data)
+      if (value && value !== previewUrl) {
+        setPreviewUrl(value);
+        setUploadState('idle'); // Reset to idle for external URLs
+      }
+    }, [value]); // Only depend on value, not previewUrl to avoid loops
 
     /**
      * Handle file selection from input
@@ -140,58 +176,19 @@ export const ImagePickerField = forwardRef<HTMLInputElement, ImagePickerFieldPro
         const objectUrl = URL.createObjectURL(file);
         setPreviewUrl(objectUrl);
         setSelectedFile(file);
+        setUploadState('idle');
 
-        // If manual upload disabled, upload immediately
-        if (!manualUpload) {
-          await handleUpload(file);
-        } else {
-          setUploadState('idle'); // Wait for user to click upload button
-        }
+        // Expose File object to parent via callback
+        onFileSelect?.(file);
+        
+        console.log('✅ File selected:', file.name, `(${fileSizeMB.toFixed(2)}MB)`);
       } catch (err) {
         const message = err instanceof Error ? err.message : 'Error al seleccionar imagen';
         setErrorMessage(message);
         setUploadState('error');
         setPreviewUrl(null);
         setSelectedFile(null);
-      }
-    };
-
-    /**
-     * Upload selected file to Cloudinary
-     */
-    const handleUpload = async (fileToUpload?: File) => {
-      const file = fileToUpload || selectedFile;
-      if (!file) {
-        setErrorMessage('No hay archivo seleccionado');
-        return;
-      }
-
-      setUploadState('uploading');
-      setUploadProgress(0);
-      setErrorMessage('');
-
-      try {
-        const url = await uploadImageToCloudinary(file, {
-          maxSizeMB,
-          onProgress: (progress) => {
-            setUploadProgress(Math.round(progress));
-          },
-        });
-
-        // Success: update form value with Cloudinary URL
-        setUploadState('success');
-        setUploadProgress(100);
-        onChangeText?.(url);
-
-        // Keep preview showing the uploaded image
-        setPreviewUrl(url);
-
-        console.log('✅ Image uploaded successfully:', url);
-      } catch (err) {
-        const message = err instanceof Error ? err.message : 'Error al subir imagen';
-        setErrorMessage(message);
-        setUploadState('error');
-        setUploadProgress(0);
+        onFileSelect?.(null); // Clear file on error
       }
     };
 
@@ -203,8 +200,8 @@ export const ImagePickerField = forwardRef<HTMLInputElement, ImagePickerFieldPro
       setSelectedFile(null);
       setUploadState('idle');
       setErrorMessage('');
-      setUploadProgress(0);
       onChangeText?.(''); // Clear form value
+      onFileSelect?.(null); // Notify parent of cleared file
 
       // Reset file input
       if (fileInputRef.current) {
@@ -221,10 +218,7 @@ export const ImagePickerField = forwardRef<HTMLInputElement, ImagePickerFieldPro
 
     // Compute states
     const hasImage = !!previewUrl;
-    const isUploading = uploadState === 'uploading';
-    const isSuccess = uploadState === 'success';
     const hasError = !!error || !!errorMessage;
-    const showUploadButton = manualUpload && selectedFile && uploadState === 'idle';
 
     return (
       <div className={cn('space-y-2', className)}>
@@ -239,8 +233,8 @@ export const ImagePickerField = forwardRef<HTMLInputElement, ImagePickerFieldPro
         {/* Preview + Controls Container */}
         <div
           className={cn(
-            'relative border-2 border-dashed rounded-lg p-4 transition-colors',
-            hasError ? 'border-red-300 bg-red-50' : 'border-gray-300 bg-gray-50',
+            'relative border-2 border-dashed rounded-lg p-4 transition-colors bg-transparent',
+            hasError ? 'border-red-300' : 'border-gray-300',
             !disabled && 'hover:border-gray-400'
           )}
         >
@@ -250,7 +244,7 @@ export const ImagePickerField = forwardRef<HTMLInputElement, ImagePickerFieldPro
             type="file"
             accept={acceptedFormats.join(',')}
             onChange={handleFileSelect}
-            disabled={disabled || isUploading}
+            disabled={disabled}
             className="hidden"
             aria-label={label || 'Seleccionar imagen'}
           />
@@ -265,55 +259,25 @@ export const ImagePickerField = forwardRef<HTMLInputElement, ImagePickerFieldPro
                   alt="Preview"
                   className="w-full h-full object-contain"
                 />
-
-                {/* Upload Progress Overlay */}
-                {isUploading && (
-                  <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center">
-                    <Spinner size={48} />
-                    <p className="text-white text-sm mt-2">Subiendo... {uploadProgress}%</p>
-                  </div>
-                )}
-
-                {/* Success Overlay */}
-                {isSuccess && (
-                  <div className="absolute top-2 right-2 bg-green-500 text-white px-2 py-1 rounded-md text-xs font-medium">
-                    ✓ Subida exitosa
-                  </div>
-                )}
               </div>
 
               {/* Action Buttons */}
               <div className="flex gap-2">
-                {/* Upload Button (only in manual mode when file selected but not uploaded) */}
-                {showUploadButton && (
-                  <Button
-                    onPress={() => handleUpload()}
-                    disabled={disabled || isUploading}
-                    variant="filled"
-                    className="flex-1"
-                  >
-                    <Upload className="w-4 h-4 mr-2" />
-                    Subir Imagen
-                  </Button>
-                )}
-
-                {/* Change Button (after upload or in auto mode) */}
-                {(isSuccess || !showUploadButton) && (
-                  <Button
-                    onPress={handleSelectClick}
-                    disabled={disabled || isUploading}
-                    variant="outline"
-                    className="flex-1"
-                  >
-                    <Camera className="w-4 h-4 mr-2" />
-                    Cambiar
-                  </Button>
-                )}
+                {/* Change Button */}
+                <Button
+                  onPress={handleSelectClick}
+                  disabled={disabled}
+                  variant="outline"
+                  className="flex-1"
+                >
+                  <Camera className="w-4 h-4 mr-2" />
+                  Cambiar
+                </Button>
 
                 {/* Clear Button */}
                 <Button
                   onPress={handleClear}
-                  disabled={disabled || isUploading}
+                  disabled={disabled}
                   variant="ghost"
                   className="px-3"
                   aria-label="Limpiar imagen"

@@ -7,7 +7,7 @@ import { DayOfWeek } from '@packages/domain';
 import { FUEL_TYPE } from '@packages/domain';
 
 /**
- * Step 2: Especificaciones técnicas de la máquina - RHF Implementation
+ * Step 3: Especificaciones técnicas de la máquina - RHF Implementation
  * Campos simplificados según RF-005:
  * - year (requerido)
  * - operatingHours (opcional)
@@ -16,6 +16,10 @@ import { FUEL_TYPE } from '@packages/domain';
  * - specialFeatures (opcional) 
  * - currentLocation (opcional, movido desde LocationInfoStep)
  * - isActive (opcional, default true)
+ * - assignedTo (opcional) - Sprint #13
+ * - usageSchedule (opcional) - Sprint #13
+ * 
+ * NOTA: machinePhotoUrl se maneja en PhotoStep (Step 2) con Cloudinary upload
  */
 export function TechnicalSpecsStep() {
   const {
@@ -246,63 +250,6 @@ export function TechnicalSpecsStep() {
             }}
           />
         </div>
-      </div>
-
-      {/* ✨ NUEVA SECCIÓN - Foto de Máquina - Task 3.2a */}
-      <div>
-        <h3 className="text-lg font-semibold text-foreground mb-4">
-          Imagen de la Máquina
-        </h3>
-       
-        <Controller
-          control={control}
-          name="technicalSpecs.machinePhotoUrl"
-          render={({ field: { onChange, onBlur, value } }) => {
-            const [imageError, setImageError] = React.useState(false);
-            
-            // Reset error when URL changes
-            React.useEffect(() => {
-              setImageError(false);
-            }, [value]);
-            
-            return (
-              <div className="space-y-3">
-                <InputField
-                  label="URL de foto (temporal)"
-                  type="url"
-                  value={value || ''}
-                  onChangeText={onChange}
-                  onBlur={onBlur}
-                  placeholder="https://example.com/foto-maquina.jpg"
-                  helperText="URL de imagen (temporal hasta implementar carga de archivos)"
-                  error={errors.technicalSpecs?.machinePhotoUrl?.message}
-                />
-               
-                {/* Preview de imagen si URL es válida */}
-                {value && !errors.technicalSpecs?.machinePhotoUrl && (
-                  <div className="mt-3 relative rounded-lg overflow-hidden border border-border max-w-sm">
-                    {imageError ? (
-                      <div className="w-full h-48 flex flex-col items-center justify-center bg-muted text-muted-foreground">
-                        <svg className="w-12 h-12 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                        </svg>
-                        <p className="text-sm font-medium">{t('common.imageLoadError')}</p>
-                        <p className="text-xs mt-1">Verifica que la URL sea correcta</p>
-                      </div>
-                    ) : (
-                      <img 
-                        src={value} 
-                        alt="Vista previa" 
-                        className="w-full h-48 object-cover"
-                        onError={() => setImageError(true)}
-                      />
-                    )}
-                  </div>
-                )}
-              </div>
-            );
-          }}
-        />
       </div>
 
       {/* Accesorios y características especiales */}

@@ -207,6 +207,17 @@
     },
     "registration": {
       "verificationTime": "Check your data!",
+      "uploadingPhoto": "Uploading photo to Cloudinary...",
+      "photoSaved": "Photo saved successfully",
+      "savingData": "Saving machine data...",
+      "uploadError": {
+        "title": "Photo Upload Error",
+        "message": "Could not upload photo to storage service",
+        "retry": "Retry",
+        "skipPhoto": "Skip photo and continue",
+        "cancel": "Cancel registration",
+        "tooManyRetries": "Too many failed attempts. Please try again later or continue without photo."
+      },
       "confirmation": {
         "title": "Confirm Registration",
         "description": "Are you sure you want to register this machine? This action will create a new record in the system.",

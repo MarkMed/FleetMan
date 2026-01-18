@@ -1,13 +1,14 @@
 ﻿import React, { useEffect } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { Card, CardContent, CardHeader, CardTitle } from '../../../../components/ui';
+import { Card, CardContent, CardHeader, CardTitle, ImagePickerField } from '../../../../components/ui';
 import { MachineRegistrationData } from '@contracts';
 import { useMachineTypes } from '@hooks';
+import { useMachineRegistrationContext } from '../MachineRegistrationContext';
 
 /**
- * Step 3: Confirmación y resumen de la información - RHF Implementation
- * Wizard simplificado a 2 pasos + confirmación
+ * Step 4: Confirmación y resumen de la información - RHF Implementation
+ * Shows a summary of all entered data including photo preview
  */
 export function ConfirmationStep() {
   const { 
@@ -17,10 +18,11 @@ export function ConfirmationStep() {
   } = useFormContext<MachineRegistrationData>();
   
   const { t } = useTranslation();
+  const { photoFile } = useMachineRegistrationContext();
   
   // Watch all form values for real-time updates
   const data = useWatch({ control });
-  const { basicInfo, technicalSpecs } = data;
+  const { basicInfo, technicalSpecs, addPhotoLater } = data;
   const { data: machineTypes } = useMachineTypes();
   const selectedMachineTypeName = machineTypes?.find(
     (type) => type.id === basicInfo?.machineTypeId
@@ -103,6 +105,43 @@ export function ConfirmationStep() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Photo Preview */}
+      {(photoFile || addPhotoLater) && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center space-x-2">
+              <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                <span className="text-purple-600 font-semibold">📸</span>
+              </div>
+              <span>Foto de la Máquina</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {photoFile ? (
+              <div className="space-y-2">
+                <p className="text-sm text-muted-foreground mb-3">
+                  La foto se subirá a Cloudinary al confirmar el registro
+                </p>
+                <ImagePickerField
+                  value={URL.createObjectURL(photoFile)}
+                  disabled={true}
+                  helperText={`${photoFile.name} (${(photoFile.size / 1024 / 1024).toFixed(2)} MB)`}
+                />
+              </div>
+            ) : (
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <p className="text-sm text-blue-800">
+                  ✓ Foto marcada para agregar más tarde
+                </p>
+                <p className="text-xs text-blue-600 mt-1">
+                  Podrás subir la foto desde la página de detalles después del registro
+                </p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
 
       {/* Especificaciones técnicas */}
       <Card>

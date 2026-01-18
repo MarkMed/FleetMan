@@ -3,24 +3,27 @@ import { useFormContext, Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { MachineRegistrationData } from '@contracts';
 import { ImagePickerField, Checkbox, TextBlock } from '@components/ui';
+import { useMachineRegistrationContext } from '../MachineRegistrationContext';
 
 /**
  * PhotoStep Component
  * 
- * Step 2 of Machine Registration Wizard: Photo Upload
+ * Step 2 of Machine Registration Wizard: Photo Selection
  * 
  * Features:
- * - Image picker with Cloudinary upload
- * - Optional "Add later" checkbox to skip photo upload
- * - Form validation (either photo OR checkbox must be selected)
+ * - Image picker for file selection (upload happens at submit time)
+ * - Optional "Add later" checkbox to skip photo
+ * - Form validation (either file selected OR checkbox must be checked)
+ * - File object persists in ViewModel during wizard navigation
  * 
  * Integration:
- * - Uses React Hook Form context
- * - Field: technicalSpecs.machinePhotoUrl
- * - Validates step completion before allowing next step
+ * - Uses React Hook Form context for URL field
+ * - Uses ViewModel for File object storage
+ * - Upload to Cloudinary deferred until final submit
  */
 export function PhotoStep() {
   const { t } = useTranslation();
+  const { photoFile, setPhotoFile } = useMachineRegistrationContext();
   const {
     control,
     watch,
@@ -32,14 +35,32 @@ export function PhotoStep() {
   const machinePhotoUrl = watch('technicalSpecs.machinePhotoUrl');
   const addPhotoLater = watch('addPhotoLater');
 
+  // Debug logging (can be removed in production)
+  if (process.env.NODE_ENV === 'development') {
+    console.log('🎬 PhotoStep render:', {
+      machinePhotoUrl,
+      addPhotoLater,
+      hasFile: !!photoFile,
+      fileName: photoFile?.name,
+      canContinue: !!photoFile || addPhotoLater,
+    });
+  }
+
   /**
    * Handle "Add later" checkbox change
-   * When checked, clear photo URL to avoid confusion
+   * When checked, clear photo URL and File object
    */
   const handleAddLaterChange = (checked: boolean) => {
     if (checked) {
       // Clear photo URL when user chooses to add later
       setValue('technicalSpecs.machinePhotoUrl', '', { shouldValidate: true });
+      // Clear File object from ViewModel
+      setPhotoFile(null);
+      
+      // Debug logging
+      if (process.env.NODE_ENV === 'development') {
+        console.log('🔄 Cleared photo URL and File (add later checked)');
+      }
     }
   };
 
@@ -67,13 +88,18 @@ export function PhotoStep() {
             label={t('machineRegistration.photo.label', 'Foto')}
             value={value || ''}
             onChangeText={onChange}
+            onFileSelect={(file) => {
+              setPhotoFile(file); // Store File in ViewModel
+              if (process.env.NODE_ENV === 'development') {
+                console.log('📸 File stored in ViewModel:', file?.name);
+              }
+            }}
             error={errors.technicalSpecs?.machinePhotoUrl?.message}
             helperText={t(
               'machineRegistration.photo.helperText',
-              'Formatos soportados: JPEG, PNG, WebP. Tamaño máximo: 5MB'
+              'Formatos soportados: JPEG, PNG, WebP. Tamaño máximo: 5MB. La imagen se subirá al confirmar el registro.'
             )}
             disabled={addPhotoLater} // Disable when "add later" is checked
-            manualUpload={true} // Require explicit upload button click
           />
         )}
       />
@@ -124,7 +150,7 @@ export function PhotoStep() {
       />
 
       {/* Validation Info */}
-      {!machinePhotoUrl && !addPhotoLater && (
+      {!photoFile && !addPhotoLater && (
         <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
           <div className="flex items-start">
             <svg
@@ -145,7 +171,7 @@ export function PhotoStep() {
               <p className="text-sm text-yellow-700 mt-1">
                 {t(
                   'machineRegistration.photo.requiredDescription',
-                  'Debes subir una foto o marcar la casilla para continuar.'
+                  'Debes seleccionar una foto o marcar la casilla para continuar.'
                 )}
               </p>
             </div>

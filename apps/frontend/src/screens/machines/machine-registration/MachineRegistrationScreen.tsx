@@ -3,6 +3,7 @@ import { FormProvider } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { Wizard } from "../../../components/forms/wizard";
 import { useMachineRegistrationViewModel } from "../../../viewModels/machines/MachineRegistrationViewModel";
+import { MachineRegistrationProvider } from "./MachineRegistrationContext";
 import { useRegistrationConfirmation } from "../../../hooks/useRegistrationConfirmation";
 import { MachineRegistrationData } from "@contracts";
 import { Button } from "../../../components/ui/Button";
@@ -110,22 +111,24 @@ export function MachineRegistrationScreen() {
 
       {/* FormProvider wraps the entire wizard for RHF context */}
       {!machineTypesLoading && !machineTypesError && (
-        <FormProvider {...form}>
-          <Wizard<MachineRegistrationData>
-            steps={wizardSteps}
-            initialData={form.getValues()}
-            onSubmit={handleSubmitWithConfirmation}
-            onStepChange={() => {
-              // Force wizard to re-read form values from RHF
-              forceUpdate();
-            }}
-            isSubmitting={isLoading}
-            onCancel={handleCancel}
-            timerLabel={t('machines.registration.verificationTime')}
-            className="bg-white shadow-lg rounded-lg"
-            showProgress
-          />
-        </FormProvider>
+        <MachineRegistrationProvider viewModel={viewModel}>
+          <FormProvider {...form}>
+            <Wizard<MachineRegistrationData>
+              steps={wizardSteps}
+              initialData={form.getValues()}
+              onSubmit={handleSubmitWithConfirmation}
+              onStepChange={() => {
+                // Force wizard to re-read form values from RHF
+                forceUpdate();
+              }}
+              isSubmitting={isLoading}
+              onCancel={handleCancel}
+              timerLabel={t('machines.registration.verificationTime')}
+              className="bg-white shadow-lg rounded-lg"
+              showProgress
+            />
+          </FormProvider>
+        </MachineRegistrationProvider>
       )}
     </div>
   );
