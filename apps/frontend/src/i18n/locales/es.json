@@ -48,6 +48,7 @@
     "loading": "Cargando...",
     "error": "Error",
     "success": "Éxito",
+    "or": "o",
     "cancel": "Cancelar",
     "save": "Guardar",
     "add": "Agregar",
@@ -207,6 +208,16 @@
       "maintenance": "En Mantenimiento",
       "broken": "Averiada"
     },
+    "machineRegistration": {
+      "photo": {
+        "title": "Foto de la Máquina",
+        "description": "Agrega una foto representativa de la máquina para facilitar su identificación.",
+        "label": "Foto",
+        "helperText": "Formatos soportados: JPEG, PNG, WebP. Tamaño máximo: 5MB. La imagen se subirá al confirmar el registro.",
+        "addLater": "Agregaré la foto más tarde",
+        "addLaterDescription": "Podrás subir la foto desde la página de detalles de la máquina después del registro."
+      }
+    },
     "registration": {
       "verificationTime": "¡Verifica los datos!",
       "uploadingPhoto": "Subiendo foto a Cloudinary...",
@@ -248,6 +259,55 @@
         "unknown": "Error desconocido al registrar la máquina"
       },
       "loading": "Procesando y redireccionando..."
+    },
+    "edit": {
+      "title": "Editar detalles de la máquina: {{machineName}}",
+      "subtitle": "Actualiza la información de",
+      "serialNumber": "Nº Serie",
+      "uploadingPhoto": "Subiendo nueva foto a Cloudinary...",
+      "photoSaved": "Foto actualizada exitosamente",
+      "savingData": "Guardando cambios...",
+      "uploadError": {
+        "title": "Error al subir foto",
+        "message": "No se pudo subir la foto al servicio de almacenamiento",
+        "retry": "Reintentar",
+        "skipPhoto": "Omitir foto y continuar",
+        "cancel": "Cancelar edición",
+        "tooManyRetries": "Demasiados intentos fallidos. Por favor, intenta más tarde o continúa sin cambiar la foto."
+      },
+      "confirmation": {
+        "title": "Confirmar Cambios",
+        "description": "¿Estás seguro de que deseas guardar estos cambios? Esta acción actualizará la información de la máquina.",
+        "cancelButton": "Cancelar",
+        "confirmButton": "Guardar Cambios"
+      },
+      "success": {
+        "title": "Máquina Actualizada",
+        "description": "La máquina \"{{machineName}}\" fue actualizada exitosamente.",
+        "message": "Los cambios se guardaron correctamente"
+      },
+      "error": {
+        "title": "Error al Actualizar",
+        "invalidData": "Los datos ingresados no son válidos",
+        "invalidResponse": "Respuesta inválida del servidor",
+        "noToken": "No se encontró token de autenticación. Por favor, inicia sesión nuevamente.",
+        "unknown": "Error desconocido al actualizar la máquina",
+        "notFound": "Máquina no encontrada"
+      },
+      "loading": "Cargando datos de la máquina...",
+      "photo": {
+        "title": "Foto de la Máquina",
+        "description": "Actualiza la foto de la máquina o elimínala si prefieres.",
+        "currentPhoto": "Foto actual",
+        "currentLabel": "Foto actual",
+        "changeButton": "Cambiar Foto",
+        "removeButton": "Eliminar Foto",
+        "cancelButton": "Cancelar",
+        "noPhotoNote": "No hay foto cargada actualmente. Selecciona una imagen abajo.",
+        "selectPhotoLabel": "Seleccionar Foto",
+        "helperText": "Formatos soportados: JPEG, PNG, WebP. Tamaño máximo: 5MB. La imagen se subirá al confirmar.",
+        "tip": "La foto es opcional. Puedes actualizar otros datos y mantener o eliminar la foto actual."
+      }
     },
     "events": {
       "title": "Historial de Eventos",

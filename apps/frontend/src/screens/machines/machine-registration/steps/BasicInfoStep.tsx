@@ -1,13 +1,24 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useFormContext, Controller } from 'react-hook-form';
 import { InputField, Select, Textarea, Skeleton } from '../../../../components/ui';
 import { MachineRegistrationData } from '@contracts';
 import { useMachineTypes } from '@hooks';
+import { WizardStepProps } from '../../../../components/forms/wizard';
 
 /**
  * Step 1: Información básica de la máquina - RHF Implementation
+ * 
+ * SHARED COMPONENT: Works in both registration and edit modes
+ * - In edit mode: serialNumber is READ-ONLY (immutable field)
+ * - In registration mode: serialNumber is editable
+ * 
+ * Mode detection: Checks if component receives isEditMode prop
  */
-export function BasicInfoStep() {
+interface BasicInfoStepProps extends WizardStepProps<MachineRegistrationData> {
+  isEditMode?: boolean; // Optional: set to true when using in edit wizard
+}
+
+export function BasicInfoStep({ isEditMode = false, ...wizardProps }: BasicInfoStepProps) {
   const {
     control,
     formState: { errors },
@@ -16,12 +27,11 @@ export function BasicInfoStep() {
   // Mock data para machine types (en producción vendría del ViewModel/API)
   const { data: machineTypeList, isLoading, isError } = useMachineTypes();
 
-  console.log('🌐 BasicInfoStep: machineTypeList:', machineTypeList);
-  const machineTypes = Array.isArray(machineTypeList)
-    ? machineTypeList.map((mt: any) => ({ value: mt.id, label: mt.name }))
-    // ? machineTypeList.map((mt: any) => ({ value: mt.name, label: mt.name }))
-    : [];
-  console.log('🌐 BasicInfoStep: machineTypes for Select:', machineTypes);
+  // Memoize machineTypes transformation to prevent infinite re-renders
+  const machineTypes = useMemo(() => {
+    if (!Array.isArray(machineTypeList)) return [];
+    return machineTypeList.map((mt: any) => ({ value: mt.id, label: mt.name }));
+  }, [machineTypeList]);
 
   return (
     <div className="space-y-6">
@@ -75,6 +85,8 @@ export function BasicInfoStep() {
                 onBlur={onBlur}
                 placeholder="Ej: CAT320D12345"
                 error={errors.basicInfo?.serialNumber?.message}
+                disabled={isEditMode} // READ-ONLY in edit mode (immutable field)
+                helperText={isEditMode ? 'El número de serie no puede modificarse' : undefined}
               />
             )}
           />

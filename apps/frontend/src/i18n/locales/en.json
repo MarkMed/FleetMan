@@ -48,6 +48,7 @@
     "loading": "Loading...",
     "error": "Error",
     "success": "Success",
+    "or": "or",
     "cancel": "Cancel",
     "save": "Save",
     "add": "Add",
@@ -205,6 +206,16 @@
       "maintenance": "In Maintenance",
       "broken": "Broken"
     },
+    "machineRegistration": {
+      "photo": {
+        "title": "Machine Photo",
+        "description": "Add a representative photo of the machine to facilitate its identification.",
+        "label": "Photo",
+        "helperText": "Supported formats: JPEG, PNG, WebP. Maximum size: 5MB. The image will be uploaded upon registration confirmation.",
+        "addLater": "I'll add the photo later",
+        "addLaterDescription": "You can upload the photo from the machine details page after registration."
+      }
+    },
     "registration": {
       "verificationTime": "Check your data!",
       "uploadingPhoto": "Uploading photo to Cloudinary...",
@@ -246,6 +257,55 @@
         "unknown": "Unknown error while registering machine"
       },
       "loading": "Processing and redirecting..."
+    },
+    "edit": {
+      "title": "Edit details of Machine: {{machineName}}",
+      "subtitle": "Update information for",
+      "serialNumber": "Serial No.",
+      "uploadingPhoto": "Uploading new photo to Cloudinary...",
+      "photoSaved": "Photo updated successfully",
+      "savingData": "Saving changes...",
+      "uploadError": {
+        "title": "Photo Upload Error",
+        "message": "Could not upload photo to storage service",
+        "retry": "Retry",
+        "skipPhoto": "Skip photo and continue",
+        "cancel": "Cancel editing",
+        "tooManyRetries": "Too many failed attempts. Please try again later or continue without changing the photo."
+      },
+      "confirmation": {
+        "title": "Confirm Changes",
+        "description": "Are you sure you want to save these changes? This action will update the machine information.",
+        "cancelButton": "Cancel",
+        "confirmButton": "Save Changes"
+      },
+      "success": {
+        "title": "Machine Updated",
+        "description": "Machine \"{{machineName}}\" was successfully updated.",
+        "message": "Changes saved successfully"
+      },
+      "error": {
+        "title": "Update Error",
+        "invalidData": "The entered data is not valid",
+        "invalidResponse": "Invalid response from server",
+        "noToken": "Authentication token not found. Please log in again.",
+        "unknown": "Unknown error while updating machine",
+        "notFound": "Machine not found"
+      },
+      "loading": "Loading machine data...",
+      "photo": {
+        "title": "Machine Photo",
+        "description": "Update the machine photo or remove it if you prefer.",
+        "currentPhoto": "Current photo",
+        "currentLabel": "Current photo",
+        "changeButton": "Change Photo",
+        "removeButton": "Remove Photo",
+        "cancelButton": "Cancel",
+        "noPhotoNote": "No photo currently loaded. Select an image below.",
+        "selectPhotoLabel": "Select Photo",
+        "helperText": "Supported formats: JPEG, PNG, WebP. Maximum size: 5MB. Image will be uploaded on confirmation.",
+        "tip": "Photo is optional. You can update other data and keep or remove the current photo."
+      }
     },
     "events": {
       "title": "Event History",
