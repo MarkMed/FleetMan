@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { MachineRegistrationData } from '@contracts';
 import { ImagePickerField, Button, TextBlock } from '@components/ui';
 import { useMachineEditContext } from '../MachineEditContext';
-import { Trash2, RefreshCw } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 
 /**
  * PhotoStepEdit Component
