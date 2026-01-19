@@ -13,8 +13,7 @@ import { useMachineEditContext } from '../MachineEditContext';
  */
 export function ConfirmationStepEdit() {
   const { 
-    control,
-    getValues
+    control
   } = useFormContext<MachineRegistrationData>();
   
   const { t } = useTranslation();
@@ -22,7 +21,7 @@ export function ConfirmationStepEdit() {
   
   // Watch all form values for real-time updates
   const data = useWatch({ control });
-  const { basicInfo, technicalSpecs, addPhotoLater } = data;
+  const { basicInfo, technicalSpecs } = data;
   const { data: machineTypes } = useMachineTypes();
   const selectedMachineTypeName = machineTypes?.find(
     (type) => type.id === basicInfo?.machineTypeId
