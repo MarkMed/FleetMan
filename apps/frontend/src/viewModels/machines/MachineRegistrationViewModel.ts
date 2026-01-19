@@ -114,16 +114,9 @@ export function useMachineRegistrationViewModel(): MachineRegistrationViewModel 
   // Photo file management - stored in memory during wizard navigation
   const [photoFile, setPhotoFile] = useState<File | null>(null);
 
-  // Cleanup: Revoke object URLs to prevent memory leaks
-  useEffect(() => {
-    return () => {
-      if (photoFile) {
-        // Clean up any object URLs that may have been created
-        console.log('🧹 Cleaning up photoFile on unmount');
-        setPhotoFile(null);
-      }
-    };
-  }, [photoFile]);
+  // NOTE: No cleanup useEffect needed here. Adding photoFile to cleanup dependencies
+  // causes it to reset to null when changing from one image to another, breaking the UX.
+  // Blob URLs are automatically garbage collected by the browser.
 
   // Force re-render when form state changes to make validation reactive
   const [, forceUpdateReducer] = useReducer(x => x + 1, 0);
@@ -233,8 +226,6 @@ export function useMachineRegistrationViewModel(): MachineRegistrationViewModel 
         throw new Error(t('machines.registration.error.invalidData'));
       }
 
-      console.log('✔️ Submitting machine registration:', currentFormData);
-
       // ============================================
       // STEP 1: Upload photo to Cloudinary if exists
       // ============================================
@@ -245,15 +236,8 @@ export function useMachineRegistrationViewModel(): MachineRegistrationViewModel 
           // Show loading modal while uploading
           modal.showLoading(t('machines.registration.uploadingPhoto'));
           
-          console.log('📤 Uploading photo to Cloudinary...', {
-            fileName: photoFile.name,
-            fileSize: (photoFile.size / 1024 / 1024).toFixed(2) + 'MB',
-          });
-          
           // Upload to Cloudinary
           cloudinaryUrl = await uploadImageToCloudinary(photoFile);
-          
-          console.log('✅ Photo uploaded to Cloudinary:', cloudinaryUrl);
           
           // Show success feedback briefly
           modal.showFeedback({
@@ -288,7 +272,6 @@ export function useMachineRegistrationViewModel(): MachineRegistrationViewModel 
           
           // User chose "Cargar Luego" - set addPhotoLater flag
           form.setValue('addPhotoLater', true);
-          console.log('ℹ️ User chose to skip photo upload, continuing without photo');
         }
       }
       
@@ -307,7 +290,6 @@ export function useMachineRegistrationViewModel(): MachineRegistrationViewModel 
       
       // Map wizard data to API request format
       const payload = mapWizardDataToDomain(currentFormData);
-      console.log('✔️ Mapped payload:', payload);
       
       // Get token from auth store
       const token = getSessionToken();
@@ -320,8 +302,6 @@ export function useMachineRegistrationViewModel(): MachineRegistrationViewModel 
         Authorization: `Bearer ${token}`,
       };
       
-      console.log('ℹ️ Sending request with Authorization header');
-      
       // Call API to create machine
       const response = await machineService.createMachine(payload, headers);
       
@@ -329,8 +309,6 @@ export function useMachineRegistrationViewModel(): MachineRegistrationViewModel 
       if (!response || !response.data) {
         throw new Error(t('machines.registration.error.invalidResponse'));
       }
-
-      console.log('✅ Machine registered successfully:', response.data);
       
       // ============================================
       // STEP 4: Cleanup and redirect

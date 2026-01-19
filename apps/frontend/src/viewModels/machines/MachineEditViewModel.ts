@@ -262,25 +262,16 @@ export function useMachineEditViewModel(machineId: string): MachineEditViewModel
       // ============================================
       // STEP 1: Handle photo changes
       // ============================================
-      let finalPhotoUrl: string | undefined = existingPhotoUrl || '';
+      let finalPhotoUrl: string | undefined;
 
       if (shouldRemovePhoto) {
         // User wants to remove photo
-        console.log('🗑️ Removing photo');
         finalPhotoUrl = '';
       } else if (photoFile) {
         // User selected a new photo - upload to Cloudinary
         try {
-          modal.showLoading(t('machines.edit.uploadingPhoto'));
-          
-          console.log('📤 Uploading new photo to Cloudinary...', {
-            fileName: photoFile.name,
-            fileSize: (photoFile.size / 1024 / 1024).toFixed(2) + 'MB',
-          });
-          
+          modal.showLoading(t('machines.edit.uploadingPhoto'));          
           finalPhotoUrl = await uploadImageToCloudinary(photoFile);
-          
-          console.log('✅ Photo uploaded to Cloudinary:', finalPhotoUrl);
           
           modal.showFeedback({
             title: t('machines.edit.photoSaved'),
@@ -310,7 +301,6 @@ export function useMachineEditViewModel(machineId: string): MachineEditViewModel
           
           // User chose to keep current photo
           finalPhotoUrl = existingPhotoUrl || '';
-          console.log('ℹ️ User chose to keep current photo');
         }
       } else {
         // No changes to photo - keep existing
@@ -378,7 +368,8 @@ export function useMachineEditViewModel(machineId: string): MachineEditViewModel
       setIsLoading(false);
     }
   }, [form, navigate, t, photoFile, existingPhotoUrl, shouldRemovePhoto, machineId]);
-  // Nota: updateMutation.mutateAsync es estable, no necesita estar en dependencias
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // NOTE: updateMutation.mutateAsync is stable and doesn't need to be in dependencies
 
   /**
    * Handle cancel action
@@ -406,50 +397,6 @@ export function useMachineEditViewModel(machineId: string): MachineEditViewModel
     setPhotoFile(null);
     setShouldRemovePhoto(false);
   }, [form, machine]);
-
-  // DEBUG: Detectar qué dependencia está cambiando
-  const prevDeps = useRef({
-    form,
-    wizardSteps,
-    forceUpdate,
-    isLoading,
-    isLoadingMachineData,
-    error,
-    photoFile,
-    existingPhotoUrl,
-    shouldRemovePhoto,
-    machine,
-    machineTypeList,
-    machineTypesLoading,
-    machineTypesError,
-    handleWizardSubmit,
-    handleCancel,
-    reset,
-  });
-
-  useEffect(() => {
-    const prev = prevDeps.current;
-    const current = {
-      form,
-      wizardSteps,
-      forceUpdate,
-      isLoading,
-      isLoadingMachineData,
-      error,
-      photoFile,
-      existingPhotoUrl,
-      shouldRemovePhoto,
-      machine,
-      machineTypeList,
-      machineTypesLoading,
-      machineTypesError,
-      handleWizardSubmit,
-      handleCancel,
-      reset,
-    };
-
-    prevDeps.current = current;
-  });
 
   // Memoizar el objeto retornado para evitar re-renders innecesarios del contexto
   return useMemo(() => ({

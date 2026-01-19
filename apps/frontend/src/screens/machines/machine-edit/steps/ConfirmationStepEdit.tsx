@@ -27,15 +27,6 @@ export function ConfirmationStepEdit() {
   const selectedMachineTypeName = machineTypes?.find(
     (type) => type.id === basicInfo?.machineTypeId
   )?.name;
-  
-  // Debug: también loggear los valores del form
-  useEffect(() => {
-    console.log('ConfirmationStepEdit - Watched data:', data);
-    console.log('ConfirmationStepEdit - Form values:', getValues());
-    console.log('ConfirmationStepEdit - photoFile:', photoFile);
-    console.log('ConfirmationStepEdit - existingPhotoUrl:', existingPhotoUrl);
-    console.log('ConfirmationStepEdit - shouldRemovePhoto:', shouldRemovePhoto);
-  }, [data, getValues, photoFile, existingPhotoUrl, shouldRemovePhoto]);
 
   // Helper para mostrar valores con fallback
   const displayValue = (value: any, fallback?: string) => {
@@ -58,6 +49,15 @@ export function ConfirmationStepEdit() {
   // If shouldRemovePhoto is true, don't show existing photo even if URL exists
   const hasPhoto = shouldRemovePhoto ? !!photoFile : (photoFile || existingPhotoUrl);
   const photoUrl = photoFile ? URL.createObjectURL(photoFile) : (shouldRemovePhoto ? undefined : (existingPhotoUrl || undefined));
+
+  // Cleanup: Revoke blob URL to prevent memory leaks
+  useEffect(() => {
+    return () => {
+      if (photoFile && photoUrl) {
+        URL.revokeObjectURL(photoUrl);
+      }
+    };
+  }, [photoFile, photoUrl]);
 
   return (
     <div className="space-y-6">

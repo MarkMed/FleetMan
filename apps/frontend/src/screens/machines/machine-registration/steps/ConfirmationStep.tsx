@@ -27,12 +27,6 @@ export function ConfirmationStep() {
   const selectedMachineTypeName = machineTypes?.find(
     (type) => type.id === basicInfo?.machineTypeId
   )?.name;
-  
-  // Debug: también loggear los valores del form
-  useEffect(() => {
-    console.log('ConfirmationStep - Watched data:', data);
-    console.log('ConfirmationStep - Form values:', getValues());
-  }, [data, getValues]);
 
   // Helper para mostrar valores con fallback
   const displayValue = (value: any, fallback?: string) => {
@@ -50,6 +44,18 @@ export function ConfirmationStep() {
     if (!fuelType) return t('common.notSpecified');
     return t(`machines.fuelTypes.${fuelType}`);
   };
+
+  // Create blob URL for preview
+  const photoPreviewUrl = photoFile ? URL.createObjectURL(photoFile) : null;
+
+  // Cleanup: Revoke blob URL to prevent memory leaks
+  useEffect(() => {
+    return () => {
+      if (photoPreviewUrl) {
+        URL.revokeObjectURL(photoPreviewUrl);
+      }
+    };
+  }, [photoPreviewUrl]);
 
   return (
     <div className="space-y-6">

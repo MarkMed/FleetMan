@@ -269,6 +269,7 @@
         "title": "Photo Upload Error",
         "message": "Could not upload photo to storage service",
         "retry": "Retry",
+        "keepCurrent": "Keep current photo",
         "skipPhoto": "Skip photo and continue",
         "cancel": "Cancel editing",
         "tooManyRetries": "Too many failed attempts. Please try again later or continue without changing the photo."

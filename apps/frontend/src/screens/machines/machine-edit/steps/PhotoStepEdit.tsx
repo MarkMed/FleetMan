@@ -25,18 +25,8 @@ import { Trash2 } from 'lucide-react';
  * - Upload to Cloudinary deferred until final submit
  */
 export function PhotoStepEdit() {
-  console.log('🟢 [PhotoStepEdit] Componente renderizando...');
   const { t } = useTranslation();
   const viewModel = useMachineEditContext();
-  
-  console.log('🟢 [PhotoStepEdit] Referencia del contexto:', viewModel);
-  console.log('🟢 [PhotoStepEdit] Valores del contexto:', { 
-    photoFile: viewModel.photoFile?.name || null, 
-    existingPhotoUrl: viewModel.existingPhotoUrl,
-    shouldRemovePhoto: viewModel.shouldRemovePhoto,
-    setPhotoFile: typeof viewModel.setPhotoFile,
-    setShouldRemovePhoto: typeof viewModel.setShouldRemovePhoto
-  });
   
   const { 
     photoFile, 
@@ -52,18 +42,7 @@ export function PhotoStepEdit() {
   renderCountRef.current += 1;
   
   useEffect(() => {
-    console.log('🟣 [PhotoStepEdit] MONTADO (render #' + renderCountRef.current + ')');
-    
-    return () => {
-      console.log('🔴 [PhotoStepEdit] DESMONTADO');
-    };
-  }, []);
-  
-  useEffect(() => {
     if (prevViewModelRef.current !== viewModel) {
-      console.log('🔴 [PhotoStepEdit] ¡CONTEXTO CAMBIÓ DE REFERENCIA!');
-      console.log('🔴 [PhotoStepEdit] Anterior:', prevViewModelRef.current);
-      console.log('🔴 [PhotoStepEdit] Nuevo:', viewModel);
       prevViewModelRef.current = viewModel;
     }
   });
@@ -77,46 +56,35 @@ export function PhotoStepEdit() {
   // Initialize based on existingPhotoUrl - use lazy initialization to avoid recalculation
   const [showImagePicker, setShowImagePicker] = useState(() => {
     const initial = !existingPhotoUrl;
-    console.log('🟢 [PhotoStepEdit] Inicializando showImagePicker (lazy):', initial, 'existingPhotoUrl:', existingPhotoUrl);
+    
     return initial;
   });
 
   // Memoize the preview URL to avoid creating new URLs on every render
   const photoPreviewUrl = useMemo(() => {
-    console.log('🖼️ [photoPreviewUrl] Recalculando...', { 
-      hasPhotoFile: !!photoFile, 
-      fileName: photoFile?.name,
-      blobSize: photoFile?.size 
-    });
     
     if (photoFile) {
       const url = URL.createObjectURL(photoFile);
-      console.log('🖼️ [photoPreviewUrl] Nueva URL creada:', url);
       return url;
     }
     
-    console.log('🖼️ [photoPreviewUrl] No hay photoFile, retornando vacío');
     return '';
   }, [photoFile]);
 
-  // Debug logging (can be removed in production)
-  console.log('🟢 [PhotoStepEdit] ===== RENDER COMPLETO =====');
-  console.log('🟢 [PhotoStepEdit] Estado final antes de retornar JSX:', {
-    existingPhotoUrl,
-    hasNewFile: !!photoFile,
-    fileName: photoFile?.name,
-    shouldRemovePhoto,
-    showImagePicker,
-    photoPreviewUrl: photoPreviewUrl ? 'presente' : 'vacío'
-  });
-  console.log('🟢 [PhotoStepEdit] =============================');
+  // Cleanup: Revoke blob URL to prevent memory leaks
+  useEffect(() => {
+    return () => {
+      if (photoPreviewUrl) {
+        URL.revokeObjectURL(photoPreviewUrl);
+      }
+    };
+  }, [photoPreviewUrl]);
 
   /**
    * Handle "Remove Photo" button click
    * Marks photo for deletion and shows ImagePicker for optional new selection
    */
   const handleRemovePhoto = () => {
-    console.log('🗑️ User clicked Remove Photo');
     setShouldRemovePhoto(true);
     setShowImagePicker(true);
     setValue('technicalSpecs.machinePhotoUrl', '', { shouldValidate: true });
@@ -139,7 +107,6 @@ export function PhotoStepEdit() {
    * Handle "Cancel" (revert to showing existing photo)
    */
   const handleCancelChange = () => {
-    console.log('↩️ User cancelled photo change');
     setShowImagePicker(false);
     setPhotoFile(null);
     setShouldRemovePhoto(false);

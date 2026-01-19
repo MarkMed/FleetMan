@@ -271,6 +271,7 @@
         "title": "Error al subir foto",
         "message": "No se pudo subir la foto al servicio de almacenamiento",
         "retry": "Reintentar",
+        "keepCurrent": "Mantener foto actual",
         "skipPhoto": "Omitir foto y continuar",
         "cancel": "Cancelar edición",
         "tooManyRetries": "Demasiados intentos fallidos. Por favor, intenta más tarde o continúa sin cambiar la foto."

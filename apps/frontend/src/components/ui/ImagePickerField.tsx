@@ -130,6 +130,10 @@ export const ImagePickerField = forwardRef<HTMLInputElement, ImagePickerFieldPro
     useEffect(() => {
       // If external value is empty and we have a preview, clear it
       if (!value && previewUrl) {
+        // Revoke blob URL if it's one before clearing
+        if (previewUrl.startsWith('blob:')) {
+          URL.revokeObjectURL(previewUrl);
+        }
         setPreviewUrl(null);
         setSelectedFile(null);
         setUploadState('idle');
@@ -139,10 +143,25 @@ export const ImagePickerField = forwardRef<HTMLInputElement, ImagePickerFieldPro
       // If external value exists and it's different from current preview, update it
       // This handles cases where value is set externally (e.g., loading saved data)
       if (value && value !== previewUrl) {
+        // Revoke old blob URL if it exists
+        if (previewUrl && previewUrl.startsWith('blob:')) {
+          URL.revokeObjectURL(previewUrl);
+        }
         setPreviewUrl(value);
         setUploadState('idle'); // Reset to idle for external URLs
       }
     }, [value]); // Only depend on value, not previewUrl to avoid loops
+
+    /**
+     * Cleanup: Revoke blob URL on unmount to prevent memory leaks
+     */
+    useEffect(() => {
+      return () => {
+        if (previewUrl && previewUrl.startsWith('blob:')) {
+          URL.revokeObjectURL(previewUrl);
+        }
+      };
+    }, [previewUrl]);
 
     /**
      * Handle file selection from input
