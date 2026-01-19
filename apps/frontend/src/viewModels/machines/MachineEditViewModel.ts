@@ -8,7 +8,6 @@ import {
   CreateMachineResponse,
   UpdateMachineRequest,
 } from '@contracts';
-import { getSessionToken } from '../../store/slices/authSlice';
 import { WizardStep } from '../../components/forms/wizard';
 import { TechnicalSpecsStep } from '../../screens/machines/machine-registration/steps';
 import { PhotoStepEdit, BasicInfoStepEdit, ConfirmationStepEdit } from '../../screens/machines/machine-edit/steps';
@@ -253,8 +252,6 @@ export function useMachineEditViewModel(machineId: string): MachineEditViewModel
     try {
       // Use form.getValues() as single source of truth
       const currentFormData = form.getValues();
-      const machineName = currentFormData.basicInfo?.name?.trim() 
-        || `${currentFormData.basicInfo?.brand} ${currentFormData.basicInfo?.modelName}`.trim();
       
       // Trigger validation
       const isValid = await form.trigger();
