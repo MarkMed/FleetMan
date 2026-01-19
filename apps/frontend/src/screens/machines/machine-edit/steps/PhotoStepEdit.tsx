@@ -154,12 +154,12 @@ export function PhotoStepEdit() {
       {/* Header */}
       <div className="space-y-2">
         <TextBlock as="h2" size="large" weight="medium">
-          {t('machines.edit.photo.title', 'Foto de la Máquina')}
+          {t('machines.edit.photo.title', 'Machine Picture')}
         </TextBlock>
         <TextBlock as="p" size="medium" className="text-gray-600">
           {t(
             'machines.edit.photo.description',
-            'Actualiza la foto de la máquina o elimínala si prefieres.'
+            'Update the machine picture or remove it if you prefer.'
           )}
         </TextBlock>
       </div>
@@ -173,13 +173,13 @@ export function PhotoStepEdit() {
             {/* Label */}
             <div className="mt-2">
               <TextBlock size="small" weight="medium" className="text-gray-700">
-                {t('machines.edit.photo.currentLabel', 'Foto actuall')}
+                {t('machines.edit.photo.currentLabel', 'Current Photo')}
               </TextBlock>
             </div>
             <div className="aspect-video rounded-lg overflow-hidden bg-muted border-2 border-gray-200">
               <img
                 src={existingPhotoUrl}
-                alt={t('machines.edit.photo.currentPhoto', 'Foto actual')}
+                alt={t('machines.edit.photo.currentPhoto', 'Current Photo')}
                 className="w-full h-full object-cover"
               />
             </div>
@@ -194,7 +194,7 @@ export function PhotoStepEdit() {
               className="border-destructive/30 text-destructive hover:bg-destructive/10"
             >
               <Trash2 className="w-4 h-4 mr-2" />
-              {t('machines.edit.photo.removeButton', 'Eliminar Foto')}
+              {t('machines.edit.photo.removeButton', 'Remove Photo')}
             </Button>
           </div>
         </div>
@@ -286,7 +286,7 @@ export function PhotoStepEdit() {
       {/* Info box about optional photo */}
       <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
         <TextBlock size="small" className="text-blue-900">
-          💡 {t('machines.edit.photo.tip', 'La foto es opcional. Puedes actualizar otros datos y mantener o eliminar la foto actual.')}
+          💡 {t('machines.edit.photo.tip', 'The photo is optional. You can update other details and keep or remove the current photo.')}
         </TextBlock>
       </div>
     </div>
