@@ -43,3 +43,9 @@ coverage/
 sw.js
 workbox-*.js
 dev-dist/
+
+# envs
+.env
+.env.development
+.env.production
+.env.test
