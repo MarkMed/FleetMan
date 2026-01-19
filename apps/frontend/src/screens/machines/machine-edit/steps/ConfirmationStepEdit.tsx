@@ -13,8 +13,7 @@ import { useMachineEditContext } from '../MachineEditContext';
  */
 export function ConfirmationStepEdit() {
   const { 
-    control, 
-    formState: { errors },
+    control,
     getValues
   } = useFormContext<MachineRegistrationData>();
   
