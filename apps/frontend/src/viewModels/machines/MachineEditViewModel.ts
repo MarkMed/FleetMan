@@ -323,6 +323,9 @@ export function useMachineEditViewModel(machineId: string): MachineEditViewModel
       // Map wizard data to API request format
       const payload = mapWizardDataToUpdateRequest(currentFormData);
       
+      console.log('🔍 DEBUG - Update payload:', payload);
+      console.log('🔍 DEBUG - Current form data:', currentFormData);
+      
       // Call mutation to update machine
       await updateMutation.mutateAsync(payload);
       
@@ -499,11 +502,12 @@ function mapMachineToWizardData(machine: CreateMachineResponse): MachineRegistra
  * @returns Datos en formato UpdateMachineRequest
  */
 function mapWizardDataToUpdateRequest(wizardData: MachineRegistrationData): UpdateMachineRequest {
-  return {
+  const payload: UpdateMachineRequest = {
     // Basic info
     brand: wizardData.basicInfo.brand,
     modelName: wizardData.basicInfo.modelName,
     nickname: wizardData.basicInfo.name,
+    machineTypeId: wizardData.basicInfo.machineTypeId,
     
     // Assignment
     assignedTo: wizardData.technicalSpecs.assignedTo,
@@ -526,4 +530,13 @@ function mapWizardDataToUpdateRequest(wizardData: MachineRegistrationData): Upda
     // Usage schedule
     usageSchedule: wizardData.technicalSpecs.usageSchedule,
   };
+  
+  // Clean up undefined values to avoid strict mode validation errors
+  Object.keys(payload).forEach(key => {
+    if (payload[key as keyof UpdateMachineRequest] === undefined) {
+      delete payload[key as keyof UpdateMachineRequest];
+    }
+  });
+  
+  return payload;
 }

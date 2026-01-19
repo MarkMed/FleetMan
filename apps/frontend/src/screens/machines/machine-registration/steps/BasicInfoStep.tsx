@@ -93,6 +93,12 @@ export function BasicInfoStep({ isEditMode = false, ...wizardProps }: BasicInfoS
         </div>
         
         {/* Tipo de máquina */}
+        {/* BUSINESS DECISION: machineTypeId IS editable in edit mode (unlike serialNumber)
+            Rationale: Machines may need reclassification (e.g., specialized excavator → standard excavator)
+            Backend validates that the new machineTypeId exists before persisting.
+            Alternative consideration: If machineTypeId should be immutable (like serialNumber),
+            add disabled={isEditMode} prop and helperText explaining it cannot be changed.
+        */}
         <Controller
           control={control}
           name="basicInfo.machineTypeId"
@@ -108,6 +114,8 @@ export function BasicInfoStep({ isEditMode = false, ...wizardProps }: BasicInfoS
                 options={machineTypes}
                 placeholder={isError ? 'Error al cargar tipos' : 'Selecciona un tipo'}
                 error={errors.basicInfo?.machineTypeId?.message}
+                // disabled={isEditMode} // TODO: Uncomment if machineTypeId should be immutable
+                // helperText={isEditMode ? 'El tipo de máquina no puede modificarse' : undefined}
               />
             )
           )}
