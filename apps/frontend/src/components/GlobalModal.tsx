@@ -64,6 +64,7 @@ export function GlobalModal() {
       // Call onConfirm callback if provided
       if (config.onConfirm) {
         await config.onConfirm();
+        // callback should include the logic to close the modal
       }
       
       // Resolve promise for confirmation modals
@@ -71,8 +72,6 @@ export function GlobalModal() {
         resolver(true);
       }
       
-      // Close modal
-      hideModal();
     } catch (error) {
       console.error('Error in modal confirm handler:', error);
       // Don't close modal if there's an error
@@ -114,7 +113,6 @@ export function GlobalModal() {
   const getVariantStrategy = () => {
     const variant = config.variant !== "default" ? config.variant : (config.feedbackVariant !== undefined ? config.feedbackVariant : 'info');
     const strategyResult = modalVariantStrategyFactory.getStrategy(variant);
-    console.log('Using modal strategy for variant:', config, strategyResult);
     return strategyResult;
   };
 
@@ -235,10 +233,10 @@ export function GlobalModal() {
               {/* Cancel Button */}
               {config.showCancel && (
                 <Button
-                  variant={getCancelButtonVariant()}
+                  variant={config.cancelButtonVariant || getCancelButtonVariant()}
                   onPress={handleCancel}
                   disabled={config.loading}
-                  className="flex-1 sm:flex-none"
+                  className={cn("flex-1 sm:flex-none", config.cancelButtonClassName)}
                 >
                   {config.cancelText || 'Cancelar'}
                 </Button>

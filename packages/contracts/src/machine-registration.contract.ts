@@ -100,10 +100,15 @@ export const MachineTechnicalSpecsSchema = z.object({
 /**
  * Schema completo para el wizard de registro de máquina - SIMPLIFICADO
  * Solo 2 steps: BasicInfo + TechnicalSpecs (con ubicación incluida)
+ * ✨ UPDATED: Agregado addPhotoLater para permitir skip de foto
  */
 export const MachineRegistrationSchema = z.object({
   basicInfo: MachineBasicInfoSchema,
   technicalSpecs: MachineTechnicalSpecsSchema,
+  
+  // UI-only field: Checkbox to skip photo upload
+  // Not sent to backend - only used for wizard validation
+  addPhotoLater: z.boolean().optional().default(false),
 });
 
 // ============================
@@ -191,4 +196,6 @@ export const defaultMachineRegistrationData: Partial<MachineRegistrationData> = 
     usageSchedule: undefined,
     machinePhotoUrl: '',
   },
+  // UI-only field
+  addPhotoLater: false,
 };

@@ -8,6 +8,8 @@ export { Spinner } from './Spinner';
 export { Badge, badgeVariants } from './Badge';
 export { Switch } from './Switch';
 export { Input } from './Input';
+export { InputField } from './InputField';
+export { ImagePickerField } from './ImagePickerField';
 export { 
   Modal,
   ModalRoot,
@@ -19,9 +21,9 @@ export {
   ModalDescription,
   ModalClose,
 } from './Modal';
-export { InputField } from './InputField';
 export { Select } from './Select';
 export { Textarea } from './Textarea';
+export { TagInput } from './TagInput';
 export { Checkbox } from './Checkbox';
 export { 
   TextBlock, 

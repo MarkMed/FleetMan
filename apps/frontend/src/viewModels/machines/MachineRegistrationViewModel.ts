@@ -13,13 +13,14 @@ import { machineService } from '../../services/api/machineService';
 import { getSessionToken } from '../../store/slices/authSlice';
 import { useAuthStore } from '../../store/slices/authSlice';
 import { WizardStep } from '../../components/forms/wizard';
-import { BasicInfoStep, TechnicalSpecsStep, ConfirmationStep } from '../../screens/machines/machine-registration/steps';
+import { BasicInfoStep, PhotoStep, TechnicalSpecsStep, ConfirmationStep } from '../../screens/machines/machine-registration/steps';
 import { useZodForm } from '../../hooks/useZodForm';
 import { useMachineTypes } from '../../hooks';
 import type { MachineTypeResponse } from '@contracts';
 import { toast } from '@components/ui';
 import { useNavigate } from 'react-router-dom';
 import { modal } from '@helpers/modal';
+import { uploadImageToCloudinary } from '../../services/cloudinary/cloudinaryService';
 
 // TODO: Importar desde @useCases cuando esté implementado
 // import { CreateMachineUseCase } from '@useCases/machines';
@@ -35,6 +36,24 @@ export interface MachineRegistrationViewModel {
   // UI State
   isLoading: boolean;
   error: string | null;
+  
+  // Photo file management (stored in memory during wizard navigation)
+  photoFile: File | null;
+  setPhotoFile: (file: File | null) => void;
+  
+  // TODO: Strategic feature - Upload progress tracking
+  // uploadProgress?: number; // 0-100 percentage for Cloudinary upload
+  // Purpose: Show progress bar during photo upload for better UX on slow connections
+  
+  // TODO: Strategic feature - Upload retry management
+  // uploadRetryCount?: number; // Track automatic retry attempts
+  // maxRetries?: number; // Configurable max retries (default: 2)
+  // Purpose: Implement exponential backoff retry strategy for failed uploads
+  
+  // TODO: Strategic feature - Offline support
+  // isOffline?: boolean; // Track network connectivity
+  // queuedUploads?: File[]; // Queue uploads when offline
+  // Purpose: Allow form completion offline and upload when connection restored
   
   // Actions
   handleWizardSubmit: (_wizardData: MachineRegistrationData) => Promise<void>;
@@ -56,12 +75,26 @@ export interface MachineRegistrationViewModel {
  * - Orquestar use cases de creación de máquina
  * - Manejar UI state (loading, errors)
  * - Transformar datos entre UI format y domain format
+ * - Gestionar upload de foto a Cloudinary en submit flow
  *
  * FEATURES IMPLEMENTADAS:
  * • React Hook Form con validación Zod
  * • Wizard configuration con steps y validaciones
  * • Manejo de errores granular
  * • Sincronización perfecta wizard <-> RHF
+ * • Upload de imagen diferido hasta submit final
+ * • File object persistence durante navegación del wizard
+ * • Modales de feedback para upload (loading/success/error)
+ * • Opción "Cargar Luego" cuando upload falla
+ * • Cleanup automático de File object al desmontar
+ * 
+ * FLUJO DE SUBMIT:
+ * 1. Validar datos del formulario
+ * 2. Si existe photoFile: Upload a Cloudinary con modal de feedback
+ * 3. En caso de error: Modal con opciones (Reintentar/Cargar Luego/Cancelar)
+ * 4. Actualizar form con URL de Cloudinary
+ * 5. Crear máquina en backend con todos los datos
+ * 6. Cleanup y redirección
  */
 export function useMachineRegistrationViewModel(): MachineRegistrationViewModel {
   const { t } = useTranslation();
@@ -77,6 +110,13 @@ export function useMachineRegistrationViewModel(): MachineRegistrationViewModel 
   // UI State
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Photo file management - stored in memory during wizard navigation
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
+
+  // NOTE: No cleanup useEffect needed here. Adding photoFile to cleanup dependencies
+  // causes it to reset to null when changing from one image to another, breaking the UX.
+  // Blob URLs are automatically garbage collected by the browser.
 
   // Force re-render when form state changes to make validation reactive
   const [, forceUpdateReducer] = useReducer(x => x + 1, 0);
@@ -115,6 +155,19 @@ export function useMachineRegistrationViewModel(): MachineRegistrationViewModel 
       },
     },
     {
+      title: 'Foto de la Máquina',
+      description: 'Imagen representativa',
+      component: PhotoStep,
+      isValid: () => {
+        // Valid if either photoFile selected OR "add later" checked
+        const formValues = form.getValues();
+        const hasPhotoFile = photoFile !== null;
+        const addLater = formValues.addPhotoLater === true;
+        
+        return hasPhotoFile || addLater;
+      },
+    },
+    {
       title: 'Especificaciones Técnicas',
       description: 'Detalles técnicos y ubicación',
       component: TechnicalSpecsStep,
@@ -149,6 +202,13 @@ export function useMachineRegistrationViewModel(): MachineRegistrationViewModel 
 
   /**
    * Handle wizard submit - main business logic
+   * 
+   * Flow:
+   * 1. Validate form data
+   * 2. If photoFile exists: Upload to Cloudinary first
+   * 3. Use Cloudinary URL in machine data
+   * 4. Create machine in backend
+   * 5. Cleanup and redirect
    */
   const handleWizardSubmit = useCallback(async (_wizardData: MachineRegistrationData): Promise<void> => {
     setIsLoading(true);
@@ -166,11 +226,70 @@ export function useMachineRegistrationViewModel(): MachineRegistrationViewModel 
         throw new Error(t('machines.registration.error.invalidData'));
       }
 
-      console.log('✔️ Submitting machine registration:', currentFormData);
+      // ============================================
+      // STEP 1: Upload photo to Cloudinary if exists
+      // ============================================
+      let cloudinaryUrl: string | undefined = undefined;
+      
+      if (photoFile) {
+        try {
+          // Show loading modal while uploading
+          modal.showLoading(t('machines.registration.uploadingPhoto'));
+          
+          // Upload to Cloudinary
+          cloudinaryUrl = await uploadImageToCloudinary(photoFile);
+          
+          // Show success feedback briefly
+          modal.showFeedback({
+            title: t('machines.registration.photoSaved'),
+            variant: 'success',
+            dismissible: true,
+          });
+          
+          // Wait for success modal to show, then auto-close
+          await new Promise(resolve => setTimeout(resolve, 1500));
+          modal.hide();
+          
+        } catch (uploadError) {
+          console.error('❌ Error uploading photo to Cloudinary:', uploadError);
+          
+          // Hide loading modal
+          modal.hide();
+          
+          // Show error modal with options
+          const shouldContinue = await modal.confirm({
+            title: t('machines.registration.uploadError.title'),
+            description: t('machines.registration.uploadError.message'),
+            confirmText: t('machines.registration.uploadError.skipPhoto'),
+            cancelText: t('machines.registration.uploadError.cancel'),
+            action: 'warning',
+          });
+          
+          if (!shouldContinue) {
+            // User chose to cancel the entire registration
+            throw new Error(t('machines.registration.error.cancelled'));
+          }
+          
+          // User chose "Cargar Luego" - set addPhotoLater flag
+          form.setValue('addPhotoLater', true);
+        }
+      }
+      
+      // ============================================
+      // STEP 2: Update form with Cloudinary URL
+      // ============================================
+      if (cloudinaryUrl) {
+        form.setValue('technicalSpecs.machinePhotoUrl', cloudinaryUrl);
+        currentFormData.technicalSpecs.machinePhotoUrl = cloudinaryUrl;
+      }
+      
+      // ============================================
+      // STEP 3: Create machine in backend
+      // ============================================
+      modal.showLoading(t('machines.registration.savingData'));
       
       // Map wizard data to API request format
       const payload = mapWizardDataToDomain(currentFormData);
-      console.log('✔️ Mapped payload:', payload);
       
       // Get token from auth store
       const token = getSessionToken();
@@ -183,8 +302,6 @@ export function useMachineRegistrationViewModel(): MachineRegistrationViewModel 
         Authorization: `Bearer ${token}`,
       };
       
-      console.log('ℹ️ Sending request with Authorization header');
-      
       // Call API to create machine
       const response = await machineService.createMachine(payload, headers);
       
@@ -192,19 +309,30 @@ export function useMachineRegistrationViewModel(): MachineRegistrationViewModel 
       if (!response || !response.data) {
         throw new Error(t('machines.registration.error.invalidResponse'));
       }
-
-      console.log('✅ Machine registered successfully:', response.data);
       
+      // ============================================
+      // STEP 4: Cleanup and redirect
+      // ============================================
       // Show loading modal and redirect after delay
       modal.showLoading(t('machines.registration.loading'));
       setTimeout(() => {
         modal.hide();
+        
+        // Clean up photo file from memory
+        setPhotoFile(null);
+        
+        // Reset form to defaults
         form.reset(defaultMachineRegistrationData);
+        
+        // Navigate to machines list
         navigate('/machines');
       }, 2000);
       
     } catch (error) {
       console.error('❌ Error registering machine:', error);
+      
+      // Hide any open modals
+      modal.hide();
       
       // Determine error message
       const errorMessage = error instanceof Error 
@@ -223,7 +351,7 @@ export function useMachineRegistrationViewModel(): MachineRegistrationViewModel 
     } finally {
       setIsLoading(false);
     }
-  }, [form, navigate, t]);
+  }, [form, navigate, t, photoFile]);
 
   /**
    * Handle cancel action
@@ -240,6 +368,7 @@ export function useMachineRegistrationViewModel(): MachineRegistrationViewModel 
     form.reset(defaultMachineRegistrationData);
     setError(null);
     setIsLoading(false);
+    setPhotoFile(null); // Clean up photo file from memory
   }, [form]);
 
   return {
@@ -253,6 +382,11 @@ export function useMachineRegistrationViewModel(): MachineRegistrationViewModel 
     // UI State
     isLoading,
     error,
+    
+    // Photo file management
+    photoFile,
+    setPhotoFile,
+    
     // Machine types from hook
     machineTypeList,
     machineTypesLoading,

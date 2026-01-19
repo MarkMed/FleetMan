@@ -9,7 +9,6 @@ import type { MachineTypeResponse } from '@contracts';
  */
 export function useMachineTypes() {
   const language = typeof window !== 'undefined' ? localStorage.getItem(STORAGE_KEYS.LANGUAGE) || undefined : undefined;
-	console.log('🌐 useMachineTypes: using language:', language);
   return useQuery<MachineTypeResponse[], Error>({
     queryKey: QUERY_KEYS.MACHINE_TYPES,
     queryFn: () => machineService.getMachineTypes(language ?? undefined),

@@ -30,8 +30,11 @@ export type { IGetNotificationsResult } from "./ports/user.repository";
 export type { 
   IMessageRepository,
   IGetConversationHistoryResult,
-  ConversationHistoryOptions
-} from "./ports/message.repository"; // 🆕 Sprint #12 Module 3 - Message repository port
+  ConversationHistoryOptions,
+  IGetRecentConversationsResult,
+  IConversationSummary,
+  RecentConversationsOptions
+} from "./ports/message.repository"; // 🆕 Sprint #12 Module 3 - Message repository port + Sprint #13 Recent Conversations
 
 // Servicios de dominio - Implementados
 export * from "./services";

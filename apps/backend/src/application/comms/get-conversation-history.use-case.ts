@@ -120,21 +120,121 @@ export class GetConversationHistoryUseCase {
       logger.debug({ otherUserId }, 'Other user found');
 
       // =================================================================
-      // 3. VALIDAR RELACIÓN DE CONTACTO
+      // 3. VALIDAR PERMISOS DE ACCESO A LA CONVERSACIÓN (Sprint #13 Task 9.3f-h)
       // =================================================================
-      // Verificar que el usuario autenticado tiene al otro usuario como contacto
-      logger.debug({ userId, otherUserId }, 'Checking contact relationship');
-      const isContact = await this.userRepository.isContact(userIdResult.data, otherUserIdResult.data);
-      logger.debug({ userId, otherUserId, isContact }, 'Contact relationship check result');
+      /**
+       * LÓGICA COMPLEJA DE ACCESO A CONVERSACIONES:
+       * 
+       * Criterios para VER HISTORIAL (OR lógico - bloqueo NO previene ver):
+       * 1. Ambos usuarios son contactos mutuos (bidireccional)
+       * 2. Usuario autenticado es contacto de otro usuario (unidireccional)
+       * 3. Otro usuario es contacto del usuario autenticado (unidireccional)
+       * 4. Otro usuario ha aceptado chats del usuario autenticado (whitelist)
+       * 5. Usuario autenticado ha aceptado chats del otro usuario (whitelist)
+       * 6. Existe historial de mensajes previo (legacy conversations)
+       * 
+       * IMPORTANTE: Bloqueo NO previene VER historial (UX mejorada)
+       * - Usuario bloqueado PUEDE ver mensajes previos (contexto)
+       * - Usuario bloqueado NO PUEDE enviar nuevos mensajes (seguridad)
+       * 
+       * Campo canSendMessages (para frontend - Sprint #13 Task 9.3f-h):
+       * - true: Si usuario autenticado tiene al otro como contacto
+       *   O usuario autenticado aceptó chat del otro usuario
+       *   Y además NO está bloqueado por el otro usuario
+       * - false: Si está bloqueado O (no es contacto Y no aceptó chat del otro)
+       * 
+       * Campo isBlockedByOther (para frontend - Sprint #13 UX):
+       * - true: Mostrar banner "This user has blocked you"
+       * - false: Comportamiento normal
+       */
       
-      if (!isContact) {
+      logger.debug({ userId, otherUserId }, 'Checking access permissions for conversation');
+
+      // Verificar si usuario autenticado está bloqueado por otro usuario
+      // NOTA: Bloqueo NO previene ver historial, solo enviar mensajes (UX mejorada)
+      const isBlockedByOther = await this.userRepository.isBlocked(
+        otherUserIdResult.data,
+        userIdResult.data
+      );
+
+      if (isBlockedByOther) {
+        logger.info({ 
+          userId, 
+          otherUserId 
+        }, 'User is blocked but can still view conversation history');
+      }
+
+      // Verificar relaciones de contacto (bidireccional)
+      // currentUserHasOtherAsContact: userId tiene a otherUserId como contacto
+      const currentUserHasOtherAsContact = await this.userRepository.isContact(
+        userIdResult.data,
+        otherUserIdResult.data
+      );
+      // otherUserHasCurrentAsContact: otherUserId tiene a userId como contacto
+      const otherUserHasCurrentAsContact = await this.userRepository.isContact(
+        otherUserIdResult.data,
+        userIdResult.data
+      );
+
+      // Verificar si hay chats aceptados (whitelist)
+      const userAcceptedChatFromOther = await this.userRepository.hasChatAcceptedFrom(
+        userIdResult.data,
+        otherUserIdResult.data
+      );
+      const otherAcceptedChatFromUser = await this.userRepository.hasChatAcceptedFrom(
+        otherUserIdResult.data,
+        userIdResult.data
+      );
+
+      // Verificar si hay mensajes previos (legacy conversations)
+      const hasMessagesBetweenUsers = await this.userRepository.hasMessagesWithUser(
+        userIdResult.data,
+        otherUserIdResult.data
+      );
+
+      // Evaluar permisos con lógica OR
+      const hasAccessToConversation = 
+        currentUserHasOtherAsContact ||
+        otherUserHasCurrentAsContact ||
+        userAcceptedChatFromOther ||
+        otherAcceptedChatFromUser ||
+        hasMessagesBetweenUsers;
+
+      if (!hasAccessToConversation) {
         logger.warn({ 
           userId, 
           otherUserId 
-        }, 'User is not your contact');
-        return err(DomainError.create('FORBIDDEN', 'User is not your contact'));
+        }, 'User does not have access to this conversation');
+        return err(DomainError.create('FORBIDDEN', 'You do not have access to this conversation'));
       }
-      logger.debug({ userId, otherUserId }, 'Contact relationship confirmed');
+
+      // Calcular canSendMessages para el frontend (Sprint #13 Task 9.3f-h)
+      /**
+       * Utiliza función modularizada calculateCanSendMessages() para determinar
+       * si el usuario actual puede enviar mensajes al otro usuario.
+       * 
+       * Variables relevantes:
+       * - currentUserHasOtherAsContact: Usuario actual tiene al otro como contacto (sender → recipient)
+       * - userAcceptedChatFromOther: Usuario actual aceptó chat del otro (recipient aceptó chat de sender)
+       * - isBlockedByOther: Usuario actual está bloqueado por el otro (recipient bloqueó a sender)
+       */
+      const canSendMessages = this.calculateCanSendMessages(
+        currentUserHasOtherAsContact,
+        userAcceptedChatFromOther,
+        isBlockedByOther
+      );
+
+      logger.debug({ 
+        userId, 
+        otherUserId,
+        currentUserHasOtherAsContact,
+        otherUserHasCurrentAsContact,
+        userAcceptedChatFromOther,
+        otherAcceptedChatFromUser,
+        hasMessagesBetweenUsers,
+        isBlockedByOther,
+        canSendMessages
+      }, 'Access permissions evaluated');
 
       // =================================================================
       // 4. VALIDAR LÍMITES DE PAGINACIÓN
@@ -169,24 +269,32 @@ export class GetConversationHistoryUseCase {
       }
 
       // =================================================================
-      // 6. CONSTRUIR RESPUESTA CON METADATA DE PAGINACIÓN
+      // 6. CONSTRUIR RESPUESTA CON METADATA DE PAGINACIÓN Y PERMISOS
       // =================================================================
       const historyData = historyResult.data;
       const response: ConversationHistoryResponse = {
+        recipientName: otherUserResult.data.getDisplayName() || otherUserResult.data.email.toString(),
         messages: historyData.messages,
         total: historyData.total,
         page: historyData.page,
         limit: historyData.limit,
-        totalPages: historyData.totalPages
+        totalPages: historyData.totalPages,
+        canSendMessages, // Sprint #13 Task 9.3f-h: Indica si puede enviar mensajes
+        hasAcceptedChat: userAcceptedChatFromOther, // Sprint #13 Task 9.3h: Indica si usuario ya aceptó chat
+        isBlockedByOther // Sprint #13 UX: Indica si usuario está bloqueado (para mostrar banner en frontend)
       };
 
       logger.info({ 
         userId, 
         otherUserId,
         messagesReturned: response.messages.length,
+        recipientName: response.recipientName,
         total: response.total,
         page: response.page,
-        totalPages: response.totalPages
+        totalPages: response.totalPages,
+        canSendMessages: response.canSendMessages,
+        hasAcceptedChat: response.hasAcceptedChat,
+        isBlockedByOther: response.isBlockedByOther
       }, 'Conversation history retrieved successfully');
 
       return ok(response);
@@ -302,4 +410,46 @@ export class GetConversationHistoryUseCase {
    *   limit: number;
    * }
    */
+
+  // =============================================================================
+  // PRIVATE HELPER METHODS (Sprint #13)
+  // =============================================================================
+
+  /**
+   * Calcula si el usuario actual puede enviar mensajes al otro usuario
+   * 
+   * LÓGICA DE PERMISOS (Sprint #13 Task 9.3f-h):
+   * Usuario actual puede enviar mensajes SI:
+   * 1. Tiene al otro usuario como contacto (lógica ORIGINAL unidireccional)
+   * 2. O aceptó chat del otro usuario (whitelist Sprint #13)
+   * 3. Y NO está bloqueado por el otro usuario (blocker)
+   * 
+   * @param currentUserHasOtherAsContact - Usuario actual tiene al otro como contacto
+   * @param userAcceptedChatFromOther - Usuario actual aceptó chat del otro usuario
+   * @param isBlockedByOther - Usuario actual está bloqueado por el otro usuario
+   * @returns true si puede enviar mensajes, false en caso contrario
+   * 
+   * @example
+   * // UsuarioA tiene a B como contacto
+   * calculateCanSendMessages(true, false, false) // => true (lógica original)
+   * 
+   * // UsuarioB aceptó chat de A (sin contacto mutuo)
+   * calculateCanSendMessages(false, true, false) // => true (Sprint #13)
+   * 
+   * // UsuarioA está bloqueado por B
+   * calculateCanSendMessages(true, false, true) // => false (blocker)
+   */
+  private calculateCanSendMessages(
+    currentUserHasOtherAsContact: boolean,
+    userAcceptedChatFromOther: boolean,
+    isBlockedByOther: boolean
+  ): boolean {
+    // Bloqueo tiene prioridad absoluta
+    if (isBlockedByOther) {
+      return false;
+    }
+
+    // Puede enviar si tiene contacto O aceptó chat (OR lógico)
+    return currentUserHasOtherAsContact || userAcceptedChatFromOther;
+  }
 }

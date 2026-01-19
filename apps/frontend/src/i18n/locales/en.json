@@ -48,8 +48,10 @@
     "loading": "Loading...",
     "error": "Error",
     "success": "Success",
+    "or": "or",
     "cancel": "Cancel",
     "save": "Save",
+    "add": "Add",
     "edit": "Edit",
     "delete": "Delete",
     "create": "Create",
@@ -87,6 +89,7 @@
     "notSpecified": "Not specified",
     "imageLoadError": "Failed to load image",
     "uses": "uses",
+    "tags": "tags",
     "retry": "Retry",
     "description": "Description",
     "expand": "Expand",
@@ -203,13 +206,44 @@
       "maintenance": "In Maintenance",
       "broken": "Broken"
     },
+    "machineRegistration": {
+      "photo": {
+        "title": "Machine Photo",
+        "description": "Add a representative photo of the machine to facilitate its identification.",
+        "label": "Photo",
+        "helperText": "Supported formats: JPEG, PNG, WebP. Maximum size: 5MB. The image will be uploaded upon registration confirmation.",
+        "addLater": "I'll add the photo later",
+        "addLaterDescription": "You can upload the photo from the machine details page after registration."
+      }
+    },
     "registration": {
       "verificationTime": "Check your data!",
+      "uploadingPhoto": "Uploading photo to Cloudinary...",
+      "photoSaved": "Photo saved successfully",
+      "savingData": "Saving machine data...",
+      "uploadError": {
+        "title": "Photo Upload Error",
+        "message": "Could not upload photo to storage service",
+        "retry": "Retry",
+        "skipPhoto": "Skip photo and continue",
+        "cancel": "Cancel registration",
+        "tooManyRetries": "Too many failed attempts. Please try again later or continue without photo."
+      },
       "confirmation": {
         "title": "Confirm Registration",
         "description": "Are you sure you want to register this machine? This action will create a new record in the system.",
         "cancelButton": "Cancel",
         "confirmButton": "Register Machine"
+      },
+      "photo": {
+        "title": "Machine Photo",
+        "description": "Add a representative photo of the machine to facilitate its identification.",
+        "label": "Photo",
+        "helperText": "Supported formats: JPEG, PNG, WebP. Maximum size: 5MB",
+        "addLater": "I'll add the photo later",
+        "addLaterDescription": "You can upload the photo from the machine details page after registration.",
+        "required": "Action required",
+        "requiredDescription": "You must upload a photo or check the box to continue."
       },
       "success": {
         "title": "Machine Registered",
@@ -223,6 +257,58 @@
         "unknown": "Unknown error while registering machine"
       },
       "loading": "Processing and redirecting..."
+    },
+    "edit": {
+      "title": "Edit details of Machine: {{machineName}}",
+      "subtitle": "Update information for",
+      "serialNumber": "Serial No.",
+      "uploadingPhoto": "Uploading new photo to Cloudinary...",
+      "photoSaved": "Photo updated successfully",
+      "savingData": "Saving changes...",
+      "uploadError": {
+        "title": "Photo Upload Error",
+        "message": "Could not upload photo to storage service",
+        "retry": "Retry",
+        "keepCurrent": "Keep current photo",
+        "skipPhoto": "Skip photo and continue",
+        "cancel": "Cancel editing",
+        "tooManyRetries": "Too many failed attempts. Please try again later or continue without changing the photo."
+      },
+      "confirmation": {
+        "title": "Confirm Changes",
+        "description": "Are you sure you want to save these changes? This action will update the machine information.",
+        "cancelButton": "Cancel",
+        "confirmButton": "Save Changes"
+      },
+      "success": {
+        "title": "Machine Updated",
+        "description": "Machine \"{{machineName}}\" was successfully updated.",
+        "message": "Changes saved successfully"
+      },
+      "error": {
+        "title": "Update Error",
+        "invalidData": "The entered data is not valid",
+        "invalidResponse": "Invalid response from server",
+        "noToken": "Authentication token not found. Please log in again.",
+        "unknown": "Unknown error while updating machine",
+        "notFound": "Machine not found"
+      },
+      "loading": "Loading machine data...",
+      "photo": {
+        "title": "Machine Photo",
+        "description": "Update the machine photo or remove it if you prefer.",
+        "currentPhoto": "Current photo",
+        "currentLabel": "Current photo",
+        "changeButton": "Change Photo",
+        "removeButton": "Remove Photo",
+        "cancelButton": "Cancel",
+        "noPhotoNote": "No photo currently loaded. Select an image below.",
+        "selectPhotoLabel": "Select Photo",
+        "helperText": "Supported formats: JPEG, PNG, WebP. Maximum size: 5MB. Image will be uploaded on confirmation.",
+        "tip": "Photo is optional. You can update other data and keep or remove the current photo.",
+        "changeNote": "Select a new photo to replace the current one.",
+        "newFileSelected": "New photo selected"
+      }
     },
     "events": {
       "title": "Event History",
@@ -670,17 +756,17 @@
     "unauthorized": "Unauthorized",
     "forbidden": "Forbidden",
     "serverError": "Server error",
-    "unknownError": "Unknown error"
+    "unknownError": "Unknown error",
+    "sendMessageFailed": "Failed to send message",
+    "acceptChatFailed": "Failed to accept chat",
+    "blockUserFailed": "Failed to block user",
+    "addContactFailed": "Failed to add contact"
   },
   "messages": {
     "title": "Messages",
-    "subtitle": "Chat with your contacts",
-    "searchPlaceholder": "Search contacts...",
+    "subtitle": "Your recent conversations",
     "noContacts": "No contacts",
     "noContactsDescription": "You don't have any contacts yet. Add users from the discovery section to start chatting.",
-    "discoverUsers": "Discover users",
-    "noSearchResults": "No results found",
-    "noSearchResultsDescription": "No contacts match your search.",
     "totalContacts": "{{count}} contacts total",
     "chatWith": "Conversation",
     "messagesCount": "{{count}} messages",
@@ -702,11 +788,69 @@
     "userNotFoundTitle": "User not found",
     "userNotFoundDescription": "This user doesn't exist or has been deleted. Please verify the ID is correct or try another contact.",
     "otherUser": "Contact",
+    "unknownUser": "Unknown user",
+    "userIdFallback": "User {{id}}",
     "you": "You",
     "noMessages": "No messages yet",
     "typing": "Typing...",
     "edited": "(edited)",
-    "allMarkedRead": "All messages marked as read"
+    "allMarkedRead": "All messages marked as read",
+    "waitingForDecision": "Waiting for decision...",
+    "waitingForDecisionDesc": "Please select an action to continue",
+    "noDecisionMade": "You haven't decided on this chat",
+    "noDecisionMadeDesc": "You can go back to the messages list or make a decision now",
+    "makeDecision": "Make decision",
+    "chatAccepted": "Chat accepted",
+    "chatAcceptedDesc": "You can now send and receive messages freely",
+    "userBlocked": "User blocked",
+    "userBlockedDesc": "This user can no longer send you messages",
+    "blockUser": "Block User?",
+    "blockUserConfirmation": "Messages will no longer be exchanged between you. Do you want to proceed?",
+    "cannotSendBlocked": "You cannot send messages to this user because they have blocked you.",
+    "chatOptions": {
+      "title": "Chat Options",
+      "selectAction": "Select an action for this chat",
+      "acceptChat": "Accept Chat",
+      "acceptChatDesc": "Allow conversation without adding as contact",
+      "addContact": "Save Contact",
+      "addContactDesc": "Add this user to your contact list",
+      "ignoreForNow": "Ignore for now",
+      "ignoreForNowDesc": "Decide later, close this message",
+      "clearChat": "Clear Chat",
+      "clearChatDesc": "Delete all message history",
+      "blockUser": "Block User",
+      "blockUserDesc": "Prevent this user from sending you messages"
+    },
+    "unread": "unread",
+    "options": "Options",
+    "myContacts": "My Contacts",
+    "myContactsDesc": "View and manage your contact list",
+    "discoverUsers": "Discover Users",
+    "discoverUsersDesc": "Search and add new contacts",
+    "searchTitle": "Search",
+    "searchPlaceholder": "Search by name...",
+    "filterByType": "Filter by type",
+    "filterAll": "All conversations",
+    "filterContacts": "Contacts only",
+    "filterNonContacts": "Non-contacts only",
+    "clearFilters": "Clear filters",
+    "resultsCount": "Showing {{start}}-{{end}} of {{total}} conversations",
+    "pageInfo": "Page {{current}} of {{total}}",
+    "noConversations": "No conversations yet",
+    "noConversationsDescription": "Start by sending a message to one of your contacts",
+    "noContactConversations": "No conversations with contacts",
+    "noContactConversationsDescription": "Send messages to your contacts to see them here",
+    "noNonContactConversations": "No conversations with non-contacts",
+    "noNonContactConversationsDescription": "Conversations with users who are not contacts will appear here",
+    "noSearchResults": "No results",
+    "noSearchResultsDescription": "No conversations found matching your search",
+    "newChat": "New",
+    "timeAgo": {
+      "minutes": "{{count}}m ago",
+      "hours": "{{count}}h ago",
+      "yesterday": "yesterday",
+      "days": "{{count}}d ago"
+    }
   },
   "users": {
     "type": {
@@ -768,6 +912,76 @@
       "removing": "Removing...",
       "contactAdded": "Contact added",
       "messagingComingSoon": "Messaging coming soon"
+    }
+  },
+  "profile": {
+    "title": "My Profile",
+    "edit": {
+      "title": "Edit Profile",
+      "subtitle": "Update your personal and professional information",
+      "verificationTime": "Verify the changes!",
+      "steps": {
+        "basicInfo": {
+          "title": "Basic Information",
+          "description": "Your company contact details"
+        },
+        "bioAndTags": {
+          "title": "Bio and Tags",
+          "description": "Tell us more about your company"
+        },
+        "confirmation": {
+          "title": "Confirmation",
+          "description": "Review and confirm your changes"
+        }
+      },
+      "confirmation": {
+        "title": "Confirm your changes",
+        "subtitle": "Review all information before updating your profile",
+        "infoMessage": "By clicking \"Update Profile\", your changes will be saved. You can edit your profile again at any time.",
+        "errorsFound": "Errors were found in the information:",
+        "goBackToFix": "Please go back to previous steps to fix these errors.",
+        "modal": {
+          "title": "Update Profile",
+          "description": "Are you sure you want to update your profile with the new information?",
+          "confirmButton": "Update Profile",
+          "cancelButton": "Cancel"
+        }
+      },
+      "fields": {
+        "companyName": "Company Name",
+        "companyNamePlaceholder": "e.g., South Transport Inc.",
+        "phone": "Phone",
+        "phonePlaceholder": "+1 555 123 4567",
+        "address": "Address",
+        "addressPlaceholder": "123 Main St, City",
+        "bio": "Biography",
+        "bioPlaceholder": "Tell us about your company, services you offer, experience...",
+        "bioHelper": "A brief description of your company (max 500 characters)",
+        "tags": "Tags",
+        "tagsPlaceholder": "Type and press Enter or comma to add",
+        "tagsHelper": "Add up to 5 tags that describe your company (e.g., cranes, maintenance, transport)"
+      },
+      "success": {
+        "title": "Profile Updated",
+        "message": "Your profile has been updated successfully",
+        "description": "Changes have been saved correctly"
+      },
+      "errors": {
+        "title": "Error updating profile",
+        "update": "Could not update profile. Please try again.",
+        "noUser": "Authenticated user not found",
+        "loadUser": "Error loading user data",
+        "loadUserTitle": "Could not load your profile"
+      },
+      "validation": {
+        "maxLength": "Maximum {{max}} characters allowed",
+        "bioMaxLength": "Biography must be maximum {{max}} characters",
+        "tagsMaxCount": "Maximum {{max}} tags allowed",
+        "duplicateTags": "Duplicate tags are not allowed",
+        "invalid": "Invalid value",
+        "invalidStep": "Invalid validation step",
+        "unexpectedError": "Unexpected error during validation"
+      }
     }
   }
 }

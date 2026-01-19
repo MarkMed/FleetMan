@@ -224,6 +224,40 @@ export abstract class User {
       }
     }
 
+    // 🆕 Sprint #13 Task 10.2: Validar bio si está presente
+    if (profile.bio !== undefined) {
+      if (profile.bio.trim().length === 0) {
+        return err(DomainError.validation('Bio cannot be empty when provided'));
+      }
+      if (profile.bio.length > 500) {
+        return err(DomainError.validation('Bio is too long (max 500 characters)'));
+      }
+    }
+
+    // 🆕 Sprint #13 Task 10.2: Validar tags si está presente
+    if (profile.tags !== undefined) {
+      if (profile.tags.length > 5) {
+        return err(DomainError.validation('Too many tags (max 5 tags)'));
+      }
+      
+      // Validar cada tag individualmente
+      for (const tag of profile.tags) {
+        if (typeof tag !== 'string' || tag.trim().length === 0) {
+          return err(DomainError.validation('Tags cannot be empty'));
+        }
+        if (tag.length > 100) {
+          return err(DomainError.validation('Tag is too long (max 100 characters)'));
+        }
+      }
+      
+      // Validar que no haya tags duplicados (case-insensitive)
+      // NOTE: Zod contract layer ya valida esto post-transform, pero mantenemos defensa en profundidad
+      const uniqueTags = new Set(profile.tags.map(t => t.toLowerCase().trim()));
+      if (uniqueTags.size !== profile.tags.length) {
+        return err(DomainError.validation('Duplicate tags are not allowed'));
+      }
+    }
+
     return ok(undefined);
   }
 
@@ -279,6 +313,175 @@ export abstract class User {
     
     return ok(undefined);
   }
+
+  // =============================================================================
+  // 🔐 CHAT ACCESS CONTROL METHODS (Sprint #13 Task 9.3e-h)
+  // =============================================================================
+
+  /**
+   * Acepta recibir chats de un usuario específico (whitelist)
+   * Sprint #13 Task 9.3e: Chat Access Control
+   * 
+   * Validaciones:
+   * - userId no puede estar en blacklist (mutuamente excluyente)
+   * - No duplicar si ya está en acceptedChatsFrom
+   * - No aceptar chats de uno mismo
+   * 
+   * @param userId - ID del usuario del cual se aceptan chats
+   * @returns Result con void si exitoso, DomainError si falla validación
+   */
+  public acceptChatFrom(userId: UserId): Result<void, DomainError> {
+    const userIdValue = userId.getValue();
+    const currentUserId = this.props.id.getValue();
+
+    // Validación: No aceptar chats de uno mismo
+    if (userIdValue === currentUserId) {
+      return err(DomainError.validation('Cannot accept chat from yourself'));
+    }
+
+    // Validación: No aceptar chats de usuario bloqueado (mutuamente excluyente)
+    if (this.isBlocked(userId)) {
+      return err(DomainError.create('INVALID_STATE', 'Cannot accept chat from blocked user. Unblock first.'));
+    }
+
+    // Inicializar array si no existe (lazy initialization)
+    if (!(this.props as any).acceptedChatsFrom) {
+      (this.props as any).acceptedChatsFrom = [];
+    }
+
+    // Validación: No duplicar si ya está aceptado
+    if (this.hasChatAcceptedFrom(userId)) {
+      // No es error, simplemente idempotente
+      return ok(undefined);
+    }
+
+    // Agregar a whitelist
+    ((this.props as any).acceptedChatsFrom as string[]).push(userIdValue);
+    this.props.updatedAt = new Date();
+
+    return ok(undefined);
+  }
+
+  /**
+   * Bloquea a un usuario (blacklist) y remueve de chats aceptados si existe
+   * Sprint #13 Task 9.3e: Chat Access Control
+   * 
+   * Operación atómica: $addToSet en blacklist + $pull de acceptedChatsFrom
+   * Garantiza que acceptedChatsFrom y usersBlackList sean mutuamente excluyentes
+   * 
+   * Validaciones:
+   * - No bloquear a uno mismo
+   * - No duplicar si ya está bloqueado
+   * - Remover de acceptedChatsFrom si existe
+   * 
+   * @param userId - ID del usuario a bloquear
+   * @returns Result con void si exitoso, DomainError si falla validación
+   */
+  public blockUser(userId: UserId): Result<void, DomainError> {
+    const userIdValue = userId.getValue();
+    const currentUserId = this.props.id.getValue();
+
+    // Validación: No bloquear a uno mismo
+    if (userIdValue === currentUserId) {
+      return err(DomainError.validation('Cannot block yourself'));
+    }
+
+    // Inicializar arrays si no existen (lazy initialization)
+    if (!(this.props as any).usersBlackList) {
+      (this.props as any).usersBlackList = [];
+    }
+    if (!(this.props as any).acceptedChatsFrom) {
+      (this.props as any).acceptedChatsFrom = [];
+    }
+
+    // Validación: No duplicar si ya está bloqueado (idempotente)
+    if (this.isBlocked(userId)) {
+      // No es error, simplemente idempotente
+      return ok(undefined);
+    }
+
+    // Operación atómica: agregar a blacklist y remover de whitelist
+    ((this.props as any).usersBlackList as string[]).push(userIdValue);
+    
+    // Remover de acceptedChatsFrom si existe (garantizar mutua exclusión)
+    if (this.hasChatAcceptedFrom(userId)) {
+      const acceptedChats = (this.props as any).acceptedChatsFrom as string[];
+      const index = acceptedChats.indexOf(userIdValue);
+      if (index > -1) {
+        acceptedChats.splice(index, 1);
+      }
+    }
+
+    this.props.updatedAt = new Date();
+
+    return ok(undefined);
+  }
+
+  /**
+   * Verifica si el usuario tiene aceptado recibir chats de otro usuario
+   * Sprint #13 Task 9.3e: Chat Access Control
+   * 
+   * @param userId - ID del usuario a verificar
+   * @returns true si está en acceptedChatsFrom, false en caso contrario
+   */
+  public hasChatAcceptedFrom(userId: UserId): boolean {
+    const acceptedChats = (this.props as any).acceptedChatsFrom as string[] | undefined;
+    if (!acceptedChats || acceptedChats.length === 0) {
+      return false;
+    }
+    return acceptedChats.includes(userId.getValue());
+  }
+
+  /**
+   * Verifica si un usuario está bloqueado (blacklist)
+   * Sprint #13 Task 9.3e: Chat Access Control
+   * 
+   * @param userId - ID del usuario a verificar
+   * @returns true si está en usersBlackList, false en caso contrario
+   */
+  public isBlocked(userId: UserId): boolean {
+    const blacklist = (this.props as any).usersBlackList as string[] | undefined;
+    if (!blacklist || blacklist.length === 0) {
+      return false;
+    }
+    return blacklist.includes(userId.getValue());
+  }
+
+  // TODO: Método estratégico para futuro - Desbloquear usuario
+  // public unblockUser(userId: UserId): Result<void, DomainError> {
+  //   const userIdValue = userId.getValue();
+  //   
+  //   if (!this.isBlocked(userId)) {
+  //     return ok(undefined); // Idempotente
+  //   }
+  //
+  //   const blacklist = (this.props as any).usersBlackList as string[];
+  //   const index = blacklist.indexOf(userIdValue);
+  //   if (index > -1) {
+  //     blacklist.splice(index, 1);
+  //   }
+  //
+  //   this.props.updatedAt = new Date();
+  //   return ok(undefined);
+  // }
+
+  // TODO: Método estratégico para futuro - Remover de chats aceptados
+  // public removeAcceptedChat(userId: UserId): Result<void, DomainError> {
+  //   const userIdValue = userId.getValue();
+  //   
+  //   if (!this.hasChatAcceptedFrom(userId)) {
+  //     return ok(undefined); // Idempotente
+  //   }
+  //
+  //   const acceptedChats = (this.props as any).acceptedChatsFrom as string[];
+  //   const index = acceptedChats.indexOf(userIdValue);
+  //   if (index > -1) {
+  //     acceptedChats.splice(index, 1);
+  //   }
+  //
+  //   this.props.updatedAt = new Date();
+  //   return ok(undefined);
+  // }
 
   /**
    * Desactiva el usuario
@@ -381,10 +584,16 @@ export abstract class User {
     createdAt: string;
     updatedAt: string;
   } {
+    // Convertir readonly string[] a string[] para compatibilidad con contratos
+    const profileCopy = { ...this.props.profile };
+    if (profileCopy.tags) {
+      (profileCopy as any).tags = [...profileCopy.tags]; // Cast de readonly a mutable
+    }
+    
     return {
       id: this.props.id.getValue(),
       email: this.props.email.getValue(),
-      profile: { ...this.props.profile },
+      profile: profileCopy,
       type: this.props.type,
       isActive: this.props.isActive,
       createdAt: this.props.createdAt.toISOString(),

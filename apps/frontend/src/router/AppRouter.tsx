@@ -16,10 +16,12 @@ import { MachineEventsScreen } from '../screens/machines/MachineEventsScreen';
 import { MaintenanceAlarmsListScreen } from '../screens/maintenance/MaintenanceAlarmsListScreen';
 import { AlarmDetailScreen } from '../screens/maintenance/AlarmDetailScreen';
 import { NewMachineScreen } from '../screens/machines/NewMachineScreen';
+import { EditMachineScreen } from '../screens/machines/machine-edit/EditMachineScreen';
 import { QuickCheckScreen } from '../screens/quickcheck/QuickCheckScreen';
 import { QuickCheckHistoryScreen } from '../screens/quickcheck/QuickCheckHistoryScreen';
 import { NotificationsScreen } from '../screens/notifications/NotificationsScreen';
 import { ProfileScreen } from '../screens/profile/ProfileScreen';
+import { EditProfileScreen } from '../screens/profile/EditProfileScreen';
 import { ConfigurationsScreen } from '../screens/settings/ConfigurationsScreen';
 import { ExamplesScreen } from '../screens/ExamplesScreen';
 import { UserDiscoveryScreen, MyContactsScreen } from '../screens/users';
@@ -65,6 +67,7 @@ export const AppRouter: React.FC = () => {
           <Route path="machines" element={<MachinesScreen />} />
           <Route path="machines/new" element={<NewMachineScreen />} />
           <Route path="machines/:id" element={<MachineDetailsScreen />} />
+          <Route path="machines/:id/edit" element={<EditMachineScreen />} />
           <Route path="machines/:id/events" element={<MachineEventsScreen />} />
           <Route path="machines/:id/alarms" element={<MaintenanceAlarmsListScreen />} />
           <Route path="machines/:id/maintenance-alarms/:alarmId" element={<AlarmDetailScreen />} />
@@ -78,6 +81,7 @@ export const AppRouter: React.FC = () => {
           <Route path="messages" element={<ConversationsListScreen />} />
           <Route path="messages/:otherUserId" element={<ChatScreen />} />
           <Route path="profile" element={<ProfileScreen />} />
+          <Route path="profile/edit" element={<EditProfileScreen />} />
           <Route path="settings" element={<ConfigurationsScreen />} />
 
           {/* Examples */}

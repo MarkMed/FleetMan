@@ -75,7 +75,9 @@ export class ListContactsUseCase {
     const baseProfile: IUserPublicProfile = {
       id: user.id.getValue(),
       profile: {
-        companyName: user.profile.companyName
+        companyName: user.profile.companyName,
+        bio: user.profile.bio, // 🆕 Sprint #13 Task 10.2: Biografía pública
+        tags: user.profile.tags // 🆕 Sprint #13 Task 10.2: Tags públicos
       },
       type: user.type
     };
@@ -86,7 +88,7 @@ export class ListContactsUseCase {
         ...baseProfile,
         serviceAreas: user.specialties, // Map specialties to serviceAreas for public API
         isVerified: user.isVerified
-      };
+      } as IUserPublicProfile;
     }
 
     // ClientUser: only base fields

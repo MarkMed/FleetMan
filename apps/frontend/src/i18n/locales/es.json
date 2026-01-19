@@ -48,8 +48,10 @@
     "loading": "Cargando...",
     "error": "Error",
     "success": "Éxito",
+    "or": "o",
     "cancel": "Cancelar",
     "save": "Guardar",
+    "add": "Agregar",
     "edit": "Editar",
     "delete": "Eliminar",
     "create": "Crear",
@@ -87,6 +89,7 @@
     "notSpecified": "No especificado",
     "imageLoadError": "Error al cargar la imagen",
     "uses": "usos",
+    "tags": "etiquetas",
     "retry": "Reintentar",
     "description": "Descripción",
     "expand": "Expandir",
@@ -205,13 +208,44 @@
       "maintenance": "En Mantenimiento",
       "broken": "Averiada"
     },
+    "machineRegistration": {
+      "photo": {
+        "title": "Foto de la Máquina",
+        "description": "Agrega una foto representativa de la máquina para facilitar su identificación.",
+        "label": "Foto",
+        "helperText": "Formatos soportados: JPEG, PNG, WebP. Tamaño máximo: 5MB. La imagen se subirá al confirmar el registro.",
+        "addLater": "Agregaré la foto más tarde",
+        "addLaterDescription": "Podrás subir la foto desde la página de detalles de la máquina después del registro."
+      }
+    },
     "registration": {
       "verificationTime": "¡Verifica los datos!",
+      "uploadingPhoto": "Subiendo foto a Cloudinary...",
+      "photoSaved": "Foto guardada exitosamente",
+      "savingData": "Guardando datos de la máquina...",
+      "uploadError": {
+        "title": "Error al subir foto",
+        "message": "No se pudo subir la foto al servicio de almacenamiento",
+        "retry": "Reintentar",
+        "skipPhoto": "Omitir foto y continuar",
+        "cancel": "Cancelar registro",
+        "tooManyRetries": "Demasiados intentos fallidos. Por favor, intenta más tarde o continúa sin foto."
+      },
       "confirmation": {
         "title": "Confirmar Registro",
         "description": "¿Estás seguro de que deseas registrar esta máquina? Esta acción creará un nuevo registro en el sistema.",
         "cancelButton": "Cancelar",
         "confirmButton": "Registrar Máquina"
+      },
+      "photo": {
+        "title": "Foto de la Máquina",
+        "description": "Agrega una foto representativa de la máquina para facilitar su identificación.",
+        "label": "Foto",
+        "helperText": "Formatos soportados: JPEG, PNG, WebP. Tamaño máximo: 5MB",
+        "addLater": "Agregaré la foto más tarde",
+        "addLaterDescription": "Podrás subir la foto desde la página de detalles de la máquina después del registro.",
+        "required": "Acción requerida",
+        "requiredDescription": "Debes subir una foto o marcar la casilla para continuar."
       },
       "success": {
         "title": "Máquina Registrada",
@@ -225,6 +259,58 @@
         "unknown": "Error desconocido al registrar la máquina"
       },
       "loading": "Procesando y redireccionando..."
+    },
+    "edit": {
+      "title": "Editar detalles de la máquina: {{machineName}}",
+      "subtitle": "Actualiza la información de",
+      "serialNumber": "Nº Serie",
+      "uploadingPhoto": "Subiendo nueva foto a Cloudinary...",
+      "photoSaved": "Foto actualizada exitosamente",
+      "savingData": "Guardando cambios...",
+      "uploadError": {
+        "title": "Error al subir foto",
+        "message": "No se pudo subir la foto al servicio de almacenamiento",
+        "retry": "Reintentar",
+        "keepCurrent": "Mantener foto actual",
+        "skipPhoto": "Omitir foto y continuar",
+        "cancel": "Cancelar edición",
+        "tooManyRetries": "Demasiados intentos fallidos. Por favor, intenta más tarde o continúa sin cambiar la foto."
+      },
+      "confirmation": {
+        "title": "Confirmar Cambios",
+        "description": "¿Estás seguro de que deseas guardar estos cambios? Esta acción actualizará la información de la máquina.",
+        "cancelButton": "Cancelar",
+        "confirmButton": "Guardar Cambios"
+      },
+      "success": {
+        "title": "Máquina Actualizada",
+        "description": "La máquina \"{{machineName}}\" fue actualizada exitosamente.",
+        "message": "Los cambios se guardaron correctamente"
+      },
+      "error": {
+        "title": "Error al Actualizar",
+        "invalidData": "Los datos ingresados no son válidos",
+        "invalidResponse": "Respuesta inválida del servidor",
+        "noToken": "No se encontró token de autenticación. Por favor, inicia sesión nuevamente.",
+        "unknown": "Error desconocido al actualizar la máquina",
+        "notFound": "Máquina no encontrada"
+      },
+      "loading": "Cargando datos de la máquina...",
+      "photo": {
+        "title": "Foto de la Máquina",
+        "description": "Actualiza la foto de la máquina o elimínala si prefieres.",
+        "currentPhoto": "Foto actual",
+        "currentLabel": "Foto actual",
+        "changeButton": "Cambiar Foto",
+        "removeButton": "Eliminar Foto",
+        "cancelButton": "Cancelar",
+        "noPhotoNote": "No hay foto cargada actualmente. Selecciona una imagen abajo.",
+        "selectPhotoLabel": "Seleccionar Foto",
+        "helperText": "Formatos soportados: JPEG, PNG, WebP. Tamaño máximo: 5MB. La imagen se subirá al confirmar.",
+        "tip": "La foto es opcional. Puedes actualizar otros datos y mantener o eliminar la foto actual.",
+        "changeNote": "Selecciona una nueva foto para reemplazar la actual.",
+        "newFileSelected": "Nueva foto seleccionada"
+      }
     },
     "events": {
       "title": "Historial de Eventos",
@@ -672,17 +758,17 @@
     "unauthorized": "No autorizado",
     "forbidden": "Prohibido",
     "serverError": "Error del servidor",
-    "unknownError": "Error desconocido"
+    "unknownError": "Error desconocido",
+    "sendMessageFailed": "Error al enviar mensaje",
+    "acceptChatFailed": "Error al aceptar chat",
+    "blockUserFailed": "Error al bloquear usuario",
+    "addContactFailed": "Error al agregar contacto"
   },
   "messages": {
     "title": "Mensajes",
-    "subtitle": "Conversa con tus contactos",
-    "searchPlaceholder": "Buscar contactos...",
+    "subtitle": "Tus conversaciones recientes",
     "noContacts": "No tienes contactos",
     "noContactsDescription": "Aún no tienes contactos. Agrega usuarios desde la sección de descubrimiento para empezar a conversar.",
-    "discoverUsers": "Descubrir usuarios",
-    "noSearchResults": "No se encontraron resultados",
-    "noSearchResultsDescription": "No se encontraron contactos que coincidan con tu búsqueda.",
     "totalContacts": "{{count}} contactos en total",
     "chatWith": "Conversación",
     "messagesCount": "{{count}} mensajes",
@@ -704,11 +790,69 @@
     "userNotFoundTitle": "Usuario no encontrado",
     "userNotFoundDescription": "Este usuario no existe o ha sido eliminado. Por favor, verifica que el ID sea correcto o intenta con otro contacto.",
     "otherUser": "Contacto",
+    "unknownUser": "Usuario desconocido",
+    "userIdFallback": "Usuario {{id}}",
     "you": "Tú",
     "noMessages": "Sin mensajes aún",
     "typing": "Escribiendo...",
     "edited": "(editado)",
-    "allMarkedRead": "Todos los mensajes marcados como leídos"
+    "allMarkedRead": "Todos los mensajes marcados como leídos",
+    "waitingForDecision": "Esperando decisión...",
+    "waitingForDecisionDesc": "Por favor, selecciona una acción para continuar",
+    "noDecisionMade": "No has decidido sobre este chat",
+    "noDecisionMadeDesc": "Puedes volver a la lista de mensajes o tomar una decisión ahora",
+    "makeDecision": "Tomar decisión",
+    "chatAccepted": "Chat aceptado",
+    "chatAcceptedDesc": "Ahora puedes enviar y recibir mensajes libremente",
+    "userBlocked": "Usuario bloqueado",
+    "userBlockedDesc": "Este usuario ya no podrá enviarte mensajes",
+    "blockUser": "¿Bloquear Usuario?",
+    "blockUserConfirmation": "No podrán enviarse mensajes entre ustedes. ¿Desea proceder?",
+    "cannotSendBlocked": "No puedes enviar mensajes a este usuario porque te ha bloqueado.",
+    "chatOptions": {
+      "title": "Opciones de Chat",
+      "selectAction": "Selecciona una acción para este chat",
+      "acceptChat": "Aceptar Chat",
+      "acceptChatDesc": "Permitir conversación sin agregar como contacto",
+      "addContact": "Guardar Contacto",
+      "addContactDesc": "Agregar este usuario a tu lista de contactos",
+      "ignoreForNow": "Ignorar por ahora",
+      "ignoreForNowDesc": "Decidir más tarde, cerrar este mensaje",
+      "clearChat": "Limpiar Chat",
+      "clearChatDesc": "Eliminar todo el historial de mensajes",
+      "blockUser": "Bloquear Usuario",
+      "blockUserDesc": "Impedir que este usuario te envíe mensajes"
+    },
+    "unread": "sin leer",
+    "options": "Opciones",
+    "myContacts": "Mis Contactos",
+    "myContactsDesc": "Ver y gestionar tu lista de contactos",
+    "discoverUsers": "Descubrir Usuarios",
+    "discoverUsersDesc": "Buscar y agregar nuevos contactos",
+    "searchTitle": "Buscar",
+    "searchPlaceholder": "Buscar por nombre...",
+    "filterByType": "Filtrar por tipo",
+    "filterAll": "Todas las conversaciones",
+    "filterContacts": "Solo contactos",
+    "filterNonContacts": "Solo no-contactos",
+    "clearFilters": "Limpiar filtros",
+    "resultsCount": "Mostrando {{start}}-{{end}} de {{total}} conversaciones",
+    "pageInfo": "Página {{current}} de {{total}}",
+    "noConversations": "No hay conversaciones aún",
+    "noConversationsDescription": "Comienza enviando un mensaje a uno de tus contactos",
+    "noContactConversations": "No hay conversaciones con contactos",
+    "noContactConversationsDescription": "Envía mensajes a tus contactos para que aparezcan aquí",
+    "noNonContactConversations": "No hay conversaciones con no-contactos",
+    "noNonContactConversationsDescription": "Las conversaciones con usuarios que no son contactos aparecerán aquí",
+    "noSearchResults": "Sin resultados",
+    "noSearchResultsDescription": "No se encontraron conversaciones que coincidan con tu búsqueda",
+    "newChat": "Nuevo",
+    "timeAgo": {
+      "minutes": "hace {{count}}m",
+      "hours": "hace {{count}}h",
+      "yesterday": "ayer",
+      "days": "hace {{count}}d"
+    }
   },
   "users": {
     "type": {
@@ -770,6 +914,76 @@
       "removing": "Eliminando...",
       "contactAdded": "Contacto agregado",
       "messagingComingSoon": "Mensajería disponible próximamente"
+    }
+  },
+  "profile": {
+    "title": "Mi Perfil",
+    "edit": {
+      "title": "Editar Perfil",
+      "subtitle": "Actualiza tu información personal y profesional",
+      "verificationTime": "¡Verifica los cambios!",
+      "steps": {
+        "basicInfo": {
+          "title": "Información Básica",
+          "description": "Datos de contacto de tu empresa"
+        },
+        "bioAndTags": {
+          "title": "Bio y Etiquetas",
+          "description": "Cuéntanos más sobre tu empresa"
+        },
+        "confirmation": {
+          "title": "Confirmación",
+          "description": "Revisa y confirma los cambios"
+        }
+      },
+      "confirmation": {
+        "title": "Confirma los cambios",
+        "subtitle": "Revisa toda la información antes de actualizar tu perfil",
+        "infoMessage": "Al hacer clic en \"Actualizar Perfil\", se guardarán los cambios. Podrás editar tu perfil nuevamente en cualquier momento.",
+        "errorsFound": "Se encontraron errores en la información:",
+        "goBackToFix": "Por favor, regresa a los pasos anteriores para corregir estos errores.",
+        "modal": {
+          "title": "Actualizar Perfil",
+          "description": "¿Seguro de actualizar tu perfil con estos datos?",
+          "confirmButton": "Actualizar Perfil",
+          "cancelButton": "Cancelar"
+        }
+      },
+      "fields": {
+        "companyName": "Nombre de Empresa",
+        "companyNamePlaceholder": "Ej: Transportes del Sur SpA",
+        "phone": "Teléfono",
+        "phonePlaceholder": "+56 9 1234 5678",
+        "address": "Dirección",
+        "addressPlaceholder": "Av. Principal 123, Santiago",
+        "bio": "Biografía",
+        "bioPlaceholder": "Cuéntanos sobre tu empresa, servicios que ofreces, experiencia...",
+        "bioHelper": "Una breve descripción de tu empresa (máximo 500 caracteres)",
+        "tags": "Etiquetas",
+        "tagsPlaceholder": "Escribe y presiona Enter o coma para agregar",
+        "tagsHelper": "Agrega hasta 5 etiquetas que describan tu empresa (ej: grúas, mantenimiento, transporte)"
+      },
+      "success": {
+        "title": "Perfil Actualizado",
+        "message": "Tu perfil ha sido actualizado exitosamente",
+        "description": "Los cambios se han guardado correctamente"
+      },
+      "errors": {
+        "title": "Error al actualizar perfil",
+        "update": "No se pudo actualizar el perfil. Intenta nuevamente.",
+        "noUser": "No se encontró el usuario autenticado",
+        "loadUser": "Error al cargar datos del usuario",
+        "loadUserTitle": "No se pudo cargar tu perfil"
+      },
+      "validation": {
+        "maxLength": "Máximo {{max}} caracteres permitidos",
+        "bioMaxLength": "La biografía debe tener máximo {{max}} caracteres",
+        "tagsMaxCount": "Máximo {{max}} etiquetas permitidas",
+        "duplicateTags": "No se permiten etiquetas duplicadas",
+        "invalid": "Valor inválido",
+        "invalidStep": "Paso de validación inválido",
+        "unexpectedError": "Error inesperado durante la validación"
+      }
     }
   }
 }

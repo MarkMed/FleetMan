@@ -1,39 +1,54 @@
-import React from 'react';
-import { Heading1, BodyText, Button, Card, Input } from '@components/ui';
-import { Search, AlertCircle, MessageSquare, UserPlus } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import { ConversationPreview } from '@components/messaging';
-import { useConversationsListViewModel } from '../../viewModels/messaging/useConversationsListViewModel';
-import { ROUTES } from '@constants';
-import type { UserPublicProfile } from '@packages/contracts';
+import React, { useState } from "react";
+import { Heading1, BodyText, Button, Card, Input, Modal } from "@components/ui";
+import {
+  Search,
+  AlertCircle,
+  MessageSquare,
+  UserPlus,
+  MoreVertical,
+  Users,
+} from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { ConversationPreview } from "@components/messaging";
+import { useConversationsListViewModel } from "../../viewModels/messaging/useConversationsListViewModel";
+import { ROUTES } from "@constants";
 
 /**
  * ConversationsListScreen (View Layer - MVVM)
- * 
- * Sprint #12 - Module 3: User Communication System (Messaging)
- * 
+ *
+ * Sprint #13 - Recent Conversations Inbox Feature
+ *
  * Purpose:
- * - Display list of conversations (all contacts)
- * - Show unread message badges
- * - Search/filter conversations
+ * - Display list of recent conversations with last message preview
+ * - Filter by contact status (All/Contacts/Non-Contacts)
+ * - Search conversations by display name
  * - Navigate to specific chat
- * 
+ *
+ * Architecture Changes (Sprint #13):
+ * - REPLACED: Contact-based list → Conversation-based list
+ * - ADDED: Last message preview and timestamp
+ * - ADDED: Sidebar with filters (3-column grid layout)
+ * - ADDED: Backend-driven filtering and search
+ * - IMPROVED: Shows conversations with non-contacts too
+ *
  * MVP Scope:
- * - ✅ Show ALL contacts as conversations
- * - ✅ Client-side unread badges
- * - ❌ NO last message preview (no backend endpoint)
- * - ❌ NO last activity sorting
- * 
- * Architecture:
- * - View Layer: Only rendering and UI structure (this file)
- * - Business Logic: Handled by useConversationsListViewModel
- * - Data Layer: API calls via contactService
- * 
+ * - ✅ Show all conversations ordered by most recent
+ * - ✅ Last message preview with timestamp
+ * - ✅ Filter: All / Contacts / Non-Contacts
+ * - ✅ Search by display name
+ * - ✅ Pagination with backend
+ * - ❌ NO unread count from backend (uses client Zustand)
+ *
+ * Layout Pattern:
+ * - Imitates UserDiscoveryScreen.tsx 3-column grid:
+ *   - Left sidebar (1 col): Filters and search
+ *   - Main content (2 cols): Conversations list + pagination
+ *
  * Pattern:
  * - Consumes ViewModel via useConversationsListViewModel()
  * - NO business logic in this component
  * - Renders based on ViewModel state/data/actions
- * 
+ *
  * @example
  * ```tsx
  * // Route: /messages
@@ -42,11 +57,26 @@ import type { UserPublicProfile } from '@packages/contracts';
  */
 export function ConversationsListScreen() {
   const navigate = useNavigate();
-  
+
+  // Modal state
+  const [isOptionsModalOpen, setIsOptionsModalOpen] = useState(false);
+
+  // Modal handlers
+  const handleOpenOptionsModal = () => setIsOptionsModalOpen(true);
+  const handleCloseOptionsModal = () => setIsOptionsModalOpen(false);
+  const handleNavigateToMyContacts = () => {
+    handleCloseOptionsModal();
+    navigate(ROUTES.MY_CONTACTS);
+  };
+  const handleNavigateToDiscovery = () => {
+    handleCloseOptionsModal();
+    navigate(ROUTES.CONTACT_DISCOVERY);
+  };
+
   // ========================
   // ViewModel (Business Logic)
   // ========================
-  
+
   const vm = useConversationsListViewModel();
 
   // ========================
@@ -66,13 +96,14 @@ export function ConversationsListScreen() {
         <div className="flex flex-col items-center text-center space-y-4">
           <AlertCircle className="h-12 w-12 text-destructive" />
           <BodyText className="text-destructive">
-            {vm.t('common.error')}
+            {vm.t("common.error")}
           </BodyText>
           <BodyText size="small" className="text-muted-foreground">
-            {vm.state.error?.message || vm.t('messages.loadError')}
+            {vm.state.error?.message ||
+              vm.t("messages.loadError", "Error al cargar conversaciones")}
           </BodyText>
           <Button variant="outline" onPress={vm.actions.handleRetry}>
-            {vm.t('common.retry')}
+            {vm.t("common.retry")}
           </Button>
         </div>
       </Card>
@@ -82,65 +113,81 @@ export function ConversationsListScreen() {
   // ========================
   // LOADING STATE
   // ========================
-
   else if (vm.state.isLoading) {
     content = (
       <div className="flex flex-col gap-3">
-        {[1, 2, 3, 4, 5].map(i => (
-          <div key={i} className="h-20 bg-muted animate-pulse rounded-lg" />
+        {[1, 2, 3, 4, 5, 6].map((i) => (
+          <div key={i} className="h-24 bg-muted animate-pulse rounded-lg" />
         ))}
       </div>
     );
   }
 
   // ========================
-  // EMPTY STATE - NO CONTACTS
+  // EMPTY STATE
   // ========================
+  else if (vm.state.isEmpty) {
+    // Determine empty message based on filters
+    let emptyMessage = vm.t(
+      "messages.noConversations",
+      "No hay conversaciones aún"
+    );
+    let emptyDescription = vm.t(
+      "messages.noConversationsDescription",
+      "Comienza enviando un mensaje a uno de tus contactos"
+    );
 
-  else if (vm.state.hasNoContacts) {
+    if (vm.filters.contactFilter === true) {
+      emptyMessage = vm.t(
+        "messages.noContactConversations",
+        "No hay conversaciones con contactos"
+      );
+      emptyDescription = vm.t(
+        "messages.noContactConversationsDescription",
+        "Envía mensajes a tus contactos para que aparezcan aquí"
+      );
+    } else if (vm.filters.contactFilter === false) {
+      emptyMessage = vm.t(
+        "messages.noNonContactConversations",
+        "No hay conversaciones con no-contactos"
+      );
+      emptyDescription = vm.t(
+        "messages.noNonContactConversationsDescription",
+        "Las conversaciones con usuarios que no son contactos aparecerán aquí"
+      );
+    }
+
+    if (vm.state.hasActiveFilters && vm.filters.searchTerm) {
+      emptyMessage = vm.t("messages.noSearchResults", "Sin resultados");
+      emptyDescription = vm.t(
+        "messages.noSearchResultsDescription",
+        "No se encontraron conversaciones que coincidan con tu búsqueda"
+      );
+    }
+
     content = (
       <Card className="p-8">
         <div className="flex flex-col items-center text-center space-y-4">
           <MessageSquare className="h-16 w-16 text-muted-foreground" />
           <Heading1 size="medium" className="text-muted-foreground">
-            {vm.t('messages.noContacts')}
+            {emptyMessage}
           </Heading1>
           <BodyText className="text-muted-foreground max-w-md">
-            {vm.t('messages.noContactsDescription', 'Aún no tienes contactos. Agrega usuarios desde la sección de descubrimiento para empezar a conversar.')}
+            {emptyDescription}
           </BodyText>
-          <Button 
-            variant="filled" 
-            onPress={() => navigate(ROUTES.CONTACT_DISCOVERY)}
-          >
-            <UserPlus className="h-4 w-4 mr-2" />
-            {vm.t('messages.discoverUsers', 'Descubrir usuarios')}
-          </Button>
-        </div>
-      </Card>
-    );
-  }
-
-  // ========================
-  // EMPTY STATE - NO SEARCH RESULTS
-  // ========================
-
-  else if (vm.state.hasNoResults) {
-    content = (
-      <Card className="p-8">
-        <div className="flex flex-col items-center text-center space-y-4">
-          <Search className="h-16 w-16 text-muted-foreground" />
-          <Heading1 size="medium" className="text-muted-foreground">
-            {vm.t('messages.noSearchResults')}
-          </Heading1>
-          <BodyText className="text-muted-foreground max-w-md">
-            {vm.t('messages.noSearchResultsDescription', 'No se encontraron contactos que coincidan con tu búsqueda.')}
-          </BodyText>
-          <Button 
-            variant="outline" 
-            onPress={vm.actions.handleClearSearch}
-          >
-            {vm.t('common.clearSearch', 'Limpiar búsqueda')}
-          </Button>
+          {vm.state.hasActiveFilters ? (
+            <Button variant="outline" onPress={vm.actions.handleClearFilters}>
+              {vm.t("messages.clearFilters", "Limpiar filtros")}
+            </Button>
+          ) : (
+            <Button
+              variant="filled"
+              onPress={() => navigate(ROUTES.CONTACT_DISCOVERY)}
+            >
+              <UserPlus className="h-4 w-4 mr-2" />
+              {vm.t("messages.discoverUsers", "Descubrir usuarios")}
+            </Button>
+          )}
         </div>
       </Card>
     );
@@ -149,74 +196,306 @@ export function ConversationsListScreen() {
   // ========================
   // CONVERSATIONS LIST
   // ========================
-
   else {
     content = (
-      <div className="space-y-3">
-        {vm.data.conversations.map((contact: UserPublicProfile) => (
-          <ConversationPreview
-            key={contact.id}
-            contact={contact}
-            unreadCount={vm.data.unreadCounts[contact.id] || 0}
-          />
-        ))}
+      <div className="space-y-4">
+        {/* Results Summary */}
+        <div className="flex items-center justify-between">
+          <BodyText size="small" className="text-muted-foreground">
+            {vm.t("messages.resultsCount", {
+              start: vm.data.pagination.rangeStart,
+              end: vm.data.pagination.rangeEnd,
+              total: vm.data.total,
+              defaultValue: `Mostrando {{start}}-{{end}} de {{total}} conversaciones`,
+            })}
+          </BodyText>
+
+          {vm.state.hasActiveFilters && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onPress={vm.actions.handleClearFilters}
+            >
+              {vm.t("messages.clearFilters", "Limpiar filtros")}
+            </Button>
+          )}
+        </div>
+
+        {/* Conversations List */}
+        <div className="flex flex-col gap-3">
+          {vm.data.conversations.map((conversation) => (
+            <ConversationPreview
+              key={conversation.otherUserId}
+              conversation={conversation}
+              unreadCount={vm.data.unreadCounts[conversation.otherUserId] || 0}
+            />
+          ))}
+        </div>
+
+        {/* Pagination Controls */}
+        {vm.data.totalPages > 1 && (
+          <div className="flex items-center justify-center gap-2 mt-6">
+            <Button
+              variant="outline"
+              size="sm"
+              onPress={vm.actions.handlePreviousPage}
+              disabled={!vm.data.pagination.canGoPrevious}
+            >
+              {vm.t("common.previous", "Anterior")}
+            </Button>
+
+            <BodyText size="small" className="text-muted-foreground px-4">
+              {vm.t("messages.pageInfo", {
+                current: vm.data.currentPage,
+                total: vm.data.totalPages,
+                defaultValue: "Página {{current}} de {{total}}",
+              })}
+            </BodyText>
+
+            <Button
+              variant="outline"
+              size="sm"
+              onPress={vm.actions.handleNextPage}
+              disabled={!vm.data.pagination.canGoNext}
+            >
+              {vm.t("common.next", "Siguiente")}
+            </Button>
+          </div>
+        )}
       </div>
     );
   }
 
   // ========================
-  // MAIN RENDER
+  // MAIN LAYOUT
   // ========================
 
   return (
-    <div className="container mx-auto max-w-4xl py-6 px-4 space-y-6">
+    <div className="p-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <Heading1 size="large">
-            {vm.t('messages.title', 'Mensajes')}
-          </Heading1>
-          <BodyText className="text-muted-foreground mt-1">
-            {vm.t('messages.subtitle', 'Conversa con tus contactos')}
-          </BodyText>
-        </div>
-        
-        {/* Total Unread Badge */}
-        {vm.data.totalUnread > 0 && (
-          <div className="flex items-center gap-2 px-3 py-1.5 bg-primary/10 rounded-full">
-            <MessageSquare className="h-4 w-4 text-primary" />
-            <BodyText weight="medium" className="text-primary">
-              {vm.data.totalUnread > 99 ? '99+' : vm.data.totalUnread}
-            </BodyText>
+      <div className="mb-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <Heading1
+              size="headline"
+              className="tracking-tight text-foreground"
+            >
+              {vm.t("messages.title", "Mensajes")}
+            </Heading1>
+            <div className="flex items-center gap-3 mt-1">
+              <BodyText className="text-muted-foreground">
+                {vm.t("messages.subtitle", "Tus conversaciones recientes")}
+              </BodyText>
+              {vm.data.totalUnread > 0 && (
+                <div className="flex items-center gap-1.5 px-3 py-1 bg-blue-50 dark:bg-blue-950/20 rounded-full border border-blue-200 dark:border-blue-800">
+                  <BodyText
+                    weight="bold"
+                    className="text-blue-600 dark:text-blue-400"
+                  >
+                    {vm.data.totalUnread}
+                  </BodyText>
+                  <BodyText className="text-muted-foreground">
+                    {vm.t("messages.unread", "sin leer")}
+                  </BodyText>
+                </div>
+              )}
+            </div>
           </div>
-        )}
+
+          {/* Options Button */}
+          <Button
+            variant="outline"
+            size="lg"
+            onPress={handleOpenOptionsModal}
+            className="flex items-center gap-2 border-white/10 hover:border-white"
+          >
+            <MoreVertical className="w-4 h-4" />
+
+            <BodyText weight="medium">
+              {vm.t("messages.options", "Opciones")}
+            </BodyText>
+          </Button>
+        </div>
       </div>
 
-      {/* Search Bar */}
-      {!vm.state.hasNoContacts && (
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground pointer-events-none" />
-          <Input
-            type="text"
-            placeholder={vm.t('messages.searchPlaceholder', 'Buscar contactos...')}
-            value={vm.filters.searchInput}
-            onChange={(e) => vm.actions.handleSearchChange(e.target.value)}
-            className="pl-10"
-          />
-        </div>
-      )}
+      {/* Grid Layout: Sidebar (1 col) + Content (2 cols) */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* ======================== */}
+        {/* SIDEBAR: Filters (Left - 1 column) */}
+        {/* ======================== */}
+        <aside className="lg:col-span-1">
+          <div className="p-4 space-y-4 lg:sticky lg:top-36">
+            {/* Search Section */}
+            <div className="space-y-2">
+              <BodyText
+                weight="medium"
+                size="small"
+                className="text-foreground"
+              >
+                {vm.t("messages.searchTitle", "Buscar")}
+              </BodyText>
+              <div className="flex gap-2">
+                <Input
+                  value={vm.filters.searchInput}
+                  onChange={(e) =>
+                    vm.actions.handleSearchInputChange(e.target.value)
+                  }
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      vm.actions.handleSearch();
+                    }
+                  }}
+                  placeholder={vm.t(
+                    "messages.searchPlaceholder",
+                    "Buscar por nombre..."
+                  )}
+                  className="flex-1"
+                />
+                <Button
+                  variant="filled"
+                  size="sm"
+                  onPress={vm.actions.handleSearch}
+                  disabled={vm.state.isLoading}
+                  className="px-3"
+                >
+                  <Search className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
 
-      {/* Content (state-dependent) */}
-      {content}
+            {/* Divider */}
+            <div className="border-t" />
 
-      {/* Footer Info */}
-      {!vm.state.isEmpty && (
-        <div className="text-center">
-          <BodyText size="small" className="text-muted-foreground">
-            {vm.t('messages.totalContacts', { count: vm.data.total, defaultValue: `${vm.data.total} contactos en total` })}
-          </BodyText>
+            {/* Contact Filter Section */}
+            <div className="space-y-2">
+              <BodyText
+                weight="medium"
+                size="small"
+                className="text-foreground"
+              >
+                {vm.t("messages.filterByType", "Filtrar por tipo")}
+              </BodyText>
+              <div className="flex flex-col gap-2">
+                <Button
+                  variant={
+                    vm.filters.contactFilter === undefined
+                      ? "filled"
+                      : "outline"
+                  }
+                  size="sm"
+                  onPress={() =>
+                    vm.actions.handleContactFilterChange(undefined)
+                  }
+                  className="w-full justify-start"
+                >
+                  <MessageSquare className="w-4 h-4 mr-2" />
+                  {vm.t("messages.filterAll", "Todas las conversaciones")}
+                </Button>
+                <Button
+                  variant={
+                    vm.filters.contactFilter === true ? "filled" : "outline"
+                  }
+                  size="sm"
+                  onPress={() => vm.actions.handleContactFilterChange(true)}
+                  className="w-full justify-start"
+                >
+                  <UserPlus className="w-4 h-4 mr-2" />
+                  {vm.t("messages.filterContacts", "Solo contactos")}
+                </Button>
+                <Button
+                  variant={
+                    vm.filters.contactFilter === false ? "filled" : "outline"
+                  }
+                  size="sm"
+                  onPress={() => vm.actions.handleContactFilterChange(false)}
+                  className="w-full justify-start"
+                >
+                  <MessageSquare className="w-4 h-4 mr-2" />
+                  {vm.t("messages.filterNonContacts", "Solo no-contactos")}
+                </Button>
+              </div>
+            </div>
+
+            {/* Clear Filters (only show if active) */}
+            {vm.state.hasActiveFilters && (
+              <>
+                <div className="border-t" />
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onPress={vm.actions.handleClearFilters}
+                  className="w-full"
+                >
+                  {vm.t("messages.clearFilters", "Limpiar filtros")}
+                </Button>
+              </>
+            )}
+          </div>
+        </aside>
+
+        {/* ======================== */}
+        {/* MAIN CONTENT: Conversations List (Right - 2 columns) */}
+        {/* ======================== */}
+        <main className="lg:col-span-2">{content}</main>
+      </div>
+
+      {/* Options Modal */}
+      <Modal
+        open={isOptionsModalOpen}
+        onOpenChange={setIsOptionsModalOpen}
+        title={vm.t("messages.options", "Opciones")}
+        showCloseButton={true}
+      >
+        <div className="flex flex-col gap-2 p-4">
+          {/* My Contacts Option */}
+          <Button
+            variant="outline"
+            onPress={handleNavigateToMyContacts}
+            className="h-auto py-4 px-4 justify-start text-left hover:bg-accent"
+          >
+            <div className="flex items-center gap-3 w-full">
+              <div className="mt-0.5">
+                <Users className="h-7 w-7" />
+              </div>
+              <div className="flex flex-col">
+                <BodyText weight="medium" size="medium">
+                  {vm.t("messages.myContacts", "Mis Contactos")}
+                </BodyText>
+                <BodyText size="regular" className="text-muted-foreground">
+                  {vm.t(
+                    "messages.myContactsDesc",
+                    "Ver y gestionar mis contactos"
+                  )}
+                </BodyText>
+              </div>
+            </div>
+          </Button>
+
+          {/* Discover Contacts Option */}
+          <Button
+            variant="outline"
+            onPress={handleNavigateToDiscovery}
+            className="h-auto py-4 px-4 justify-start text-left hover:bg-accent"
+          >
+            <div className="flex items-center gap-3 w-full">
+              <div className="mt-0.5">
+                <UserPlus className="h-7 w-7" />
+              </div>
+              <div className="flex flex-col">
+                <BodyText weight="medium" size="medium">
+                  {vm.t("messages.discoverUsers", "Descubrir Contactos")}
+                </BodyText>
+                <BodyText size="regular" className="text-muted-foreground">
+                  {vm.t(
+                    "messages.discoverUsersDesc",
+                    "Buscar nuevos contactos"
+                  )}
+                </BodyText>
+              </div>
+            </div>
+          </Button>
         </div>
-      )}
+      </Modal>
     </div>
   );
 }

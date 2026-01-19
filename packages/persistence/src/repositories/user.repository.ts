@@ -163,13 +163,55 @@ export class UserRepository implements IUserRepository {
   }
 
   /**
-   * Guarda un usuario (crear o actualizar)
+   * Guarda un usuario (actualizar existente)
+   * Convierte entidad de dominio → documento MongoDB y persiste usando findByIdAndUpdate
+   * 
+   * 🆕 Sprint #13 Task 10.1: Implementado para soportar actualización de perfil
+   * 
+   * @param user - Entidad User actualizada con cambios en memoria
+   * @returns Result<void> - Success si actualización exitosa, Error si falla
    */
   async save(user: User): Promise<Result<void, DomainError>> {
     try {
-      // TODO: Implement entity to document conversion and save logic
-      return err(DomainError.create('INCOMPLETE_IMPLEMENTATION', 'UserRepository.save needs complete implementation'));
+      // Preparar datos de actualización desde entidad de dominio
+      const updateData: any = {
+        email: user.email.getValue(),
+        profile: {
+          phone: user.profile.phone,
+          companyName: user.profile.companyName,
+          address: user.profile.address,
+          bio: user.profile.bio,
+          tags: user.profile.tags
+        },
+        isActive: user.isActive,
+        updatedAt: new Date() // Forzar actualización de timestamp
+      };
+
+      // Usar $set para actualización parcial (solo campos especificados)
+      // findByIdAndUpdate con runValidators: true ejecuta validaciones del schema
+      const result = await UserModel.findByIdAndUpdate(
+        user.id.getValue(),
+        { $set: updateData },
+        { 
+          new: true, // Retornar documento actualizado
+          runValidators: true // Ejecutar validaciones del schema
+        }
+      );
+      
+      if (!result) {
+        return err(DomainError.notFound(`User with ID ${user.id.getValue()} not found`));
+      }
+      
+      return ok(undefined);
     } catch (error: any) {
+      // Manejar errores de validación de Mongoose
+      if (error.name === 'ValidationError') {
+        const validationErrors = Object.values(error.errors)
+          .map((err: any) => err.message)
+          .join(', ');
+        return err(DomainError.validation(`Validation failed: ${validationErrors}`));
+      }
+      
       return err(DomainError.create('PERSISTENCE_ERROR', `Error saving user: ${error.message}`));
     }
   }
@@ -642,6 +684,189 @@ export class UserRepository implements IUserRepository {
       return false; // En caso de error, asumir que no es contacto (fail-safe)
     }
   }
+
+  // =============================================================================
+  // � CHAT ACCESS CONTROL METHODS (Sprint #13 Task 9.3e-h)
+  // =============================================================================
+
+  /**
+   * Verifica si un usuario tiene aceptado recibir chats de otro usuario (whitelist)
+   * Sprint #13 Task 9.3e: Chat Access Control
+   * 
+   * @param userId - ID del usuario que verifica
+   * @param fromUserId - ID del usuario del cual se verifica si se aceptan chats
+   * @returns true si fromUserId está en acceptedChatsFrom de userId, false en caso contrario
+   */
+  async hasChatAcceptedFrom(userId: UserId, fromUserId: UserId): Promise<boolean> {
+    try {
+      const user = await UserModel.exists({
+        _id: userId.getValue(),
+        acceptedChatsFrom: fromUserId.getValue()
+      });
+
+      return !!user;
+    } catch (error: any) {
+      console.error('Error checking if chat is accepted:', error);
+      return false; // Fail-safe: asumir que no está aceptado
+    }
+  }
+
+  /**
+   * Verifica si un usuario está bloqueado por otro usuario (blacklist)
+   * Sprint #13 Task 9.3e: Chat Access Control
+   * 
+   * @param userId - ID del usuario que verifica
+   * @param blockedUserId - ID del usuario del cual se verifica si está bloqueado
+   * @returns true si blockedUserId está en usersBlackList de userId, false en caso contrario
+   */
+  async isBlocked(userId: UserId, blockedUserId: UserId): Promise<boolean> {
+    try {
+      const user = await UserModel.exists({
+        _id: userId.getValue(),
+        usersBlackList: blockedUserId.getValue()
+      });
+
+      return !!user;
+    } catch (error: any) {
+      console.error('Error checking if user is blocked:', error);
+      return false; // Fail-safe: asumir que no está bloqueado
+    }
+  }
+
+  /**
+   * Acepta recibir chats de un usuario (agrega a whitelist)
+   * Sprint #13 Task 9.3e: Chat Access Control
+   * 
+   * Usa $addToSet para prevenir duplicados (idempotente)
+   * NO valida si está bloqueado - esa validación se hace en la capa de dominio
+   * 
+   * @param userId - ID del usuario que acepta
+   * @param fromUserId - ID del usuario del cual se aceptan chats
+   * @returns Result con void si exitoso, DomainError si falla
+   */
+  async acceptChatFrom(userId: UserId, fromUserId: UserId): Promise<Result<void, DomainError>> {
+    try {
+      const result = await UserModel.findByIdAndUpdate(
+        userId.getValue(),
+        {
+          $addToSet: { acceptedChatsFrom: fromUserId.getValue() }
+        },
+        { new: true }
+      );
+
+      if (!result) {
+        return err(DomainError.notFound(`User with ID ${userId.getValue()} not found`));
+      }
+
+      return ok(undefined);
+    } catch (error: any) {
+      return err(DomainError.create('PERSISTENCE_ERROR', `Error accepting chat: ${error.message}`));
+    }
+  }
+
+  /**
+   * Bloquea a un usuario (agrega a blacklist y remueve de whitelist)
+   * Sprint #13 Task 9.3e: Chat Access Control
+   * 
+   * Operación atómica: $addToSet en blacklist + $pull de whitelist
+   * Garantiza que acceptedChatsFrom y usersBlackList sean mutuamente excluyentes
+   * 
+   * @param userId - ID del usuario que bloquea
+   * @param userIdToBlock - ID del usuario a bloquear
+   * @returns Result con void si exitoso, DomainError si falla
+   */
+  async blockUser(userId: UserId, userIdToBlock: UserId): Promise<Result<void, DomainError>> {
+    try {
+      const result = await UserModel.findByIdAndUpdate(
+        userId.getValue(),
+        {
+          $addToSet: { usersBlackList: userIdToBlock.getValue() },
+          $pull: { acceptedChatsFrom: userIdToBlock.getValue() } as any // $pull removes from array
+        },
+        { new: true }
+      );
+
+      if (!result) {
+        return err(DomainError.notFound(`User with ID ${userId.getValue()} not found`));
+      }
+
+      return ok(undefined);
+    } catch (error: any) {
+      return err(DomainError.create('PERSISTENCE_ERROR', `Error blocking user: ${error.message}`));
+    }
+  }
+
+  /**
+   * Verifica si dos usuarios han intercambiado mensajes previamente
+   * Sprint #13 Task 9.3f-h: Chat Access Control - Mostrar historial si hay mensajes previos
+   * 
+   * Query bidireccional: (A→B) OR (B→A)
+   * Usa participants array con query: participants: { $all: [userIdA, userIdB] }
+   * 
+   * @param userIdA - ID del primer usuario
+   * @param userIdB - ID del segundo usuario
+   * @returns true si existe al menos 1 mensaje entre ellos, false en caso contrario
+   */
+  async hasMessagesWithUser(userIdA: UserId, userIdB: UserId): Promise<boolean> {
+    try {
+      // Import MessageModel on demand to avoid circular dependency
+      // NOTE: MessageModel schema uses participants: [String] array ordered alphabetically
+      const { MessageModel } = await import('../models/message.model');
+      
+      // Participants array should be ordered [min, max] in Message entity
+      // But for query, we use $all to match both userIds regardless of order
+      const messageExists = await MessageModel.exists({
+        participants: { $all: [userIdA.getValue(), userIdB.getValue()] }
+      });
+
+      return !!messageExists;
+    } catch (error: any) {
+      console.error('Error checking if users have messages:', error);
+      return false; // Fail-safe: asumir que no tienen mensajes
+    }
+  }
+
+  // TODO: Método estratégico para futuro - Desbloquear usuario
+  // async unblockUser(userId: UserId, userIdToUnblock: UserId): Promise<Result<void, DomainError>> {
+  //   try {
+  //     const result = await UserModel.findByIdAndUpdate(
+  //       userId.getValue(),
+  //       {
+  //         $pull: { usersBlackList: userIdToUnblock.getValue() } as any
+  //       },
+  //       { new: true }
+  //     );
+  //
+  //     if (!result) {
+  //       return err(DomainError.notFound(`User with ID ${userId.getValue()} not found`));
+  //     }
+  //
+  //     return ok(undefined);
+  //   } catch (error: any) {
+  //     return err(DomainError.create('PERSISTENCE_ERROR', `Error unblocking user: ${error.message}`));
+  //   }
+  // }
+
+  // TODO: Método estratégico para futuro - Remover de chats aceptados
+  // async removeAcceptedChat(userId: UserId, chatUserId: UserId): Promise<Result<void, DomainError>> {
+  //   try {
+  //     const result = await UserModel.findByIdAndUpdate(
+  //       userId.getValue(),
+  //       {
+  //         $pull: { acceptedChatsFrom: chatUserId.getValue() } as any
+  //       },
+  //       { new: true }
+  //     );
+  //
+  //     if (!result) {
+  //       return err(DomainError.notFound(`User with ID ${userId.getValue()} not found`));
+  //     }
+  //
+  //     return ok(undefined);
+  //   } catch (error: any) {
+  //     return err(DomainError.create('PERSISTENCE_ERROR', `Error removing accepted chat: ${error.message}`));
+  //   }
+  // }
 
   // =============================================================================
   // 📊 USER STATISTICS METHODS (Sprint #12 - User Stats Feature)

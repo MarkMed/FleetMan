@@ -11,6 +11,7 @@ import type { IMessage } from '../models/interfaces';
  * Sprint #12 - Módulo 3: Messaging System
  */
 export interface IGetConversationHistoryResult {
+  recipientName?: string; // Nombre para mostrar del destinatario
   messages: IMessage[];
   total: number;
   page: number;
@@ -24,6 +25,43 @@ export interface IGetConversationHistoryResult {
 export interface ConversationHistoryOptions {
   page: number;
   limit: number;
+}
+
+/**
+ * Opciones para obtener conversaciones recientes
+ * Sprint #13 - Recent Conversations Inbox Feature
+ */
+export interface RecentConversationsOptions {
+  page: number;
+  limit: number;
+  onlyContacts?: boolean; // Filtrar solo contactos (true) o no-contactos (false), undefined = todos
+  search?: string; // Búsqueda por displayName del otro usuario (regex case-insensitive)
+}
+
+/**
+ * Resumen de una conversación individual
+ * Sprint #13 - Recent Conversations Inbox Feature
+ */
+export interface IConversationSummary {
+  otherUserId: string;
+  displayName: string; // companyName || email (calculado en aggregation)
+  lastMessageAt: Date; // Timestamp del último mensaje
+  lastMessageContent: string; // Preview del contenido (truncado)
+  lastMessageSenderId: string; // Para determinar dirección (yo→otro vs otro→yo)
+  isContact: boolean; // true si el otro usuario está en mis contactos
+  // TODO POST-MVP: unreadCount: number; // Cantidad de mensajes no leídos
+}
+
+/**
+ * Result type para getRecentConversations
+ * Sprint #13 - Recent Conversations Inbox Feature
+ */
+export interface IGetRecentConversationsResult {
+  conversations: IConversationSummary[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
 }
 
 /**
@@ -61,6 +99,30 @@ export interface IMessageRepository {
     userId2: UserId,
     options: ConversationHistoryOptions
   ): Promise<Result<IGetConversationHistoryResult, DomainError>>;
+
+  /**
+   * Obtiene lista de conversaciones recientes del usuario
+   * Query optimizado: obtiene ÚLTIMO mensaje de cada conversación única
+   * 
+   * Business Logic:
+   * - Una conversación es un par de usuarios (userA ↔ userB)
+   * - Solo retorna el mensaje más reciente de cada conversación
+   * - Soporta filtrado por isContact (onlyContacts param)
+   * - Soporta búsqueda por displayName del otro usuario (search param)
+   * - Ordenado por lastMessageAt DESC (conversación más reciente primero)
+   * 
+   * Performance: Usa aggregation pipeline con $group, $lookup, $facet
+   * 
+   * @param userId - ID del usuario autenticado
+   * @param options - Opciones de paginación y filtros
+   * @returns Result con lista de conversaciones paginadas o error
+   * 
+   * Sprint #13 - Recent Conversations Inbox Feature
+   */
+  getRecentConversations(
+    userId: UserId,
+    options: RecentConversationsOptions
+  ): Promise<Result<IGetRecentConversationsResult, DomainError>>;
 
   // ==================== TODO: FEATURES POST-MVP ====================
 

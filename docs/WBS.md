@@ -852,7 +852,7 @@ Sistema de chat básico 1-a-1 entre contactos. NO incluir features avanzadas (gr
 			- Spike: **No**
 			- PERT: Optimista 3hs, Probable 4hs, Pesimista 5hs
 
-		- 9.3f **Application Layer Backend - Accept/Block Use Cases**.
+		- 9.3f **App Layer - Accept/Block Use Cases**.
 		Implementar dos Use Cases nuevos: AcceptChatUseCase que recibe userId autenticado y fromUserId del chat a aceptar, valida ambos IDs con UserId.create, llama a userRepository.acceptChatFrom y retorna Result<void> con error si fromUserId está bloqueado o no existe. BlockUserUseCase similar recibiendo userId y userIdToBlock, validando que existan y llamando a userRepository.blockUser. Actualizar SendMessageUseCase para agregar validación ANTES de enviar mensaje: llamar a userRepository.isBlocked(recipientId, senderId) y si retorna true, retornar error 403 "No puedes enviar mensajes a este usuario" sin crear el mensaje. Actualizar GetConversationHistoryUseCase para que la validación de permisos no solo checkee isContact bidireccional sino TAMBIÉN verifique userRepository.hasChatAcceptedFrom(authenticatedUserId, otherUserId), permitiendo ver conversación si cualquiera de estas condiciones es true: (userIsContactOfOther O otherIsContactOfUser O userAcceptedChatFromOther). Retornar 403 "No tienes permiso para ver esta conversación" si ninguna condición cumple.
 			- Horas estimadas: **3**hs
 			- Margen: ±**0.5**hs (P80)
@@ -861,7 +861,7 @@ Sistema de chat básico 1-a-1 entre contactos. NO incluir features avanzadas (gr
 			- Spike: **No**
 			- PERT: Optimista 2hs, Probable 3hs, Pesimista 4hs
 
-		- 9.3g **Interfaces Layer Backend - Accept/Block Endpoints**.
+		- 9.3g **Backend - Accept/Block Endpoints**.
 		Crear dos contratos Zod en packages/contracts: AcceptChatRequestSchema que valida {userId: string} con zod string uuid, y BlockUserRequestSchema idéntico. Exportar tipos TypeScript inferidos AcceptChatRequest y BlockUserRequest. En backend crear dos endpoints REST en message.routes.ts: POST /api/v1/messages/chats/:userId/accept con authMiddleware, validación Zod del userId de params, y llamada a AcceptChatUseCase.execute(authenticatedUserId, paramsUserId). POST /api/v1/messages/chats/:userId/block similar llamando a BlockUserUseCase. MessageController implementar dos métodos: acceptChat(req, res) que unwrapea Result del use case y retorna 200 {success: true, message: "Chat aceptado"} o error apropiado (400, 403, 404, 500), y blockUser(req, res) similar retornando "Usuario bloqueado". Documentación Swagger completa para ambos endpoints con tags "Messages", security bearer, parámetros path userId, responses 200/400/403/404/500.
 			- Horas estimadas: **2**hs
 			- Margen: ±**0.3**hs (P80)

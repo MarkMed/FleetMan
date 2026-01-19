@@ -41,11 +41,15 @@ export interface IUser extends IBaseEntity {
     readonly phone?: string;
     readonly companyName?: string;
     readonly address?: string;
+    readonly bio?: string; // 🆕 Sprint #13 Task 10.2: Biografía (max 500 chars)
+    readonly tags?: readonly string[]; // 🆕 Sprint #13 Task 10.2: Tags/etiquetas (max 5, cada uno max 100 chars)
   };
   readonly type: 'CLIENT' | 'PROVIDER';
   readonly isActive: boolean;
   readonly notifications?: readonly INotification[]; // 🆕 Sprint #9: Notificaciones embebidas
   readonly contacts?: readonly IContact[]; // 🆕 Sprint #12 Module 2: Contactos embebidos
+  readonly acceptedChatsFrom?: readonly string[]; // 🆕 Sprint #13 Task 9.3e: Whitelist de chats aceptados (UserIds)
+  readonly usersBlackList?: readonly string[]; // 🆕 Sprint #13 Task 9.3e: Blacklist de usuarios bloqueados (UserIds)
 }
 
 /**
@@ -76,6 +80,8 @@ export interface IUserPublicProfile {
   readonly id: string;
   readonly profile: {
     readonly companyName?: string;
+    readonly bio?: string; // 🆕 Sprint #13 Task 10.2: Biografía pública (max 500 chars)
+    readonly tags?: readonly string[]; // 🆕 Sprint #13 Task 10.2: Tags públicos (max 5, cada uno max 100 chars)
   };
   readonly type: 'CLIENT' | 'PROVIDER';
   // Provider-specific fields (opcionales, solo para type === 'PROVIDER')
@@ -86,6 +92,8 @@ export interface IUserPublicProfile {
   // readonly machineCount?: number; // Cantidad de máquinas (para mostrar experiencia del cliente)
   // readonly rating?: number; // Rating promedio (para proveedores verificados)
   // readonly location?: string; // Ciudad/región (para búsquedas geográficas futuras)
+  // readonly responseTime?: string; // Tiempo promedio de respuesta (para mensajería - Sprint #12 Module 3)
+  // readonly completedJobs?: number; // Trabajos completados (para proveedores verificados)
 }
 
 /**

@@ -1,7 +1,11 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { machineService } from '@services/api/machineService';
 import { QUERY_KEYS } from '@constants';
-import type { CreateMachineResponse as Machine, CreateMachineRequest as MachineFormData } from '@contracts';
+import type { 
+  CreateMachineResponse as Machine, 
+  CreateMachineRequest as MachineFormData,
+  UpdateMachineRequest,
+} from '@contracts';
 import type { CreateMachineEventRequest as EventFormData } from '@contracts';
 
 // Local filter type used by the hooks (frontend-specific)
@@ -50,7 +54,7 @@ export const useUpdateMachine = (id: string) => {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: (machineData: Partial<MachineFormData>) => 
+    mutationFn: (machineData: UpdateMachineRequest) => 
       machineService.updateMachine(id, machineData),
     onSuccess: (updatedMachine) => {
       queryClient.setQueryData(QUERY_KEYS.MACHINE(id), updatedMachine);

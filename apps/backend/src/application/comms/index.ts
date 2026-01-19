@@ -3,3 +3,6 @@
 
 export { SendMessageUseCase } from './send-message.use-case';
 export { GetConversationHistoryUseCase } from './get-conversation-history.use-case';
+export { AcceptChatUseCase } from './accept-chat.use-case';
+export { BlockUserUseCase } from './block-user.use-case';
+export { ListConversationsUseCase } from './list-conversations.use-case';
