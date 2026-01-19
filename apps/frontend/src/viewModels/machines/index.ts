@@ -1,5 +1,7 @@
 ﻿export { useMachineRegistrationViewModel } from './MachineRegistrationViewModel';
 export type { MachineRegistrationViewModel } from './MachineRegistrationViewModel';
+export { useMachineEditViewModel } from './MachineEditViewModel';
+export type { MachineEditViewModel } from './MachineEditViewModel';
 export { useMachinesViewModel } from './MachinesViewModel';
 export type { MachinesViewModel } from './MachinesViewModel';
 export { useMachineDetailsViewModel } from './MachineDetailsViewModel';

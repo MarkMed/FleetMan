@@ -709,7 +709,7 @@ Distribución por categoría:
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
-| Documentación | 20.1 Reporte Académico del Sprint #12 | 1 | 5 | |
+| Documentación | 20.1 Reporte Académico del Sprint #12 | 1 | 5 | 5.3 |
 | Gestión | 20.2 Demo/UAT de Sprint #12 | 2 | 1.5 | 1.2 |
 | Gestión | 20.3 Sprint Planning de Sprint #13 | 3 | 1.3 | 2.5 |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | 1 |
@@ -720,17 +720,17 @@ Distribución por categoría:
 | Desarrollo | 10.2b Bio & Tags - Application Backend | 9 | 2 | 1.25 |
 | Desarrollo | 10.2c Bio & Tags - Frontend UI | 10 | 2 | 1.8 |
 | Desarrollo | 9.3e Domain + Persistence - Chat Access Control | 11 | 4 | 3.7 |
-| Desarrollo | 9.3f App Layer - Accept/Block Use Cases | 12 | 3 | 8.5 |
+| Desarrollo | 9.3f App Layer - Accept/Block Use Cases | 12 | 3 | 7.4 |
 | Desarrollo | 9.3g Backend - Accept/Block Endpoints | 13 | 2 | 2 |
-| Desarrollo | 9.3h Frontend - Accept/Block Chat UI | 14 | 3 | 7.9 |
-| Desarrollo | 3.3a Machine Editing - Domain + Persistence (condicional) | 15 | 2 | |
-| Desarrollo | 3.3b Machine Editing - Application Backend (condicional) | 16 | 2 | |
-| Desarrollo | 3.3c Machine Editing - Frontend UI (condicional) | 17 | 3 | |
-| Desarrollo | 10.3 Adaptación de Image Upload Component (condicional) | 18 | 3 | |
+| Desarrollo | 9.3h Frontend - Accept/Block Chat UI | 14 | 3 | 6.9 |
+| Desarrollo | 3.3a Machine Editing - Domain + Persistence (condicional) | 15 | 2 | 0.3 |
+| Desarrollo | 3.3b Machine Editing - Application Backend (condicional) | 16 | 2 | 0.4|
+| Desarrollo | 3.3c Machine Editing - Frontend UI (condicional) | 17 | 3 | 6.2 |
+| Desarrollo | 10.3 Adaptación de Image Upload Component (condicional) | 18 | 3 | 4.1 |
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales | Consumo |
 |:---:|:----------:|:-------:|
-| **33.8**hs | **35.05**hs | **103.7%** |
+| **33.8**hs | **49.25**hs | **145.7%** |
 
 Buffer reservado: **+1.2**hs ✅
 Total con buffer: **35**hs
@@ -738,17 +738,17 @@ Total con buffer: **35**hs
 ```mermaid
 xychart-beta
     title "Sprint #13: Horas Estimadas (azul) vs Reales (verde)"
-    x-axis "Tareas" ["20.1", "20.2", "20.3", "21.2", "10.1a", "10.1b", "10.1c", "10.2a", "10.2b", "10.2c", "9.3e", "9.3f", "9.3g", "9.3h", "TOTAL"]
-    y-axis "Horas" 0 --> 36
+    x-axis "Tareas" ["20.1", "20.2", "20.3", "21.2", "10.1a", "10.1b", "10.1c", "10.2a", "10.2b", "10.2c", "9.3e", "9.3f", "9.3g", "9.3h", "3.3a", "3.3b", "3.3c", "10.3", "TOTAL"]
+    y-axis "Horas" 0 --> 52
     
-    line [5, 1.5, 1.3, 1, 2, 3, 3, 2, 2, 2, 4, 3, 2, 3, 33.8]
-    line [0, 1.2, 2.5, 1, 0.9, 1.3, 2.5, 0.5, 1.25, 1.8, 3.7, 8.5, 2, 7.9, 35.05]
+    line [5, 1.5, 1.3, 1, 2, 3, 3, 2, 2, 2, 4, 3, 2, 3, 2, 2, 3, 3, 33.8]
+    line [5.3, 1.2, 2.5, 1, 0.9, 1.3, 2.5, 0.5, 1.25, 1.8, 3.7, 7.4, 2, 6.9, 0.3, 0.4, 6.2, 4.1, 49.25]
 ```
 
 Distribución por categoría:
 | Documentación | Desarrollo | QA | Capacitación | Gestión |
 |:-------:|:----------:|:--:|:------------:|:-------------:|
-| **0**hs | **30.35**hs | **0**hs | **1**hs | **3.7**hs |
+| **5.3**hs | **39.25**hs | **0**hs | **1**hs | **3.7**hs |
 
 **Notas del Sprint:**
 - **Sprint de calidad y refinamiento** NO de nuevas features core, enfocado en mejorar UX y completar funcionalidades existentes

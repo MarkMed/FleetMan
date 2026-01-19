@@ -101,7 +101,11 @@ export const MachineDetailsScreen: React.FC = () => {
             {/* Action Buttons */}
             <div className="flex gap-3 mt-6 flex-wrap justify-between">
               <div className="flex gap-3">
-                <Button variant="outline" size="default" disabled>
+                <Button 
+                  variant="outline" 
+                  size="default"
+                  onPress={() => navigate(`/machines/${id}/edit`)}
+                >
                   Editar Máquina
                 </Button>
                 <Button 

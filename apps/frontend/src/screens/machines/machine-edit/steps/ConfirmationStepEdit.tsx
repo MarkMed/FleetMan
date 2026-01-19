@@ -1,24 +1,24 @@
-﻿import React, { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle, ImagePickerField } from '../../../../components/ui';
 import { MachineRegistrationData } from '@contracts';
 import { useMachineTypes } from '@hooks';
-import { useMachineRegistrationContext } from '../MachineRegistrationContext';
+import { useMachineEditContext } from '../MachineEditContext';
 
 /**
- * Step 4: Confirmación y resumen de la información - RHF Implementation
+ * Step 4: Confirmación y resumen de la información - Edit Mode Version
  * Shows a summary of all entered data including photo preview
+ * Uses MachineEditContext instead of MachineRegistrationContext
  */
-export function ConfirmationStep() {
+export function ConfirmationStepEdit() {
   const { 
-    control, 
-    formState: { errors },
+    control,
     getValues
   } = useFormContext<MachineRegistrationData>();
   
   const { t } = useTranslation();
-  const { photoFile } = useMachineRegistrationContext();
+  const { photoFile, existingPhotoUrl, shouldRemovePhoto } = useMachineEditContext();
   
   // Watch all form values for real-time updates
   const data = useWatch({ control });
@@ -45,24 +45,26 @@ export function ConfirmationStep() {
     return t(`machines.fuelTypes.${fuelType}`);
   };
 
-  // Create blob URL for preview
-  const photoPreviewUrl = photoFile ? URL.createObjectURL(photoFile) : null;
+  // Determine photo display logic for edit mode
+  // If shouldRemovePhoto is true, don't show existing photo even if URL exists
+  const hasPhoto = shouldRemovePhoto ? !!photoFile : (photoFile || existingPhotoUrl);
+  const photoUrl = photoFile ? URL.createObjectURL(photoFile) : (shouldRemovePhoto ? undefined : (existingPhotoUrl || undefined));
 
   // Cleanup: Revoke blob URL to prevent memory leaks
   useEffect(() => {
     return () => {
-      if (photoPreviewUrl) {
-        URL.revokeObjectURL(photoPreviewUrl);
+      if (photoFile && photoUrl) {
+        URL.revokeObjectURL(photoUrl);
       }
     };
-  }, [photoPreviewUrl]);
+  }, [photoFile, photoUrl]);
 
   return (
     <div className="space-y-6">
       <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold text-foreground mb-2">Confirma la información</h2>
+        <h2 className="text-2xl font-bold text-foreground mb-2">Confirma los cambios</h2>
         <p className="text-muted-foreground">
-          Revisa todos los datos antes de registrar la máquina en el sistema
+          Revisa todas las modificaciones antes de guardar los cambios
         </p>
       </div>
 
@@ -112,8 +114,8 @@ export function ConfirmationStep() {
         </CardContent>
       </Card>
 
-      {/* Photo Preview */}
-      {(photoFile || addPhotoLater) && (
+      {/* Photo Preview - Edit Mode */}
+      {hasPhoto && (
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
@@ -124,27 +126,38 @@ export function ConfirmationStep() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            {photoFile ? (
-              <div className="space-y-2">
-                <p className="text-sm text-muted-foreground mb-3">
-                  La foto se subirá a Cloudinary al confirmar el registro
+            <div className="space-y-2">
+              {photoFile && (
+                <p className="text-sm text-amber-600 mb-3">
+                  ⚠️ Se subirá una nueva foto a Cloudinary al confirmar los cambios
                 </p>
-                <ImagePickerField
-                  value={URL.createObjectURL(photoFile)}
-                  disabled={true}
-                  helperText={`${photoFile.name} (${(photoFile.size / 1024 / 1024).toFixed(2)} MB)`}
-                />
+              )}
+              <ImagePickerField
+                value={photoUrl}
+                disabled={true}
+                helperText={photoFile ? `${photoFile.name} (${(photoFile.size / 1024 / 1024).toFixed(2)} MB)` : 'Foto actual'}
+              />
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {!hasPhoto && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center space-x-2">
+              <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                <span className="text-purple-600 font-semibold">📸</span>
               </div>
-            ) : (
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <p className="text-sm text-blue-800">
-                  ✓ Foto marcada para agregar más tarde
-                </p>
-                <p className="text-xs text-blue-600 mt-1">
-                  Podrás subir la foto desde la página de detalles después del registro
-                </p>
-              </div>
-            )}
+              <span>Foto de la Máquina</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+              <p className="text-sm text-gray-600">
+                Sin foto
+              </p>
+            </div>
           </CardContent>
         </Card>
       )}
@@ -198,82 +211,6 @@ export function ConfirmationStep() {
           )}
         </CardContent>
       </Card>
-
-      {/* Información de ubicación */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-accent/10 rounded-full flex items-center justify-center">
-              <span className="text-accent font-semibold">2</span>
-            </div>
-            <span>Ubicación y Estado</span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {technicalSpecs?.currentLocation && (
-              <div>
-                <dt className="text-sm font-medium text-muted-foreground">Ubicación actual</dt>
-                <dd className="text-sm text-foreground">{technicalSpecs.currentLocation}</dd>
-              </div>
-            )}
-            <div>
-              <dt className="text-sm font-medium text-muted-foreground">Estado</dt>
-              <dd className="text-sm text-foreground">
-                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                  technicalSpecs?.isActive === false ? 'bg-destructive/10 text-destructive' : 'bg-success/10 text-success'
-                }`}>
-                  {technicalSpecs?.isActive === false ? 'Inactiva' : 'Activa'}
-                </span>
-              </dd>
-            </div>
-            {technicalSpecs?.fuelType && (
-              <div>
-                <dt className="text-sm font-medium text-muted-foreground">Tipo de combustible</dt>
-                <dd className="text-sm text-foreground">
-                  {getFuelTypeLabel(technicalSpecs.fuelType)}
-                </dd>
-              </div>
-            )}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Errores globales */}
-      {errors && Object.keys(errors).length > 0 && (
-        <div className="bg-destructive/10 border border-destructive/20 rounded-md p-4">
-          <h4 className="text-destructive font-medium mb-2">
-            Se encontraron errores en la información:
-          </h4>
-          <ul className="list-disc list-inside space-y-1">
-            {Object.entries(errors).map(([field, error]) => (
-              <li key={field} className="text-destructive text-sm">
-                {field}: {error?.message || 'Error de validación'}
-              </li>
-            ))}
-          </ul>
-          <p className="text-destructive text-sm mt-2">
-            Por favor, regresa a los pasos anteriores para corregir estos errores.
-          </p>
-        </div>
-      )}
-
-      {/* Mensaje final */}
-      <div className="bg-info/10 p-4 rounded-md">
-        <div className="flex">
-          <div className="flex-shrink-0">
-            <svg className="h-5 w-5 text-info" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-            </svg>
-          </div>
-          <div className="ml-3">
-            <p className="text-sm text-info">
-              Al hacer clic en "Registrar Máquina", se creará un nuevo registro en el sistema.
-              Esta información podrá ser editada posteriormente desde la gestión de máquinas.
-            </p>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }

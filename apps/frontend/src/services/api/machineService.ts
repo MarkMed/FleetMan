@@ -4,6 +4,7 @@ import { getSessionToken } from '../../store/slices/authSlice';
 import type { 
   CreateMachineResponse as Machine,
   CreateMachineRequest as MachineFormData,
+  UpdateMachineRequest,
   ListMachinesResponse
 } from '@contracts';
 import type { MachineTypeResponse } from '@contracts';
@@ -107,7 +108,7 @@ export class MachineService {
   }
 
   // Update machine
-  async updateMachine(id: string, machineData: Partial<MachineFormData>): Promise<Machine> {
+  async updateMachine(id: string, machineData: UpdateMachineRequest): Promise<Machine> {
     const response = await apiClient.put<Machine>(
       API_ENDPOINTS.MACHINE(id),
       machineData

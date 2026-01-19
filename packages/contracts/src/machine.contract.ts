@@ -196,6 +196,7 @@ export const UpdateMachineRequestSchema = z.object({
   brand: z.string().min(1).max(100).trim().optional(),
   modelName: z.string().min(1).max(100).trim().optional(),
   nickname: z.string().max(100).trim().optional(),
+  machineTypeId: z.string().min(1, 'Machine type ID is required').optional(),
   
   // Assignment
   assignedTo: z.string()
