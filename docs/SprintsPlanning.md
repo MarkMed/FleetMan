@@ -796,35 +796,123 @@ Distribución por categoría:
 
 **Riesgos:** Sprint en período post-navideño, posible fatiga del equipo. Mantener motivación con victorias tempranas.
 
-### **Sprint #14**: dom 18 ene → sáb 24 ene 2026
+### **Sprint #14**: dom 19 ene → sáb 25 ene 2026
 
-**Objetivo:** 🔧 Feature Básica Repuestos - Módulo repuestos básico funcional.
+**Objetivo:** 🎨 UX & Usability Boost + Dashboard Refresh - Mejoras de calidad de vida, dashboard simplificado con vistas clave, navegación mejorada, y extensiones al registro.
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
-| Documentación | 20.1 Reporte Académico del Sprint #13 | 1 | 5 | |
-| Gestión | 20.2 Demo/UAT de Sprint #13 | 2 | 1.5 | |
-| Gestión | 20.3 Sprint Planning de Sprint #14 | 3 | 1.3 | |
-| Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | |
-| QA | 13.5 Sanitización manual por feature | 5 | 8 | |
-| QA | 13.8 Smoke E2E de flujos críticos | 6 | 6 | |
-| Gestión | 18.2 Control de cambios | 7 | 3 | |
-| Desarrollo | 18.3 Feature toggles | 8 | 5 | |
-| Desarrollo | 2.4 Recuperación de contraseña (RF-004) [NiceToHave] | 9 | 8 | |
+| Gestión | 22.2 Demo/UAT de Sprint #13 | 1 | 1.5 | |
+| Gestión | 22.3 Sprint Planning de Sprint #14 | 2 | 1.3 | |
+| Documentación | 22.1 Reporte Académico del Sprint #13 | 3 | 5 | |
+| Capacitación | 22.4 Tutorías (guía con tutor asignado) | 4 | 1 | |
+| Desarrollo | 14.10 Mini Perfil en Navbar + Logout Reubicado | 5 | 4 | |
+| Desarrollo | 14.5 Theme toggle (UI + persistencia) | 6 | 2 | |
+| Desarrollo | 14.6 Settings screen (tema + idioma + email notif) | 7 | 6 | |
+| Desarrollo | 12.1 Dashboard - Últimos QuickChecks | 8 | 5 | |
+| Desarrollo | 12.2 Dashboard - Últimos Eventos Reportados | 9 | 5 | |
+| Desarrollo | 12.3 Dashboard Simplificado - Layout Final | 10 | 2 | |
+| Desarrollo | 2.1b Registro Extendido - Wizard Opcional | 11 | 8 | |
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales | Consumo |
 |:---:|:----------:|:-------:|
-| **38.8**hs | **0**hs | **0.0%** |
+| **40.8**hs | **0**hs | **0.0%** |
 
-Buffer reservado: **-3.8**hs
+Buffer reservado: **-5.8**hs ⚠️
 Total con buffer: **35**hs
+
+```mermaid
+xychart-beta
+    title "Sprint #14: Horas Estimadas (azul) vs Reales (verde)"
+    x-axis "Tareas" ["22.1", "22.2", "22.3", "22.4", "12.1", "12.2", "12.3", "14.10", "2.1b", "14.5", "14.6", "TOTAL"]
+    y-axis "Horas" 0 --> 44
+    
+    line [5, 1.5, 1.3, 1, 5, 5, 2, 4, 8, 2, 6, 40.8]
+    line [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+```
 
 Distribución por categoría:
 | Documentación | Desarrollo | QA | Capacitación | Gestión |
 |:-------:|:----------:|:--:|:------------:|:-------------:|
-| **5**hs | **13**hs | **14**hs | **1**hs | **2.8**hs |
+| **5**hs | **32**hs | **0**hs | **1**hs | **2.8**hs |
 
-**Riesgos:** Sprint muy denso con poco buffer disponible.
+**Notas del Sprint:**
+- **Sprint enfocado en usabilidad y mejoras de calidad de vida** NO en nuevas features core, priorizando pulido de UX y navegación
+- **Dashboard simplificado (12.1-12.3 - 12hs):** Reemplazo de dashboard actual con 2 widgets clave (últimos QuickChecks + últimos Eventos), layout responsive y limpio
+- **Mini Perfil & UX (14.10 - 4hs):** Mejora navegación con dropdown de perfil en navbar, reubica logout a sidebar
+- **Registro Extendido (2.1b - 8hs):** Wizard opcional de 5 pasos para onboarding completo (alternativo a registro rápido existente)
+- **Theme & Settings (14.5-14.6 - 8hs):** Selector dark mode + pantalla de configuración (tema + idioma + **toggle de notificaciones por email**)
+- **Estrategia de descope opcional:** Si sprint on track, agregar 3.4 QuickActions (12hs) o 7.1-7.2 Repuestos (14hs)
+
+**Orden de ejecución (según orden de tabla):**
+  1. **Overhead (22.2-22.4 - 3.8hs):** Demo, Planning, Tutorías
+  2. **Mini Perfil & UX (14.10-14.6 - 12hs):** Navegación mejorada + Theme + Settings con email toggle
+  3. **Dashboard completo (12.1-12.3 - 12hs):** Widgets QuickChecks + Eventos + Layout final
+  4. **Registro Extendido (2.1b - 8hs):** Wizard opcional de onboarding
+  5. **Reporte Académico (22.1 - 5hs):** Documentación final del sprint #13
+  4. **Theme toggle (14.5 - 2hs):** Base para Settings screen, mejora accesibilidad (dark mode crítico)
+  5. **Settings screen (14.6 - 4hs):** Centraliza configuraciones (tema + idioma), necesita 14.5 completado
+  6. **Registro Extendido (2.1b - 8hs):** Nice-to-have, mejora onboarding para usuarios que quieren perfil completo desde inicio
+
+**Punto de decisión Day 4 EOD:** 
+- Si Dashboard (12.1-12.3) + Mini Perfil (14.10) + Theme/Settings (14.5-14.6) completados (22hs), evaluar:
+  - **Opción A:** Continuar con 2.1b (8hs) según plan actual
+  - **Opción B:** Descope 2.1b, agregar 3.4 QuickActions (12hs) → Feature más impactante pero más compleja
+  - **Opción C:** Descope 2.1b, agregar 7.1-7.2 Repuestos (14hs) → Feature nueva de tracking
+
+**Fortalezas:**
+- ✅ **Dashboard widgets:** Endpoints simples (GET /quickchecks/recent, GET /machine-events/recent), componentes card reutilizables
+- ✅ **Mini Perfil:** Dropdown component con React Aria, navegación programática ya implementada (14.4a)
+- ✅ **Theme toggle:** Tailwind dark mode configurado (0.9), solo falta UI toggle y localStorage
+- ✅ **Settings screen:** Ruta simple, formulario básico, integración con hooks de tema e i18n (0.15)
+- ✅ **Registro Extendido:** Reutiliza 2.1 (registro básico), ReactHookForm y validaciones existentes, wizard pattern conocido
+
+**Riesgos y Mitigaciones:**
+- ⚠️ **Buffer negativo (-3.8hs):** Sprint denso sin margen de error, requiere ejecución disciplinada
+- ⚠️ **2.1b wizard opcional:** Feature nice-to-have, puede descope sin afectar MVP core
+- ⚠️ **3.4 QuickActions y 7.1-7.2 Repuestos fuera de plan:** Funcionalidades valiosas pero complejas, require más tiempo del disponible
+- ✅ **Mitigación:** Orden estratégico Dashboard→UX→Settings→Registro asegura victorias tempranas
+- ✅ **Mitigación:** Punto de decisión Day 4 permite pivot si necesario
+- ✅ **Mitigación:** 2.1b es condicional, puede moverse a Sprint #15 si no hay tiempo
+
+**Prioridades de Usabilidad (de mayor a menor impacto):**
+1. **🌟 CRÍTICO - Dashboard simplificado (12.1-12.3):** Pantalla inicial que usuarios ven diariamente, impacto inmediato en percepción de valor
+2. **🌟 CRÍTICO - Mini Perfil & Logout (14.10):** Mejora navegación y consistencia, problema actual de logout mal ubicado
+3. **🔥 ALTO - Theme & Settings (14.5-14.6):** Accesibilidad (dark mode) + centralización de configuraciones, mejora calidad percibida
+4. **📊 MEDIO - Registro Extendido (2.1b):** Mejora onboarding para usuarios power, no crítico (registro básico ya funciona)
+5. **🚀 ALTO (descope) - QuickActions (3.4):** Botón flotante con acceso rápido a funciones comunes, mejora productividad (pero 12hs no caben)
+6. **📦 BAJO (descope) - Repuestos (7.1-7.2):** Feature nueva de tracking, no es mejora de usabilidad sino funcionalidad adicional (14hs no caben)
+
+**Consideraciones técnicas:**
+- **12.1-12.2 Dashboard widgets:** Componentes QuickCheckCard y EventCard reutilizables, badges para status/severity, fecha relativa con date-fns
+- **12.3 Dashboard layout:** Grid responsive (2 cols desktop, 1 col mobile), header con bienvenida, footer "Ver todos" con links
+- **14.10 Mini Perfil:** Dropdown con React Aria, avatar placeholder (initials), opciones Ver/Editar Perfil + Logout, mover logout al final de 14.7 NavigationDrawer
+- **2.1b Registro Extendido:** Wizard de 5 pasos (Datos básicos → Info profesional → Preferencias → Completar perfil → Confirmación), opción "Saltar" en cada paso, progress indicator
+- **14.5 Theme toggle:** Hook useTheme con Zustand, persistencia localStorage, toggle button en navbar o settings
+- **14.6 Settings screen:** Ruta /settings, formulario con Select para idioma (es/en) y toggle para tema, botón Guardar + Restaurar defaults
+
+**Dependencias críticas:**
+1. 12.1, 12.2, 12.3 pueden ejecutarse en paralelo (widgets independientes)
+2. 14.5 → 14.6 (Settings screen necesita theme toggle implementado)
+3. 14.4a (React Router) → 14.10 (navegación programática necesaria)
+4. 14.7 (NavigationDrawer) → 14.10 (sidebar necesario para reubicar logout)
+5. 2.1 (Registro básico) → 2.1b (extiende registro existente)
+6. 0.15 (i18n) → 14.6 (Settings screen necesita hook de idioma)
+
+**Consideraciones de UX:**
+- **Dashboard:** Limitar a 5-10 items por widget, scroll si hay más, fecha relativa (ej: "hace 2 horas"), badges para status/severity
+- **Mini Perfil:** Dropdown cierra al click fuera o ESC, hover states claros, iconos contextuales (👤 perfil, ✏️ editar, 🚪 logout)
+- **Theme:** Transición suave entre temas, persistencia automática sin botón Guardar
+- **Settings:** Feedback visual al guardar, confirmación de cambios, preview de tema en tiempo real
+- **Wizard:** Progress bar clara, botón "Saltar" visible, datos se guardan parcialmente, opción "Completar después" desde perfil
+
+**Notas adicionales:**
+- 🎯 **Este sprint es sobre percepción de calidad y facilidad de uso**, NO sobre agregar features complejas
+- 💡 **Dashboard simplificado es la prioridad #1**: Los usuarios deben ver valor inmediato al entrar a la app
+- 🔧 **QuickActions (3.4) y Repuestos (7.1-7.2)** son valiosos pero NO caben en 35hs → Mover a Sprint #15-#16
+- 📊 **Si se completa Dashboard + UX early:** Evaluar agregar 0.15 (i18n implementation) si Settings 14.6 necesita más soporte de idiomas
+
+**Riesgos:** Sprint muy denso con buffer negativo, requiere disciplina en estimaciones y ejecución. Priorizar Dashboard y UX core, 2.1b es condicional.
 
 ### **Sprint #15**: dom 25 ene → sáb 31 ene 2026
 

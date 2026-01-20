@@ -447,27 +447,33 @@ gantt
 
 ---
 
-## Sprint #14 (2026-01-18 → 2026-01-24)
+## Sprint #14 (2026-01-19 → 2026-01-25)
 
 ```mermaid
 gantt
-  title Sprint 14 (2026-01-18 → 2026-01-24)
+  title Sprint 14 (2026-01-19 → 2026-01-25) - UX & Usability Boost + Dashboard Refresh
   dateFormat  YYYY-MM-DD
   axisFormat  %d
 
   %% Asumimos 5 h/día. Horas estimadas incluidas en el nombre.
+  %% Orden según tabla: Overhead → UX/Nav/Settings → Dashboard → Registro → Reporte
 
-  20.1 Reporte Académico (0.9hs)               :t201, 2026-01-18, 1d
-  20.2 Demo/UAT de Sprint #13 (1.5hs)          :t202, 2026-01-18, 1d
-  20.3 Sprint Planning de Sprint #14 (1.3hs)      :t203, 2026-01-18, 1d
-  13.5 Sanitización manual por feature (8hs)   :t135, after t203, 2d
-  13.8 Smoke E2E de flujos críticos (6hs)      :t138, after t135, 2d
-  18.2 Control de cambios (3hs)                :t182, after t138, 1d
-  18.3 Feature toggles (5hs)                   :t183, after t182, 1d
-  2.4 Recuperación de contraseña (RF-004) (8hs) :t24, after t183, 2d
+  22.2 Demo/UAT de Sprint #13 (1.5hs)          :t222, 2026-01-19, 1d
+  22.3 Sprint Planning de Sprint #14 (1.3hs)   :t223, 2026-01-19, 1d
+  22.4 Tutorías (1hs)                          :t224, 2026-01-20, 1d
+  22.1 Reporte Académico Sprint #13 (5hs)      :t221, 2026-01-20, 1d
+
+  14.10 Mini Perfil Navbar + Logout (4hs)      :t1410, 2026-01-21, 1d
+  14.5 Theme toggle (2hs)                      :t145, 2026-01-21, 1d
+  14.6 Settings screen + Email Toggle (6hs)    :t146, 2026-01-21, 1d
+
+  12.1 Dashboard Últimos QuickChecks (5hs)     :t121, 2026-01-22, 1d
+  12.2 Dashboard Últimos Eventos (5hs)         :t122, 2026-01-22, 2d
+  12.3 Dashboard Layout Final (2hs)            :t123, 2026-01-23, 1d
+  2.1b Registro Extendido Wizard (8hs)         :t21b, 2026-01-24, 1d
 
   section Hitos
-  Cierre Sprint 14                             :milestone, s14, 2026-01-24, 1d
+  Cierre Sprint 14                             :milestone, s14, 2026-01-25, 0d
 ```
 
 ---
