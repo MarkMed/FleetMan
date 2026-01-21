@@ -802,10 +802,10 @@ Distribución por categoría:
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
-| Gestión | 22.2 Demo/UAT de Sprint #13 | 1 | 1.5 | |
-| Gestión | 22.3 Sprint Planning de Sprint #14 | 2 | 1.3 | |
-| Documentación | 22.1 Reporte Académico del Sprint #13 | 3 | 5 | |
-| Capacitación | 22.4 Tutorías (guía con tutor asignado) | 4 | 1 | |
+| Gestión | 22.2 Demo/UAT de Sprint #13 | 1 | 1.5 | 1.25 |
+| Gestión | 22.3 Sprint Planning de Sprint #14 | 2 | 1.3 | 1.9 |
+| Documentación | 22.1 Reporte Académico del Sprint #13 | 3 | 5 | 5.3 |
+| Capacitación | 22.4 Tutorías (guía con tutor asignado) | 4 | 1 | 1.4 |
 | Desarrollo | 14.10 Mini Perfil en Navbar + Logout Reubicado | 5 | 4 | |
 | Desarrollo | 14.5 Theme toggle (UI + persistencia) | 6 | 2 | |
 | Desarrollo | 14.6 Settings screen (tema + idioma + email notif) | 7 | 6 | |
@@ -816,7 +816,7 @@ Distribución por categoría:
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales | Consumo |
 |:---:|:----------:|:-------:|
-| **40.8**hs | **0**hs | **0.0%** |
+| **40.8**hs | **9.85**hs | **24.1%** |
 
 Buffer reservado: **-5.8**hs ⚠️
 Total con buffer: **35**hs
@@ -828,7 +828,7 @@ xychart-beta
     y-axis "Horas" 0 --> 44
     
     line [5, 1.5, 1.3, 1, 5, 5, 2, 4, 8, 2, 6, 40.8]
-    line [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    line [5.3, 1.25, 1.9, 1.4, 0, 0, 0, 0, 0, 0, 0, 9.85]
 ```
 
 Distribución por categoría:
