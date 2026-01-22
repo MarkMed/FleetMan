@@ -806,7 +806,7 @@ Distribución por categoría:
 | Gestión | 22.3 Sprint Planning de Sprint #14 | 2 | 1.3 | 1.9 |
 | Documentación | 22.1 Reporte Académico del Sprint #13 | 3 | 5 | 5.3 |
 | Capacitación | 22.4 Tutorías (guía con tutor asignado) | 4 | 1 | 1.4 |
-| Desarrollo | 14.10 Mini Perfil en Navbar + Logout Reubicado | 5 | 4 | |
+| Desarrollo | 14.10 Mini Perfil en Navbar + Logout Reubicado | 5 | 4 | 2.9 |
 | Desarrollo | 14.5 Theme toggle (UI + persistencia) | 6 | 2 | |
 | Desarrollo | 14.6 Settings screen (tema + idioma + email notif) | 7 | 6 | |
 | Desarrollo | 12.1 Dashboard - Últimos QuickChecks | 8 | 5 | |

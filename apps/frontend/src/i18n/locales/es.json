@@ -918,6 +918,30 @@
   },
   "profile": {
     "title": "Mi Perfil",
+    "menu": {
+      "title": "Mi Perfil",
+      "viewProfile": "Ver Perfil",
+      "viewProfileDesc": "Consulta tu información de perfil",
+      "editProfile": "Editar Perfil",
+      "editProfileDesc": "Actualiza tus datos personales",
+      "logout": "Cerrar Sesión",
+      "logoutDesc": "Salir de tu cuenta",
+      "logoutConfirm": {
+        "title": "¿Cerrar sesión?",
+        "message": "¿Estás seguro que deseas cerrar sesión?",
+        "confirm": "Cerrar Sesión",
+        "cancel": "Cancelar"
+      },
+      "logoutLoading": "Cerrando sesión...",
+      "logoutSuccess": {
+        "title": "Sesión cerrada",
+        "message": "Sesión cerrada exitosamente"
+      },
+      "logoutError": {
+        "title": "Error",
+        "message": "Error al cerrar sesión"
+      }
+    },
     "edit": {
       "title": "Editar Perfil",
       "subtitle": "Actualiza tu información personal y profesional",

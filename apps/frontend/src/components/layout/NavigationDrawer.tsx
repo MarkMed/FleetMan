@@ -1,9 +1,14 @@
 import React, { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useNavigationStore } from '@store/slices';
+import { useAuthStore } from '@store/slices/authSlice';
+import { useLogout } from '@hooks/useAuth';
 import { getDrawerNavItems } from '@constants';
 import { cn } from '@utils/cn';
-import { X } from 'lucide-react';
+import { modal } from '@helpers/modal';
+import { Button } from '@components/ui';
+import { X, LogOut } from 'lucide-react';
 
 /**
  * NavigationDrawer - Sidebar deslizable con navegación completa
@@ -20,7 +25,10 @@ import { X } from 'lucide-react';
 export const NavigationDrawer: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useTranslation();
   const { isDrawerOpen, closeDrawer } = useNavigationStore();
+  const { user } = useAuthStore();
+  const logoutMutation = useLogout();
   
   const navItems = getDrawerNavItems();
 
@@ -62,6 +70,39 @@ export const NavigationDrawer: React.FC = () => {
 
   const isActive = (href: string): boolean => {
     return location.pathname === href || location.pathname.startsWith(`${href}/`);
+  };
+
+  /**
+   * Sprint #14 Task 14.10: Logout handler con confirmación
+   * Usa modal.confirm() para integrar con sistema global de modales
+   */
+  const handleLogout = () => {
+    closeDrawer(); // Cerrar drawer primero
+    
+    modal.confirm({
+      title: t('profile.menu.logoutConfirm.title'),
+      content: t('profile.menu.logoutConfirm.message'),
+      action: 'warning',
+      confirmText: t('profile.menu.logoutConfirm.confirm'),
+      cancelText: t('profile.menu.logoutConfirm.cancel'),
+      onConfirm: async () => {
+        try {
+          modal.showLoading(t('profile.menu.logoutLoading'));
+          await logoutMutation.mutateAsync();
+          modal.success({
+            title: t('profile.menu.logoutSuccess.title'),
+            description: t('profile.menu.logoutSuccess.message')
+          });
+          // Redirect handled by auth store
+        } catch (error) {
+          modal.error({
+            title: t('profile.menu.logoutError.title'),
+            description: t('profile.menu.logoutError.message')
+          });
+          console.error('Logout error:', error);
+        }
+      }
+    });
   };
 
   if (!isDrawerOpen) return null;
@@ -158,11 +199,48 @@ export const NavigationDrawer: React.FC = () => {
           </ul>
         </nav>
 
-        {/* Footer (optional) */}
-        <div className="p-4 border-t border-border">
-          <p className="text-xs text-muted-foreground text-center">
-            © {new Date().getFullYear()} FleetMan
-          </p>
+        {/* Footer - Sprint #14 Task 14.10: User info + Logout */}
+        <div className="border-t border-border">
+          {/* User info card */}
+          {user && (
+            <div className="p-4 border-b border-border">
+              <div className="flex items-center gap-3">
+                {/* Avatar */}
+                <div className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center text-sm font-medium flex-shrink-0">
+                  {user.email[0].toUpperCase()}
+                </div>
+                
+                {/* User details */}
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-foreground truncate">
+                    {user.profile?.companyName || user.email.split('@')[0]}
+                  </p>
+                  <p className="text-xs text-muted-foreground truncate">
+                    {user.email}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Logout button */}
+          <div className="w-full justify-start p-4">
+            <Button
+              variant="outline"
+              onPress={handleLogout}
+              className='w-full justify-start gap-3 h-auto text-red-600 border border-red-600 hover:bg-red-400 hover:text-red-900'
+            >
+              <LogOut className="w-5 h-5" />
+              <span>{t('profile.menu.logout')}</span>
+            </Button>
+          </div>
+
+          {/* Copyright */}
+          <div className="p-4">
+            <p className="text-xs text-muted-foreground text-center">
+              © {new Date().getFullYear()} FleetMan
+            </p>
+          </div>
         </div>
       </aside>
     </>
