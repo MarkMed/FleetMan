@@ -1,5 +1,6 @@
 import React from 'react';
 import { HamburgerButton } from './HamburgerButton';
+import { UserProfileButton } from './UserProfileButton';
 import { useNavigationStore } from '@store/slices';
 import { cn } from '@utils/cn';
 
@@ -49,9 +50,9 @@ export const NavBar: React.FC<NavBarProps> = ({
         </h1>
       </div>
 
-      {/* Right: Could add user profile, notifications, etc. */}
+      {/* Right: User Profile Section - Sprint #14 Task 14.10 */}
       <div className="flex items-center gap-2">
-        {/* Placeholder for future additions like user avatar, theme toggle */}
+        <UserProfileButton />
       </div>
     </nav>
   );

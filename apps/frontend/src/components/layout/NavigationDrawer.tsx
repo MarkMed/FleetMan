@@ -1,9 +1,14 @@
 import React, { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useNavigationStore } from '@store/slices';
+import { useAuthStore } from '@store/slices/authSlice';
+import { useLogoutWithConfirmation } from '@hooks/useLogoutWithConfirmation';
 import { getDrawerNavItems } from '@constants';
 import { cn } from '@utils/cn';
-import { X } from 'lucide-react';
+import { Button } from '@components/ui';
+import { X, LogOut } from 'lucide-react';
+import { getAvatarLetter, getUserDisplayName } from '@utils/userHelpers';
 
 /**
  * NavigationDrawer - Sidebar deslizable con navegación completa
@@ -20,7 +25,10 @@ import { X } from 'lucide-react';
 export const NavigationDrawer: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useTranslation();
   const { isDrawerOpen, closeDrawer } = useNavigationStore();
+  const { user } = useAuthStore();
+  const handleLogout = useLogoutWithConfirmation();
   
   const navItems = getDrawerNavItems();
 
@@ -62,6 +70,15 @@ export const NavigationDrawer: React.FC = () => {
 
   const isActive = (href: string): boolean => {
     return location.pathname === href || location.pathname.startsWith(`${href}/`);
+  };
+
+  /**
+   * Sprint #14 Task 14.10: Logout handler con confirmación
+   * Delegado al hook compartido useLogoutWithConfirmation
+   */
+  const handleLogoutClick = () => {
+    closeDrawer(); // Cerrar drawer primero
+    handleLogout(); // Usar hook compartido
   };
 
   if (!isDrawerOpen) return null;
@@ -158,11 +175,48 @@ export const NavigationDrawer: React.FC = () => {
           </ul>
         </nav>
 
-        {/* Footer (optional) */}
-        <div className="p-4 border-t border-border">
-          <p className="text-xs text-muted-foreground text-center">
-            © {new Date().getFullYear()} FleetMan
-          </p>
+        {/* Footer - Sprint #14 Task 14.10: User info + Logout */}
+        <div className="border-t border-border">
+          {/* User info card */}
+          {user && (
+            <div className="p-4 border-b border-border">
+              <div className="flex items-center gap-3">
+                {/* Avatar - Uses theme token bg-primary instead of hardcoded color */}
+                <div className="w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-medium flex-shrink-0">
+                  {getAvatarLetter(user.email)}
+                </div>
+                
+                {/* User details */}
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-foreground truncate">
+                    {getUserDisplayName(user)}
+                  </p>
+                  <p className="text-xs text-muted-foreground truncate">
+                    {user.email}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Logout button */}
+          <div className="w-full justify-start p-4">
+            <Button
+              variant="outline"
+              onPress={handleLogout}
+              className='w-full justify-start gap-3 h-auto text-red-600 border border-red-600 hover:bg-red-100 hover:text-red-900'
+            >
+              <LogOut className="w-5 h-5" />
+              <span>{t('profile.menu.logout')}</span>
+            </Button>
+          </div>
+
+          {/* Copyright */}
+          <div className="p-4">
+            <p className="text-xs text-muted-foreground text-center">
+              © {new Date().getFullYear()} FleetMan
+            </p>
+          </div>
         </div>
       </aside>
     </>

@@ -916,6 +916,31 @@
   },
   "profile": {
     "title": "My Profile",
+    "menu": {
+      "title": "My Profile",
+      "ariaLabel": "User profile",
+      "viewProfile": "View Profile",
+      "viewProfileDesc": "See your profile information",
+      "editProfile": "Edit Profile",
+      "editProfileDesc": "Update your personal details",
+      "logout": "Logout",
+      "logoutDesc": "Sign out of your account",
+      "logoutConfirm": {
+        "title": "Logout?",
+        "message": "Are you sure you want to logout?",
+        "confirm": "Logout",
+        "cancel": "Cancel"
+      },
+      "logoutLoading": "Logging out...",
+      "logoutSuccess": {
+        "title": "Logged out",
+        "message": "Successfully logged out"
+      },
+      "logoutError": {
+        "title": "Error",
+        "message": "Error logging out"
+      }
+    },
     "edit": {
       "title": "Edit Profile",
       "subtitle": "Update your personal and professional information",
