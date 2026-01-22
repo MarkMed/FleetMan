@@ -117,14 +117,19 @@
   },
   "navigation": {
     "dashboard": "Dashboard",
-    "machines": "Machines",
+    "machines": "My Machines",
     "machineDetail": "Machine Detail",
     "alarms": "Alarms",
     "maintenance": "Maintenance",
     "quickcheck": "Quick Check",
     "notifications": "Notifications",
+    "messages": "Messages",
+    "contactDiscovery": "Explore Contacts",
+    "contacts": "Contacts",
+    "profile": "Profile",
     "reports": "Reports",
-    "settings": "Settings"
+    "settings": "Settings",
+    "menu": "Menu"
   },
   "machines": {
     "title": "Machines",
@@ -1007,6 +1012,156 @@
         "invalidStep": "Invalid validation step",
         "unexpectedError": "Unexpected error during validation"
       }
+    }
+  },
+  "settings": {
+    "title": "System Settings",
+    "subtitle": "Customize FleetMan system behavior and preferences",
+    "appearance": {
+      "title": "Appearance",
+      "subtitle": "Customize the application's look and feel",
+      "theme": {
+        "label": "Theme",
+        "description": "Select the application color theme",
+        "light": "Light",
+        "dark": "Dark",
+        "system": "System"
+      }
+    },
+    "language": {
+      "title": "System Language",
+      "subtitle": "Select the interface language",
+      "label": "Language",
+      "description": "All text will be displayed in the selected language",
+      "spanish": "Español",
+      "english": "English",
+      "portuguese": "Português"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "subtitle": "Configure how and when to receive notifications",
+      "emailEnabled": {
+        "label": "Email Notifications",
+        "description": "Receive important alerts via email"
+      },
+      "emailAddress": {
+        "label": "Notification Email",
+        "placeholder": "your@email.com",
+        "description": "Address where you'll receive notifications"
+      },
+      "frequency": {
+        "label": "Send Frequency",
+        "description": "How often to send notifications",
+        "immediate": "Immediate",
+        "daily": "Daily Summary",
+        "weekly": "Weekly Summary"
+      },
+      "eventTypes": {
+        "label": "Event Types to Notify",
+        "description": "Select which events you want to receive via email",
+        "maintenance": "Maintenance Required",
+        "failures": "Failures and Breakdowns",
+        "quickcheck": "Failed QuickChecks",
+        "all": "All Events"
+      },
+      "maintenanceAlerts": {
+        "label": "Maintenance Alerts",
+        "description": "Scheduled maintenance reminders"
+      },
+      "lowStockAlerts": {
+        "label": "Low Stock Alerts",
+        "description": "When spare parts are running low"
+      },
+      "pushNotifications": {
+        "label": "Push Notifications",
+        "description": "Real-time notifications in browser"
+      }
+    },
+    "maintenance": {
+      "title": "Maintenance Configuration",
+      "subtitle": "Parameters for reminders and scheduling",
+      "preventiveInterval": {
+        "label": "Preventive Maintenance Interval (hours)",
+        "description": "How many operating hours between maintenance",
+        "placeholder": "500"
+      },
+      "anticipationDays": {
+        "label": "Alert Anticipation Days",
+        "description": "How many days in advance to send reminders",
+        "placeholder": "7"
+      },
+      "dailyOperatingHours": {
+        "label": "Average Daily Operating Hours",
+        "description": "Average hours machines operate per day",
+        "placeholder": "8"
+      }
+    },
+    "security": {
+      "title": "Security Configuration",
+      "subtitle": "Session and authentication parameters",
+      "sessionTimeout": {
+        "label": "Session Timeout (minutes)",
+        "description": "Inactivity time before automatic logout",
+        "option30": "30 minutes",
+        "option60": "1 hour",
+        "option120": "2 hours",
+        "option480": "8 hours"
+      },
+      "require2FA": {
+        "label": "Require 2FA for critical operations",
+        "description": "Delete machines, configuration changes, etc."
+      }
+    },
+    "timezone": {
+      "label": "Time Zone",
+      "description": "Time zone for dates and times",
+      "santiago": "Santiago (GMT-3)",
+      "buenosAires": "Buenos Aires (GMT-3)",
+      "saoPaulo": "São Paulo (GMT-3)",
+      "utc": "UTC (GMT+0)"
+    },
+    "dateFormat": {
+      "label": "Date Format",
+      "description": "How to display dates in the application",
+      "ddmmyyyy": "DD/MM/YYYY",
+      "mmddyyyy": "MM/DD/YYYY",
+      "yyyymmdd": "YYYY-MM-DD"
+    },
+    "currency": {
+      "label": "Currency",
+      "description": "Currency for displaying monetary values",
+      "clp": "Chilean Peso (CLP)",
+      "usd": "US Dollar (USD)",
+      "eur": "Euro (EUR)",
+      "brl": "Brazilian Real (BRL)"
+    },
+    "buttons": {
+      "save": "Save Changes",
+      "saving": "Saving...",
+      "restoreDefaults": "Restore Default Values",
+      "testEmail": "Send Test Email",
+      "cancel": "Cancel"
+    },
+    "messages": {
+      "saveSuccess": "Settings saved successfully",
+      "saveError": "Error saving settings",
+      "testEmailSent": "Test email sent to {{email}}",
+      "testEmailError": "Error sending test email",
+      "restoreConfirmTitle": "Restore default values?",
+      "restoreConfirmMessage": "This action will reset all settings to their initial values. Theme and language changes will be preserved.",
+      "restoreConfirmButton": "Restore",
+      "restoreCancelButton": "Cancel",
+      "restoreSuccess": "Settings restored successfully",
+      "unsavedChanges": "You have unsaved changes",
+      "loading": "Loading settings...",
+      "loadError": "Error loading settings"
+    },
+    "validation": {
+      "emailRequired": "Email is required",
+      "emailInvalid": "Please enter a valid email",
+      "numberMin": "Value must be at least {{min}}",
+      "numberMax": "Value cannot exceed {{max}}",
+      "required": "This field is required"
     }
   }
 }

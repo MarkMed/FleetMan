@@ -167,7 +167,7 @@ export const NavigationDrawer: React.FC = () => {
                     aria-current={active ? 'page' : undefined}
                   >
                     <Icon className="w-5 h-5 flex-shrink-0" />
-                    <span>{item.label}</span>
+                    <span>{t(item.labelKey)}</span>
                   </button>
                 </li>
               );

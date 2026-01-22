@@ -118,15 +118,20 @@
     }
   },
   "navigation": {
-    "dashboard": "Panel Principal",
-    "machines": "Máquinas",
+    "dashboard": "Dashboard",
+    "machines": "Mis Máquinas",
     "machineDetail": "Detalle de Máquina",
     "alarms": "Alarmas",
     "maintenance": "Mantenimiento",
     "quickcheck": "Chequeo Rápido",
     "notifications": "Notificaciones",
+    "messages": "Mensajes",
+    "contactDiscovery": "Explorar Contactos",
+    "contacts": "Contactos",
+    "profile": "Perfil",
     "reports": "Reportes",
-    "settings": "Configuración"
+    "settings": "Configuración",
+    "menu": "Menú"
   },
   "machines": {
     "title": "Máquinas",
@@ -1009,6 +1014,156 @@
         "invalidStep": "Paso de validación inválido",
         "unexpectedError": "Error inesperado durante la validación"
       }
+    }
+  },
+  "settings": {
+    "title": "Configuraciones del Sistema",
+    "subtitle": "Personaliza el comportamiento y preferencias del sistema FleetMan",
+    "appearance": {
+      "title": "Apariencia",
+      "subtitle": "Personaliza la apariencia de la aplicación",
+      "theme": {
+        "label": "Tema",
+        "description": "Selecciona el tema de color de la aplicación",
+        "light": "Claro",
+        "dark": "Oscuro",
+        "system": "Sistema"
+      }
+    },
+    "language": {
+      "title": "Idioma del Sistema",
+      "subtitle": "Selecciona el idioma de la interfaz",
+      "label": "Idioma",
+      "description": "Todos los textos se mostrarán en el idioma seleccionado",
+      "spanish": "Español",
+      "english": "English",
+      "portuguese": "Português"
+    },
+    "notifications": {
+      "title": "Notificaciones",
+      "subtitle": "Configura cómo y cuándo recibir notificaciones",
+      "emailEnabled": {
+        "label": "Notificaciones por Email",
+        "description": "Recibir alertas importantes por correo electrónico"
+      },
+      "emailAddress": {
+        "label": "Correo de Notificaciones",
+        "placeholder": "tu@email.com",
+        "description": "Dirección donde recibirás las notificaciones"
+      },
+      "frequency": {
+        "label": "Frecuencia de Envío",
+        "description": "Con qué frecuencia enviar las notificaciones",
+        "immediate": "Inmediato",
+        "daily": "Resumen Diario",
+        "weekly": "Resumen Semanal"
+      },
+      "eventTypes": {
+        "label": "Tipos de Eventos a Notificar",
+        "description": "Selecciona qué eventos quieres recibir por email",
+        "maintenance": "Mantenimiento Requerido",
+        "failures": "Fallas y Averías",
+        "quickcheck": "QuickCheck No Aprobados",
+        "all": "Todos los Eventos"
+      },
+      "maintenanceAlerts": {
+        "label": "Alertas de Mantenimiento",
+        "description": "Recordatorios de mantenimiento programado"
+      },
+      "lowStockAlerts": {
+        "label": "Alertas de Stock Bajo",
+        "description": "Cuando los repuestos estén por agotarse"
+      },
+      "pushNotifications": {
+        "label": "Notificaciones Push",
+        "description": "Notificaciones en tiempo real en el navegador"
+      }
+    },
+    "maintenance": {
+      "title": "Configuración de Mantenimiento",
+      "subtitle": "Parámetros para recordatorios y programación",
+      "preventiveInterval": {
+        "label": "Intervalo de Mantenimiento Preventivo (horas)",
+        "description": "Cada cuántas horas de operación programar mantenimiento",
+        "placeholder": "500"
+      },
+      "anticipationDays": {
+        "label": "Días de Anticipación para Alertas",
+        "description": "Con cuántos días de antelación enviar recordatorios",
+        "placeholder": "7"
+      },
+      "dailyOperatingHours": {
+        "label": "Horas de Operación Diaria Promedio",
+        "description": "Promedio de horas que operan las máquinas por día",
+        "placeholder": "8"
+      }
+    },
+    "security": {
+      "title": "Configuración de Seguridad",
+      "subtitle": "Parámetros de sesión y autenticación",
+      "sessionTimeout": {
+        "label": "Tiempo de Sesión (minutos)",
+        "description": "Tiempo de inactividad antes de cerrar sesión automáticamente",
+        "option30": "30 minutos",
+        "option60": "1 hora",
+        "option120": "2 horas",
+        "option480": "8 horas"
+      },
+      "require2FA": {
+        "label": "Requiere 2FA para operaciones críticas",
+        "description": "Eliminar máquinas, cambios de configuración, etc."
+      }
+    },
+    "timezone": {
+      "label": "Zona Horaria",
+      "description": "Zona horaria para fechas y horarios",
+      "santiago": "Santiago (GMT-3)",
+      "buenosAires": "Buenos Aires (GMT-3)",
+      "saoPaulo": "São Paulo (GMT-3)",
+      "utc": "UTC (GMT+0)"
+    },
+    "dateFormat": {
+      "label": "Formato de Fecha",
+      "description": "Cómo mostrar las fechas en la aplicación",
+      "ddmmyyyy": "DD/MM/YYYY",
+      "mmddyyyy": "MM/DD/YYYY",
+      "yyyymmdd": "YYYY-MM-DD"
+    },
+    "currency": {
+      "label": "Moneda",
+      "description": "Moneda para mostrar valores monetarios",
+      "clp": "Peso Chileno (CLP)",
+      "usd": "Dólar Americano (USD)",
+      "eur": "Euro (EUR)",
+      "brl": "Real Brasileño (BRL)"
+    },
+    "buttons": {
+      "save": "Guardar Cambios",
+      "saving": "Guardando...",
+      "restoreDefaults": "Restaurar Valores Predeterminados",
+      "testEmail": "Enviar Email de Prueba",
+      "cancel": "Cancelar"
+    },
+    "messages": {
+      "saveSuccess": "Configuraciones guardadas correctamente",
+      "saveError": "Error al guardar las configuraciones",
+      "testEmailSent": "Email de prueba enviado a {{email}}",
+      "testEmailError": "Error al enviar el email de prueba",
+      "restoreConfirmTitle": "¿Restaurar valores predeterminados?",
+      "restoreConfirmMessage": "Esta acción restablecerá todas las configuraciones a sus valores iniciales. Los cambios de tema e idioma se mantendrán.",
+      "restoreConfirmButton": "Restaurar",
+      "restoreCancelButton": "Cancelar",
+      "restoreSuccess": "Configuraciones restauradas correctamente",
+      "unsavedChanges": "Tienes cambios sin guardar",
+      "loading": "Cargando configuraciones...",
+      "loadError": "Error al cargar las configuraciones"
+    },
+    "validation": {
+      "emailRequired": "El correo es requerido",
+      "emailInvalid": "Ingresa un correo válido",
+      "numberMin": "El valor debe ser al menos {{min}}",
+      "numberMax": "El valor no puede exceder {{max}}",
+      "required": "Este campo es requerido"
     }
   }
 }
