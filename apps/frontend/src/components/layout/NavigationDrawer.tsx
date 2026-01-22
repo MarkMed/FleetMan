@@ -3,12 +3,12 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useNavigationStore } from '@store/slices';
 import { useAuthStore } from '@store/slices/authSlice';
-import { useLogout } from '@hooks/useAuth';
+import { useLogoutWithConfirmation } from '@hooks/useLogoutWithConfirmation';
 import { getDrawerNavItems } from '@constants';
 import { cn } from '@utils/cn';
-import { modal } from '@helpers/modal';
 import { Button } from '@components/ui';
 import { X, LogOut } from 'lucide-react';
+import { getAvatarLetter, getUserDisplayName } from '@utils/userHelpers';
 
 /**
  * NavigationDrawer - Sidebar deslizable con navegación completa
@@ -28,7 +28,7 @@ export const NavigationDrawer: React.FC = () => {
   const { t } = useTranslation();
   const { isDrawerOpen, closeDrawer } = useNavigationStore();
   const { user } = useAuthStore();
-  const logoutMutation = useLogout();
+  const handleLogout = useLogoutWithConfirmation();
   
   const navItems = getDrawerNavItems();
 
@@ -74,35 +74,11 @@ export const NavigationDrawer: React.FC = () => {
 
   /**
    * Sprint #14 Task 14.10: Logout handler con confirmación
-   * Usa modal.confirm() para integrar con sistema global de modales
+   * Delegado al hook compartido useLogoutWithConfirmation
    */
-  const handleLogout = () => {
+  const handleLogoutClick = () => {
     closeDrawer(); // Cerrar drawer primero
-    
-    modal.confirm({
-      title: t('profile.menu.logoutConfirm.title'),
-      content: t('profile.menu.logoutConfirm.message'),
-      action: 'warning',
-      confirmText: t('profile.menu.logoutConfirm.confirm'),
-      cancelText: t('profile.menu.logoutConfirm.cancel'),
-      onConfirm: async () => {
-        try {
-          modal.showLoading(t('profile.menu.logoutLoading'));
-          await logoutMutation.mutateAsync();
-          modal.success({
-            title: t('profile.menu.logoutSuccess.title'),
-            description: t('profile.menu.logoutSuccess.message')
-          });
-          // Redirect handled by auth store
-        } catch (error) {
-          modal.error({
-            title: t('profile.menu.logoutError.title'),
-            description: t('profile.menu.logoutError.message')
-          });
-          console.error('Logout error:', error);
-        }
-      }
-    });
+    handleLogout(); // Usar hook compartido
   };
 
   if (!isDrawerOpen) return null;
@@ -205,15 +181,15 @@ export const NavigationDrawer: React.FC = () => {
           {user && (
             <div className="p-4 border-b border-border">
               <div className="flex items-center gap-3">
-                {/* Avatar */}
-                <div className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center text-sm font-medium flex-shrink-0">
-                  {user.email[0].toUpperCase()}
+                {/* Avatar - Uses theme token bg-primary instead of hardcoded color */}
+                <div className="w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-medium flex-shrink-0">
+                  {getAvatarLetter(user.email)}
                 </div>
                 
                 {/* User details */}
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-foreground truncate">
-                    {user.profile?.companyName || user.email.split('@')[0]}
+                    {getUserDisplayName(user)}
                   </p>
                   <p className="text-xs text-muted-foreground truncate">
                     {user.email}
@@ -228,7 +204,7 @@ export const NavigationDrawer: React.FC = () => {
             <Button
               variant="outline"
               onPress={handleLogout}
-              className='w-full justify-start gap-3 h-auto text-red-600 border border-red-600 hover:bg-red-400 hover:text-red-900'
+              className='w-full justify-start gap-3 h-auto text-red-600 border border-red-600 hover:bg-red-100 hover:text-red-900'
             >
               <LogOut className="w-5 h-5" />
               <span>{t('profile.menu.logout')}</span>

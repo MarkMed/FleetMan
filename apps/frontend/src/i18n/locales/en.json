@@ -918,6 +918,7 @@
     "title": "My Profile",
     "menu": {
       "title": "My Profile",
+      "ariaLabel": "User profile",
       "viewProfile": "View Profile",
       "viewProfileDesc": "See your profile information",
       "editProfile": "Edit Profile",

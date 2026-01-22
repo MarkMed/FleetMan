@@ -920,6 +920,7 @@
     "title": "Mi Perfil",
     "menu": {
       "title": "Mi Perfil",
+      "ariaLabel": "Perfil de usuario",
       "viewProfile": "Ver Perfil",
       "viewProfileDesc": "Consulta tu información de perfil",
       "editProfile": "Editar Perfil",
@@ -927,7 +928,7 @@
       "logout": "Cerrar Sesión",
       "logoutDesc": "Salir de tu cuenta",
       "logoutConfirm": {
-        "title": "¿Cerrar sesión?",
+        "title": "¿Cerrar Sesión?",
         "message": "¿Estás seguro que deseas cerrar sesión?",
         "confirm": "Cerrar Sesión",
         "cancel": "Cancelar"
