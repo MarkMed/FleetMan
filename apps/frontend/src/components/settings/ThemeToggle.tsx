@@ -1,5 +1,6 @@
 import React from 'react';
 import { Sun, Moon, Monitor } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useUIStore } from '@store';
 import { Button } from '@components/ui';
 import { cn } from '@utils/cn';
@@ -22,25 +23,26 @@ import { cn } from '@utils/cn';
  */
 export const ThemeToggle: React.FC = () => {
   const { theme, setTheme } = useUIStore();
+  const { t } = useTranslation();
 
   const themes = [
     {
       value: 'light' as const,
       icon: Sun,
-      label: 'Claro',
-      ariaLabel: 'Cambiar a tema claro',
+      label: t('settings.appearance.theme.light'),
+      ariaLabel: t('settings.appearance.theme.lightAria'),
     },
     {
       value: 'dark' as const,
       icon: Moon,
-      label: 'Oscuro',
-      ariaLabel: 'Cambiar a tema oscuro',
+      label: t('settings.appearance.theme.dark'),
+      ariaLabel: t('settings.appearance.theme.darkAria'),
     },
     {
       value: 'system' as const,
       icon: Monitor,
-      label: 'Sistema',
-      ariaLabel: 'Usar tema del sistema',
+      label: t('settings.appearance.theme.system'),
+      ariaLabel: t('settings.appearance.theme.systemAria'),
     },
   ];
 

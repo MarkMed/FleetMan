@@ -21,7 +21,7 @@ i18n
   .init({
     resources,
     fallbackLng: 'en',
-    lng: 'en', // Default language
+    // lng removed - let LanguageDetector handle it (localStorage → navigator → htmlTag)
     
     debug: process.env.NODE_ENV === 'development',
     

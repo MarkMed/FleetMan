@@ -282,7 +282,7 @@
         "namePlaceholder": "Ej: Excavadora 001",
         "description": "Descripción",
         "descriptionPlaceholder": "Descripción adicional de la máquina...",
-        "tip": "<strong>Consejo:</strong> Asegúrate de que el número de serie sea único y esté visible en la máquina. Esta información será fundamental para el seguimiento y mantenimiento."
+        "tip": "<0>Consejo:</0> Asegúrate de que el número de serie sea único y esté visible en la máquina. Esta información será fundamental para el seguimiento y mantenimiento."
       },
       "technicalSpecs": {
         "title": "Especificaciones Técnicas",
@@ -306,7 +306,7 @@
         "dailyHoursHelper": "Promedio de horas que opera por día (1-24)",
         "operatingDays": "Días de operación",
         "operatingDaysHelper": "Selecciona los días en que esta máquina opera habitualmente",
-        "weeklyHoursCalculation": "<strong>{{days}}</strong> día(s) × <strong>{{dailyHours}}</strong> horas/día = <strong>{{weeklyHours}} horas/semana</strong>",
+        "weeklyHoursCalculation": "<0>{{days}}</0> día(s) × <1>{{dailyHours}}</1> horas/día = <2>{{weeklyHours}}</2> horas/semana",
         "weeklyHoursInfo": "Esta programación se usará para calcular alertas de mantenimiento basadas en horas de uso reales.",
         "accessoriesTitle": "Accesorios y Características",
         "attachments": "Accesorios instalados",
@@ -318,7 +318,7 @@
         "operationalStatusTitle": "Estado Operativo",
         "isActive": "Máquina activa",
         "isActiveHelper": "Indica si la máquina está actualmente en uso operativo",
-        "note": "<strong>Nota:</strong> Solo el año de fabricación es obligatorio. El resto de campos te ayudarán a tener un mejor control y seguimiento de tus máquinas en el sistema."
+        "note": "<0>Nota:</0> Solo el año de fabricación es obligatorio. El resto de campos te ayudarán a tener un mejor control y seguimiento de tus máquinas en el sistema."
       },
       "confirmation": {
         "title": "Confirma la información",
@@ -1159,8 +1159,11 @@
         "label": "Tema",
         "description": "Selecciona el tema de color de la aplicación",
         "light": "Claro",
+        "lightAria": "Cambiar a tema claro",
         "dark": "Oscuro",
-        "system": "Sistema"
+        "darkAria": "Cambiar a tema oscuro",
+        "system": "Sistema",
+        "systemAria": "Usar tema del sistema"
       }
     },
     "language": {
@@ -1278,6 +1281,10 @@
       "cancel": "Cancelar"
     },
     "messages": {
+      "languageChanged": "Idioma cambiado correctamente",
+      "updatedCount": "{{count}} configuración actualizada",
+      "updatedCount_plural": "{{count}} configuraciones actualizadas",
+      "testEmailDescription": "Revisa tu bandeja de entrada para confirmar que las notificaciones funcionan correctamente",
       "saveSuccess": "Configuraciones guardadas correctamente",
       "saveError": "Error al guardar las configuraciones",
       "testEmailSent": "Email de prueba enviado a {{email}}",

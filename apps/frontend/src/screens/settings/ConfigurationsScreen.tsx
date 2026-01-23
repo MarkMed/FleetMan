@@ -6,9 +6,9 @@ import {
   Button, 
   Card, 
   Switch,
-  Input,
   Skeleton,
   Badge,
+  Select,
 } from '@components/ui';
 import { ThemeToggle } from '@components/settings/ThemeToggle';
 import { Mail, Save, RotateCcw } from 'lucide-react';
@@ -125,22 +125,16 @@ export const ConfigurationsScreen: React.FC = () => {
               </BodyText>
               
               <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">
-                    {vm.t('settings.language.label')}
-                  </label>
-                  <select
-                    value={vm.i18n.language}
-                    onChange={(e) => vm.handleLanguageChange(e.target.value as 'es' | 'en')}
-                    className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
-                  >
-                    <option value="es">{vm.t('settings.language.spanish')}</option>
-                    <option value="en">{vm.t('settings.language.english')}</option>
-                  </select>
-                  <BodyText size="small" className="text-muted-foreground mt-2">
-                    {vm.t('settings.language.description')}
-                  </BodyText>
-                </div>
+                <Select
+                  label={vm.t('settings.language.label')}
+                  value={vm.i18n.language.split('-')[0]} // Normalize en-US → en
+                  onValueChange={(value) => vm.handleLanguageChange(value as 'es' | 'en')}
+                  options={[
+                    { value: 'es', label: vm.t('settings.language.spanish') },
+                    { value: 'en', label: vm.t('settings.language.english') }
+                  ]}
+                  helperText={vm.t('settings.language.description')}
+                />
               </div>
             </div>
           </Card>

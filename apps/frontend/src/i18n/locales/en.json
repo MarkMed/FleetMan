@@ -280,7 +280,7 @@
         "namePlaceholder": "E.g.: Excavator 001",
         "description": "Description",
         "descriptionPlaceholder": "Additional machine description...",
-        "tip": "<strong>Tip:</strong> Make sure the serial number is unique and visible on the machine. This information will be essential for tracking and maintenance."
+        "tip": "<0>Tip:</0> Make sure the serial number is unique and visible on the machine. This information will be essential for tracking and maintenance."
       },
       "technicalSpecs": {
         "title": "Technical Specifications",
@@ -304,7 +304,7 @@
         "dailyHoursHelper": "Average hours it operates per day (1-24)",
         "operatingDays": "Operating Days",
         "operatingDaysHelper": "Select the days when this machine typically operates",
-        "weeklyHoursCalculation": "<strong>{{days}}</strong> day(s) × <strong>{{dailyHours}}</strong> hours/day = <strong>{{weeklyHours}} hours/week</strong>",
+        "weeklyHoursCalculation": "<0>{{days}}</0> day(s) × <1>{{dailyHours}}</1> hours/day = <2>{{weeklyHours}}</2> hours/week",
         "weeklyHoursInfo": "This schedule will be used to calculate maintenance alerts based on actual usage hours.",
         "accessoriesTitle": "Accessories and Features",
         "attachments": "Installed Accessories",
@@ -316,7 +316,7 @@
         "operationalStatusTitle": "Operational Status",
         "isActive": "Machine active",
         "isActiveHelper": "Indicates whether the machine is currently in operational use",
-        "note": "<strong>Note:</strong> Only the manufacturing year is required. The rest of the fields will help you have better control and tracking of your machines in the system."
+        "note": "<0>Note:</0> Only the manufacturing year is required. The rest of the fields will help you have better control and tracking of your machines in the system."
       },
       "confirmation": {
         "title": "Confirm the information",
@@ -1157,8 +1157,11 @@
         "label": "Theme",
         "description": "Select the application color theme",
         "light": "Light",
+        "lightAria": "Switch to light theme",
         "dark": "Dark",
-        "system": "System"
+        "darkAria": "Switch to dark theme",
+        "system": "System",
+        "systemAria": "Use system theme"
       }
     },
     "language": {
@@ -1276,6 +1279,10 @@
       "cancel": "Cancel"
     },
     "messages": {
+      "languageChanged": "Language changed successfully",
+      "updatedCount": "{{count}} setting updated",
+      "updatedCount_plural": "{{count}} settings updated",
+      "testEmailDescription": "Check your inbox to confirm notifications are working correctly",
       "saveSuccess": "Settings saved successfully",
       "saveError": "Error saving settings",
       "testEmailSent": "Test email sent to {{email}}",

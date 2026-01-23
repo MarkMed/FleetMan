@@ -1,6 +1,6 @@
 import React from 'react';
 import { useFormContext, Controller } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
+import { useTranslation, Trans } from 'react-i18next';
 import { InputField, Select, Textarea, Checkbox } from '../../../../components/ui';
 import { MachineRegistrationData } from '@contracts';
 import { DayOfWeek } from '@packages/domain';
@@ -229,11 +229,11 @@ export function TechnicalSpecsStep() {
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                         <div className="text-info">
-                          {t('machines.registration.technicalSpecs.weeklyHoursCalculation', {
-                            days: selectedDays.length,
-                            dailyHours,
-                            weeklyHours
-                          })}
+                          <Trans
+                            i18nKey="machines.registration.technicalSpecs.weeklyHoursCalculation"
+                            values={{ days: selectedDays.length, dailyHours, weeklyHours }}
+                            components={{ 0: <strong />, 1: <strong />, 2: <strong /> }}
+                          />
                         </div>
                       </div>
                       <p className="text-xs text-info/80 mt-2">
@@ -328,7 +328,12 @@ export function TechnicalSpecsStep() {
             </svg>
           </div>
           <div className="ml-3">
-            <p className="text-sm text-info" dangerouslySetInnerHTML={{ __html: t('machines.registration.technicalSpecs.note') }} />
+            <p className="text-sm text-info">
+              <Trans 
+                i18nKey="machines.registration.technicalSpecs.note"
+                components={{ 0: <strong /> }}
+              />
+            </p>
           </div>
         </div>
       </div>

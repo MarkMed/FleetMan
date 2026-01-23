@@ -5,7 +5,6 @@ import { z } from 'zod';
 import { useTranslation } from 'react-i18next';
 import { toast, modal } from '@components/ui';
 import { useAuthStore } from '@store/slices/authSlice';
-import { i18n } from '@i18n/index';
 
 /**
  * ConfigurationsViewModel - Sprint #14 Tasks 14.5 & 14.6
@@ -113,8 +112,18 @@ export function useConfigurationsViewModel() {
       const mockSettings = localStorage.getItem('fleetman_settings_mock');
       
       if (mockSettings) {
-        const parsed = JSON.parse(mockSettings);
-        reset(parsed);
+        try {
+          const parsed = JSON.parse(mockSettings);
+          reset(parsed);
+        } catch (error) {
+          console.error('[ConfigurationsViewModel] Failed to parse settings from localStorage:', error);
+          // Clear corrupted data and use defaults
+          localStorage.removeItem('fleetman_settings_mock');
+          reset({
+            ...defaultSettings,
+            emailAddress: user?.email || '',
+          });
+        }
       } else {
         // Use user email as default
         reset({
@@ -135,7 +144,7 @@ export function useConfigurationsViewModel() {
     i18n.changeLanguage(newLanguage);
     toast.success({
       title: t('settings.messages.saveSuccess'),
-      description: t('settings.language.description'),
+      description: t('settings.messages.languageChanged'),
     });
     console.log('[ConfigurationsViewModel] Language changed:', newLanguage);
   }, [i18n, t]);
@@ -154,7 +163,7 @@ export function useConfigurationsViewModel() {
     
     toast.success({
       title: t('settings.messages.saveSuccess'),
-      description: Object.keys(data).length + ' configuraciones actualizadas',
+      description: t('settings.messages.updatedCount', { count: Object.keys(data).length }),
     });
 
     setIsSaving(false);
@@ -205,7 +214,7 @@ export function useConfigurationsViewModel() {
     
     toast.info({
       title: t('settings.messages.testEmailSent', { email: emailAddress }),
-      description: 'Revisa tu bandeja de entrada',
+      description: t('settings.messages.testEmailDescription'),
     });
   }, [watch, t]);
 
