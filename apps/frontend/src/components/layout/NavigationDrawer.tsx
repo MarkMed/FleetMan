@@ -110,28 +110,30 @@ export const NavigationDrawer: React.FC = () => {
           'bg-background border-r border-border',
           'shadow-lg',
           // Animation
-          'animate-slide-in-from-left'
+          'animate-slide-in-from-left',
+          'z-50'
         )}
         role="dialog"
         aria-modal="true"
         aria-label="Menú de navegación"
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-border">
+        <div className="flex items-center justify-between p-4 py-3 border-b border-border">
           <h2 className="text-lg font-semibold text-foreground">FleetMan</h2>
-          <button
-            onClick={closeDrawer}
+          <Button
+            onPress={closeDrawer}
             className={cn(
               'p-2 rounded-md',
               'text-muted-foreground hover:text-foreground',
               'hover:bg-accent',
               'transition-colors',
-              'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary'
+              'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary',
+              'bg-transparent'
             )}
             aria-label="Cerrar menú"
           >
             <X className="w-5 h-5" />
-          </button>
+          </Button>
         </div>
 
         {/* Navigation Items */}
@@ -143,32 +145,35 @@ export const NavigationDrawer: React.FC = () => {
               
               return (
                 <li key={item.id}>
-                  <button
-                    onClick={() => handleNavClick(item.href)}
+                  <Button
+                    onPress={() => handleNavClick(item.href)}
                     className={cn(
                       // Layout
                       'w-full flex items-center gap-3 px-4 py-3',
                       'rounded-lg',
                       // Typography
-                      'text-sm font-medium',
+                      'text-lg font-medium',
                       // Transitions
                       'transition-all duration-200',
                       // Focus
                       'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary',
+                      'bg-transparent',
+                      'justify-start',
                       // Active state - primary color
                       active ? [
                         'bg-primary/10 text-primary',
                         'shadow-sm',
+                        'hover:bg-[hsl(var(--color-card))] hover:text-foreground',
                       ] : [
                         'text-muted-foreground',
-                        'hover:bg-accent hover:text-foreground',
+                        'hover:bg-[hsl(var(--color-card))] hover:text-foreground',
                       ]
                     )}
                     aria-current={active ? 'page' : undefined}
                   >
                     <Icon className="w-5 h-5 flex-shrink-0" />
                     <span>{t(item.labelKey)}</span>
-                  </button>
+                  </Button>
                 </li>
               );
             })}
@@ -204,7 +209,7 @@ export const NavigationDrawer: React.FC = () => {
             <Button
               variant="outline"
               onPress={handleLogout}
-              className='w-full justify-start gap-3 h-auto text-red-600 border border-red-600 hover:bg-red-100 hover:text-red-900'
+              className='w-full justify-start gap-3 h-auto text-destructive border border-red-600 bg-destructive/5 hover:bg-destructive/20 hover:text-destructive'
             >
               <LogOut className="w-5 h-5" />
               <span>{t('profile.menu.logout')}</span>

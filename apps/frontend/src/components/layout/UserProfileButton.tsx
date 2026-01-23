@@ -86,7 +86,7 @@ export function UserProfileButton() {
       <Button
         variant="ghost"
         onPress={handleOpenProfileMenu}
-        className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-300 hover:bg-gray-400 text-gray-800 dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-gray-100"
+        className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[hsl(var(--color-card))] hover:bg-gray-100 text-gray-800 dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-gray-100"
         aria-label={t('profile.menu.ariaLabel')}
       >
         {/* Avatar - Uses theme token bg-primary instead of hardcoded color */}
@@ -122,7 +122,7 @@ export function UserProfileButton() {
           <Button
             variant="outline"
             onPress={handleNavigateToProfile}
-            className="h-auto py-4 px-4 justify-start text-left hover:bg-accent"
+            className="h-auto py-4 px-4 justify-start text-left bg-[hsl(var(--color-card))]"
           >
             <div className="flex items-center gap-3 w-full">
               <div className="mt-0.5">
@@ -143,7 +143,7 @@ export function UserProfileButton() {
           <Button
             variant="outline"
             onPress={handleNavigateToEditProfile}
-            className="h-auto py-4 px-4 justify-start text-left hover:bg-accent"
+            className="h-auto py-4 px-4 justify-start text-left bg-[hsl(var(--color-card))]"
           >
             <div className="flex items-center gap-3 w-full">
               <div className="mt-0.5">
@@ -164,7 +164,7 @@ export function UserProfileButton() {
           <Button
             variant="outline"
             onPress={handleLogoutClick}
-            className="h-auto py-4 px-4 justify-start text-left text-destructive hover:text-destructive hover:bg-destructive/10 border border-red-600"
+            className="h-auto py-4 px-4 justify-start text-destructive border border-red-600 bg-destructive/5 hover:bg-destructive/20"
           >
             <div className="flex items-center gap-3 w-full">
               <div className="mt-0.5">

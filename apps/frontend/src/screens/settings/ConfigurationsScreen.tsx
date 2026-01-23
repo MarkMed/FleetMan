@@ -106,7 +106,7 @@ export const ConfigurationsScreen: React.FC = () => {
       setIsLoading(true);
       
       // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 800));
+      await new Promise(resolve => setTimeout(resolve, 300));
 
       // TODO: Replace with actual API call: GET /users/me/notification-preferences
       const mockSettings = localStorage.getItem('fleetman_settings_mock');
