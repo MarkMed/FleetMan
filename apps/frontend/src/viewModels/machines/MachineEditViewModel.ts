@@ -175,8 +175,8 @@ export function useMachineEditViewModel(machineId: string): MachineEditViewModel
   // Memoizado para evitar recrear el array en cada render
   const wizardSteps: WizardStep<MachineRegistrationData>[] = useMemo(() => [
     {
-      title: 'Información Básica',
-      description: 'Datos principales de la máquina',
+      title: t('machines.edit.steps.basicInfo.title'),
+      description: t('machines.edit.steps.basicInfo.description'),
       component: BasicInfoStepEdit, // Use edit wrapper with isEditMode=true
       isValid: () => {
         const basicInfoErrors = form.formState.errors.basicInfo;
@@ -194,8 +194,8 @@ export function useMachineEditViewModel(machineId: string): MachineEditViewModel
       },
     },
     {
-      title: 'Foto de la Máquina',
-      description: 'Imagen representativa',
+      title: t('machines.edit.steps.photo.title'),
+      description: t('machines.edit.steps.photo.description'),
       component: PhotoStepEdit, // ← Custom step for editing
       isValid: () => {
         // Always valid - photo is optional in edit mode
@@ -204,8 +204,8 @@ export function useMachineEditViewModel(machineId: string): MachineEditViewModel
       },
     },
     {
-      title: 'Especificaciones Técnicas',
-      description: 'Detalles técnicos y ubicación',
+      title: t('machines.edit.steps.technicalSpecs.title'),
+      description: t('machines.edit.steps.technicalSpecs.description'),
       component: TechnicalSpecsStep,
       isValid: () => {
         const techErrors = form.formState.errors.technicalSpecs;
@@ -218,8 +218,8 @@ export function useMachineEditViewModel(machineId: string): MachineEditViewModel
       },
     },
     {
-      title: 'Confirmación',
-      description: 'Revisar y confirmar los cambios',
+      title: t('machines.edit.steps.confirmation.title'),
+      description: t('machines.edit.steps.confirmation.description'),
       component: ConfirmationStepEdit,
       isValid: () => Object.keys(form.formState.errors).length === 0,
     },

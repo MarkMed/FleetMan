@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useNavigationStore } from '@store/slices';
 import { getMobileNavItems, MENU_BUTTON_CONFIG } from '@constants';
 import { cn } from '@utils/cn';
@@ -17,6 +18,7 @@ import { cn } from '@utils/cn';
 export const MobileBottomNav: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useTranslation();
   const { toggleDrawer } = useNavigationStore();
   
   const mobileNavItems = getMobileNavItems();
@@ -66,11 +68,11 @@ export const MobileBottomNav: React.FC = () => {
               'active:scale-95',
               active ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
             )}
-            aria-label={item.label}
+            aria-label={t(item.labelKey)}
             aria-current={active ? 'page' : undefined}
           >
             <Icon className="w-6 h-6" />
-            <span className="text-xs mt-1 font-medium">{item.label}</span>
+            <span className="text-xs mt-1 font-medium">{t(item.labelKey)}</span>
           </button>
         );
       })}
@@ -86,11 +88,11 @@ export const MobileBottomNav: React.FC = () => {
           'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary',
           'active:scale-95'
         )}
-        aria-label={MENU_BUTTON_CONFIG.label}
+        aria-label={t(MENU_BUTTON_CONFIG.labelKey)}
         aria-controls="navigation-drawer"
       >
         <MENU_BUTTON_CONFIG.icon className="w-6 h-6" />
-        <span className="text-xs mt-1 font-medium">{MENU_BUTTON_CONFIG.label}</span>
+        <span className="text-xs mt-1 font-medium">{t(MENU_BUTTON_CONFIG.labelKey)}</span>
       </button>
     </nav>
   );

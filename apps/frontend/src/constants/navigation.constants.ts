@@ -13,7 +13,7 @@ import {
 
 export interface NavigationItem {
   id: string;
-  label: string;
+  labelKey: string; // i18n key for translation
   icon: LucideIcon;
   href: string;
   requiresAuth?: boolean;
@@ -25,11 +25,14 @@ export interface NavigationItem {
  * These will appear in:
  * - Desktop: Drawer sidebar when menu is opened
  * - Mobile: Bottom nav (first 3) + Menu button (4th position)
+ * 
+ * @remarks
+ * Use t('navigation.{labelKey}') to get translated label
  */
 export const NAVIGATION_ITEMS: NavigationItem[] = [
   {
     id: 'dashboard',
-    label: 'Dashboard',
+    labelKey: 'navigation.dashboard',
     icon: Home,
     href: '/dashboard',
     requiresAuth: true,
@@ -37,7 +40,7 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
   },
   {
     id: 'machines',
-    label: 'Mis Máquinas',
+    labelKey: 'navigation.machines',
     icon: Cog,
     href: '/machines',
     requiresAuth: true,
@@ -45,7 +48,7 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
   },
   {
     id: 'notifications',
-    label: 'Notificaciones',
+    labelKey: 'navigation.notifications',
     icon: Bell,
     href: '/notifications',
     requiresAuth: true,
@@ -53,7 +56,7 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
   },
 //   {
 //     id: 'quickcheck',
-//     label: 'QuickCheck',
+//     labelKey: 'navigation.quickcheck',
 //     icon: CheckSquare,
 //     href: '/quickcheck',
 //     requiresAuth: true,
@@ -61,7 +64,7 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
 //   },
   {
     id: 'messages',
-    label: 'Mensajes',
+    labelKey: 'navigation.messages',
     icon: MessageCircle,
     href: '/messages',
     requiresAuth: true,
@@ -69,7 +72,7 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
   },
   {
     id: 'contact-discovery',
-    label: 'Explorar Contactos',
+    labelKey: 'navigation.contactDiscovery',
     icon: UserSearch,
     href: '/contact-discovery',
     requiresAuth: true,
@@ -77,7 +80,7 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
   },
   {
     id: 'contacts',
-    label: 'Contactos',
+    labelKey: 'navigation.contacts',
     icon: Users,
     href: '/contacts',
     requiresAuth: true,
@@ -85,7 +88,7 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
   },
   {
     id: 'profile',
-    label: 'Perfil',
+    labelKey: 'navigation.profile',
     icon: User,
     href: '/profile',
     requiresAuth: true,
@@ -93,7 +96,7 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
   },
   {
     id: 'settings',
-    label: 'Configuración',
+    labelKey: 'navigation.settings',
     icon: Settings,
     href: '/settings',
     requiresAuth: true,
@@ -106,7 +109,7 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
  */
 export const MENU_BUTTON_CONFIG = {
   id: 'menu',
-  label: 'Menú',
+  labelKey: 'navigation.menu',
   icon: Menu,
 };
 

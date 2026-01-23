@@ -127,7 +127,7 @@ export function Wizard<T = any>({
 
       {/* Debug info (solo en desarrollo) */}
       {process.env.NODE_ENV === 'development' && (
-        <div className="mt-4 p-4 bg-gray-100 rounded-md text-xs text-gray-600">
+        <div className="mt-4 p-4 bg-gray-100 rounded-md text-xs text-gray-600 text-wrap overflow-hidden">
           <strong>Debug Info:</strong>
           <br />
           Current Step: {currentStep + 1} / {steps.length}

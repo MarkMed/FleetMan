@@ -100,5 +100,4 @@ export interface SidebarState {
 export interface UIState {
   sidebarCollapsed: boolean;
   theme: 'light' | 'dark' | 'system';
-  language: 'es' | 'en';
 }

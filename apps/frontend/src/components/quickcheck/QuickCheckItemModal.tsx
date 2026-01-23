@@ -75,7 +75,7 @@ export const QuickCheckItemModal: React.FC<QuickCheckItemModalProps> = ({
   };
 
   return (
-    <div className="w-full max-w-md">
+    <div className="w-full">
       {/* Header */}
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-foreground">

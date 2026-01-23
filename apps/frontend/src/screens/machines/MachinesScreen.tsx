@@ -1,5 +1,6 @@
 ﻿import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Heading1, BodyText, Button, Card, CardContent, CardHeader, CardTitle } from "@components/ui";
 import { useMachinesViewModel } from "../../viewModels/machines";
 import { useMachineTypeResolver } from "@hooks";
@@ -20,6 +21,7 @@ const StatusPill = ({ status }: { status: string }) => (
 
 export const MachinesScreen: React.FC = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { machines, isLoading, isError, errorMessage, refetch } = useMachinesViewModel();
   
   // Resolve machine type IDs to names efficiently (batch lookup)
@@ -31,10 +33,10 @@ export const MachinesScreen: React.FC = () => {
       <div className="flex justify-between items-center">
         <div>
           <Heading1 size="headline" className="tracking-tight text-foreground">
-            Gestión de Máquinas
+            {t('machines.list.title')}
           </Heading1>
           <BodyText className="text-muted-foreground">
-            Administra tu inventario de máquinas y su información
+            {t('machines.list.subtitle')}
           </BodyText>
         </div>
         <Button
@@ -42,16 +44,16 @@ export const MachinesScreen: React.FC = () => {
           size="default"
           onPress={() => navigate(ROUTES.NEW_MACHINE)}
         >
-          + Nueva Máquina
+          {t('machines.list.newMachine')}
         </Button>
       </div>
 
       {isError && (
         <div className="mb-4 rounded-lg border border-destructive/30 bg-destructive/10 p-4">
-          <p className="text-sm text-destructive font-medium">No pudimos cargar las máquinas.</p>
+          <p className="text-sm text-destructive font-medium">{t('machines.list.loadError')}</p>
           {errorMessage && <p className="text-xs text-destructive/80">{errorMessage}</p>}
           <Button variant="ghost" size="sm" className="mt-2" onPress={() => refetch()}>
-            Reintentar
+            {t('machines.list.retry')}
           </Button>
         </div>
       )}
@@ -70,7 +72,7 @@ export const MachinesScreen: React.FC = () => {
         {!isLoading && machines.length === 0 && (
           <Card>
             <CardContent className="py-6">
-              <p className="text-sm text-muted-foreground">No hay máquinas registradas todavía.</p>
+              <p className="text-sm text-muted-foreground">{t('machines.list.empty')}</p>
             </CardContent>
           </Card>
         )}
@@ -90,16 +92,16 @@ export const MachinesScreen: React.FC = () => {
             </CardHeader>
             <CardContent className="space-y-2 text-sm">
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Nº Serie</span>
+                <span className="text-muted-foreground">{t('machines.list.serialNumber')}</span>
                 <span className="font-mono text-foreground">{machine.serialNumber}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Tipo</span>
-                <span className="text-foreground">{machineTypeNames.get(machine.machineTypeId) ?? 'Cargando...'}</span>
+                <span className="text-muted-foreground">{t('machines.list.type')}</span>
+                <span className="text-foreground">{machineTypeNames.get(machine.machineTypeId) ?? t('machines.list.loading')}</span>
               </div>
               <div className="text-right">
                 <Button variant="outline" size="sm" onPress={() => navigate(`/machines/${machine.id}`)}>
-                  Ver
+                  {t('machines.list.view')}
                 </Button>
               </div>
             </CardContent>
@@ -111,12 +113,12 @@ export const MachinesScreen: React.FC = () => {
       <div className="hidden md:block rounded-lg border border-border bg-card">
         <div className="p-6">
           <div className="grid grid-cols-6 gap-4 text-sm font-medium text-muted-foreground border-b border-border pb-3">
-            <div>Marca</div>
-            <div>Modelo</div>
-            <div>Nº Serie</div>
-            <div>Tipo</div>
-            <div>Estado</div>
-            <div className="text-right">Acciones</div>
+            <div>{t('machines.list.brand')}</div>
+            <div>{t('machines.list.model')}</div>
+            <div>{t('machines.list.serialNumber')}</div>
+            <div>{t('machines.list.type')}</div>
+            <div>{t('machines.list.status')}</div>
+            <div className="text-right">{t('machines.list.actions')}</div>
           </div>
           <div className="divide-y divide-border">
             {isLoading && (
@@ -131,7 +133,7 @@ export const MachinesScreen: React.FC = () => {
             )}
             {!isLoading && machines.length === 0 && (
               <div className="py-6 text-sm text-muted-foreground text-center">
-                No hay máquinas registradas todavía.
+                {t('machines.list.empty')}
               </div>
             )}
             {!isLoading && machines.map((machine, index) => (
@@ -145,13 +147,13 @@ export const MachinesScreen: React.FC = () => {
                 <div className="text-foreground">{machine.brand}</div>
                 <div className="text-foreground">{machine.modelName}</div>
                 <div className="text-foreground font-mono">{machine.serialNumber}</div>
-                <div className="text-foreground">{machineTypeNames.get(machine.machineTypeId) ?? 'Cargando...'}</div>
+                <div className="text-foreground">{machineTypeNames.get(machine.machineTypeId) ?? t('machines.list.loading')}</div>
                 <div>
                   <StatusPill status={machine.status} />
                 </div>
                 <div className="text-right">
                   <Button variant="ghost" size="sm" onPress={() => navigate(`/machines/${machine.id}`)}>
-                    Ver
+                    {t('machines.list.view')}
                   </Button>
                 </div>
               </div>

@@ -117,19 +117,40 @@
   },
   "navigation": {
     "dashboard": "Dashboard",
-    "machines": "Machines",
+    "machines": "My Machines",
     "machineDetail": "Machine Detail",
     "alarms": "Alarms",
     "maintenance": "Maintenance",
     "quickcheck": "Quick Check",
     "notifications": "Notifications",
+    "messages": "Messages",
+    "contactDiscovery": "Explore Contacts",
+    "contacts": "Contacts",
+    "profile": "Profile",
     "reports": "Reports",
-    "settings": "Settings"
+    "settings": "Settings",
+    "menu": "Menu"
   },
   "machines": {
     "title": "Machines",
     "addMachine": "Add Machine",
     "machineDetails": "Machine Details",
+    "list": {
+      "title": "Machine Management",
+      "subtitle": "Manage your machine inventory and information",
+      "newMachine": "+ New Machine",
+      "loadError": "Could not load machines.",
+      "retry": "Retry",
+      "empty": "No machines registered yet.",
+      "brand": "Brand",
+      "model": "Model",
+      "serialNumber": "Serial No.",
+      "type": "Type",
+      "status": "Status",
+      "actions": "Actions",
+      "view": "View",
+      "loading": "Loading..."
+    },
     "breadcrumb": {
       "machines": "Machines",
       "detail": "Detail",
@@ -217,6 +238,105 @@
       }
     },
     "registration": {
+      "screen": {
+        "title": "Register New Machine",
+        "subtitle": "Complete the information in the following steps to register a new machine in the system.",
+        "loadError": "Could not load machine types",
+        "loadErrorDescription": "Check your connection or try reloading.",
+        "retry": "Retry",
+        "registrationError": "Registration Error"
+      },
+      "steps": {
+        "basicInfo": {
+          "title": "Basic Information",
+          "description": "Main machine data"
+        },
+        "photo": {
+          "title": "Machine Photo",
+          "description": "Representative image"
+        },
+        "technicalSpecs": {
+          "title": "Technical Specifications",
+          "description": "Technical details and location"
+        },
+        "confirmation": {
+          "title": "Confirmation",
+          "description": "Review and confirm data"
+        }
+      },
+      "basicInfo": {
+        "brand": "Brand",
+        "brandPlaceholder": "E.g.: Caterpillar",
+        "model": "Model",
+        "modelPlaceholder": "E.g.: 320D",
+        "serialNumber": "Serial Number",
+        "serialNumberPlaceholder": "E.g.: CAT320D12345",
+        "serialNumberImmutable": "Serial number cannot be modified",
+        "machineType": "Machine Type",
+        "machineTypePlaceholder": "Select a type",
+        "machineTypeError": "Error loading types",
+        "machineTypeImmutable": "Machine type cannot be modified",
+        "name": "Reference Name",
+        "namePlaceholder": "E.g.: Excavator 001",
+        "description": "Description",
+        "descriptionPlaceholder": "Additional machine description...",
+        "tip": "<0>Tip:</0> Make sure the serial number is unique and visible on the machine. This information will be essential for tracking and maintenance."
+      },
+      "technicalSpecs": {
+        "title": "Technical Specifications",
+        "year": "Manufacturing Year",
+        "yearPlaceholder": "E.g.: {{year}}",
+        "operatingHours": "Operating Hours",
+        "operatingHoursPlaceholder": "E.g.: 1500",
+        "operatingHoursHelper": "Accumulated hours of use",
+        "fuelType": "Power Source",
+        "fuelTypePlaceholder": "Select power source",
+        "currentLocation": "Current Location",
+        "currentLocationPlaceholder": "E.g.: Downtown Site - Sector A",
+        "assignmentTitle": "Assignment and Responsible",
+        "assignedTo": "Assign to",
+        "assignedToPlaceholder": "E.g.: John Doe",
+        "assignedToHelper": "Person responsible for this machine (operator, supervisor, etc.)",
+        "usageScheduleTitle": "Usage Schedule",
+        "usageScheduleDescription": "Define how many hours per day the machine operates and which days of the week. This information is used to calculate automatic maintenance alerts.",
+        "dailyHours": "Daily Operating Hours",
+        "dailyHoursPlaceholder": "E.g.: 8",
+        "dailyHoursHelper": "Average hours it operates per day (1-24)",
+        "operatingDays": "Operating Days",
+        "operatingDaysHelper": "Select the days when this machine typically operates",
+        "weeklyHoursCalculation": "<0>{{days}}</0> day(s) × <1>{{dailyHours}}</1> hours/day = <2>{{weeklyHours}}</2> hours/week",
+        "weeklyHoursInfo": "This schedule will be used to calculate maintenance alerts based on actual usage hours.",
+        "accessoriesTitle": "Accessories and Features",
+        "attachments": "Installed Accessories",
+        "attachmentsPlaceholder": "E.g.: Hydraulic hammer, Excavation bucket, Hydraulic thumb",
+        "attachmentsHelper": "Separate accessories with commas",
+        "specialFeatures": "Special Features",
+        "specialFeaturesPlaceholder": "E.g.: Air conditioning system, Integrated GPS, Backup camera",
+        "specialFeaturesHelper": "Separate features with commas",
+        "operationalStatusTitle": "Operational Status",
+        "isActive": "Machine active",
+        "isActiveHelper": "Indicates whether the machine is currently in operational use",
+        "note": "<0>Note:</0> Only the manufacturing year is required. The rest of the fields will help you have better control and tracking of your machines in the system."
+      },
+      "confirmation": {
+        "title": "Confirm the information",
+        "subtitle": "Review all data before registering the machine in the system",
+        "basicInfo": "Basic Information",
+        "notSelected": "Not selected",
+        "photo": "Machine Photo",
+        "photoUploadInfo": "The photo will be uploaded to Cloudinary upon registration confirmation",
+        "photoLaterMarked": "Photo marked to add later",
+        "photoLaterInfo": "You can upload the photo from the details page after registration",
+        "technicalSpecs": "Technical Specifications",
+        "locationStatus": "Location and Status",
+        "status": "Status",
+        "active": "Active",
+        "inactive": "Inactive",
+        "errorsFound": "Errors found in the information:",
+        "validationError": "Validation error",
+        "goBackToFix": "Please go back to previous steps to correct these errors.",
+        "finalMessage": "By clicking \"Register Machine\", a new record will be created in the system. This information can be edited later from machine management."
+      },
       "verificationTime": "Check your data!",
       "uploadingPhoto": "Uploading photo to Cloudinary...",
       "photoSaved": "Photo saved successfully",
@@ -259,6 +379,24 @@
       "loading": "Processing and redirecting..."
     },
     "edit": {
+      "steps": {
+        "basicInfo": {
+          "title": "Basic Information",
+          "description": "Main machine data"
+        },
+        "photo": {
+          "title": "Machine Photo",
+          "description": "Representative image"
+        },
+        "technicalSpecs": {
+          "title": "Technical Specifications",
+          "description": "Technical details and location"
+        },
+        "confirmation": {
+          "title": "Confirmation",
+          "description": "Review and confirm changes"
+        }
+      },
       "title": "Edit details of Machine: {{machineName}}",
       "subtitle": "Update information for",
       "serialNumber": "Serial No.",
@@ -1007,6 +1145,163 @@
         "invalidStep": "Invalid validation step",
         "unexpectedError": "Unexpected error during validation"
       }
+    }
+  },
+  "settings": {
+    "title": "System Settings",
+    "subtitle": "Customize FleetMan system behavior and preferences",
+    "appearance": {
+      "title": "Appearance",
+      "subtitle": "Customize the application's look and feel",
+      "theme": {
+        "label": "Theme",
+        "description": "Select the application color theme",
+        "light": "Light",
+        "lightAria": "Switch to light theme",
+        "dark": "Dark",
+        "darkAria": "Switch to dark theme",
+        "system": "System",
+        "systemAria": "Use system theme"
+      }
+    },
+    "language": {
+      "title": "System Language",
+      "subtitle": "Select the interface language",
+      "label": "Language",
+      "description": "All text will be displayed in the selected language",
+      "spanish": "Español",
+      "english": "English",
+      "portuguese": "Português"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "subtitle": "Configure how and when to receive notifications",
+      "emailEnabled": {
+        "label": "Email Notifications",
+        "description": "Receive important alerts via email"
+      },
+      "emailAddress": {
+        "label": "Notification Email",
+        "placeholder": "your@email.com",
+        "description": "Address where you'll receive notifications"
+      },
+      "frequency": {
+        "label": "Send Frequency",
+        "description": "How often to send notifications",
+        "immediate": "Immediate",
+        "daily": "Daily Summary",
+        "weekly": "Weekly Summary"
+      },
+      "eventTypes": {
+        "label": "Event Types to Notify",
+        "description": "Select which events you want to receive via email",
+        "maintenance": "Maintenance Required",
+        "failures": "Failures and Breakdowns",
+        "quickcheck": "Failed QuickChecks",
+        "all": "All Events"
+      },
+      "maintenanceAlerts": {
+        "label": "Maintenance Alerts",
+        "description": "Scheduled maintenance reminders"
+      },
+      "lowStockAlerts": {
+        "label": "Low Stock Alerts",
+        "description": "When spare parts are running low"
+      },
+      "pushNotifications": {
+        "label": "Push Notifications",
+        "description": "Real-time notifications in browser"
+      }
+    },
+    "maintenance": {
+      "title": "Maintenance Configuration",
+      "subtitle": "Parameters for reminders and scheduling",
+      "preventiveInterval": {
+        "label": "Preventive Maintenance Interval (hours)",
+        "description": "How many operating hours between maintenance",
+        "placeholder": "500"
+      },
+      "anticipationDays": {
+        "label": "Alert Anticipation Days",
+        "description": "How many days in advance to send reminders",
+        "placeholder": "7"
+      },
+      "dailyOperatingHours": {
+        "label": "Average Daily Operating Hours",
+        "description": "Average hours machines operate per day",
+        "placeholder": "8"
+      }
+    },
+    "security": {
+      "title": "Security Configuration",
+      "subtitle": "Session and authentication parameters",
+      "sessionTimeout": {
+        "label": "Session Timeout (minutes)",
+        "description": "Inactivity time before automatic logout",
+        "option30": "30 minutes",
+        "option60": "1 hour",
+        "option120": "2 hours",
+        "option480": "8 hours"
+      },
+      "require2FA": {
+        "label": "Require 2FA for critical operations",
+        "description": "Delete machines, configuration changes, etc."
+      }
+    },
+    "timezone": {
+      "label": "Time Zone",
+      "description": "Time zone for dates and times",
+      "santiago": "Santiago (GMT-3)",
+      "buenosAires": "Buenos Aires (GMT-3)",
+      "saoPaulo": "São Paulo (GMT-3)",
+      "utc": "UTC (GMT+0)"
+    },
+    "dateFormat": {
+      "label": "Date Format",
+      "description": "How to display dates in the application",
+      "ddmmyyyy": "DD/MM/YYYY",
+      "mmddyyyy": "MM/DD/YYYY",
+      "yyyymmdd": "YYYY-MM-DD"
+    },
+    "currency": {
+      "label": "Currency",
+      "description": "Currency for displaying monetary values",
+      "clp": "Chilean Peso (CLP)",
+      "usd": "US Dollar (USD)",
+      "eur": "Euro (EUR)",
+      "brl": "Brazilian Real (BRL)"
+    },
+    "buttons": {
+      "save": "Save Changes",
+      "saving": "Saving...",
+      "restoreDefaults": "Restore Default Values",
+      "testEmail": "Send Test Email",
+      "cancel": "Cancel"
+    },
+    "messages": {
+      "languageChanged": "Language changed successfully",
+      "updatedCount": "{{count}} setting updated",
+      "updatedCount_plural": "{{count}} settings updated",
+      "testEmailDescription": "Check your inbox to confirm notifications are working correctly",
+      "saveSuccess": "Settings saved successfully",
+      "saveError": "Error saving settings",
+      "testEmailSent": "Test email sent to {{email}}",
+      "testEmailError": "Error sending test email",
+      "restoreConfirmTitle": "Restore default values?",
+      "restoreConfirmMessage": "This action will reset all settings to their initial values. Theme and language changes will be preserved.",
+      "restoreConfirmButton": "Restore",
+      "restoreCancelButton": "Cancel",
+      "restoreSuccess": "Settings restored successfully",
+      "unsavedChanges": "You have unsaved changes",
+      "loading": "Loading settings...",
+      "loadError": "Error loading settings"
+    },
+    "validation": {
+      "emailRequired": "Email is required",
+      "emailInvalid": "Please enter a valid email",
+      "numberMin": "Value must be at least {{min}}",
+      "numberMax": "Value cannot exceed {{max}}",
+      "required": "This field is required"
     }
   }
 }

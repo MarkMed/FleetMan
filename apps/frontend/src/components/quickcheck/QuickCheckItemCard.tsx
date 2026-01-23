@@ -24,7 +24,7 @@ export const QuickCheckItemCard: React.FC<QuickCheckItemCardProps> = ({
 }) => {
   // Border color based on evaluation status
   const getBorderColor = () => {
-    if (mode !== 'EXECUTING' || !status) return 'bg-slate-300 dark:bg-slate-950';
+    if (mode !== 'EXECUTING' || !status) return 'bg-[hsl(var(--color-background))]/50';
     switch (status) {
       case 'approved':
         return 'border-green-500 bg-green-50/50 dark:bg-green-950/20';
@@ -33,14 +33,14 @@ export const QuickCheckItemCard: React.FC<QuickCheckItemCardProps> = ({
       case 'omitted':
         return 'border-yellow-500 bg-yellow-50/50 dark:bg-yellow-950/20';
       default:
-        return 'border-border bg-slate-300 dark:bg-slate-950';
+        return 'border-border bg-blue-200';
     }
   };
 
   return (
     <div
       className={cn(
-        'flex items-start gap-3 p-4 border rounded-lg transition-all',
+        'flex items-center gap-3 p-4 border rounded-lg transition-all',
         getBorderColor()
       )}
       style={{
@@ -48,8 +48,8 @@ export const QuickCheckItemCard: React.FC<QuickCheckItemCardProps> = ({
       }}
     >
       {/* Item number badge */}
-      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-        <span className="text-sm font-semibold text-primary">{index + 1}</span>
+      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gray-800/10 dark:bg-gray-100/10 flex items-center justify-center">
+        <span className="text-sm font-semibold text-foreground">{index + 1}</span>
       </div>
 
       {/* Item content */}

@@ -30,12 +30,6 @@ export const DashboardScreen: React.FC = () => {
               - Gestión de tu flota de máquinas
             </p>
           </div>
-          <button
-            onClick={handleLogout}
-            className="px-4 py-2 text-sm font-medium text-destructive-foreground bg-destructive rounded-md hover:bg-destructive/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-destructive"
-          >
-            Cerrar Sesión
-          </button>
         </div>
 
         {/* Statistics Grid */}

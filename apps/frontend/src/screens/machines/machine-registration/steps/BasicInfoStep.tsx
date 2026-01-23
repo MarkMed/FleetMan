@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { useFormContext, Controller } from 'react-hook-form';
-import { InputField, Select, Textarea, Skeleton } from '../../../../components/ui';
+import { useTranslation, Trans } from 'react-i18next';
+import { InputField, Select, Textarea, Skeleton, BodyText } from '../../../../components/ui';
 import { MachineRegistrationData } from '@contracts';
 import { useMachineTypes } from '@hooks';
 import { WizardStepProps } from '../../../../components/forms/wizard';
@@ -24,6 +25,8 @@ export function BasicInfoStep({ isEditMode = false, ...wizardProps }: BasicInfoS
     formState: { errors },
   } = useFormContext<MachineRegistrationData>();
 
+  const { t } = useTranslation();
+
   // Mock data para machine types (en producción vendría del ViewModel/API)
   const { data: machineTypeList, isLoading, isError } = useMachineTypes();
 
@@ -43,12 +46,12 @@ export function BasicInfoStep({ isEditMode = false, ...wizardProps }: BasicInfoS
           name="basicInfo.brand"
           render={({ field: { onChange, onBlur, value } }) => (
             <InputField
-              label="Marca"
+              label={t('machines.registration.basicInfo.brand')}
               required
               value={value || ''}
               onChangeText={onChange}
               onBlur={onBlur}
-              placeholder="Ej: Caterpillar"
+              placeholder={t('machines.registration.basicInfo.brandPlaceholder')}
               error={errors.basicInfo?.brand?.message}
             />
           )}
@@ -60,12 +63,12 @@ export function BasicInfoStep({ isEditMode = false, ...wizardProps }: BasicInfoS
           name="basicInfo.modelName"
           render={({ field: { onChange, onBlur, value } }) => (
             <InputField
-              label="Modelo"
+              label={t('machines.registration.basicInfo.model')}
               required
               value={String(value ?? '')}
               onChangeText={onChange}
               onBlur={onBlur}
-              placeholder="Ej: 320D"
+              placeholder={t('machines.registration.basicInfo.modelPlaceholder')}
               error={errors.basicInfo?.modelName?.message}
             />
           )}
@@ -78,18 +81,35 @@ export function BasicInfoStep({ isEditMode = false, ...wizardProps }: BasicInfoS
             name="basicInfo.serialNumber"
             render={({ field: { onChange, onBlur, value } }) => (
               <InputField
-                label="Número de serie"
+                label={t('machines.registration.basicInfo.serialNumber')}
                 required
                 value={value || ''}
                 onChangeText={onChange}
                 onBlur={onBlur}
-                placeholder="Ej: CAT320D12345"
+                placeholder={t('machines.registration.basicInfo.serialNumberPlaceholder')}
                 error={errors.basicInfo?.serialNumber?.message}
                 disabled={isEditMode} // READ-ONLY in edit mode (immutable field)
-                helperText={isEditMode ? 'El número de serie no puede modificarse' : undefined}
+                helperText={isEditMode ? t('machines.registration.basicInfo.serialNumberImmutable') : undefined}
               />
             )}
           />
+          
+          <div className="bg-info/10 p-4 rounded-md mt-2">
+            <div className="flex">
+              <div className="flex-shrink-0">
+                <svg className="h-5 w-5 text-info" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div className="ml-3">
+                <BodyText size='medium' className="text-info">
+                  <Trans i18nKey="machines.registration.basicInfo.tip">
+                    <strong>Consejo:</strong> Asegúrate de que el número de serie sea único y esté visible en la máquina. Esta información será fundamental para el seguimiento y mantenimiento.
+                  </Trans>
+                </BodyText>
+              </div>
+            </div>
+          </div>
         </div>
         
         {/* Tipo de máquina */}
@@ -107,15 +127,15 @@ export function BasicInfoStep({ isEditMode = false, ...wizardProps }: BasicInfoS
               <Skeleton className="h-10 w-full" />
             ) : (
               <Select
-                label="Tipo de máquina"
+                label={t('machines.registration.basicInfo.machineType')}
                 required
                 value={value || ''}
                 onValueChange={onChange}
                 options={machineTypes}
-                placeholder={isError ? 'Error al cargar tipos' : 'Selecciona un tipo'}
+                placeholder={isError ? t('machines.registration.basicInfo.machineTypeError') : t('machines.registration.basicInfo.machineTypePlaceholder')}
                 error={errors.basicInfo?.machineTypeId?.message}
                 // disabled={isEditMode} // TODO: Uncomment if machineTypeId should be immutable
-                // helperText={isEditMode ? 'El tipo de máquina no puede modificarse' : undefined}
+                // helperText={isEditMode ? t('machines.registration.basicInfo.machineTypeImmutable') : undefined}
               />
             )
           )}
@@ -127,12 +147,12 @@ export function BasicInfoStep({ isEditMode = false, ...wizardProps }: BasicInfoS
           name="basicInfo.name"
           render={({ field: { onChange, onBlur, value } }) => (
             <InputField
-              label="Nombre de referencia"
+              label={t('machines.registration.basicInfo.name')}
               required
               value={value || ''}
               onChangeText={onChange}
               onBlur={onBlur}
-              placeholder="Ej: Excavadora 001"
+              placeholder={t('machines.registration.basicInfo.namePlaceholder')}
               error={errors.basicInfo?.name?.message}
             />
           )}
@@ -146,11 +166,11 @@ export function BasicInfoStep({ isEditMode = false, ...wizardProps }: BasicInfoS
             name="basicInfo.description"
             render={({ field: { onChange, onBlur, value } }) => (
               <Textarea
-                label="Descripción"
+                label={t('machines.registration.basicInfo.description')}
                 value={value || ''}
                 onChangeText={onChange}
                 onBlur={onBlur}
-                placeholder="Descripción adicional de la máquina..."
+                placeholder={t('machines.registration.basicInfo.descriptionPlaceholder')}
                 rows={4}
                 maxLength={500}
                 showCharacterCount
@@ -161,21 +181,6 @@ export function BasicInfoStep({ isEditMode = false, ...wizardProps }: BasicInfoS
         </div>
       </div>
 
-      <div className="bg-info/10 p-4 rounded-md">
-        <div className="flex">
-          <div className="flex-shrink-0">
-            <svg className="h-5 w-5 text-info" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-            </svg>
-          </div>
-          <div className="ml-3">
-            <p className="text-sm text-info">
-              <strong>Consejo:</strong> Asegúrate de que el número de serie sea único y esté visible en la máquina. 
-              Esta información será fundamental para el seguimiento y mantenimiento.
-            </p>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }
