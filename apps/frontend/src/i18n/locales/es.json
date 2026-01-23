@@ -137,6 +137,22 @@
     "title": "Máquinas",
     "addMachine": "Agregar Máquina",
     "machineDetails": "Detalles de la Máquina",
+    "list": {
+      "title": "Gestión de Máquinas",
+      "subtitle": "Administra tu inventario de máquinas y su información",
+      "newMachine": "+ Nueva Máquina",
+      "loadError": "No pudimos cargar las máquinas.",
+      "retry": "Reintentar",
+      "empty": "No hay máquinas registradas todavía.",
+      "brand": "Marca",
+      "model": "Modelo",
+      "serialNumber": "Nº Serie",
+      "type": "Tipo",
+      "status": "Estado",
+      "actions": "Acciones",
+      "view": "Ver",
+      "loading": "Cargando..."
+    },
     "breadcrumb": {
       "machines": "Máquinas",
       "detail": "Detalle",
@@ -224,6 +240,105 @@
       }
     },
     "registration": {
+      "screen": {
+        "title": "Registrar Nueva Máquina",
+        "subtitle": "Completa la información en los siguientes pasos para registrar una nueva máquina en el sistema.",
+        "loadError": "No se pudieron cargar los tipos de máquina",
+        "loadErrorDescription": "Verifica tu conexión o intenta recargar.",
+        "retry": "Reintentar",
+        "registrationError": "Error en el registro"
+      },
+      "steps": {
+        "basicInfo": {
+          "title": "Información Básica",
+          "description": "Datos principales de la máquina"
+        },
+        "photo": {
+          "title": "Foto de la Máquina",
+          "description": "Imagen representativa"
+        },
+        "technicalSpecs": {
+          "title": "Especificaciones Técnicas",
+          "description": "Detalles técnicos y ubicación"
+        },
+        "confirmation": {
+          "title": "Confirmación",
+          "description": "Revisar y confirmar los datos"
+        }
+      },
+      "basicInfo": {
+        "brand": "Marca",
+        "brandPlaceholder": "Ej: Caterpillar",
+        "model": "Modelo",
+        "modelPlaceholder": "Ej: 320D",
+        "serialNumber": "Número de serie",
+        "serialNumberPlaceholder": "Ej: CAT320D12345",
+        "serialNumberImmutable": "El número de serie no puede modificarse",
+        "machineType": "Tipo de máquina",
+        "machineTypePlaceholder": "Selecciona un tipo",
+        "machineTypeError": "Error al cargar tipos",
+        "machineTypeImmutable": "El tipo de máquina no puede modificarse",
+        "name": "Nombre de referencia",
+        "namePlaceholder": "Ej: Excavadora 001",
+        "description": "Descripción",
+        "descriptionPlaceholder": "Descripción adicional de la máquina...",
+        "tip": "<strong>Consejo:</strong> Asegúrate de que el número de serie sea único y esté visible en la máquina. Esta información será fundamental para el seguimiento y mantenimiento."
+      },
+      "technicalSpecs": {
+        "title": "Especificaciones Técnicas",
+        "year": "Año de fabricación",
+        "yearPlaceholder": "Ej: {{year}}",
+        "operatingHours": "Horas de operación",
+        "operatingHoursPlaceholder": "Ej: 1500",
+        "operatingHoursHelper": "Horas acumuladas de uso",
+        "fuelType": "Fuente de Energía",
+        "fuelTypePlaceholder": "Selecciona la fuente de energía",
+        "currentLocation": "Ubicación actual",
+        "currentLocationPlaceholder": "Ej: Obra Downtown - Sector A",
+        "assignmentTitle": "Asignación y Responsable",
+        "assignedTo": "Asignar a",
+        "assignedToPlaceholder": "Ej: Juan Pérez",
+        "assignedToHelper": "Persona responsable de esta máquina (operador, encargado, etc.)",
+        "usageScheduleTitle": "Programación de Uso",
+        "usageScheduleDescription": "Define cuántas horas por día opera la máquina y qué días de la semana. Esta información se utiliza para calcular alertas de mantenimiento automáticas.",
+        "dailyHours": "Horas diarias de operación",
+        "dailyHoursPlaceholder": "Ej: 8",
+        "dailyHoursHelper": "Promedio de horas que opera por día (1-24)",
+        "operatingDays": "Días de operación",
+        "operatingDaysHelper": "Selecciona los días en que esta máquina opera habitualmente",
+        "weeklyHoursCalculation": "<strong>{{days}}</strong> día(s) × <strong>{{dailyHours}}</strong> horas/día = <strong>{{weeklyHours}} horas/semana</strong>",
+        "weeklyHoursInfo": "Esta programación se usará para calcular alertas de mantenimiento basadas en horas de uso reales.",
+        "accessoriesTitle": "Accesorios y Características",
+        "attachments": "Accesorios instalados",
+        "attachmentsPlaceholder": "Ej: Martillo hidráulico, Cuchara de excavación, Pulgar hidráulico",
+        "attachmentsHelper": "Separa los accesorios con comas",
+        "specialFeatures": "Características especiales",
+        "specialFeaturesPlaceholder": "Ej: Sistema de aire acondicionado, GPS integrado, Cámara de reversa",
+        "specialFeaturesHelper": "Separa las características con comas",
+        "operationalStatusTitle": "Estado Operativo",
+        "isActive": "Máquina activa",
+        "isActiveHelper": "Indica si la máquina está actualmente en uso operativo",
+        "note": "<strong>Nota:</strong> Solo el año de fabricación es obligatorio. El resto de campos te ayudarán a tener un mejor control y seguimiento de tus máquinas en el sistema."
+      },
+      "confirmation": {
+        "title": "Confirma la información",
+        "subtitle": "Revisa todos los datos antes de registrar la máquina en el sistema",
+        "basicInfo": "Información Básica",
+        "notSelected": "No seleccionado",
+        "photo": "Foto de la Máquina",
+        "photoUploadInfo": "La foto se subirá a Cloudinary al confirmar el registro",
+        "photoLaterMarked": "Foto marcada para agregar más tarde",
+        "photoLaterInfo": "Podrás subir la foto desde la página de detalles después del registro",
+        "technicalSpecs": "Especificaciones Técnicas",
+        "locationStatus": "Ubicación y Estado",
+        "status": "Estado",
+        "active": "Activa",
+        "inactive": "Inactiva",
+        "errorsFound": "Se encontraron errores en la información:",
+        "validationError": "Error de validación",
+        "goBackToFix": "Por favor, regresa a los pasos anteriores para corregir estos errores.",
+        "finalMessage": "Al hacer clic en \"Registrar Máquina\", se creará un nuevo registro en el sistema. Esta información podrá ser editada posteriormente desde la gestión de máquinas."
+      },
       "verificationTime": "¡Verifica los datos!",
       "uploadingPhoto": "Subiendo foto a Cloudinary...",
       "photoSaved": "Foto guardada exitosamente",
@@ -266,6 +381,24 @@
       "loading": "Procesando y redireccionando..."
     },
     "edit": {
+      "steps": {
+        "basicInfo": {
+          "title": "Información Básica",
+          "description": "Datos principales de la máquina"
+        },
+        "photo": {
+          "title": "Foto de la Máquina",
+          "description": "Imagen representativa"
+        },
+        "technicalSpecs": {
+          "title": "Especificaciones Técnicas",
+          "description": "Detalles técnicos y ubicación"
+        },
+        "confirmation": {
+          "title": "Confirmación",
+          "description": "Revisar y confirmar los cambios"
+        }
+      },
       "title": "Editar detalles de la máquina: {{machineName}}",
       "subtitle": "Actualiza la información de",
       "serialNumber": "Nº Serie",

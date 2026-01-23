@@ -115,8 +115,7 @@ export function EditMachineScreen() {
 
   // Main render - machine loaded successfully
   return (
-    <div className="mx-auto py-8">
-      <Card className="p-6 bg-transparent border-transparent">
+    <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <Heading1 size="headline">
@@ -148,7 +147,6 @@ export function EditMachineScreen() {
             />
           </MachineEditProvider>
         </FormProvider>
-      </Card>
     </div>
   );
 }

@@ -451,7 +451,7 @@ export function ConversationsListScreen() {
           <Button
             variant="outline"
             onPress={handleNavigateToMyContacts}
-            className="h-auto py-4 px-4 justify-start text-left hover:bg-accent"
+            className="h-auto py-4 px-4 justify-start text-left bg-[hsl(var(--color-card))] hover:bg-accent"
           >
             <div className="flex items-center gap-3 w-full">
               <div className="mt-0.5">
@@ -475,7 +475,7 @@ export function ConversationsListScreen() {
           <Button
             variant="outline"
             onPress={handleNavigateToDiscovery}
-            className="h-auto py-4 px-4 justify-start text-left hover:bg-accent"
+            className="h-auto py-4 px-4 justify-start text-left bg-[hsl(var(--color-card))] hover:bg-accent"
           >
             <div className="flex items-center gap-3 w-full">
               <div className="mt-0.5">

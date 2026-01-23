@@ -158,7 +158,6 @@ export const MachineDetailsScreen: React.FC = () => {
           {/* Operation - Schedule, Assignment & Location */}
           <CollapsibleSection 
             title={t('machines.sections.operation')}
-            defaultExpanded={true}
           >
             {isLoading ? (
               <div className="space-y-3">
@@ -239,7 +238,6 @@ export const MachineDetailsScreen: React.FC = () => {
           {/* Technical Sheet - All machine information */}
           <CollapsibleSection 
             title={t('machines.sections.technicalSheet')}
-            defaultExpanded={true}
           >
             {isLoading ? (
               <div className="grid grid-cols-2 gap-4">
@@ -269,15 +267,6 @@ export const MachineDetailsScreen: React.FC = () => {
         </div>
 
       </div>
-
-      {/* Recent Activity */}
-      <CollapsibleSection 
-        title={t('machines.sections.recentActivity')}
-      >
-        <BodyText size="small" className="text-muted-foreground">
-          Próximamente mostraremos quickchecks y mantenimientos recientes de esta máquina.
-        </BodyText>
-      </CollapsibleSection>
     </div>
   );
 };

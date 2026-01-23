@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { useFormContext, Controller } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { InputField, Select, Textarea, Skeleton } from '../../../../components/ui';
 import { MachineRegistrationData } from '@contracts';
 import { useMachineTypes } from '@hooks';
@@ -24,6 +25,8 @@ export function BasicInfoStep({ isEditMode = false, ...wizardProps }: BasicInfoS
     formState: { errors },
   } = useFormContext<MachineRegistrationData>();
 
+  const { t } = useTranslation();
+
   // Mock data para machine types (en producción vendría del ViewModel/API)
   const { data: machineTypeList, isLoading, isError } = useMachineTypes();
 
@@ -43,12 +46,12 @@ export function BasicInfoStep({ isEditMode = false, ...wizardProps }: BasicInfoS
           name="basicInfo.brand"
           render={({ field: { onChange, onBlur, value } }) => (
             <InputField
-              label="Marca"
+              label={t('machines.registration.basicInfo.brand')}
               required
               value={value || ''}
               onChangeText={onChange}
               onBlur={onBlur}
-              placeholder="Ej: Caterpillar"
+              placeholder={t('machines.registration.basicInfo.brandPlaceholder')}
               error={errors.basicInfo?.brand?.message}
             />
           )}
@@ -60,12 +63,12 @@ export function BasicInfoStep({ isEditMode = false, ...wizardProps }: BasicInfoS
           name="basicInfo.modelName"
           render={({ field: { onChange, onBlur, value } }) => (
             <InputField
-              label="Modelo"
+              label={t('machines.registration.basicInfo.model')}
               required
               value={String(value ?? '')}
               onChangeText={onChange}
               onBlur={onBlur}
-              placeholder="Ej: 320D"
+              placeholder={t('machines.registration.basicInfo.modelPlaceholder')}
               error={errors.basicInfo?.modelName?.message}
             />
           )}
@@ -78,15 +81,15 @@ export function BasicInfoStep({ isEditMode = false, ...wizardProps }: BasicInfoS
             name="basicInfo.serialNumber"
             render={({ field: { onChange, onBlur, value } }) => (
               <InputField
-                label="Número de serie"
+                label={t('machines.registration.basicInfo.serialNumber')}
                 required
                 value={value || ''}
                 onChangeText={onChange}
                 onBlur={onBlur}
-                placeholder="Ej: CAT320D12345"
+                placeholder={t('machines.registration.basicInfo.serialNumberPlaceholder')}
                 error={errors.basicInfo?.serialNumber?.message}
                 disabled={isEditMode} // READ-ONLY in edit mode (immutable field)
-                helperText={isEditMode ? 'El número de serie no puede modificarse' : undefined}
+                helperText={isEditMode ? t('machines.registration.basicInfo.serialNumberImmutable') : undefined}
               />
             )}
           />
@@ -107,15 +110,15 @@ export function BasicInfoStep({ isEditMode = false, ...wizardProps }: BasicInfoS
               <Skeleton className="h-10 w-full" />
             ) : (
               <Select
-                label="Tipo de máquina"
+                label={t('machines.registration.basicInfo.machineType')}
                 required
                 value={value || ''}
                 onValueChange={onChange}
                 options={machineTypes}
-                placeholder={isError ? 'Error al cargar tipos' : 'Selecciona un tipo'}
+                placeholder={isError ? t('machines.registration.basicInfo.machineTypeError') : t('machines.registration.basicInfo.machineTypePlaceholder')}
                 error={errors.basicInfo?.machineTypeId?.message}
                 // disabled={isEditMode} // TODO: Uncomment if machineTypeId should be immutable
-                // helperText={isEditMode ? 'El tipo de máquina no puede modificarse' : undefined}
+                // helperText={isEditMode ? t('machines.registration.basicInfo.machineTypeImmutable') : undefined}
               />
             )
           )}
@@ -127,12 +130,12 @@ export function BasicInfoStep({ isEditMode = false, ...wizardProps }: BasicInfoS
           name="basicInfo.name"
           render={({ field: { onChange, onBlur, value } }) => (
             <InputField
-              label="Nombre de referencia"
+              label={t('machines.registration.basicInfo.name')}
               required
               value={value || ''}
               onChangeText={onChange}
               onBlur={onBlur}
-              placeholder="Ej: Excavadora 001"
+              placeholder={t('machines.registration.basicInfo.namePlaceholder')}
               error={errors.basicInfo?.name?.message}
             />
           )}
@@ -146,11 +149,11 @@ export function BasicInfoStep({ isEditMode = false, ...wizardProps }: BasicInfoS
             name="basicInfo.description"
             render={({ field: { onChange, onBlur, value } }) => (
               <Textarea
-                label="Descripción"
+                label={t('machines.registration.basicInfo.description')}
                 value={value || ''}
                 onChangeText={onChange}
                 onBlur={onBlur}
-                placeholder="Descripción adicional de la máquina..."
+                placeholder={t('machines.registration.basicInfo.descriptionPlaceholder')}
                 rows={4}
                 maxLength={500}
                 showCharacterCount
@@ -169,10 +172,7 @@ export function BasicInfoStep({ isEditMode = false, ...wizardProps }: BasicInfoS
             </svg>
           </div>
           <div className="ml-3">
-            <p className="text-sm text-info">
-              <strong>Consejo:</strong> Asegúrate de que el número de serie sea único y esté visible en la máquina. 
-              Esta información será fundamental para el seguimiento y mantenimiento.
-            </p>
+            <p className="text-sm text-info" dangerouslySetInnerHTML={{ __html: t('machines.registration.basicInfo.tip') }} />
           </div>
         </div>
       </div>
