@@ -101,7 +101,7 @@ export const QuickCheckListItem: React.FC<QuickCheckListItemProps> = ({
 
       {/* Stats Summary - Mismo diseño del historial */}
       <div
-        className={`flex flex-col items-start gap-2 mb-3 text-sm ${separatorClasses}`}
+        className={`flex flex-row flex-wrap justify-evenly gap-2 mb-3 text-sm ${separatorClasses}`}
       >
         <div className="flex flex-row items-center justify-center gap-1 text-green-600 dark:text-green-400">
           <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
@@ -152,18 +152,24 @@ export const QuickCheckListItem: React.FC<QuickCheckListItemProps> = ({
       </div>
 
       {/* Responsible Info */}
-      <div className="mb-3">
-        <p className="text-xs text-muted-foreground">
+      <div className="flex items-center gap-1.5">
+        <svg className="w-5 h-5 text-muted-foreground flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+          <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+        </svg>
+        <BodyText className="text-muted-foreground" size="regular" weight="medium">
           {quickCheck.responsibleName}
-        </p>
+        </BodyText>
       </div>
 
-      {/* Observations (truncated) */}
+      {/* Observations (truncated) - Dialog style */}
       {quickCheck.observations && (
-        <div className="mb-3">
-          <p className="text-sm text-muted-foreground line-clamp-2">
-            {quickCheck.observations}
-          </p>
+        <div className="mb-3 flex flex-col justify-start">
+          <div className="h-8 w-8 rotate-45 translate-y-[50%] translate-x-[20%] bg-gray-200 dark:bg-gray-100/10 border border-gray-500 z-0"></div>
+          <div className="bg-gray-200 dark:bg-gray-100/10 border border-border rounded-lg p-3 rounded-tl-none border border-gray-500 z-10 border-t-0">
+            <BodyText size="regular" className="text-muted-foreground line-clamp-2 leading-relaxed">
+              {quickCheck.observations}
+            </BodyText>
+          </div>
         </div>
       )}
 

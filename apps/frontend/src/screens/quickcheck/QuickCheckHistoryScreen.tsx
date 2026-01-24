@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Button, Card } from "@components/ui";
+import { useTranslation } from "react-i18next";
+import { Button, Card, BodyText } from "@components/ui";
 import { useModalStore } from "@store/slices/modalSlice";
 import { useQuickCheckHistoryViewModel } from "../../viewModels/machines/useQuickCheckHistoryViewModel";
 import type { IQuickCheckRecord, IQuickCheckItem } from "@domain";
@@ -16,6 +17,7 @@ import type { IQuickCheckRecord, IQuickCheckItem } from "@domain";
  */
 export const QuickCheckHistoryScreen: React.FC = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { showModal } = useModalStore();
 
   // ViewModel: Toda la lógica de datos y formateo
@@ -162,75 +164,79 @@ export const QuickCheckHistoryScreen: React.FC = () => {
                 }}
               >
                 {/* Header: Date and Result Badge */}
-                <div className="flex items-start justify-between mb-3">
-                  <div>
-                    <p className="text-sm font-medium text-foreground">
+                <div className="flex flex-col items-start justify-between mb-4 border-b border-border pb-2 border-b-gray-500/20">
+                  <div className="w-full flex items-center justify-between">
+                    <BodyText
+                      size="medium"
+                      className={`px-2.5 rounded-full flex-shrink-0 -ml-2 ${vm.getResultBadgeClasses(record.result)}`}
+                    >
+                      {vm.getResultDisplayText(record.result)}
+                    </BodyText>
+                    <BodyText size="medium" weight="medium" className="text-sm font-medium text-foreground">
                       {vm.formatDate(record.date)}
-                    </p>
-                    {/* Responsible Info - Sprint 8 */}
-                    <p className="text-xs text-muted-foreground mt-0.5">
-                      {record.responsibleName} ({record.responsibleWorkerId})
-                    </p>
+                    </BodyText>
                   </div>
-                  <span
-                    className={`px-2.5 py-1 text-xs font-semibold rounded-full ${vm.getResultBadgeClasses(record.result)}`}
-                  >
-                    {vm.getResultDisplayText(record.result)}
-                  </span>
                 </div>
 
-                {/* Stats Summary */}
-                <div className="flex items-center gap-4 mb-3 text-sm">
-                  <div className="flex items-center gap-1 text-green-600 dark:text-green-400">
-                    <svg
-                      className="w-4 h-4"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
+                {/* Stats Summary - Vertical layout con íconos grandes */}
+                <div className="flex flex-row flex-wrap justify-evenly gap-2 mb-3 text-sm border-b border-border pb-2 border-b-gray-500/20">
+                  <div className="flex flex-row items-center justify-center gap-1 text-green-600 dark:text-green-400">
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                       <path
                         fillRule="evenodd"
                         d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
                         clipRule="evenodd"
                       />
                     </svg>
-                    <span className="font-medium">{stats.approved}</span>
+                    <BodyText size="medium" className="text-green-600 dark:text-green-400 pt-0.5">
+                      <span className="font-bold">{stats.approved}</span> {t('quickchecks.stats.approved')}
+                    </BodyText>
                   </div>
-                  <div className="flex items-center gap-1 text-red-600 dark:text-red-400">
-                    <svg
-                      className="w-4 h-4"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
+                  <div className="flex flex-row items-center justify-center gap-1 text-red-600 dark:text-red-400">
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                       <path
                         fillRule="evenodd"
                         d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
                         clipRule="evenodd"
                       />
                     </svg>
-                    <span className="font-medium">{stats.disapproved}</span>
+                    <BodyText size="medium" className="text-red-600 dark:text-red-400 pt-0.5">
+                      <span className="font-bold">{stats.disapproved}</span> {t('quickchecks.stats.disapproved')}
+                    </BodyText>
                   </div>
-                  <div className="flex items-center gap-1 text-yellow-600 dark:text-yellow-400">
-                    <svg
-                      className="w-4 h-4"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
+                  <div className="flex flex-row items-center justify-center gap-1 text-yellow-600 dark:text-yellow-400">
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                       <path
                         fillRule="evenodd"
                         d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z"
                         clipRule="evenodd"
                       />
                     </svg>
-                    <span className="font-medium">{stats.omitted}</span>
+                    <BodyText size="medium" className="text-yellow-600 dark:text-yellow-400">
+                      <span className="font-bold">{stats.omitted}</span> {t('quickchecks.stats.omitted')}
+                    </BodyText>
                   </div>
                 </div>
 
-                {/* Observations (truncated) */}
+                {/* Responsible Info con ícono */}
+                <div className="flex items-center gap-1.5 mb-3">
+                  <svg className="w-5 h-5 text-muted-foreground flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+                  </svg>
+                  <BodyText className="text-muted-foreground" size="regular" weight="medium">
+                    {record.responsibleName} ({record.responsibleWorkerId})
+                  </BodyText>
+                </div>
+
+                {/* Observations - Estilo de diálogo */}
                 {record.observations && (
-                  <div className="mb-4">
-                    <p className="text-sm text-muted-foreground line-clamp-2">
-                      {record.observations}
-                    </p>
+                  <div className="mb-3 flex flex-col justify-start">
+                    <div className="h-8 w-8 rotate-45 translate-y-[50%] translate-x-[20%] bg-gray-200 dark:bg-gray-100/10 border border-gray-500 z-0"></div>
+                    <div className="bg-gray-200 dark:bg-gray-100/10 border border-border rounded-lg p-3 rounded-tl-none border border-gray-500 z-10 border-t-0">
+                      <BodyText size="regular" className="text-muted-foreground line-clamp-2 leading-relaxed">
+                        {record.observations}
+                      </BodyText>
+                    </div>
                   </div>
                 )}
 
