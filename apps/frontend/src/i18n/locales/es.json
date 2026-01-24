@@ -92,7 +92,6 @@
     "imageLoadError": "Error al cargar la imagen",
     "uses": "usos",
     "tags": "etiquetas",
-    "retry": "Reintentar",
     "description": "Descripción",
     "expand": "Expandir",
     "collapse": "Colapsar",
@@ -331,6 +330,8 @@
         "photoUploadInfo": "La foto se subirá a Cloudinary al confirmar el registro",
         "photoLaterMarked": "Foto marcada para agregar más tarde",
         "photoLaterInfo": "Podrás subir la foto desde la página de detalles después del registro",
+        "cancelButton": "Cancelar",
+        "confirmButton": "Registrar Máquina",
         "technicalSpecs": "Especificaciones Técnicas",
         "locationStatus": "Ubicación y Estado",
         "status": "Estado",
@@ -352,12 +353,6 @@
         "skipPhoto": "Omitir foto y continuar",
         "cancel": "Cancelar registro",
         "tooManyRetries": "Demasiados intentos fallidos. Por favor, intenta más tarde o continúa sin foto."
-      },
-      "confirmation": {
-        "title": "Confirmar Registro",
-        "description": "¿Estás seguro de que deseas registrar esta máquina? Esta acción creará un nuevo registro en el sistema.",
-        "cancelButton": "Cancelar",
-        "confirmButton": "Registrar Máquina"
       },
       "photo": {
         "title": "Foto de la Máquina",

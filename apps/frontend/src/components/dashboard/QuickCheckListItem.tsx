@@ -7,6 +7,7 @@ import { BodyText, Card, Button } from "@components/ui";
 
 interface QuickCheckListItemProps {
   quickCheck: RecentQuickCheckDTO;
+  style: React.CSSProperties;
 }
 
 const separatorClasses = "border-b border-border pb-2 border-b-gray-500/20";
@@ -29,6 +30,7 @@ const separatorClasses = "border-b border-border pb-2 border-b-gray-500/20";
  */
 export const QuickCheckListItem: React.FC<QuickCheckListItemProps> = ({
   quickCheck,
+  style
 }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -72,7 +74,8 @@ export const QuickCheckListItem: React.FC<QuickCheckListItemProps> = ({
   console.log("machine data:", quickCheck.machine);
   return (
     <Card
-      className="flex flex-col flex-shrink-0 p-5 hover:shadow-lg transition-shadow cursor-pointer min-w-[280px] max-w-[280px]"
+      className="flex flex-col flex-shrink-0 p-5 hover:shadow-lg transition-shadow min-w-[280px] max-w-[280px]"
+      style={style}
     >
       
       {/* Stats Summary - Mismo diseño del historial */}

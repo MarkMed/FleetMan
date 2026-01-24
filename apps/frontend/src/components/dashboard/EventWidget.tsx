@@ -116,26 +116,22 @@ export const EventWidget: React.FC<EventWidgetProps> = ({
         <div 
           ref={scrollRef}
           className="flex space-x-4 overflow-x-auto overflow-y-hidden pb-4 scrollbar-hide"
-          onWheel={(e) => {
-            // Permitir scroll horizontal con rueda del ratón (Shift + Wheel)
-            if (e.shiftKey) {
-              e.currentTarget.scrollLeft += e.deltaY;
-            }
-            // Permitir scroll vertical natural cuando no hay Shift
-            // (el navegador lo maneja automáticamente)
+          onWheel={(e) => {            
+            e.currentTarget.scrollLeft += e.deltaY
           }}
         >
-          {events.map((event) => (
-            <EventListItem key={event.id} event={event} />
+          {events.map((event, index) => (
+            <EventListItem 
+              key={`event-${event.id}-${index}`} event={event} />
           ))}
 
           {/* Botón "+ Más" como último item del carousel */}
           {hasMore && (
-            <div className="flex-shrink-0 flex items-center justify-center" style={{ width: '200px' }}>
+            <div className="flex-shrink-0 flex items-center justify-center w-[100px] ">
               <button
                 onClick={onLoadMore}
                 disabled={isLoadingMore}
-                className="h-full w-full border-2 border-blue-600 text-blue-600 rounded-lg hover:bg-blue-500/30 dark:hover:bg-blue-950 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 font-medium"
+                className="h-full w-full border-2 border-blue-600 text-blue-600 rounded-lg hover:bg-blue-500/30 dark:hover:bg-blue-950 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 font-medium rounded-l-none"
                 style={{ minHeight: '200px' }} // Altura mínima igual a las cards
               >
                 {isLoadingMore ? (
