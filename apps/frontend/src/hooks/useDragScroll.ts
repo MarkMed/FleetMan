@@ -1,4 +1,4 @@
-import { useRef, useEffect, RefObject } from 'react';
+import { useCallback, useRef, RefObject } from 'react';
 
 /**
  * useDragScroll - Custom hook for drag-to-scroll functionality
@@ -24,14 +24,20 @@ import { useRef, useEffect, RefObject } from 'react';
  *   </div>
  * );
  */
-export const useDragScroll = <T extends HTMLElement = HTMLDivElement>(): RefObject<T> => {
-  const scrollRef = useRef<T>(null);
+export const useDragScroll = <T extends HTMLElement = HTMLDivElement>(): ((node: T | null) => void) => {
   const isDragging = useRef(false);
   const startX = useRef(0);
   const scrollLeft = useRef(0);
+  const cleanupRef = useRef<(() => void) | null>(null);
 
-  useEffect(() => {
-    const element = scrollRef.current;
+  // Callback ref que se ejecuta cuando el elemento se monta
+  const ref = useCallback((element: T | null) => {
+    // Limpiar listeners del elemento anterior si existen
+    if (cleanupRef.current) {
+      cleanupRef.current();
+      cleanupRef.current = null;
+    }
+
     if (!element) return;
 
     // Handler: Mouse down - Iniciar drag
@@ -72,16 +78,18 @@ export const useDragScroll = <T extends HTMLElement = HTMLDivElement>(): RefObje
     // Initial cursor style
     element.style.cursor = 'grab';
 
-    // Cleanup
-    return () => {
+    // Guardar función de cleanup
+    cleanupRef.current = () => {
       element.removeEventListener('mousedown', handleMouseDown);
       element.removeEventListener('mousemove', handleMouseMove);
       element.removeEventListener('mouseup', handleMouseUp);
       element.removeEventListener('mouseleave', handleMouseUp);
+      element.style.cursor = '';
+      element.style.userSelect = '';
     };
   }, []);
 
-  return scrollRef;
+  return ref;
 };
 
 /**

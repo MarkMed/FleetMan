@@ -115,7 +115,7 @@ export const QuickCheckWidget: React.FC<QuickCheckWidgetProps> = ({
       <div className="relative">
         <div
           ref={scrollRef}
-          className="flex space-x-4 overflow-x-auto overflow-y-hidden pb-4 scrollbar-hide"
+          className="flex space-x-4 overflow-x-auto overflow-y-hidden pb-4 scrollbar-hide z-100"
           onWheel={(e) => {            
             e.currentTarget.scrollLeft += e.deltaY
           }}
@@ -125,7 +125,7 @@ export const QuickCheckWidget: React.FC<QuickCheckWidgetProps> = ({
               key={`quickcheck-${qc.id}-${index}`}
               quickCheck={qc}
               style={{
-                animation: `fadeSlideIn 0.3s ease-out ${(index % 5) * 0.16}s both`,
+                animation: `fadeSlideIn 0.3s ease-out ${(index % 5) * 0.2}s both`,
               }}
             />
           ))}
