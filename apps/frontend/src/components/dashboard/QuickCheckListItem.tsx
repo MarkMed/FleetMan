@@ -73,7 +73,6 @@ export const QuickCheckListItem: React.FC<QuickCheckListItemProps> = ({
   return (
     <Card
       className="flex flex-col flex-shrink-0 p-5 hover:shadow-lg transition-shadow cursor-pointer min-w-[280px] max-w-[280px]"
-      onClick={handleClick}
     >
       
       {/* Stats Summary - Mismo diseño del historial */}
@@ -228,6 +227,7 @@ export const QuickCheckListItem: React.FC<QuickCheckListItemProps> = ({
         <div>
           {/* Arrow indicator (click to view machine) */}
           <Button
+            onPress={handleClick}
             variant="outline"
             className="flex items-center justify-center w-full"
             aria-label={t("dashboard.quickchecks.viewMachine")}

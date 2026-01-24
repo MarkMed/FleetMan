@@ -78,6 +78,8 @@
     "select": "Select",
     "selectAll": "Select All",
     "none": "None",
+    "more": "More",
+    "retry": "Retry",
     "all": "All",
     "actions": "Actions",
     "details": "Details",

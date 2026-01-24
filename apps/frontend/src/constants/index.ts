@@ -259,8 +259,9 @@ export const QUERY_KEYS = {
   CONVERSATIONS: ['conversations'],
   
   // Dashboard (Sprint #12 - Bundle 12: Dashboard Recent Activity)
-  DASHBOARD_RECENT_QUICKCHECKS: (limit: number, offset: number) => ['dashboard', 'recent-quickchecks', { limit, offset }],
-  DASHBOARD_RECENT_EVENTS: (limit: number, offset: number) => ['dashboard', 'recent-events', { limit, offset }],
+  // Cache key fija para acumulación de datos (sin offset en la key)
+  DASHBOARD_RECENT_QUICKCHECKS: ['dashboard', 'recent-quickchecks'] as const,
+  DASHBOARD_RECENT_EVENTS: ['dashboard', 'recent-events'] as const,
   
   // TODO: Query keys estratégicas futuras
   // USER_PUBLIC_PROFILE: (userId: string) => ['users', userId, 'public-profile'],

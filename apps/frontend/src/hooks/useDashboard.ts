@@ -5,6 +5,8 @@ import { QUERY_KEYS } from '@constants';
 import type {
   RecentQuickCheckDTO,
   RecentMachineEventDTO,
+  GetRecentQuickChecksResponse,
+  GetRecentMachineEventsResponse,
 } from '@packages/contracts';
 
 /**
@@ -12,13 +14,13 @@ import type {
  * 
  * Custom hook para gestionar datos del dashboard con:
  * - Carga inicial de QuickChecks y Eventos recientes
- * - Paginación incremental ("Load More" pattern)
- * - Cache optimizado con TanStack Query
+ * - Paginación incremental acumulativa ("Load More" pattern)
+ * - Cache optimizado con TanStack Query usando cache key fija
  * - Estados de loading/error por separado
  * 
  * Arquitectura:
- * - Usa offset-based pagination (no useInfiniteQuery para más control)
- * - Cache por limit+offset para evitar refetch innecesarios
+ * - Usa cache key FIJA (sin offset) para acumular datos en la misma entrada de cache
+ * - Mutations actualizan el cache principal acumulando nuevas páginas
  * - StaleTime de 2 mins (dashboard se actualiza frecuentemente)
  * 
  * @example
@@ -42,52 +44,55 @@ export const useDashboard = () => {
   const [quickChecksOffset, setQuickChecksOffset] = useState(0);
   const [eventsOffset, setEventsOffset] = useState(0);
 
-  // Query: Obtener QuickChecks recientes
+  // Query: Obtener QuickChecks recientes (carga inicial con cache key fija)
   const {
     data: quickChecksData,
     isLoading: isLoadingQuickChecks,
     error: quickChecksError,
     refetch: refetchQuickChecks,
-  } = useQuery({
-    queryKey: QUERY_KEYS.DASHBOARD_RECENT_QUICKCHECKS(INITIAL_LIMIT, quickChecksOffset),
-    queryFn: () => dashboardService.getRecentQuickChecks(INITIAL_LIMIT, quickChecksOffset),
+  } = useQuery<GetRecentQuickChecksResponse>({
+    queryKey: QUERY_KEYS.DASHBOARD_RECENT_QUICKCHECKS,
+    queryFn: () => dashboardService.getRecentQuickChecks(INITIAL_LIMIT, 0),
     staleTime: 2 * 60 * 1000, // 2 minutos
     gcTime: 5 * 60 * 1000, // 5 minutos (antes cacheTime)
     refetchOnWindowFocus: true,
     refetchOnMount: 'always',
   });
 
-  // Query: Obtener Eventos recientes
+  // Query: Obtener Eventos recientes (carga inicial con cache key fija)
   const {
     data: eventsData,
     isLoading: isLoadingEvents,
     error: eventsError,
     refetch: refetchEvents,
-  } = useQuery({
-    queryKey: QUERY_KEYS.DASHBOARD_RECENT_EVENTS(INITIAL_LIMIT, eventsOffset),
-    queryFn: () => dashboardService.getRecentEvents(INITIAL_LIMIT, eventsOffset),
+  } = useQuery<GetRecentMachineEventsResponse>({
+    queryKey: QUERY_KEYS.DASHBOARD_RECENT_EVENTS,
+    queryFn: () => dashboardService.getRecentEvents(INITIAL_LIMIT, 0),
     staleTime: 2 * 60 * 1000, // 2 minutos
     gcTime: 5 * 60 * 1000,
     refetchOnWindowFocus: true,
     refetchOnMount: 'always',
   });
 
-  // Mutation: Cargar más QuickChecks (botón "Ver más")
+  // Mutation: Cargar más QuickChecks (botón "+ Más")
+  // Acumula datos en la MISMA cache key (sin offset en key)
   const loadMoreQuickChecksMutation = useMutation({
     mutationFn: async () => {
       const newOffset = quickChecksOffset + LOAD_MORE_LIMIT;
       const newData = await dashboardService.getRecentQuickChecks(LOAD_MORE_LIMIT, newOffset);
       
-      // Actualizar cache manual con datos acumulados
-      queryClient.setQueryData(
-        QUERY_KEYS.DASHBOARD_RECENT_QUICKCHECKS(INITIAL_LIMIT, newOffset),
-        (old: typeof quickChecksData) => {
+      // Actualizar cache con cache key FIJA (acumulación correcta)
+      queryClient.setQueryData<GetRecentQuickChecksResponse>(
+        QUERY_KEYS.DASHBOARD_RECENT_QUICKCHECKS,
+        (old: GetRecentQuickChecksResponse | undefined) => {
           if (!old) return newData;
           
+          // Acumular nuevos items a los existentes
           return {
-            ...newData,
-            data: [...(old.data || []), ...newData.data],
-            offset: newOffset,
+            ...old, // Mantener metadata original (total, limit inicial)
+            data: [...old.data, ...newData.data], // ✅ Acumulación
+            offset: newOffset, // Actualizar offset para próxima carga
+            hasMore: newData.hasMore, // Actualizar flag hasMore
           };
         }
       );
@@ -99,22 +104,25 @@ export const useDashboard = () => {
     },
   });
 
-  // Mutation: Cargar más Eventos (botón "Ver más")
+  // Mutation: Cargar más Eventos (botón "+ Más")
+  // Acumula datos en la MISMA cache key (sin offset en key)
   const loadMoreEventsMutation = useMutation({
     mutationFn: async () => {
       const newOffset = eventsOffset + LOAD_MORE_LIMIT;
       const newData = await dashboardService.getRecentEvents(LOAD_MORE_LIMIT, newOffset);
       
-      // Actualizar cache manual con datos acumulados
-      queryClient.setQueryData(
-        QUERY_KEYS.DASHBOARD_RECENT_EVENTS(INITIAL_LIMIT, newOffset),
-        (old: typeof eventsData) => {
+      // Actualizar cache con cache key FIJA (acumulación correcta)
+      queryClient.setQueryData<GetRecentMachineEventsResponse>(
+        QUERY_KEYS.DASHBOARD_RECENT_EVENTS,
+        (old: GetRecentMachineEventsResponse | undefined) => {
           if (!old) return newData;
           
+          // Acumular nuevos items a los existentes
           return {
-            ...newData,
-            data: [...(old.data || []), ...newData.data],
-            offset: newOffset,
+            ...old, // Mantener metadata original (total, limit inicial)
+            data: [...old.data, ...newData.data], // ✅ Acumulación
+            offset: newOffset, // Actualizar offset para próxima carga
+            hasMore: newData.hasMore, // Actualizar flag hasMore
           };
         }
       );

@@ -73,6 +73,8 @@ export class GetRecentMachineEventsUseCase {
         description: item.event.description,
         createdAt: item.event.createdAt,
         isSystemGenerated: item.event.isSystemGenerated,
+        responsibleName: item.responsible.name,
+        responsibleWorkerId: item.responsible.workerId || undefined,
         
         // Event type data (enriched)
         eventType: {

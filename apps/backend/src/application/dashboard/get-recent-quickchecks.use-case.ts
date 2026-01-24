@@ -79,6 +79,7 @@ export class GetRecentQuickChecksUseCase {
           result: item.quickCheck.result,
           date: item.quickCheck.date,
           responsibleName: item.quickCheck.responsibleName,
+          responsibleWorkerId: item.quickCheck.responsibleWorkerId || undefined,
           quickCheckItemsCount: items.length,
           approvedItemsCount: approvedCount,
           disapprovedItemsCount: disapprovedCount,

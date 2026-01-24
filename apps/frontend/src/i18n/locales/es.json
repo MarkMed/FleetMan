@@ -78,6 +78,8 @@
     "select": "Seleccionar",
     "selectAll": "Seleccionar Todo",
     "none": "Ninguno",
+    "more": "Más",
+    "retry": "Reintentar",
     "all": "Todos",
     "actions": "Acciones",
     "details": "Detalles",

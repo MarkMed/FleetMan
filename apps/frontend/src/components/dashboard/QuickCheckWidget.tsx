@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { useDragScroll } from '@hooks/useDragScroll';
 import { QuickCheckListItem } from './QuickCheckListItem';
 import type { RecentQuickCheckDTO } from '@packages/contracts';
 import { Card, Heading2} from '@components/ui';
@@ -35,6 +36,7 @@ export const QuickCheckWidget: React.FC<QuickCheckWidgetProps> = ({
   onLoadMore,
 }) => {
   const { t } = useTranslation();
+  const scrollRef = useDragScroll<HTMLDivElement>();
 
   // Loading state inicial
   if (isLoading) {
@@ -109,57 +111,64 @@ export const QuickCheckWidget: React.FC<QuickCheckWidgetProps> = ({
         </span>
       </div>
 
-      {/* Carousel horizontal scrollable */}
+      {/* Carousel horizontal scrollable con drag support */}
       <div className="relative">
-        <div className="flex space-x-4 overflow-x-auto pb-4 scrollbar-hide">
+        <div 
+          ref={scrollRef}
+          className="flex space-x-4 overflow-x-auto overflow-y-hidden pb-4 scrollbar-hide"
+          onWheel={(e) => {
+            // Permitir scroll horizontal con rueda del ratón (Shift + Wheel)
+            if (e.shiftKey) {
+              e.currentTarget.scrollLeft += e.deltaY;
+            }
+            // Permitir scroll vertical natural cuando no hay Shift
+            // (el navegador lo maneja automáticamente)
+          }}
+        >
           {quickChecks.map((qc) => (
             <QuickCheckListItem key={qc.id} quickCheck={qc} />
           ))}
 
-          {/* Skeleton durante "Load More" */}
-          {isLoadingMore && (
-            <div className="flex-shrink-0 w-[280px] h-[200px] bg-gray-100 rounded-lg animate-pulse" />
+          {/* Botón "+ Más" como último item del carousel */}
+          {hasMore && (
+            <div className="flex-shrink-0 flex items-center justify-center" style={{ width: '200px' }}>
+              <button
+                onClick={onLoadMore}
+                disabled={isLoadingMore}
+                className="h-full w-full border-2 border-blue-600 text-blue-600 rounded-lg hover:bg-blue-500/30 dark:hover:bg-blue-950 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 font-medium"
+                style={{ minHeight: '200px' }} // Altura mínima igual a las cards
+              >
+                {isLoadingMore ? (
+                  <>
+                    <svg
+                      className="animate-spin h-5 w-5"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      />
+                    </svg>
+                    <span>{t('dashboard.quickchecks.loadingMore')}</span>
+                  </>
+                ) : (
+                  <span className="text-lg">+ {t('common.more', 'Más')}</span>
+                )}
+              </button>
+            </div>
           )}
         </div>
-
-        {/* Botón "Ver más" */}
-        {hasMore && (
-          <div className="flex justify-center mt-4">
-            <button
-              onClick={onLoadMore}
-              disabled={isLoadingMore}
-              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
-            >
-              {isLoadingMore ? (
-                <>
-                  <svg
-                    className="animate-spin h-4 w-4 text-white"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    />
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    />
-                  </svg>
-                  <span>{t('dashboard.quickchecks.loadingMore')}</span>
-                </>
-              ) : (
-                <span>{t('dashboard.quickchecks.loadMore')}</span>
-              )}
-            </button>
-          </div>
-        )}
       </div>
 
       {/* Custom CSS para hide scrollbar */}
