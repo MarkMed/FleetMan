@@ -1335,6 +1335,268 @@ export class MachineRepository implements IMachineRepository {
     }
   }
 
+  /**
+   * 🆕 Sprint #12 (Bundle 12): Obtiene QuickChecks recientes del usuario
+   * Implementación con agregación MongoDB para máxima performance
+   */
+  async getRecentQuickChecksForUser(
+    userId: UserId,
+    limit: number = 5,
+    offset: number = 0
+  ): Promise<{
+    data: Array<{
+      quickCheck: IQuickCheckRecord;
+      machine: {
+        id: string;
+        name: string;
+        brand: string;
+        model: string;
+        serialNumber: string;
+        machineType?: { id: string; name: string };
+      };
+    }>;
+    total: number;
+  }> {
+    try {
+      const userIdValue = userId.getValue();
+
+      // Pipeline de agregación MongoDB
+      // Type assertion necesaria porque TypeScript no puede inferir correctamente PipelineStage[]
+      const pipeline: any[] = [
+        // 1. Filtrar máquinas del usuario
+        { 
+          $match: { ownerId: userIdValue } 
+        },
+        
+        // 2. Lookup para obtener machineType
+        {
+          $lookup: {
+            from: 'machinetypes',
+            localField: 'machineTypeId',
+            foreignField: '_id',
+            as: 'machineTypeData'
+          }
+        },
+        
+        // 3. Descomponer array de quickChecks
+        { 
+          $unwind: {
+            path: '$quickChecks',
+            preserveNullAndEmptyArrays: false // Solo máquinas con QuickChecks
+          }
+        },
+        
+        // 4. Ordenar por fecha descendente (más recientes primero)
+        { 
+          $sort: { 'quickChecks.date': -1 } 
+        },
+        
+        // 5. Facet para obtener data paginada + total count en una sola query
+        {
+          $facet: {
+            metadata: [{ $count: 'total' }],
+            data: [
+              { $skip: offset },
+              { $limit: limit },
+              {
+                $project: {
+                  quickCheck: '$quickChecks',
+                  machine: {
+                    id: { $toString: '$_id' },
+                    name: '$basicInfo.name',
+                    brand: '$basicInfo.brand',
+                    model: '$basicInfo.model',
+                    serialNumber: '$serialNumber',
+                    machineType: {
+                      $cond: {
+                        if: { $gt: [{ $size: '$machineTypeData' }, 0] },
+                        then: {
+                          id: { $toString: { $arrayElemAt: ['$machineTypeData._id', 0] } },
+                          name: { $arrayElemAt: ['$machineTypeData.name', 0] }
+                        },
+                        else: null
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ];
+
+      const result = await MachineModel.aggregate(pipeline);
+      
+      const total = result[0]?.metadata[0]?.total || 0;
+      const data = result[0]?.data || [];
+
+      logger.info({ 
+        userId: userIdValue, 
+        limit, 
+        offset, 
+        total, 
+        returned: data.length 
+      }, 'Retrieved recent QuickChecks for user');
+
+      return { data, total };
+    } catch (error: any) {
+      logger.error({
+        userId: userId.getValue(),
+        limit,
+        offset,
+        error: error.message
+      }, 'Error fetching recent QuickChecks');
+      // Return empty result on error instead of throwing
+      return { data: [], total: 0 };
+    }
+  }
+
+  /**
+   * 🆕 Sprint #12 (Bundle 12): Obtiene eventos recientes del usuario
+   * Implementación con agregación MongoDB para máxima performance
+   */
+  async getRecentEventsForUser(
+    userId: UserId,
+    limit: number = 5,
+    offset: number = 0
+  ): Promise<{
+    data: Array<{
+      event: IMachineEvent;
+      machine: {
+        id: string;
+        name: string;
+        brand: string;
+        model: string;
+        serialNumber: string;
+        machineType?: { id: string; name: string };
+      };
+      eventType: {
+        id: string;
+        name: string;
+        severity?: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+      };
+    }>;
+    total: number;
+  }> {
+    try {
+      const userIdValue = userId.getValue();
+
+      // Pipeline de agregación MongoDB
+      // Type assertion necesaria porque TypeScript no puede inferir correctamente PipelineStage[]
+      const pipeline: any[] = [
+        // 1. Filtrar máquinas del usuario
+        { 
+          $match: { ownerId: userIdValue } 
+        },
+        
+        // 2. Lookup para machineType
+        {
+          $lookup: {
+            from: 'machinetypes',
+            localField: 'machineTypeId',
+            foreignField: '_id',
+            as: 'machineTypeData'
+          }
+        },
+        
+        // 3. Descomponer array de eventos
+        { 
+          $unwind: {
+            path: '$eventsHistory',
+            preserveNullAndEmptyArrays: false // Solo máquinas con eventos
+          }
+        },
+        
+        // 4. Lookup para eventType (usando typeId del evento)
+        {
+          $lookup: {
+            from: 'machineeventtypes',
+            localField: 'eventsHistory.typeId',
+            foreignField: '_id',
+            as: 'eventTypeData'
+          }
+        },
+        
+        // 5. Ordenar por fecha de creación descendente
+        { 
+          $sort: { 'eventsHistory.createdAt': -1 } 
+        },
+        
+        // 6. Facet para data paginada + total count
+        {
+          $facet: {
+            metadata: [{ $count: 'total' }],
+            data: [
+              { $skip: offset },
+              { $limit: limit },
+              {
+                $project: {
+                  event: '$eventsHistory',
+                  machine: {
+                    id: { $toString: '$_id' },
+                    name: '$basicInfo.name',
+                    brand: '$basicInfo.brand',
+                    model: '$basicInfo.model',
+                    serialNumber: '$serialNumber',
+                    machineType: {
+                      $cond: {
+                        if: { $gt: [{ $size: '$machineTypeData' }, 0] },
+                        then: {
+                          id: { $toString: { $arrayElemAt: ['$machineTypeData._id', 0] } },
+                          name: { $arrayElemAt: ['$machineTypeData.name', 0] }
+                        },
+                        else: null
+                      }
+                    }
+                  },
+                  eventType: {
+                    $cond: {
+                      if: { $gt: [{ $size: '$eventTypeData' }, 0] },
+                      then: {
+                        id: { $toString: { $arrayElemAt: ['$eventTypeData._id', 0] } },
+                        name: { $arrayElemAt: ['$eventTypeData.name', 0] },
+                        severity: { $arrayElemAt: ['$eventTypeData.severity', 0] }
+                      },
+                      else: {
+                        id: '',
+                        name: 'Unknown Event Type',
+                        severity: null
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ];
+
+      const result = await MachineModel.aggregate(pipeline);
+      
+      const total = result[0]?.metadata[0]?.total || 0;
+      const data = result[0]?.data || [];
+
+      logger.info({ 
+        userId: userIdValue, 
+        limit, 
+        offset, 
+        total, 
+        returned: data.length 
+      }, 'Retrieved recent events for user');
+
+      return { data, total };
+    } catch (error: any) {
+      logger.error({
+        userId: userId.getValue(),
+        limit,
+        offset,
+        error: error.message
+      }, 'Error fetching recent events');
+      // Return empty result on error instead of throwing
+      return { data: [], total: 0 };
+    }
+  }
+
   // TODO: Implementar método para obtener alarmas próximas a dispararse
   // Razón: Dashboard preventivo - mostrar alarmas que están cerca de cumplir su intervalo
   // Declaración: async getUpcomingAlarms(machineId: MachineId, hoursThreshold: number): Promise<Result<IMaintenanceAlarm[], DomainError>>
@@ -1344,4 +1606,9 @@ export class MachineRepository implements IMachineRepository {
   // Razón: Usuario completa mantenimiento → resetear lastTriggeredHours manualmente (no esperar al cronjob)
   // Declaración: async resetMaintenanceAlarm(machineId: MachineId, alarmId: string): Promise<Result<void, DomainError>>
   // Lógica: Actualizar lastTriggeredAt a ahora, lastTriggeredHours a specs.operatingHours actual
+  
+  // TODO Future: Método para dashboard stats agregados
+  // Razón: Obtener estadísticas agregadas en una sola query (total máquinas, QuickChecks hoy, eventos críticos)
+  // Declaración: async getDashboardStats(userId: UserId): Promise<DashboardStats>
+  // Lógica: Pipeline de agregación con $facet para múltiples conteos + cálculos
 }

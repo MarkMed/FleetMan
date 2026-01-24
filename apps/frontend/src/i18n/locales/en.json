@@ -860,8 +860,21 @@
       "reportGenerated": "Report {{reportName}} generated successfully"
     }
   },
+  "quickchecks": {
+    "result": {
+      "approved": "Approved",
+      "disapproved": "Disapproved",
+      "notInitiated": "Not Initiated"
+    },
+    "stats": {
+      "approved": "Approved",
+      "disapproved": "Disapproved",
+      "omitted": "Omitted"
+    }
+  },
   "dashboard": {
     "title": "Dashboard",
+    "welcome": "Welcome",
     "overview": "Overview",
     "quickActions": "Quick Actions",
     "recentActivity": "Recent Activity",
@@ -875,6 +888,35 @@
       "reportEvent": "Report Event",
       "requestSpare": "Request Spare Part",
       "newMachine": "New Machine"
+    },
+    "quickchecks": {
+      "title": "Recent QuickChecks",
+      "count": "{{count}} checks",
+      "loadMore": "Load more",
+      "loadingMore": "Loading...",
+      "error": "Could not load QuickChecks. Please try again.",
+      "empty": {
+        "title": "No QuickChecks performed",
+        "description": "No checks have been performed on your machines yet."
+      },
+      "viewMachine": "View machine"
+    },
+    "events": {
+      "title": "Recent Event Reports",
+      "count": "{{count}} events",
+      "loadMore": "Load more",
+      "loadingMore": "Loading...",
+      "error": "Could not load events. Please try again.",
+      "empty": {
+        "title": "No events registered",
+        "description": "No events have been reported on your machines."
+      },
+      "severity": {
+        "low": "Low",
+        "medium": "Medium",
+        "high": "High",
+        "critical": "Critical"
+      }
     }
   },
   "forms": {

@@ -22,6 +22,9 @@ export * from "./machine-event-type.contract";
 // Machine Event contracts
 export * from "./machine-event.contract";
 
+// Dashboard contracts
+export * from "./dashboard.contract";
+
 // Maintenance Alarm contracts (Sprint #11)
 export * from "./maintenance-alarm.contract";
 

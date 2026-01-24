@@ -862,8 +862,21 @@
       "reportGenerated": "Reporte {{reportName}} generado exitosamente"
     }
   },
+  "quickchecks": {
+    "result": {
+      "approved": "Aprobado",
+      "disapproved": "Desaprobado",
+      "notInitiated": "No iniciado"
+    },
+    "stats": {
+      "approved": "Aprobados",
+      "disapproved": "Desaprobados",
+      "omitted": "Omitidos"
+    }
+  },
   "dashboard": {
     "title": "Panel Principal",
+    "welcome": "Bienvenido",
     "overview": "Resumen",
     "quickActions": "Acciones Rápidas",
     "recentActivity": "Actividad Reciente",
@@ -877,6 +890,35 @@
       "reportEvent": "Reportar Evento",
       "requestSpare": "Solicitar Repuesto",
       "newMachine": "Nueva Máquina"
+    },
+    "quickchecks": {
+      "title": "Últimos QuickChecks Realizados",
+      "count": "{{count}} chequeos",
+      "loadMore": "Ver más",
+      "loadingMore": "Cargando...",
+      "error": "No se pudieron cargar los QuickChecks. Intenta de nuevo.",
+      "empty": {
+        "title": "No hay QuickChecks realizados",
+        "description": "Aún no se han realizado chequeos en tus máquinas."
+      },
+      "viewMachine": "Ver máquina"
+    },
+    "events": {
+      "title": "Últimos Reportes de Eventos",
+      "count": "{{count}} eventos",
+      "loadMore": "Ver más",
+      "loadingMore": "Cargando...",
+      "error": "No se pudieron cargar los eventos. Intenta de nuevo.",
+      "empty": {
+        "title": "No hay eventos registrados",
+        "description": "No se han reportado eventos en tus máquinas."
+      },
+      "severity": {
+        "low": "Bajo",
+        "medium": "Medio",
+        "high": "Alto",
+        "critical": "Crítico"
+      }
     }
   },
   "forms": {
