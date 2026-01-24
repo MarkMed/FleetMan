@@ -1,5 +1,6 @@
 import React from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Button, Card } from '@components/ui';
 import { useModalStore } from '@store/slices/modalSlice';
 import { useQuickCheckViewModel } from '../../viewModels/machines/useQuickCheckViewModel';
@@ -14,6 +15,7 @@ import {
 export const QuickCheckScreen: React.FC = () => {
   const { id: machineId } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { showModal, hideModal } = useModalStore();
 
   const vm = useQuickCheckViewModel();
@@ -83,10 +85,10 @@ export const QuickCheckScreen: React.FC = () => {
 
     try {
       const confirmed = await useModalStore.getState().showConfirmation({
-        title: 'Eliminar item',
-        description: `¿Estás seguro de que deseas eliminar "${item.name}"? Esta acción no se puede deshacer.`,
-        confirmText: 'Eliminar',
-        cancelText: 'Cancelar',
+        title: t('quickchecks.screen.deleteModal.title'),
+        description: t('quickchecks.screen.deleteModal.description', { name: item.name }),
+        confirmText: t('quickchecks.screen.deleteModal.confirm'),
+        cancelText: t('quickchecks.screen.deleteModal.cancel'),
       });
 
       if (isMounted && confirmed) {
@@ -102,21 +104,21 @@ export const QuickCheckScreen: React.FC = () => {
       {/* Header */}
       <div>
         <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
-          <Link to="/machines" className="hover:text-foreground">Máquinas</Link>
+          <Link to="/machines" className="hover:text-foreground">{t('quickchecks.screen.breadcrumbs.machines')}</Link>
           <span>/</span>
-          <Link to={`/machines/${machineId}`} className="hover:text-foreground">Detalle</Link>
+          <Link to={`/machines/${machineId}`} className="hover:text-foreground">{t('quickchecks.screen.breadcrumbs.detail')}</Link>
           <span>/</span>
-          <span className="text-foreground">QuickCheck</span>
+          <span className="text-foreground">{t('quickchecks.screen.breadcrumbs.quickcheck')}</span>
         </div>
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-foreground">
-              QuickCheck de Seguridad
+              {t('quickchecks.screen.title')}
             </h1>
             <p className="text-muted-foreground mt-1">
-              {vm.mode === 'EDITING' && 'Define y administra los items de verificación'}
-              {vm.mode === 'EXECUTING' && 'Evalúa cada item del checklist'}
-              {vm.mode === 'COMPLETED' && 'Revisa el resultado de la evaluación'}
+              {vm.mode === 'EDITING' && t('quickchecks.screen.modes.editing')}
+              {vm.mode === 'EXECUTING' && t('quickchecks.screen.modes.executing')}
+              {vm.mode === 'COMPLETED' && t('quickchecks.screen.modes.completed')}
             </p>
           </div>
           <Button
@@ -128,7 +130,7 @@ export const QuickCheckScreen: React.FC = () => {
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            Ver Historial
+            {t('quickchecks.screen.viewHistory')}
           </Button>
         </div>
       </div>
@@ -146,10 +148,10 @@ export const QuickCheckScreen: React.FC = () => {
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-xl font-semibold text-foreground">
-                  Items de verificación ({vm.items.length})
+                  {t('quickchecks.screen.editing.itemCount', { count: vm.items.length })}
                 </h2>
                 <p className="text-sm text-muted-foreground">
-                  Gestiona los items que se verificarán en cada QuickCheck
+                  {t('quickchecks.screen.editing.subtitle')}
                 </p>
               </div>
               <Button 
@@ -161,7 +163,7 @@ export const QuickCheckScreen: React.FC = () => {
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                 </svg>
-                Agregar item
+                {t('quickchecks.screen.editing.addItem')}
               </Button>
             </div>
 
@@ -188,7 +190,7 @@ export const QuickCheckScreen: React.FC = () => {
                 disabled={!vm.canStartExecution}
                 className="gap-2"
               >
-                Iniciar Prevención
+                {t('quickchecks.screen.editing.startExecution')}
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
                 </svg>
@@ -207,10 +209,10 @@ export const QuickCheckScreen: React.FC = () => {
                   <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                   </svg>
-                  Ejecutando QuickCheck
+                  {t('quickchecks.screen.executing.title')}
                 </h2>
                 <p className="text-sm text-muted-foreground">
-                  Evalúa cada item como Aprobado, Desaprobado u Omitido
+                  {t('quickchecks.screen.executing.subtitle')}
                 </p>
               </div>
               <Button
@@ -218,7 +220,7 @@ export const QuickCheckScreen: React.FC = () => {
                 size="default"
                 onPress={vm.cancelExecution}
               >
-                Cancelar
+                {t('quickchecks.screen.executing.cancel')}
               </Button>
             </div>
 
@@ -242,18 +244,18 @@ export const QuickCheckScreen: React.FC = () => {
             {/* Observations textarea */}
             <div className="space-y-2">
               <label htmlFor="observations" className="block text-sm font-medium text-foreground">
-                Observaciones (opcional)
+                {t('quickchecks.screen.executing.observations')}
               </label>
               <textarea
                 id="observations"
                 rows={4}
                 value={vm.observations}
                 onChange={(e) => vm.setObservations(e.target.value)}
-                placeholder="Agrega cualquier observación relevante sobre la evaluación..."
+                placeholder={t('quickchecks.screen.executing.observationsPlaceholder')}
                 className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
               />
               <p className="text-xs text-muted-foreground">
-                {vm.observations.length} caracteres
+                {t('quickchecks.screen.executing.charactersCount', { count: vm.observations.length })}
               </p>
             </div>
 
@@ -265,7 +267,7 @@ export const QuickCheckScreen: React.FC = () => {
                 onPress={vm.cancelExecution}
                 disabled={vm.isLoading}
               >
-                Descartar
+                {t('quickchecks.screen.executing.discard')}
               </Button>
               <Button
                 variant="filled"
@@ -280,14 +282,14 @@ export const QuickCheckScreen: React.FC = () => {
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                     </svg>
-                    Enviando...
+                    {t('quickchecks.screen.executing.sending')}
                   </>
                 ) : (
                   <>
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
-                    Finalizar y Enviar
+                    {t('quickchecks.screen.executing.submit')}
                   </>
                 )}
               </Button>

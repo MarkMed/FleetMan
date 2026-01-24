@@ -870,6 +870,73 @@
       "approved": "Approved",
       "disapproved": "Disapproved",
       "omitted": "Omitted"
+    },
+    "history": {
+      "title": "Review History",
+      "subtitle": "QuickChecks performed for this machine",
+      "backButton": "Back to QuickCheck",
+      "loading": "Loading history...",
+      "error": {
+        "title": "Error loading history",
+        "unexpected": "An unexpected error occurred"
+      },
+      "empty": {
+        "title": "No QuickChecks performed",
+        "description": "No QuickChecks have been performed for this machine yet",
+        "action": "Perform first QuickCheck"
+      },
+      "viewDetails": "View details",
+      "modal": {
+        "title": "QuickCheck Details",
+        "responsible": "Responsible",
+        "workerId": "Worker ID",
+        "observations": "Observations",
+        "itemsEvaluated": "Items Evaluated"
+      },
+      "breadcrumbs": {
+        "machines": "Machines",
+        "detail": "Detail",
+        "quickcheck": "QuickCheck",
+        "history": "History"
+      }
+    },
+    "screen": {
+      "title": "Prevention QuickCheck",
+      "viewHistory": "View History",
+      "breadcrumbs": {
+        "machines": "Machines",
+        "detail": "Detail",
+        "quickcheck": "QuickCheck"
+      },
+      "modes": {
+        "editing": "Define and manage verification items",
+        "executing": "Evaluate each checklist item",
+        "completed": "Review evaluation results"
+      },
+      "editing": {
+        "header": "Verification items",
+        "subtitle": "Manage items to be verified in each QuickCheck",
+        "addItem": "Add item",
+        "startExecution": "Start Prevention",
+        "itemCount": "Verification items ({{count}})"
+      },
+      "executing": {
+        "title": "Executing QuickCheck",
+        "subtitle": "Evaluate each item as Approved, Disapproved, or Omitted",
+        "cancel": "Cancel",
+        "observations": "Observations (optional)",
+        "observationsPlaceholder": "Add any relevant observations about the evaluation...",
+        "charactersCount": "{{count}} characters",
+        "discard": "Discard",
+        "sending": "Sending...",
+        "submit": "Finish and Submit"
+      },
+      "deleteModal": {
+        "title": "Delete item",
+        "description": "Are you sure you want to delete \"{{name}}\"? This action cannot be undone.",
+        "confirm": "Delete",
+        "cancel": "Cancel"
+      }
     }
   },
   "dashboard": {
@@ -899,7 +966,7 @@
         "title": "No QuickChecks performed",
         "description": "No checks have been performed on your machines yet."
       },
-      "viewMachine": "View machine"
+      "viewMachine": "Quickchecks History"
     },
     "events": {
       "title": "Recent Event Reports",

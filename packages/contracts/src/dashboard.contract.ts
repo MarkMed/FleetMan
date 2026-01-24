@@ -15,6 +15,7 @@ export const RecentQuickCheckDTOSchema = z.object({
   result: QuickCheckResultSchema,
   date: z.coerce.date(),
   responsibleName: z.string(),
+  responsibleWorkerId: z.string().optional(), // Opcional porque puede no existir en User
   quickCheckItemsCount: z.number().int().min(0),
   approvedItemsCount: z.number().int().min(0),
   disapprovedItemsCount: z.number().int().min(0),
@@ -50,6 +51,8 @@ export const RecentMachineEventDTOSchema = z.object({
   description: z.string(),
   createdAt: z.coerce.date(),
   isSystemGenerated: z.boolean(),
+  responsibleName: z.string(),
+  responsibleWorkerId: z.string().optional(), // Opcional porque puede no existir en User
   
   // Event type data (enriched)
   eventType: z.object({

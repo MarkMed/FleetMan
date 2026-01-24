@@ -26,7 +26,7 @@ export const QuickCheckHistoryScreen: React.FC = () => {
   // Show detail modal
   const handleShowDetail = (record: IQuickCheckRecord) => {
     showModal({
-      title: "Detalles del QuickCheck",
+      title: t('quickchecks.history.modal.title'),
       content: <QuickCheckDetailModal record={record} vm={vm} />,
       showCloseButton: true,
       dismissible: true,
@@ -44,26 +44,26 @@ export const QuickCheckHistoryScreen: React.FC = () => {
       <div>
         <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
           <Link to={vm.paths.machines} className="hover:text-foreground">
-            Máquinas
+            {t('quickchecks.history.breadcrumbs.machines')}
           </Link>
           <span>/</span>
           <Link to={vm.paths.machineDetail} className="hover:text-foreground">
-            Detalle
+            {t('quickchecks.history.breadcrumbs.detail')}
           </Link>
           <span>/</span>
           <Link to={vm.paths.quickCheck} className="hover:text-foreground">
-            QuickCheck
+            {t('quickchecks.history.breadcrumbs.quickcheck')}
           </Link>
           <span>/</span>
-          <span className="text-foreground">Historial</span>
+          <span className="text-foreground">{t('quickchecks.history.breadcrumbs.history')}</span>
         </div>
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-foreground">
-              Historial de Revisiones
+              {t('quickchecks.history.title')}
             </h1>
             <p className="text-muted-foreground mt-1">
-              QuickChecks ejecutados para esta máquina
+              {t('quickchecks.history.subtitle')}
             </p>
           </div>
           <Button
@@ -71,7 +71,7 @@ export const QuickCheckHistoryScreen: React.FC = () => {
             size="default"
             onPress={() => navigate(vm.paths.quickCheck)}
           >
-            ← Volver al QuickCheck
+            ← {t('quickchecks.history.backButton')}
           </Button>
         </div>
       </div>
@@ -81,7 +81,7 @@ export const QuickCheckHistoryScreen: React.FC = () => {
         <div className="flex items-center justify-center py-12">
           <div className="flex flex-col items-center space-y-4">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-            <p className="text-muted-foreground">Cargando historial...</p>
+            <p className="text-muted-foreground">{t('quickchecks.history.loading')}</p>
           </div>
         </div>
       )}
@@ -104,12 +104,12 @@ export const QuickCheckHistoryScreen: React.FC = () => {
               />
             </svg>
             <h3 className="mt-4 text-lg font-semibold text-foreground">
-              Error al cargar historial
+              {t('quickchecks.history.error.title')}
             </h3>
             <p className="mt-2 text-muted-foreground">
               {vm.error instanceof Error
                 ? vm.error.message
-                : "Ocurrió un error inesperado"}
+                : t('quickchecks.history.error.unexpected')}
             </p>
           </div>
         </Card>
@@ -133,17 +133,17 @@ export const QuickCheckHistoryScreen: React.FC = () => {
               />
             </svg>
             <h3 className="mt-4 text-lg font-semibold text-foreground">
-              No hay QuickChecks realizados
+              {t('quickchecks.history.empty.title')}
             </h3>
             <p className="mt-2 text-muted-foreground">
-              Aún no se han ejecutado QuickChecks para esta máquina
+              {t('quickchecks.history.empty.description')}
             </p>
             <Button
               variant="filled"
               className="mt-6"
               onPress={() => navigate(vm.paths.quickCheck)}
             >
-              Realizar primer QuickCheck
+              {t('quickchecks.history.empty.action')}
             </Button>
           </div>
         </Card>
@@ -219,7 +219,7 @@ export const QuickCheckHistoryScreen: React.FC = () => {
                 </div>
 
                 {/* Responsible Info con ícono */}
-                <div className="flex items-center gap-1.5 mb-3">
+                <div className="flex items-center gap-1.5">
                   <svg className="w-5 h-5 text-muted-foreground flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
                   </svg>
@@ -231,8 +231,8 @@ export const QuickCheckHistoryScreen: React.FC = () => {
                 {/* Observations - Estilo de diálogo */}
                 {record.observations && (
                   <div className="mb-3 flex flex-col justify-start">
-                    <div className="h-8 w-8 rotate-45 translate-y-[50%] translate-x-[20%] bg-gray-200 dark:bg-gray-100/10 border border-gray-500 z-0"></div>
-                    <div className="bg-gray-200 dark:bg-gray-100/10 border border-border rounded-lg p-3 rounded-tl-none border border-gray-500 z-10 border-t-0">
+                    <div className="h-3 w-3 rotate-45 translate-y-[50%] translate-x-[20%] bg-gray-200 dark:bg-slate-700 border border-gray-500 dark:border-slate-600 z-0"></div>
+                    <div className="bg-gray-200 dark:bg-slate-700 border border-border rounded-lg p-3 rounded-tl-none border border-gray-500 dark:border-slate-500 z-10 border-t-0">
                       <BodyText size="regular" className="text-muted-foreground line-clamp-2 leading-relaxed">
                         {record.observations}
                       </BodyText>
@@ -247,7 +247,7 @@ export const QuickCheckHistoryScreen: React.FC = () => {
                   onPress={() => handleShowDetail(record)}
                   className="w-full"
                 >
-                  Ver detalles
+                  {t('quickchecks.history.viewDetails')}
                 </Button>
               </Card>
             );
@@ -269,6 +269,8 @@ const QuickCheckDetailModal: React.FC<{
   record: IQuickCheckRecord;
   vm: ReturnType<typeof useQuickCheckHistoryViewModel>;
 }> = ({ record, vm }) => {
+  const { t } = useTranslation();
+  
   // Helper: Render icon based on result type
   const renderResultIcon = (
     type: "approved" | "disapproved" | "omitted" | "unknown"
@@ -327,7 +329,7 @@ const QuickCheckDetailModal: React.FC<{
       <div className="grid grid-cols-2 gap-4 p-4 bg-muted/30 rounded-lg">
         <div>
           <h4 className="text-xs font-semibold text-muted-foreground mb-1">
-            Responsable
+            {t('quickchecks.history.modal.responsible')}
           </h4>
           <p className="text-sm font-medium text-foreground">
             {record.responsibleName}
@@ -335,7 +337,7 @@ const QuickCheckDetailModal: React.FC<{
         </div>
         <div>
           <h4 className="text-xs font-semibold text-muted-foreground mb-1">
-            ID Trabajador
+            {t('quickchecks.history.modal.workerId')}
           </h4>
           <p className="text-sm font-medium text-foreground">
             {record.responsibleWorkerId}
@@ -347,7 +349,7 @@ const QuickCheckDetailModal: React.FC<{
       {record.observations && (
         <div>
           <h3 className="text-sm font-semibold text-foreground mb-2">
-            Observaciones
+            {t('quickchecks.history.modal.observations')}
           </h3>
           <p className="text-sm text-muted-foreground bg-muted/50 p-3 rounded-lg">
             {record.observations}
@@ -358,7 +360,7 @@ const QuickCheckDetailModal: React.FC<{
       {/* Items List */}
       <div>
         <h3 className="text-sm font-semibold text-foreground mb-3">
-          Items Evaluados ({record.quickCheckItems.length})
+          {t('quickchecks.history.modal.itemsEvaluated')} ({record.quickCheckItems.length})
         </h3>
         <div className="space-y-2">
           {record.quickCheckItems.map(

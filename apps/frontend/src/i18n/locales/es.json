@@ -872,6 +872,73 @@
       "approved": "Aprobados",
       "disapproved": "Desaprobados",
       "omitted": "Omitidos"
+    },
+    "history": {
+      "title": "Historial de Revisiones",
+      "subtitle": "QuickChecks ejecutados para esta máquina",
+      "backButton": "Volver al QuickCheck",
+      "loading": "Cargando historial...",
+      "error": {
+        "title": "Error al cargar historial",
+        "unexpected": "Ocurrió un error inesperado"
+      },
+      "empty": {
+        "title": "No hay QuickChecks realizados",
+        "description": "Aún no se han ejecutado QuickChecks para esta máquina",
+        "action": "Realizar primer QuickCheck"
+      },
+      "viewDetails": "Ver detalles",
+      "modal": {
+        "title": "Detalles del QuickCheck",
+        "responsible": "Responsable",
+        "workerId": "ID Trabajador",
+        "observations": "Observaciones",
+        "itemsEvaluated": "Items Evaluados"
+      },
+      "breadcrumbs": {
+        "machines": "Máquinas",
+        "detail": "Detalle",
+        "quickcheck": "QuickCheck",
+        "history": "Historial"
+      }
+    },
+    "screen": {
+      "title": "QuickCheck de Prevención",
+      "viewHistory": "Ver Historial",
+      "breadcrumbs": {
+        "machines": "Máquinas",
+        "detail": "Detalle",
+        "quickcheck": "QuickCheck"
+      },
+      "modes": {
+        "editing": "Define y administra los items de verificación",
+        "executing": "Evalúa cada item del checklist",
+        "completed": "Revisa el resultado de la evaluación"
+      },
+      "editing": {
+        "header": "Items de verificación",
+        "subtitle": "Gestiona los items que se verificarán en cada QuickCheck",
+        "addItem": "Agregar item",
+        "startExecution": "Iniciar Prevención",
+        "itemCount": "Items de verificación ({{count}})"
+      },
+      "executing": {
+        "title": "Ejecutando QuickCheck",
+        "subtitle": "Evalúa cada item como Aprobado, Desaprobado u Omitido",
+        "cancel": "Cancelar",
+        "observations": "Observaciones (opcional)",
+        "observationsPlaceholder": "Agrega cualquier observación relevante sobre la evaluación...",
+        "charactersCount": "{{count}} caracteres",
+        "discard": "Descartar",
+        "sending": "Enviando...",
+        "submit": "Finalizar y Enviar"
+      },
+      "deleteModal": {
+        "title": "Eliminar item",
+        "description": "¿Estás seguro de que deseas eliminar \"{{name}}\"? Esta acción no se puede deshacer.",
+        "confirm": "Eliminar",
+        "cancel": "Cancelar"
+      }
     }
   },
   "dashboard": {
@@ -901,7 +968,7 @@
         "title": "No hay QuickChecks realizados",
         "description": "Aún no se han realizado chequeos en tus máquinas."
       },
-      "viewMachine": "Ver máquina"
+      "viewMachine": "Historial de QuickChecks"
     },
     "events": {
       "title": "Últimos Reportes de Eventos",

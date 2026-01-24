@@ -1345,7 +1345,7 @@ export class MachineRepository implements IMachineRepository {
     offset: number = 0
   ): Promise<{
     data: Array<{
-      quickCheck: IQuickCheckRecord;
+      quickCheck: IQuickCheckRecord & { responsibleWorkerId?: string };
       machine: {
         id: string;
         name: string;
@@ -1400,10 +1400,10 @@ export class MachineRepository implements IMachineRepository {
               { $limit: limit },
               {
                 $project: {
-                  quickCheck: '$quickChecks',
+                  quickCheck: '$quickChecks', // Ya contiene todos los campos incluyendo responsibleWorkerId
                   machine: {
                     id: { $toString: '$_id' },
-                    name: '$basicInfo.name',
+                    name: '$nickname', // nickname es el campo correcto
                     brand: '$basicInfo.brand',
                     model: '$basicInfo.model',
                     serialNumber: '$serialNumber',
@@ -1475,6 +1475,10 @@ export class MachineRepository implements IMachineRepository {
         name: string;
         severity?: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
       };
+      responsible: {
+        name: string;
+        workerId?: string;
+      };
     }>;
     total: number;
   }> {
@@ -1517,6 +1521,28 @@ export class MachineRepository implements IMachineRepository {
           }
         },
         
+        // 4.5. Lookup para User (responsible/createdBy)
+        {
+          $lookup: {
+            from: 'users',
+            let: { createdBy: '$eventsHistory.createdBy' },
+            pipeline: [
+              {
+                $match: {
+                  $expr: { $eq: [{ $toString: '$_id' }, '$$createdBy'] }
+                }
+              },
+              {
+                $project: {
+                  name: 1,
+                  workerId: 1
+                }
+              }
+            ],
+            as: 'responsibleData'
+          }
+        },
+        
         // 5. Ordenar por fecha de creación descendente
         { 
           $sort: { 'eventsHistory.createdAt': -1 } 
@@ -1534,7 +1560,7 @@ export class MachineRepository implements IMachineRepository {
                   event: '$eventsHistory',
                   machine: {
                     id: { $toString: '$_id' },
-                    name: '$basicInfo.name',
+                    name: '$nickname', // nickname es el campo correcto
                     brand: '$basicInfo.brand',
                     model: '$basicInfo.model',
                     serialNumber: '$serialNumber',
@@ -1561,6 +1587,19 @@ export class MachineRepository implements IMachineRepository {
                         id: '',
                         name: 'Unknown Event Type',
                         severity: null
+                      }
+                    }
+                  },
+                  responsible: {
+                    $cond: {
+                      if: { $gt: [{ $size: '$responsibleData' }, 0] },
+                      then: {
+                        name: { $arrayElemAt: ['$responsibleData.name', 0] },
+                        workerId: { $arrayElemAt: ['$responsibleData.workerId', 0] }
+                      },
+                      else: {
+                        name: 'Sistema',
+                        workerId: null
                       }
                     }
                   }
