@@ -58,10 +58,6 @@ export const DashboardScreen: React.FC = () => {
         <Heading1>
           {t("dashboard.title", "Dashboard FleetMan")}
         </Heading1>
-        <p className="text-gray-600 mt-2">
-          {t("dashboard.welcome", "Bienvenido")}
-          {user?.profile.companyName ? `, ${user.profile.companyName}` : ""}
-        </p>
       </div>
 
       {/* Main Content - Two Sections */}

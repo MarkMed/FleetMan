@@ -975,6 +975,11 @@
         "title": "No events registered",
         "description": "No events have been reported on your machines."
       },
+      "viewMachine": "Events History",
+      "reportedBy": "Reported by",
+      "eventType": {
+        "unspecified": "Unspecified Event"
+      },
       "severity": {
         "low": "Low",
         "medium": "Medium",

@@ -1511,35 +1511,50 @@ export class MachineRepository implements IMachineRepository {
           }
         },
         
-        // 4. Lookup para eventType (usando typeId del evento)
+        // 3.5. Filtrar solo eventos REPORTADOS (no generados por el sistema)
         {
-          $lookup: {
-            from: 'machineeventtypes',
-            localField: 'eventsHistory.typeId',
-            foreignField: '_id',
-            as: 'eventTypeData'
+          $match: {
+            'eventsHistory.isSystemGenerated': false
           }
         },
         
-        // 4.5. Lookup para User (responsible/createdBy)
+        // 4. Lookup para eventType (usando typeId del evento)
+        // NOTA: typeId en eventsHistory es string, necesitamos convertir a ObjectId para el lookup
+        // Usamos $convert con onError para manejar typeIds inválidos sin romper el pipeline
         {
           $lookup: {
-            from: 'users',
-            let: { createdBy: '$eventsHistory.createdBy' },
+            from: 'machine_event_types',
+            let: { typeId: '$eventsHistory.typeId' },
             pipeline: [
               {
                 $match: {
-                  $expr: { $eq: [{ $toString: '$_id' }, '$$createdBy'] }
+                  $expr: {
+                    $eq: [
+                      '$_id',
+                      {
+                        $convert: {
+                          input: '$$typeId',
+                          to: 'objectId',
+                          onError: null,
+                          onNull: null
+                        }
+                      }
+                    ]
+                  }
                 }
               },
               {
                 $project: {
+                  _id: 1,
                   name: 1,
-                  workerId: 1
+                  normalizedName: 1,
+                  languages: 1,
+                  systemGenerated: 1,
+                  timesUsed: 1
                 }
               }
             ],
-            as: 'responsibleData'
+            as: 'eventTypeData'
           }
         },
         
@@ -1557,12 +1572,15 @@ export class MachineRepository implements IMachineRepository {
               { $limit: limit },
               {
                 $project: {
-                  event: '$eventsHistory',
+                  _id: 0,
+                  id: { $toString: '$eventsHistory._id' },
+                  title: '$eventsHistory.title',
+                  description: '$eventsHistory.description',
+                  createdAt: '$eventsHistory.createdAt',
+                  isSystemGenerated: '$eventsHistory.isSystemGenerated',
                   machine: {
                     id: { $toString: '$_id' },
-                    name: '$nickname', // nickname es el campo correcto
-                    brand: '$basicInfo.brand',
-                    model: '$basicInfo.model',
+                    name: '$nickname',
                     serialNumber: '$serialNumber',
                     machineType: {
                       $cond: {
@@ -1580,27 +1598,9 @@ export class MachineRepository implements IMachineRepository {
                       if: { $gt: [{ $size: '$eventTypeData' }, 0] },
                       then: {
                         id: { $toString: { $arrayElemAt: ['$eventTypeData._id', 0] } },
-                        name: { $arrayElemAt: ['$eventTypeData.name', 0] },
-                        severity: { $arrayElemAt: ['$eventTypeData.severity', 0] }
+                        name: { $arrayElemAt: ['$eventTypeData.name', 0] }
                       },
-                      else: {
-                        id: '',
-                        name: 'Unknown Event Type',
-                        severity: null
-                      }
-                    }
-                  },
-                  responsible: {
-                    $cond: {
-                      if: { $gt: [{ $size: '$responsibleData' }, 0] },
-                      then: {
-                        name: { $arrayElemAt: ['$responsibleData.name', 0] },
-                        workerId: { $arrayElemAt: ['$responsibleData.workerId', 0] }
-                      },
-                      else: {
-                        name: 'Sistema',
-                        workerId: null
-                      }
+                      else: null
                     }
                   }
                 }

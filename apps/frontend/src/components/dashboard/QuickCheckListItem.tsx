@@ -170,7 +170,7 @@ export const QuickCheckListItem: React.FC<QuickCheckListItemProps> = ({
             {formattedDate}
           </BodyText>
 
-          <BodyText size="medium" className="truncate flex justify-start" >
+          <BodyText size="medium" className="truncate flex justify-start -mt-1" >
             {quickCheck.machine.name}
           </BodyText>
           {/* <p className="text-xs text-muted-foreground truncate">

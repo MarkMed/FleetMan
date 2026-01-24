@@ -51,24 +51,20 @@ export const RecentMachineEventDTOSchema = z.object({
   description: z.string(),
   createdAt: z.coerce.date(),
   isSystemGenerated: z.boolean(),
-  responsibleName: z.string(),
-  responsibleWorkerId: z.string().optional(), // Opcional porque puede no existir en User
   
-  // Event type data (enriched)
+  // Event type data (enriched) - Nullable si evento no tiene tipo válido
   eventType: z.object({
     id: z.string(),
     name: z.string(),
-    severity: z.enum(['LOW', 'MEDIUM', 'HIGH', 'CRITICAL']).optional(),
+    // severity: z.enum(['LOW', 'MEDIUM', 'HIGH', 'CRITICAL']).optional(), // TODO: Feature estratégica - severidad de eventos
     // category: z.string().optional(), // Future: categorización de eventos
     // icon: z.string().optional(), // Future: ícono UI
-  }),
+  }).nullable(),
   
   // Machine data (enriched)
   machine: z.object({
     id: z.string(),
     name: z.string(),
-    brand: z.string(),
-    model: z.string(),
     serialNumber: z.string(),
     machineType: z.object({
       id: z.string(),

@@ -66,29 +66,24 @@ export class GetRecentMachineEventsUseCase {
       );
 
       // Transformar a DTOs
-      const dtos: RecentMachineEventDTO[] = result.data.map((item: any) => ({
+      const dtos: RecentMachineEventDTO[] = result.data.map((item: any): RecentMachineEventDTO => ({
         // Event data
-        id: item.event.id,
-        title: item.event.title,
-        description: item.event.description,
-        createdAt: item.event.createdAt,
-        isSystemGenerated: item.event.isSystemGenerated,
-        responsibleName: item.responsible.name,
-        responsibleWorkerId: item.responsible.workerId || undefined,
+        id: item.id,
+        title: item.title,
+        description: item.description,
+        createdAt: item.createdAt,
+        isSystemGenerated: item.isSystemGenerated,
         
-        // Event type data (enriched)
-        eventType: {
+        // Event type data (enriched) - Null si no tiene tipo válido
+        eventType: item.eventType && item.eventType.id ? {
           id: item.eventType.id,
-          name: item.eventType.name,
-          severity: item.eventType.severity
-        },
+          name: item.eventType.name
+        } : null,
         
         // Machine data (enriched)
         machine: {
           id: item.machine.id,
           name: item.machine.name,
-          brand: item.machine.brand,
-          model: item.machine.model,
           serialNumber: item.machine.serialNumber,
           machineType: item.machine.machineType || undefined
         }
