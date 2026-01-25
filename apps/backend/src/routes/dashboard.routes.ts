@@ -134,11 +134,11 @@ router.get(
  *   get:
  *     summary: Get recent machine events for dashboard
  *     description: |
- *       Returns recent machine events (reports) from all user's machines.
+ *       Returns recent machine events (user-reported only) from all user's machines.
+ *       - Filters out system-generated events (isSystemGenerated: false)
  *       - Ordered by createdAt descending (most recent first)
  *       - Includes enriched machine data and event type info
  *       - Supports incremental pagination for "Load More" UX
- *       - Shows severity level and system vs user-generated events
  *     tags: [Dashboard]
  *     security:
  *       - bearerAuth: []
@@ -186,24 +186,19 @@ router.get(
  *                         type: boolean
  *                       eventType:
  *                         type: object
+ *                         nullable: true
+ *                         description: Event type info (null if event has no valid type)
  *                         properties:
  *                           id:
  *                             type: string
  *                           name:
  *                             type: string
- *                           severity:
- *                             type: string
- *                             enum: [LOW, MEDIUM, HIGH, CRITICAL]
  *                       machine:
  *                         type: object
  *                         properties:
  *                           id:
  *                             type: string
  *                           name:
- *                             type: string
- *                           brand:
- *                             type: string
- *                           model:
  *                             type: string
  *                           serialNumber:
  *                             type: string

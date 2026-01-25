@@ -160,17 +160,6 @@ export const QuickCheckWidget: React.FC<QuickCheckWidgetProps> = ({
           )}
         </div>
       </div>
-
-      {/* Custom CSS para hide scrollbar */}
-      <style>{`
-        .scrollbar-hide::-webkit-scrollbar {
-          display: none;
-        }
-        .scrollbar-hide {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-      `}</style>
     </Card>
   );
 };

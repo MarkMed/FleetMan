@@ -24,7 +24,6 @@ import { Heading1 } from "@components/ui";
  * - TanStack Query para cache y optimización
  */
 export const DashboardScreen: React.FC = () => {
-  const { user } = useAuth();
   const { t } = useTranslation();
 
   const {

@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
-import { es } from "date-fns/locale";
+import { es, enUS } from "date-fns/locale";
 import type { RecentMachineEventDTO } from "@packages/contracts";
 import { BodyText, Card, Button } from "@components/ui";
 import { AlertTriangle } from "lucide-react";
@@ -34,16 +34,17 @@ export const EventListItem: React.FC<EventListItemProps> = ({
   event,
   style,
 }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
 
   const handleClick = () => {
     navigate(`/machines/${event.machine.id}`);
   };
 
-  // Format date (formato corto para dashboard)
+  // Format date (formato corto para dashboard) - usa locale según idioma actual
+  const dateLocale = i18n.language === 'es' ? es : enUS;
   const formattedDate = format(new Date(event.createdAt), "d MMM yyyy, HH:mm", {
-    locale: es,
+    locale: dateLocale,
   });
 
   return (

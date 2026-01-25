@@ -1,4 +1,4 @@
-import { useCallback, useRef, RefObject } from 'react';
+import { useCallback, useRef } from 'react';
 
 /**
  * useDragScroll - Custom hook for drag-to-scroll functionality

@@ -201,6 +201,16 @@ body {
   animation: slide-in-from-right 0.3s ease-out;
 }
 
+/* Hide scrollbar utility (used in dashboard carousels) */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 /* Utility classes */
 .text-balance {
   text-wrap: balance;
