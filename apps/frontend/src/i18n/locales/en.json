@@ -1566,6 +1566,22 @@
       "loading": "Loading settings...",
       "loadError": "Error loading settings"
     },
+    "profile": {
+      "title": "My Profile",
+      "subtitle": "Manage your personal information and account preferences",
+      "editProfile": "Edit Profile",
+      "noCompanyName": "No company name",
+      "client": "Client",
+      "provider": "Service Provider",
+      "activeAccount": "Active Account",
+      "memberSince": "Member since",
+      "contactInformation": "Contact Information",
+      "phone": "Phone",
+      "company": "Company",
+      "address": "Address",
+      "bio": "Biography",
+      "tags": "Tags"
+    },
     "validation": {
       "emailRequired": "Email is required",
       "emailInvalid": "Please enter a valid email",

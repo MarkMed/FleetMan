@@ -1568,6 +1568,22 @@
       "loading": "Cargando configuraciones...",
       "loadError": "Error al cargar las configuraciones"
     },
+    "profile": {
+      "title": "Mi Perfil",
+      "subtitle": "Gestiona tu información personal y preferencias de cuenta",
+      "editProfile": "Editar Perfil",
+      "noCompanyName": "Sin nombre de empresa",
+      "client": "Cliente",
+      "provider": "Proveedor de Servicios",
+      "activeAccount": "Cuenta Activa",
+      "memberSince": "Miembro desde",
+      "contactInformation": "Información de Contacto",
+      "phone": "Teléfono",
+      "company": "Empresa",
+      "address": "Dirección",
+      "bio": "Biografía",
+      "tags": "Etiquetas"
+    },
     "validation": {
       "emailRequired": "El correo es requerido",
       "emailInvalid": "Ingresa un correo válido",
