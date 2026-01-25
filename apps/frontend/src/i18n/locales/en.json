@@ -78,6 +78,8 @@
     "select": "Select",
     "selectAll": "Select All",
     "none": "None",
+    "more": "More",
+    "retry": "Retry",
     "all": "All",
     "actions": "Actions",
     "details": "Details",
@@ -90,7 +92,6 @@
     "imageLoadError": "Failed to load image",
     "uses": "uses",
     "tags": "tags",
-    "retry": "Retry",
     "description": "Description",
     "expand": "Expand",
     "collapse": "Collapse",
@@ -323,6 +324,8 @@
         "subtitle": "Review all data before registering the machine in the system",
         "basicInfo": "Basic Information",
         "notSelected": "Not selected",
+        "cancelButton": "Cancel",
+        "confirmButton": "Register Machine",
         "photo": "Machine Photo",
         "photoUploadInfo": "The photo will be uploaded to Cloudinary upon registration confirmation",
         "photoLaterMarked": "Photo marked to add later",
@@ -348,12 +351,6 @@
         "skipPhoto": "Skip photo and continue",
         "cancel": "Cancel registration",
         "tooManyRetries": "Too many failed attempts. Please try again later or continue without photo."
-      },
-      "confirmation": {
-        "title": "Confirm Registration",
-        "description": "Are you sure you want to register this machine? This action will create a new record in the system.",
-        "cancelButton": "Cancel",
-        "confirmButton": "Register Machine"
       },
       "photo": {
         "title": "Machine Photo",
@@ -860,8 +857,88 @@
       "reportGenerated": "Report {{reportName}} generated successfully"
     }
   },
+  "quickchecks": {
+    "result": {
+      "approved": "Approved",
+      "disapproved": "Disapproved",
+      "notInitiated": "Not Initiated"
+    },
+    "stats": {
+      "approved": "Approved",
+      "disapproved": "Disapproved",
+      "omitted": "Omitted"
+    },
+    "history": {
+      "title": "Review History",
+      "subtitle": "QuickChecks performed for this machine",
+      "backButton": "Back to QuickCheck",
+      "loading": "Loading history...",
+      "error": {
+        "title": "Error loading history",
+        "unexpected": "An unexpected error occurred"
+      },
+      "empty": {
+        "title": "No QuickChecks performed",
+        "description": "No QuickChecks have been performed for this machine yet",
+        "action": "Perform first QuickCheck"
+      },
+      "viewDetails": "View details",
+      "modal": {
+        "title": "QuickCheck Details",
+        "responsible": "Responsible",
+        "workerId": "Worker ID",
+        "observations": "Observations",
+        "itemsEvaluated": "Items Evaluated"
+      },
+      "breadcrumbs": {
+        "machines": "Machines",
+        "detail": "Detail",
+        "quickcheck": "QuickCheck",
+        "history": "History"
+      }
+    },
+    "screen": {
+      "title": "Prevention QuickCheck",
+      "viewHistory": "View History",
+      "breadcrumbs": {
+        "machines": "Machines",
+        "detail": "Detail",
+        "quickcheck": "QuickCheck"
+      },
+      "modes": {
+        "editing": "Define and manage verification items",
+        "executing": "Evaluate each checklist item",
+        "completed": "Review evaluation results"
+      },
+      "editing": {
+        "header": "Verification items",
+        "subtitle": "Manage items to be verified in each QuickCheck",
+        "addItem": "Add item",
+        "startExecution": "Start Prevention",
+        "itemCount": "Verification items ({{count}})"
+      },
+      "executing": {
+        "title": "Executing QuickCheck",
+        "subtitle": "Evaluate each item as Approved, Disapproved, or Omitted",
+        "cancel": "Cancel",
+        "observations": "Observations (optional)",
+        "observationsPlaceholder": "Add any relevant observations about the evaluation...",
+        "charactersCount": "{{count}} characters",
+        "discard": "Discard",
+        "sending": "Sending...",
+        "submit": "Finish and Submit"
+      },
+      "deleteModal": {
+        "title": "Delete item",
+        "description": "Are you sure you want to delete \"{{name}}\"? This action cannot be undone.",
+        "confirm": "Delete",
+        "cancel": "Cancel"
+      }
+    }
+  },
   "dashboard": {
     "title": "Dashboard",
+    "welcome": "Welcome",
     "overview": "Overview",
     "quickActions": "Quick Actions",
     "recentActivity": "Recent Activity",
@@ -875,6 +952,40 @@
       "reportEvent": "Report Event",
       "requestSpare": "Request Spare Part",
       "newMachine": "New Machine"
+    },
+    "quickchecks": {
+      "title": "Recent QuickChecks",
+      "count": "{{count}} checks",
+      "loadMore": "Load more",
+      "loadingMore": "Loading...",
+      "error": "Could not load QuickChecks. Please try again.",
+      "empty": {
+        "title": "No QuickChecks performed",
+        "description": "No checks have been performed on your machines yet."
+      },
+      "viewMachine": "Quickchecks History"
+    },
+    "events": {
+      "title": "Recent Event Reports",
+      "count": "{{count}} events",
+      "loadMore": "Load more",
+      "loadingMore": "Loading...",
+      "error": "Could not load events. Please try again.",
+      "empty": {
+        "title": "No events registered",
+        "description": "No events have been reported on your machines."
+      },
+      "viewMachine": "Events History",
+      "reportedBy": "Reported by",
+      "eventType": {
+        "unspecified": "Unspecified Event"
+      },
+      "severity": {
+        "low": "Low",
+        "medium": "Medium",
+        "high": "High",
+        "critical": "Critical"
+      }
     }
   },
   "forms": {

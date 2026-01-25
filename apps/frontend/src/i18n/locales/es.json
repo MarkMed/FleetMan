@@ -78,6 +78,8 @@
     "select": "Seleccionar",
     "selectAll": "Seleccionar Todo",
     "none": "Ninguno",
+    "more": "Más",
+    "retry": "Reintentar",
     "all": "Todos",
     "actions": "Acciones",
     "details": "Detalles",
@@ -90,7 +92,6 @@
     "imageLoadError": "Error al cargar la imagen",
     "uses": "usos",
     "tags": "etiquetas",
-    "retry": "Reintentar",
     "description": "Descripción",
     "expand": "Expandir",
     "collapse": "Colapsar",
@@ -329,6 +330,8 @@
         "photoUploadInfo": "La foto se subirá a Cloudinary al confirmar el registro",
         "photoLaterMarked": "Foto marcada para agregar más tarde",
         "photoLaterInfo": "Podrás subir la foto desde la página de detalles después del registro",
+        "cancelButton": "Cancelar",
+        "confirmButton": "Registrar Máquina",
         "technicalSpecs": "Especificaciones Técnicas",
         "locationStatus": "Ubicación y Estado",
         "status": "Estado",
@@ -350,12 +353,6 @@
         "skipPhoto": "Omitir foto y continuar",
         "cancel": "Cancelar registro",
         "tooManyRetries": "Demasiados intentos fallidos. Por favor, intenta más tarde o continúa sin foto."
-      },
-      "confirmation": {
-        "title": "Confirmar Registro",
-        "description": "¿Estás seguro de que deseas registrar esta máquina? Esta acción creará un nuevo registro en el sistema.",
-        "cancelButton": "Cancelar",
-        "confirmButton": "Registrar Máquina"
       },
       "photo": {
         "title": "Foto de la Máquina",
@@ -862,8 +859,88 @@
       "reportGenerated": "Reporte {{reportName}} generado exitosamente"
     }
   },
+  "quickchecks": {
+    "result": {
+      "approved": "Aprobado",
+      "disapproved": "Desaprobado",
+      "notInitiated": "No iniciado"
+    },
+    "stats": {
+      "approved": "Aprobados",
+      "disapproved": "Desaprobados",
+      "omitted": "Omitidos"
+    },
+    "history": {
+      "title": "Historial de Revisiones",
+      "subtitle": "QuickChecks ejecutados para esta máquina",
+      "backButton": "Volver al QuickCheck",
+      "loading": "Cargando historial...",
+      "error": {
+        "title": "Error al cargar historial",
+        "unexpected": "Ocurrió un error inesperado"
+      },
+      "empty": {
+        "title": "No hay QuickChecks realizados",
+        "description": "Aún no se han ejecutado QuickChecks para esta máquina",
+        "action": "Realizar primer QuickCheck"
+      },
+      "viewDetails": "Ver detalles",
+      "modal": {
+        "title": "Detalles del QuickCheck",
+        "responsible": "Responsable",
+        "workerId": "ID Trabajador",
+        "observations": "Observaciones",
+        "itemsEvaluated": "Items Evaluados"
+      },
+      "breadcrumbs": {
+        "machines": "Máquinas",
+        "detail": "Detalle",
+        "quickcheck": "QuickCheck",
+        "history": "Historial"
+      }
+    },
+    "screen": {
+      "title": "QuickCheck de Prevención",
+      "viewHistory": "Ver Historial",
+      "breadcrumbs": {
+        "machines": "Máquinas",
+        "detail": "Detalle",
+        "quickcheck": "QuickCheck"
+      },
+      "modes": {
+        "editing": "Define y administra los items de verificación",
+        "executing": "Evalúa cada item del checklist",
+        "completed": "Revisa el resultado de la evaluación"
+      },
+      "editing": {
+        "header": "Items de verificación",
+        "subtitle": "Gestiona los items que se verificarán en cada QuickCheck",
+        "addItem": "Agregar item",
+        "startExecution": "Iniciar Prevención",
+        "itemCount": "Items de verificación ({{count}})"
+      },
+      "executing": {
+        "title": "Ejecutando QuickCheck",
+        "subtitle": "Evalúa cada item como Aprobado, Desaprobado u Omitido",
+        "cancel": "Cancelar",
+        "observations": "Observaciones (opcional)",
+        "observationsPlaceholder": "Agrega cualquier observación relevante sobre la evaluación...",
+        "charactersCount": "{{count}} caracteres",
+        "discard": "Descartar",
+        "sending": "Enviando...",
+        "submit": "Finalizar y Enviar"
+      },
+      "deleteModal": {
+        "title": "Eliminar item",
+        "description": "¿Estás seguro de que deseas eliminar \"{{name}}\"? Esta acción no se puede deshacer.",
+        "confirm": "Eliminar",
+        "cancel": "Cancelar"
+      }
+    }
+  },
   "dashboard": {
     "title": "Panel Principal",
+    "welcome": "Bienvenido",
     "overview": "Resumen",
     "quickActions": "Acciones Rápidas",
     "recentActivity": "Actividad Reciente",
@@ -877,6 +954,40 @@
       "reportEvent": "Reportar Evento",
       "requestSpare": "Solicitar Repuesto",
       "newMachine": "Nueva Máquina"
+    },
+    "quickchecks": {
+      "title": "Últimos QuickChecks Realizados",
+      "count": "{{count}} chequeos",
+      "loadMore": "Ver más",
+      "loadingMore": "Cargando...",
+      "error": "No se pudieron cargar los QuickChecks. Intenta de nuevo.",
+      "empty": {
+        "title": "No hay QuickChecks realizados",
+        "description": "Aún no se han realizado chequeos en tus máquinas."
+      },
+      "viewMachine": "Historial de QuickChecks"
+    },
+    "events": {
+      "title": "Últimos Reportes de Eventos",
+      "count": "{{count}} eventos",
+      "loadMore": "Ver más",
+      "loadingMore": "Cargando...",
+      "error": "No se pudieron cargar los eventos. Intenta de nuevo.",
+      "empty": {
+        "title": "No hay eventos registrados",
+        "description": "No se han reportado eventos en tus máquinas."
+      },
+      "viewMachine": "Historial de Eventos",
+      "reportedBy": "Reportado por",
+      "eventType": {
+        "unspecified": "Evento no especificado"
+      },
+      "severity": {
+        "low": "Bajo",
+        "medium": "Medio",
+        "high": "Alto",
+        "critical": "Crítico"
+      }
     }
   },
   "forms": {

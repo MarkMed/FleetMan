@@ -118,6 +118,10 @@ export const API_ENDPOINTS = {
   // Notifications (User-scoped endpoints matching backend routes)
   USER_NOTIFICATIONS: (userId: string) => `/users/${userId}/notifications`,
   USER_NOTIFICATIONS_UNREAD_COUNT: (userId: string) => `/users/${userId}/notifications/unread-count`,
+  
+  // Dashboard (Sprint #12 - Bundle 12: Dashboard Recent Activity)
+  DASHBOARD_RECENT_QUICKCHECKS: '/dashboard/recent-quickchecks',
+  DASHBOARD_RECENT_EVENTS: '/dashboard/recent-events',
   USER_NOTIFICATIONS_MARK_SEEN: (userId: string) => `/users/${userId}/notifications/mark-as-seen`,
   USER_NOTIFICATIONS_STREAM: (userId: string) => `/users/${userId}/notifications/stream`, // SSE endpoint
   
@@ -254,10 +258,17 @@ export const QUERY_KEYS = {
     page ? ['messages', otherUserId, { page }] : ['messages', otherUserId],
   CONVERSATIONS: ['conversations'],
   
+  // Dashboard (Sprint #12 - Bundle 12: Dashboard Recent Activity)
+  // Cache key fija para acumulación de datos (sin offset en la key)
+  DASHBOARD_RECENT_QUICKCHECKS: ['dashboard', 'recent-quickchecks'] as const,
+  DASHBOARD_RECENT_EVENTS: ['dashboard', 'recent-events'] as const,
+  
   // TODO: Query keys estratégicas futuras
   // USER_PUBLIC_PROFILE: (userId: string) => ['users', userId, 'public-profile'],
   // USER_STATS: (userId: string) => ['users', userId, 'stats'],
   // CONTACTS_BULK: ['contacts', 'bulk'],
+  // DASHBOARD_SUMMARY_STATS: ['dashboard', 'summary-stats'],
+  // DASHBOARD_COMPLIANCE_RATE: (period: 'daily' | 'weekly' | 'monthly') => ['dashboard', 'compliance', period],
   // CONTACT_MUTUAL: (contactUserId: string) => ['contacts', contactUserId, 'mutual'],
   // CONVERSATION_METADATA: (otherUserId: string) => ['conversations', otherUserId, 'metadata'],
   // MESSAGE_SEARCH: (otherUserId: string, query: string) => ['messages', otherUserId, 'search', query],

@@ -69,7 +69,7 @@ export const ConfigurationsScreen: React.FC = () => {
   return (
     <form onSubmit={vm.handleSubmit(vm.onSubmit)} className="space-y-8">
       {/* Header */}
-      <div className="flex justify-between items-start">
+      <div className="flex justify-between items-start flex-wrap sticky top-0 bg-background/80 pt-4 pb-4 z-10 border-b border-border backdrop-blur-[1px]">
         <div>
           <div className="flex items-center gap-3">
             <Heading1 size="headline" className="tracking-tight text-foreground">
@@ -87,7 +87,7 @@ export const ConfigurationsScreen: React.FC = () => {
         </div>
         
         {/* Action Buttons */}
-        <div className="flex gap-3">
+        <div className="flex gap-3 flex-wrap justify-end">
           <Button
             variant="outline"
             onPress={vm.handleRestoreDefaults}
