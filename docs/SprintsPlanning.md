@@ -809,9 +809,9 @@ Distribución por categoría:
 | Desarrollo | 14.10 Mini Perfil en Navbar + Logout Reubicado | 5 | 4 | 2.9 |
 | Desarrollo | 14.5 Theme toggle (UI + persistencia) | 6 | 2 | 1.1 |
 | Desarrollo | 14.6 Settings screen (tema + idioma + email notif) | 7 | 6 | 5.2 |
-| Desarrollo | 12.1 Dashboard - Últimos QuickChecks | 8 | 5 | |
-| Desarrollo | 12.2 Dashboard - Últimos Eventos Reportados | 9 | 5 | |
-| Desarrollo | 12.3 Dashboard Simplificado - Layout Final | 10 | 2 | |
+| Desarrollo | 12.1 Dashboard - Últimos QuickChecks | 8 | 5 | 5 |
+| Desarrollo | 12.2 Dashboard - Últimos Eventos Reportados | 9 | 5 | 5.8 |
+| Desarrollo | 12.3 Dashboard Simplificado - Layout Final | 10 | 2 | 3.4 |
 | Desarrollo | 2.1b Registro Extendido - Wizard Opcional | 11 | 8 | |
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales | Consumo |
