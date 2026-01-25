@@ -9,7 +9,7 @@ import {
   Skeleton,
   Button,
 } from "@components/ui";
-import { Search, Settings } from "lucide-react";
+import { Search, Settings, ArrowLeft } from "lucide-react";
 import { cn } from "@utils/cn";
 import type { CreateMachineResponse as Machine } from "@contracts";
 
@@ -71,6 +71,11 @@ interface MachineSelectModalProps {
    * Estado de carga (opcional)
    */
   isLoading?: boolean;
+
+  /**
+   * Callback para regresar al menú de acciones (opcional)
+   */
+  onGoBack?: () => void;
 }
 
 export const MachineSelectModal: React.FC<MachineSelectModalProps> = ({
@@ -80,6 +85,7 @@ export const MachineSelectModal: React.FC<MachineSelectModalProps> = ({
   onSelectMachine,
   actionType,
   isLoading = false,
+  onGoBack,
 }) => {
   const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState("");
@@ -97,9 +103,6 @@ export const MachineSelectModal: React.FC<MachineSelectModalProps> = ({
         machine.serialNumber?.toLowerCase().includes(query),
     );
   }, [machines, searchQuery]);
-
-  // Determinar si mostrar búsqueda (si hay más de 5 máquinas)
-  const showSearch = machines.length > 5;
 
   /**
    * Validar si la URL de la imagen es válida
@@ -166,15 +169,26 @@ export const MachineSelectModal: React.FC<MachineSelectModalProps> = ({
       onOpenChange={onOpenChange}
       title={t("quickActions.selectMachine")}
       description={
-        actionType
-          ? t("quickActions.selectMachineDesc", { action: actionType })
-          : undefined
+        t("quickActions.selectMachineDesc")
       }
     >
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 pb-2">
+        {" "}
+        {/* Botón Atrás (si onGoBack está disponible) */}
         {/* Búsqueda (solo si hay > 5 máquinas) */}
-        {showSearch && (
-          <div className="relative">
+        <div className="flex items-center gap-3">
+          {onGoBack && (
+            <Button
+              variant="filled"
+              size="default"
+              onPress={onGoBack}
+              className="w-fit"
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              {t("common.back", "Atr\u00e1s")}
+            </Button>
+          )}
+          <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <input
               type="text"
@@ -184,8 +198,7 @@ export const MachineSelectModal: React.FC<MachineSelectModalProps> = ({
               className="w-full h-10 pl-9 pr-4 rounded-md border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
             />
           </div>
-        )}
-
+        </div>
         {/* Loading State */}
         {isLoading && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -200,7 +213,6 @@ export const MachineSelectModal: React.FC<MachineSelectModalProps> = ({
             ))}
           </div>
         )}
-
         {/* Empty State - Sin máquinas */}
         {!isLoading && machines.length === 0 && (
           <div className="flex flex-col items-center justify-center py-12 text-center">
@@ -224,7 +236,6 @@ export const MachineSelectModal: React.FC<MachineSelectModalProps> = ({
             </Button>
           </div>
         )}
-
         {/* Empty State - Sin resultados de búsqueda */}
         {!isLoading && machines.length > 0 && filteredMachines.length === 0 && (
           <div className="flex flex-col items-center justify-center py-12 text-center">
@@ -237,14 +248,13 @@ export const MachineSelectModal: React.FC<MachineSelectModalProps> = ({
             </BodyText>
           </div>
         )}
-
         {/* Lista de máquinas */}
         {!isLoading && filteredMachines.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 max-h-[60vh] overflow-y-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 overflow-y-auto max-h-[47vh] px-2 pb-3 overflow-x-hidden">
             {filteredMachines.map((machine) => (
               <Card
                 key={machine.id}
-                className="cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all duration-200 relative overflow-hidden group"
+                className="cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all duration-200 relative overflow-hidden group overflow-y-auto"
                 onClick={() => handleMachineClick(machine.id)}
               >
                 {/* Background Image Blurred */}

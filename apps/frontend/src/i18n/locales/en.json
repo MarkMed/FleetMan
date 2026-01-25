@@ -1331,7 +1331,7 @@
     "viewNotifications": "View Notifications",
     "viewNotificationsDesc": "Review pending notifications",
     "selectMachine": "Select a Machine",
-    "selectMachineDesc": "Choose the machine for {{action}}",
+    "selectMachineDesc": "Choose the machine you want to work with",
     "noMachines": "No machines registered",
     "noMachinesDesc": "Register your first machine to get started",
     "registerFirstMachine": "Register First Machine",

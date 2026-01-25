@@ -28,6 +28,15 @@ import { ContactSelectModal } from './ContactSelectModal';
 export const GlobalQuickActions: React.FC = () => {
   const quickActions = useQuickActions();
 
+  /**
+   * Handler para volver atr\u00e1s desde modal de selecci\u00f3n a menu de acciones
+   */
+  const handleGoBackToActions = () => {
+    quickActions.closeMachines();
+    quickActions.closeContacts();
+    quickActions.openActions();
+  };
+
   return (
     <>
       {/* Float Action Button */}
@@ -52,6 +61,7 @@ export const GlobalQuickActions: React.FC = () => {
         onSelectMachine={quickActions.handleMachineSelect}
         actionType={quickActions.selectedAction}
         isLoading={quickActions.isLoadingMachines}
+        onGoBack={handleGoBackToActions}
       />
 
       {/* Contact Selection Modal */}
@@ -63,6 +73,7 @@ export const GlobalQuickActions: React.FC = () => {
         contacts={quickActions.contacts}
         onSelectContact={quickActions.handleContactSelect}
         isLoading={quickActions.isLoadingContacts}
+        onGoBack={handleGoBackToActions}
       />
     </>
   );

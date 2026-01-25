@@ -1,17 +1,25 @@
-import React, { useState, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Modal, Card, CardContent, BodyText, Badge, Skeleton, Button } from '@components/ui';
-import { Search, User, Users } from 'lucide-react';
-import { cn } from '@utils/cn';
+import React, { useState, useMemo } from "react";
+import { useTranslation } from "react-i18next";
+import {
+  Modal,
+  Card,
+  CardContent,
+  BodyText,
+  Badge,
+  Skeleton,
+  Button,
+} from "@components/ui";
+import { Search, User, Users, ArrowLeft } from "lucide-react";
+import { cn } from "@utils/cn";
 
 /**
  * ContactSelectModal - Modal de selección de contacto
- * 
+ *
  * Presenta una lista de contactos del usuario para seleccionar uno
  * antes de navegar al chat correspondiente.
- * 
+ *
  * Sprint #14 Task 2.1c: QuickActions System
- * 
+ *
  * Features:
  * - Grid responsivo (1 col mobile, 2 cols desktop)
  * - Cards con avatar placeholder, nombre empresa, tipo de usuario
@@ -19,7 +27,7 @@ import { cn } from '@utils/cn';
  * - Empty state con CTA a descubrimiento
  * - Loading state con skeletons
  * - Hover states en cards
- * 
+ *
  * @example
  * ```tsx
  * <ContactSelectModal
@@ -39,7 +47,7 @@ interface UserPublicProfile {
     bio?: string;
     tags?: readonly string[];
   };
-  type: 'CLIENT' | 'PROVIDER';
+  type: "CLIENT" | "PROVIDER";
   serviceAreas?: readonly string[];
   isVerified?: boolean;
 }
@@ -49,26 +57,31 @@ interface ContactSelectModalProps {
    * Estado de apertura del modal
    */
   open: boolean;
-  
+
   /**
    * Callback para cambiar el estado del modal
    */
   onOpenChange: (open: boolean) => void;
-  
+
   /**
    * Lista de contactos disponibles
    */
   contacts: UserPublicProfile[];
-  
+
   /**
    * Callback ejecutado cuando el usuario selecciona un contacto
    */
   onSelectContact: (userId: string) => void;
-  
+
   /**
    * Estado de carga (opcional)
    */
   isLoading?: boolean;
+
+  /**
+   * Callback para regresar al menú de acciones (opcional)
+   */
+  onGoBack?: () => void;
 }
 
 export const ContactSelectModal: React.FC<ContactSelectModalProps> = ({
@@ -77,23 +90,22 @@ export const ContactSelectModal: React.FC<ContactSelectModalProps> = ({
   contacts,
   onSelectContact,
   isLoading = false,
+  onGoBack,
 }) => {
   const { t } = useTranslation();
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
 
   // Filtrar contactos por búsqueda
   const filteredContacts = useMemo(() => {
     if (!searchQuery.trim()) return contacts;
-    
+
     const query = searchQuery.toLowerCase();
-    return contacts.filter(contact => 
-      contact.profile.companyName?.toLowerCase().includes(query) ||
-      contact.profile.email?.toLowerCase().includes(query)
+    return contacts.filter(
+      (contact) =>
+        contact.profile.companyName?.toLowerCase().includes(query) ||
+        contact.profile.email?.toLowerCase().includes(query),
     );
   }, [contacts, searchQuery]);
-
-  // Determinar si mostrar búsqueda (si hay más de 5 contactos)
-  const showSearch = contacts.length > 5;
 
   /**
    * Handler para selección de contacto
@@ -101,7 +113,7 @@ export const ContactSelectModal: React.FC<ContactSelectModalProps> = ({
   const handleContactClick = (userId: string) => {
     onSelectContact(userId);
     onOpenChange(false);
-    setSearchQuery(''); // Reset search on close
+    setSearchQuery(""); // Reset search on close
   };
 
   /**
@@ -109,40 +121,56 @@ export const ContactSelectModal: React.FC<ContactSelectModalProps> = ({
    */
   const getAvatarLetter = (contact: UserPublicProfile): string => {
     const name = contact.profile.companyName || contact.profile.email;
-    return name?.charAt(0).toUpperCase() || contact.profile.email?.charAt(0).toUpperCase() || '?';
+    return (
+      name?.charAt(0).toUpperCase() ||
+      contact.profile.email?.charAt(0).toUpperCase() ||
+      "?"
+    );
   };
 
   /**
    * Obtener color de fondo para el avatar según el tipo
    */
   const getAvatarBgColor = (type: string): string => {
-    return type === 'PROVIDER' 
-      ? 'bg-blue-500 text-white' 
-      : 'bg-green-500 text-white';
+    return type === "PROVIDER"
+      ? "bg-blue-500 text-white"
+      : "bg-green-500 text-white";
   };
 
   return (
     <Modal
       open={open}
       onOpenChange={onOpenChange}
-      title={t('quickActions.selectContact')}
-      description={t('quickActions.selectContactDesc')}
+      title={t("quickActions.selectContact")}
+      description={t("quickActions.selectContactDesc")}
     >
       <div className="flex flex-col gap-4">
-        {/* Búsqueda (solo si hay > 5 contactos) */}
-        {showSearch && (
-          <div className="relative">
+        {" "}
+        {/* Botón Atrás (si onGoBack está disponible) */}
+        {/* Atrás y Búsqueda */}
+        <div className="flex items-center gap-3">
+          {onGoBack && (
+            <Button
+              variant="filled"
+              size="default"
+              onPress={onGoBack}
+              className="w-fit"
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              {t("common.back", "Atr\u00e1s")}
+            </Button>
+          )}
+          <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <input
               type="text"
-              placeholder={t('common.search')}
+              placeholder={t("common.search")}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full h-10 pl-9 pr-4 rounded-md border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
             />
           </div>
-        )}
-
+        </div>
         {/* Loading State */}
         {isLoading && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -159,16 +187,15 @@ export const ContactSelectModal: React.FC<ContactSelectModalProps> = ({
             ))}
           </div>
         )}
-
         {/* Empty State - Sin contactos */}
         {!isLoading && contacts.length === 0 && (
           <div className="flex flex-col items-center justify-center py-12 text-center">
             <Users className="h-16 w-16 text-muted-foreground mb-4" />
             <BodyText weight="bold" className="mb-2">
-              {t('quickActions.noContacts')}
+              {t("quickActions.noContacts")}
             </BodyText>
             <BodyText size="small" className="text-muted-foreground mb-4">
-              {t('quickActions.noContactsDesc')}
+              {t("quickActions.noContactsDesc")}
             </BodyText>
             <Button
               variant="filled"
@@ -179,27 +206,25 @@ export const ContactSelectModal: React.FC<ContactSelectModalProps> = ({
                 // navigate(ROUTES.CONTACT_DISCOVERY);
               }}
             >
-              {t('quickActions.discoverUsers')}
+              {t("quickActions.discoverUsers")}
             </Button>
           </div>
         )}
-
         {/* Empty State - Sin resultados de búsqueda */}
         {!isLoading && contacts.length > 0 && filteredContacts.length === 0 && (
           <div className="flex flex-col items-center justify-center py-12 text-center">
             <Search className="h-16 w-16 text-muted-foreground mb-4" />
             <BodyText weight="bold" className="mb-2">
-              {t('common.noResults')}
+              {t("common.noResults")}
             </BodyText>
             <BodyText size="small" className="text-muted-foreground">
-              {t('common.tryDifferentSearch')}
+              {t("common.tryDifferentSearch")}
             </BodyText>
           </div>
         )}
-
         {/* Lista de contactos */}
         {!isLoading && filteredContacts.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[60vh] overflow-y-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[60vh] overflow-y-auto max-h-[47vh] px-2 pb-3 overflow-x-hidden">
             {filteredContacts.map((contact) => (
               <Card
                 key={contact.id}
@@ -209,10 +234,10 @@ export const ContactSelectModal: React.FC<ContactSelectModalProps> = ({
                 <CardContent className="p-4">
                   <div className="flex items-center gap-3">
                     {/* Avatar placeholder con letra */}
-                    <div 
+                    <div
                       className={cn(
                         "h-12 w-12 rounded-full flex items-center justify-center text-lg font-semibold",
-                        getAvatarBgColor(contact.type)
+                        getAvatarBgColor(contact.type),
                       )}
                     >
                       {getAvatarLetter(contact)}
@@ -221,21 +246,31 @@ export const ContactSelectModal: React.FC<ContactSelectModalProps> = ({
                     {/* Información del contacto */}
                     <div className="flex-1 min-w-0">
                       <BodyText weight="bold" className="line-clamp-1">
-                        {contact.profile.companyName || t('profile.noCompanyName')}
+                        {contact.profile.companyName ||
+                          t("profile.noCompanyName")}
                       </BodyText>
-                      
+
                       <div className="flex items-center gap-2 mt-1">
-                        <Badge 
-                          variant={contact.type === 'PROVIDER' ? 'default' : 'secondary'}
+                        <Badge
+                          variant={
+                            contact.type === "PROVIDER"
+                              ? "default"
+                              : "secondary"
+                          }
                           className="text-xs"
                         >
-                          {contact.type === 'PROVIDER' ? t('users.type.provider') : t('users.type.client')}
+                          {contact.type === "PROVIDER"
+                            ? t("users.type.provider")
+                            : t("users.type.client")}
                         </Badge>
                       </div>
 
                       {/* Email como información secundaria (opcional) */}
                       {contact.profile.email && (
-                        <BodyText size="small" className="text-muted-foreground line-clamp-1 mt-1">
+                        <BodyText
+                          size="small"
+                          className="text-muted-foreground line-clamp-1 mt-1"
+                        >
                           {contact.profile.email}
                         </BodyText>
                       )}

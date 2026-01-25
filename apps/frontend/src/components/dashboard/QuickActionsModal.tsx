@@ -144,7 +144,7 @@ export const QuickActionsModal: React.FC<QuickActionsModalProps> = ({
       title={t('quickActions.title')}
       description={t('quickActions.selectAction')}
     >
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 overflow-y-auto max-h-[60vh] px-2 pb-3 overflow-x-hidden">
         {actions.map((action) => {
           const Icon = action.icon;
           return (
@@ -160,7 +160,7 @@ export const QuickActionsModal: React.FC<QuickActionsModalProps> = ({
                 </div>
                 <div className="flex flex-col">
                   <BodyText weight="medium">{t(action.titleKey)}</BodyText>
-                  <BodyText className="text-muted-foreground">
+                  <BodyText className="text-muted-foreground text-wrap" >
                     {t(action.descriptionKey)}
                   </BodyText>
                 </div>

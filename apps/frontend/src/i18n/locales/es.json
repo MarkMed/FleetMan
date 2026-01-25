@@ -1333,7 +1333,7 @@
     "viewNotifications": "Ver Notificaciones",
     "viewNotificationsDesc": "Revisar notificaciones pendientes",
     "selectMachine": "Selecciona una Máquina",
-    "selectMachineDesc": "Elige la máquina para {{action}}",
+    "selectMachineDesc": "Elige la máquina para realizar la acción",
     "noMachines": "No hay máquinas registradas",
     "noMachinesDesc": "Registra tu primera máquina para comenzar",
     "registerFirstMachine": "Registrar Primera Máquina",
