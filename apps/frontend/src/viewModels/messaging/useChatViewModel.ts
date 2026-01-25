@@ -105,7 +105,7 @@ export function useChatViewModel() {
   // Validate otherUserId exists
   if (!otherUserId) {
     console.error('[useChatViewModel] Missing otherUserId in route params');
-    navigate('/messages'); // Redirect to conversations list
+    navigate(-1); // Go back to previous screen
   }
   
   // Validate current user is authenticated
@@ -334,7 +334,7 @@ export function useChatViewModel() {
   };
   
   const handleBackToConversations = () => {
-    navigate('/messages');
+    navigate(-1); // Go back to previous screen
   };
   
   // ========================
@@ -417,7 +417,7 @@ export function useChatViewModel() {
               modal.hide();
               
               // Navigate away from conversation after blocking
-              navigate('/messages');
+              navigate(-1); // Go back to previous screen
           },
           onError: (error: any) => {
             const errorMessage = error?.response?.data?.message || t('errors.unknownError');
@@ -507,8 +507,8 @@ export function useChatViewModel() {
     // Close modal
     setIsChatOptionsModalOpen(false);
     
-    // Navigate back to messages list
-    navigate('/messages');
+    // Navigate back to previous screen
+    navigate(-1);
     
     // No toast needed - silent action
   };
