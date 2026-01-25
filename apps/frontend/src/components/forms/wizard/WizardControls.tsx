@@ -77,7 +77,7 @@ export const WizardControls: React.FC<WizardControlsProps> = ({
             variant="outline"
             onPress={onPrevious}
             disabled={isSubmitting}
-            className="px-6 py-2 border-2 border-blue-200 hover:border-blue-300 bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 hover:text-blue-600 dark:hover:text-blue-300"
+            className="px-6 py-2 border-2 border-blue-200 dark:border-blue-300 hover:border-blue-300 bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 dark:text-blue-200 hover:text-blue-600 dark:hover:text-blue-100"
           >
             {previousLabel}
           </Button>

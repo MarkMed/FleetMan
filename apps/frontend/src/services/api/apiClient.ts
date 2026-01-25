@@ -181,6 +181,21 @@ class ApiClient {
           }
         }
         
+        // Detect 409 Conflict (e.g., duplicate email, resource conflict)
+        if (response.status === 409) {
+          // Show error toast for conflict errors
+          try {
+            const { toast } = await import('../../hooks/useToast');
+            const errorMessage = data?.message || 'Resource conflict';
+            toast.error({
+              title: 'Error',
+              description: errorMessage,
+            });
+          } catch (e) {
+            console.warn('apiClient: failed to show conflict error toast', e);
+          }
+        }
+        
         return {
           success: false,
           error:

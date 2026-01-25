@@ -73,7 +73,7 @@ export function Wizard<T = any>({
     <div className={cn("w-full max-w-4xl mx-auto", className)}>
       <Card className="shadow-lg max-h-[90vh] overflow-y-auto">
         {/* Header del wizard: solo título grande y mini descripción del paso actual */}
-        <CardHeader className="text-left pb-0 sticky top-0 bg-gray-100/70 backdrop-blur-[1px]">
+        <CardHeader className="text-left pb-0 sticky top-0 bg-gray-100/70 dark:bg-gray-900/30 backdrop-blur-[1px]">
           {/* Progress indicator: solo visual, sin nombres de pasos */}
           {showProgress && (
             <WizardProgress
@@ -131,7 +131,7 @@ export function Wizard<T = any>({
             onSubmit={submitWizard}
             onCancel={onCancel}
             timerLabel={timerLabel}
-            className="mt-8 sticky bottom-0 bg-gray-100/70 backdrop-blur-[1px] py-4"
+            className="mt-8 sticky bottom-0 bg-gray-100/70 dark:bg-gray-900/30 backdrop-blur-[1px] py-4"
           />
         </CardContent>
       </Card>
