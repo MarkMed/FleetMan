@@ -1317,6 +1317,32 @@
       "messagingComingSoon": "Mensajería disponible próximamente"
     }
   },
+  "quickActions": {
+    "title": "Acciones Rápidas",
+    "selectAction": "Selecciona una acción para continuar",
+    "performQuickCheck": "Realizar QuickCheck",
+    "performQuickCheckDesc": "Ejecutar chequeo de seguridad en una máquina",
+    "reportEvent": "Reportar Evento",
+    "reportEventDesc": "Registrar un evento de mantenimiento",
+    "viewHistory": "Ir a Historial",
+    "viewHistoryDesc": "Ver historial de eventos o chequeos",
+    "sendMessage": "Enviar Mensaje a...",
+    "sendMessageDesc": "Contactar a un usuario de tus contactos",
+    "newMachine": "Nueva Máquina",
+    "newMachineDesc": "Registrar una nueva máquina en el sistema",
+    "viewNotifications": "Ver Notificaciones",
+    "viewNotificationsDesc": "Revisar notificaciones pendientes",
+    "selectMachine": "Selecciona una Máquina",
+    "selectMachineDesc": "Elige la máquina para {{action}}",
+    "noMachines": "No hay máquinas registradas",
+    "noMachinesDesc": "Registra tu primera máquina para comenzar",
+    "registerFirstMachine": "Registrar Primera Máquina",
+    "selectContact": "Selecciona un Contacto",
+    "selectContactDesc": "Elige el usuario al que deseas contactar",
+    "noContacts": "No tienes contactos",
+    "noContactsDesc": "Explora usuarios para agregarlos a tu lista",
+    "discoverUsers": "Descubrir Usuarios"
+  },
   "profile": {
     "title": "Mi Perfil",
     "subtitle": "Gestiona tu información personal y preferencias de cuenta",

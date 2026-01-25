@@ -1315,6 +1315,32 @@
       "messagingComingSoon": "Messaging coming soon"
     }
   },
+  "quickActions": {
+    "title": "Quick Actions",
+    "selectAction": "Select an action to continue",
+    "performQuickCheck": "Perform QuickCheck",
+    "performQuickCheckDesc": "Execute safety check on a machine",
+    "reportEvent": "Report Event",
+    "reportEventDesc": "Record a maintenance event",
+    "viewHistory": "Go to History",
+    "viewHistoryDesc": "View event or check history",
+    "sendMessage": "Send Message to...",
+    "sendMessageDesc": "Contact a user from your contacts",
+    "newMachine": "New Machine",
+    "newMachineDesc": "Register a new machine in the system",
+    "viewNotifications": "View Notifications",
+    "viewNotificationsDesc": "Review pending notifications",
+    "selectMachine": "Select a Machine",
+    "selectMachineDesc": "Choose the machine for {{action}}",
+    "noMachines": "No machines registered",
+    "noMachinesDesc": "Register your first machine to get started",
+    "registerFirstMachine": "Register First Machine",
+    "selectContact": "Select a Contact",
+    "selectContactDesc": "Choose the user you want to contact",
+    "noContacts": "You have no contacts",
+    "noContactsDesc": "Explore users to add them to your list",
+    "discoverUsers": "Discover Users"
+  },
   "profile": {
     "title": "My Profile",
     "subtitle": "Manage your personal information and account preferences",
