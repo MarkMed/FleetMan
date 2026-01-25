@@ -1,5 +1,21 @@
 {
+  "validation": {
+    "required": "Este campo es obligatorio",
+    "invalidEmail": "Correo electrónico inválido",
+    "passwordMinLength": "La contraseña debe tener al menos 8 caracteres",
+    "passwordComplexity": "Debe contener mayúsculas, minúsculas y números",
+    "passwordMismatch": "Las contraseñas no coinciden",
+    "invalidPhone": "Número de teléfono inválido",
+    "minLength": "Mínimo {{count}} caracteres",
+    "maxLength": "Máximo {{count}} caracteres"
+  },
   "auth": {
+    "email": "Correo Electrónico",
+    "emailPlaceholder": "tu@email.com",
+    "password": "Contraseña",
+    "passwordPlaceholder": "Mínimo 8 caracteres",
+    "confirmPassword": "Confirmar Contraseña",
+    "confirmPasswordPlaceholder": "Repite tu contraseña",
     "sessionExpired": {
       "title": "Sesión expirada",
       "description": "Por razones de seguridad, tu sesión ha expirado. Por favor, inicia sesión nuevamente para continuar.",
@@ -9,20 +25,35 @@
       "title": "Iniciar Sesión",
       "subtitle": "Accede a tu cuenta de gestión de flota",
       "email": "Correo Electrónico",
+      "emailPlaceholder": "tu@email.com",
+      "emailHelper": "Ingresa el email de tu cuenta",
       "password": "Contraseña",
+      "passwordPlaceholder": "Tu contraseña",
+      "passwordHelper": "Mínimo 8 caracteres",
       "rememberMe": "Recordarme",
       "forgotPassword": "¿Olvidaste tu contraseña?",
       "loginButton": "Iniciar Sesión",
+      "loggingIn": "Iniciando sesión...",
       "noAccount": "¿No tienes una cuenta?",
+      "createAccount": "Crear cuenta",
       "signUpLink": "Regístrate aquí"
     },
     "register": {
       "title": "Registrarse",
       "subtitle": "Crea tu cuenta de gestión de flota",
       "name": "Nombre Completo",
+      "namePlaceholder": "Tu nombre completo",
+      "nameHelper": "Nombre de tu empresa o personal",
       "email": "Correo Electrónico",
+      "emailPlaceholder": "tu@email.com",
+      "emailHelper": "Email que usarás para iniciar sesión",
       "password": "Contraseña",
+      "passwordPlaceholder": "Mínimo 8 caracteres",
+      "passwordHelper": "Debe contener mayúsculas, minúsculas y números",
       "confirmPassword": "Confirmar Contraseña",
+      "confirmPasswordPlaceholder": "Repite tu contraseña",
+      "confirmPasswordHelper": "Debe ser idéntica a la contraseña anterior",
+      "userType": "Tipo de usuario",
       "role": "Tipo de Cuenta",
       "roleClient": "Cliente",
       "roleProvider": "Proveedor de Servicios",
@@ -30,8 +61,126 @@
       "companyName": "Nombre de la Empresa",
       "businessName": "Nombre del Negocio",
       "registerButton": "Crear Cuenta",
+      "creatingAccount": "Creando cuenta...",
       "hasAccount": "¿Ya tienes una cuenta?",
-      "signInLink": "Inicia sesión aquí"
+      "loginLink": "Iniciar Sesión",
+      "signInLink": "Inicia sesión aquí",
+      "strengthWeak": "Débil",
+      "strengthMedium": "Media",
+      "strengthStrong": "Fuerte",
+      "strengthWeakMessage": "Muy fácil de adivinar",
+      "strengthMediumMessage": "Puede ser más segura",
+      "strengthStrongMessage": "¡Excelente seguridad!",
+      "providerInfo": "Como proveedor, el nombre de tu empresa es obligatorio",
+      "passwordStrength": {
+        "weak": "Débil",
+        "medium": "Media",
+        "strong": "Fuerte",
+        "weakHint": "Muy fácil de adivinar",
+        "mediumHint": "Puede ser más segura",
+        "strongHint": "¡Excelente seguridad!"
+      },
+      "companyNameRequiredHelper": "Obligatorio para proveedores de servicios",
+      "companyNameOptionalHelper": "Opcional: nombre de tu empresa o negocio",
+      "phoneHelper": "Recomendado para facilitar la comunicación",
+      "addressHelper": "Dirección completa de tu empresa o negocio",
+      "providerRequiresCompanyNameHint": "Los proveedores deben proporcionar un nombre de empresa para continuar",
+      "error": {
+        "title": "Error en el registro",
+        "invalidData": "Por favor, verifica que todos los campos estén correctos",
+        "unknown": "Ocurrió un error inesperado. Por favor, inténtalo de nuevo"
+      },
+      "chooseMethod": "Elige tu método de registro",
+      "methodDescription": "Selecciona la opción que mejor se adapte a tus necesidades",
+      "completeRegistration": "Registro Completo",
+      "quickRegistration": "Registro Rápido",
+      "fullFormDescription": "Crea tu perfil completo con toda la información de tu empresa y preferencias",
+      "quickDescription": "Regístrate rápidamente con solo los datos esenciales",
+      "canChangeAnytime": "Podrás completar tu perfil en cualquier momento desde configuraciones",
+      "clientType": "Cliente",
+      "clientTypeDescExtended": "Usuario de maquinaria que solicita servicios",
+      "providerType": "Proveedor",
+      "providerTypeDescExtended": "Empresa o profesional que ofrece servicios de mantenimiento y reparación",
+      "clientFeature1": "Gestiona tu flota de maquinaria",
+      "clientFeature2": "Registra chequeos y mantenimientos",
+      "clientFeature3": "Conecta con proveedores de servicios",
+      "providerFeature1": "Ofrece servicios a clientes",
+      "providerFeature2": "Gestiona tu cartera de clientes",
+      "providerFeature3": "Recibe notificaciones de oportunidades",
+      "features": {
+        "credentials": "Credenciales de acceso",
+        "userType": "Tipo de usuario",
+        "professionalInfo": "Información profesional",
+        "profileCompletion": "Perfil y etiquetas",
+        "preferences": "Preferencias del sistema",
+        "completeProfileLater": "Podrás completar tu perfil después"
+      },
+      "wizard": {
+        "credentials": {
+          "title": "Credenciales de Acceso",
+          "description": "Configura tu email y contraseña para acceder a la plataforma",
+          "emailPlaceholder": "tu@empresa.com",
+          "passwordPlaceholder": "Mínimo 8 caracteres",
+          "confirmPasswordPlaceholder": "Repite tu contraseña",
+          "passwordHint": "Usa al menos 8 caracteres con mayúsculas, minúsculas y números",
+          "passwordStrength": "Fortaleza de la contraseña",
+          "strengthWeak": "Débil",
+          "strengthMedium": "Media",
+          "strengthStrong": "Fuerte"
+        },
+        "userType": {
+          "title": "Tipo de Usuario",
+          "description": "Selecciona el tipo de cuenta que mejor describe tu actividad",
+          "clientTitle": "Cliente",
+          "clientDescription": "Usuario de maquinaria que solicita servicios",
+          "providerTitle": "Proveedor",
+          "providerDescription": "Empresa que ofrece servicios de mantenimiento"
+        },
+        "professionalInfo": {
+          "title": "Información Profesional",
+          "description": "Datos de tu empresa para facilitar la comunicación",
+          "companyNameLabel": "Nombre de la Empresa",
+          "companyNamePlaceholder": "Ej: Construcciones ABC S.A.",
+          "phoneLabel": "Teléfono",
+          "phonePlaceholder": "+34 600 000 000",
+          "addressLabel": "Dirección",
+          "addressPlaceholder": "Calle, número, ciudad, código postal",
+          "providerRequired": "Como proveedor, el nombre de la empresa es obligatorio",
+          "optionalFieldsHint": "Teléfono es opcional pero recomendado para la comunicación con soporte."
+        },
+        "profileCompletion": {
+          "title": "Completa tu Perfil",
+          "description": "Añade información adicional para destacar tu empresa (opcional)",
+          "bioLabel": "Biografía de la Empresa",
+          "bioPlaceholder": "Cuéntanos sobre tu empresa, servicios, experiencia...",
+          "bioHint": "Describe brevemente tu empresa y servicios",
+          "tagsLabel": "Etiquetas",
+          "tagsPlaceholder": "Ej: excavadoras, mantenimiento, hidráulica",
+          "tagsHint": "Añade hasta 5 etiquetas para ayudar a otros a encontrarte",
+          "canSkipHint": "Este paso es opcional. Puedes completar tu perfil más tarde desde Configuración.",
+          "benefitsTitle": "Beneficios de completar tu perfil",
+          "benefits": "Beneficios de completar tu perfil",
+          "benefit1": "Mayor visibilidad en búsquedas",
+          "benefit2": "Conexiones más relevantes",
+          "benefit3": "Confianza de otros usuarios"
+        },
+        "preferences": {
+          "title": "Preferencias del Sistema",
+          "description": "Personaliza tu experiencia en la plataforma (opcional)",
+          "language": "Idioma",
+          "languageDescription": "Selecciona el idioma de la interfaz",
+          "notifications": "Notificaciones",
+          "notificationsDescription": "Configura qué notificaciones deseas recibir",
+          "changeInSettingsHint": "Podrás cambiar estas preferencias en cualquier momento desde Configuraciones"
+        },
+        "confirmation": {
+          "title": "Confirmación",
+          "description": "Revisa toda tu información antes de crear tu cuenta",
+          "termsAgreement": "Al crear tu cuenta, aceptas nuestros Términos de Servicio y Política de Privacidad",
+          "finalActionHint": "Haz clic en 'Finalizar' para crear tu cuenta",
+          "verifyData": "¡Verifica los datos!"
+        }
+      }
     },
     "errors": {
       "invalidCredentials": "Correo o contraseña inválidos",
@@ -97,6 +246,9 @@
     "collapse": "Colapsar",
     "comingSoon": "Próximamente",
     "featureComingSoon": "Esta funcionalidad estará disponible próximamente",
+    "recommended": "Recomendado",
+    "optional": "Opcional",
+    "minutes": "minutos",
     "daysOfWeek": {
       "full": {
         "SUN": "Domingo",
@@ -1286,9 +1438,16 @@
       "english": "English",
       "portuguese": "Português"
     },
+    "languages": {
+      "es": "Español",
+      "en": "English",
+      "selectLanguage": "Selecciona un idioma"
+    },
     "notifications": {
       "title": "Notificaciones",
       "subtitle": "Configura cómo y cuándo recibir notificaciones",
+      "email": "Notificaciones por Email",
+      "maintenanceAlerts": "Alertas de Mantenimiento",
       "emailEnabled": {
         "label": "Notificaciones por Email",
         "description": "Recibir alertas importantes por correo electrónico"

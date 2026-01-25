@@ -212,14 +212,15 @@ export const TagInput: React.FC<TagInputProps> = ({
                 type="button"
                 onClick={() => handleRemoveTag(index)}
                 className="
+                  bg-destructive/10
                   ml-1 rounded-full p-0.5 
-                  hover:bg-destructive/20 
+                  hover:bg-destructive/70 
                   transition-colors
                 "
                 aria-label={`Remove ${tag}`}
                 disabled={disabled}
               >
-                <X className="w-3 h-3" />
+                <X className="w-4 h-4" />
               </button>
             </Badge>
           ))}

@@ -16,6 +16,7 @@ export const useRegisterViewModel = () => {
     email: '',
     password: '',
     confirmPassword: '',
+    type: 'CLIENT', // 🆕 Sprint #14 Task 2.1b: Default to CLIENT
   });
 
   const [formErrors, setFormErrors] = useState<RegisterFormErrors>({});
@@ -51,6 +52,16 @@ export const useRegisterViewModel = () => {
       errors.confirmPassword = 'Debes confirmar la contraseña';
     } else if (formData.password !== formData.confirmPassword) {
       errors.confirmPassword = 'Las contraseñas no coinciden';
+    }
+
+    // 🆕 Sprint #14 Task 2.1b: Type validation
+    if (!formData.type) {
+      errors.type = 'Debes seleccionar un tipo de usuario';
+    }
+
+    // 🆕 Sprint #14 Task 2.1b: Conditional validation - PROVIDER requires company name
+    if (formData.type === 'PROVIDER' && !formData.name.trim()) {
+      errors.name = 'Los proveedores deben ingresar el nombre de su empresa';
     }
 
     return errors;
@@ -113,6 +124,7 @@ export const useRegisterViewModel = () => {
       email: '',
       password: '',
       confirmPassword: '',
+      type: 'CLIENT', // 🆕 Sprint #14 Task 2.1b: Reset to default
     });
     setFormErrors({});
   }, []);

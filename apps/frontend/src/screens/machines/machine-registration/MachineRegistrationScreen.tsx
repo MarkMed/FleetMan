@@ -56,7 +56,7 @@ export function MachineRegistrationScreen() {
 
       {/* If machine types are loading, render a full-form skeleton to reflect the whole structure */}
       {machineTypesLoading && (!machineTypeList || (Array.isArray(machineTypeList) && machineTypeList.length === 0)) && (
-        <div className="hadow-lg rounded-lg p-6">
+        <div className="shadow-lg rounded-lg p-6">
           <div className="space-y-6">
             <div className="h-8 w-1/3"><Skeleton className="h-8 w-full" /></div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

@@ -1,5 +1,21 @@
 {
+  "validation": {
+    "required": "This field is required",
+    "invalidEmail": "Invalid email address",
+    "passwordMinLength": "Password must be at least 8 characters",
+    "passwordComplexity": "Must contain uppercase, lowercase and numbers",
+    "passwordMismatch": "Passwords do not match",
+    "invalidPhone": "Invalid phone number",
+    "minLength": "Minimum {{count}} characters",
+    "maxLength": "Maximum {{count}} characters"
+  },
   "auth": {
+    "email": "Email",
+    "emailPlaceholder": "you@email.com",
+    "password": "Password",
+    "passwordPlaceholder": "Minimum 8 characters",
+    "confirmPassword": "Confirm Password",
+    "confirmPasswordPlaceholder": "Repeat your password",
     "sessionExpired": {
       "title": "Session Expired",
       "description": "For security reasons, your session has expired. Please log in again to continue.",
@@ -9,20 +25,35 @@
       "title": "Login",
       "subtitle": "Access your fleet management account",
       "email": "Email",
+      "emailPlaceholder": "you@email.com",
+      "emailHelper": "Enter your account email",
       "password": "Password",
+      "passwordPlaceholder": "Your password",
+      "passwordHelper": "Minimum 8 characters",
       "rememberMe": "Remember me",
       "forgotPassword": "Forgot password?",
       "loginButton": "Sign In",
+      "loggingIn": "Signing in...",
       "noAccount": "Don't have an account?",
+      "createAccount": "Create account",
       "signUpLink": "Sign up here"
     },
     "register": {
       "title": "Register",
       "subtitle": "Create your fleet management account",
       "name": "Full Name",
+      "namePlaceholder": "Your full name",
+      "nameHelper": "Your company or personal name",
       "email": "Email",
+      "emailPlaceholder": "you@email.com",
+      "emailHelper": "Email you'll use to sign in",
       "password": "Password",
+      "passwordPlaceholder": "Minimum 8 characters",
+      "passwordHelper": "Must contain uppercase, lowercase and numbers",
       "confirmPassword": "Confirm Password",
+      "confirmPasswordPlaceholder": "Repeat your password",
+      "confirmPasswordHelper": "Must be identical to the previous password",
+      "userType": "User type",
       "role": "Account Type",
       "roleClient": "Client",
       "roleProvider": "Service Provider",
@@ -30,8 +61,126 @@
       "companyName": "Company Name",
       "businessName": "Business Name",
       "registerButton": "Create Account",
+      "creatingAccount": "Creating account...",
       "hasAccount": "Already have an account?",
-      "signInLink": "Sign in here"
+      "loginLink": "Sign In",
+      "signInLink": "Sign in here",
+      "strengthWeak": "Weak",
+      "strengthMedium": "Medium",
+      "strengthStrong": "Strong",
+      "strengthWeakMessage": "Too easy to guess",
+      "strengthMediumMessage": "Could be stronger",
+      "strengthStrongMessage": "Excellent security!",
+      "providerInfo": "As a provider, company name is mandatory",
+      "passwordStrength": {
+        "weak": "Weak",
+        "medium": "Medium",
+        "strong": "Strong",
+        "weakHint": "Too easy to guess",
+        "mediumHint": "Could be stronger",
+        "strongHint": "Excellent security!"
+      },
+      "companyNameRequiredHelper": "Required for service providers",
+      "companyNameOptionalHelper": "Optional: your company or business name",
+      "phoneHelper": "Recommended to facilitate communication",
+      "addressHelper": "Full address of your company or business",
+      "providerRequiresCompanyNameHint": "Providers must provide a company name to continue",
+      "error": {
+        "title": "Registration Error",
+        "invalidData": "Please check that all fields are correct",
+        "unknown": "An unexpected error occurred. Please try again"
+      },
+      "chooseMethod": "Choose your registration method",
+      "methodDescription": "Select the option that best suits your needs",
+      "completeRegistration": "Complete Registration",
+      "quickRegistration": "Quick Registration",
+      "fullFormDescription": "Create your complete profile with all your company information and preferences",
+      "quickDescription": "Register quickly with just the essential data",
+      "canChangeAnytime": "You can complete your profile anytime from settings",
+      "clientType": "Client",
+      "clientTypeDescExtended": "Machinery user requesting services",
+      "providerType": "Provider",
+      "providerTypeDescExtended": "Company or professional offering maintenance and repair services",
+      "clientFeature1": "Manage your machinery fleet",
+      "clientFeature2": "Record checks and maintenance",
+      "clientFeature3": "Connect with service providers",
+      "providerFeature1": "Offer services to clients",
+      "providerFeature2": "Manage your client portfolio",
+      "providerFeature3": "Receive opportunity notifications",
+      "features": {
+        "credentials": "Access credentials",
+        "userType": "User type",
+        "professionalInfo": "Professional information",
+        "profileCompletion": "Profile and tags",
+        "preferences": "System preferences",
+        "completeProfileLater": "You can complete your profile later"
+      },
+      "wizard": {
+        "credentials": {
+          "title": "Access Credentials",
+          "description": "Set up your email and password to access the platform",
+          "emailPlaceholder": "you@company.com",
+          "passwordPlaceholder": "Minimum 8 characters",
+          "confirmPasswordPlaceholder": "Repeat your password",
+          "passwordHint": "Use at least 8 characters with uppercase, lowercase, and numbers",
+          "passwordStrength": "Password strength",
+          "strengthWeak": "Weak",
+          "strengthMedium": "Medium",
+          "strengthStrong": "Strong"
+        },
+        "userType": {
+          "title": "User Type",
+          "description": "Select the account type that best describes your activity",
+          "clientTitle": "Client",
+          "clientDescription": "Machinery user requesting services",
+          "providerTitle": "Provider",
+          "providerDescription": "Company offering maintenance services"
+        },
+        "professionalInfo": {
+          "title": "Professional Information",
+          "description": "Your company data to facilitate communication",
+          "companyNameLabel": "Company Name",
+          "companyNamePlaceholder": "E.g: ABC Constructions Inc.",
+          "phoneLabel": "Phone",
+          "phonePlaceholder": "+1 600 000 000",
+          "addressLabel": "Address",
+          "addressPlaceholder": "Street, number, city, zip code",
+          "providerRequired": "As a provider, company name is mandatory",
+          "optionalFieldsHint": "Phone is optional but recommended for communication with support."
+        },
+        "profileCompletion": {
+          "title": "Complete Your Profile",
+          "description": "Add additional information to highlight your company (optional)",
+          "bioLabel": "Company Biography",
+          "bioPlaceholder": "Tell us about your company, services, experience...",
+          "bioHint": "Briefly describe your company and services",
+          "tagsLabel": "Tags",
+          "tagsPlaceholder": "E.g: excavators, maintenance, hydraulics",
+          "tagsHint": "Add up to 5 tags to help others find you",
+          "canSkipHint": "This step is optional. You can complete your profile later from Settings.",
+          "benefitsTitle": "Benefits of completing your profile",
+          "benefits": "Benefits of completing your profile",
+          "benefit1": "Greater visibility in searches",
+          "benefit2": "More relevant connections",
+          "benefit3": "Trust from other users"
+        },
+        "preferences": {
+          "title": "System Preferences",
+          "description": "Customize your platform experience (optional)",
+          "language": "Language",
+          "languageDescription": "Select the interface language",
+          "notifications": "Notifications",
+          "notificationsDescription": "Configure which notifications you want to receive",
+          "changeInSettingsHint": "You can change these preferences anytime from Settings"
+        },
+        "confirmation": {
+          "title": "Confirmation",
+          "description": "Review all your information before creating your account",
+          "termsAgreement": "By creating your account, you agree to our Terms of Service and Privacy Policy",
+          "finalActionHint": "Click 'Finish' to create your account",
+          "verifyData": "Verify the data!"
+        }
+      }
     },
     "errors": {
       "invalidCredentials": "Invalid email or password",
@@ -93,6 +242,9 @@
     "uses": "uses",
     "tags": "tags",
     "description": "Description",
+    "recommended": "Recommended",
+    "optional": "Optional",
+    "minutes": "minutes",
     "expand": "Expand",
     "collapse": "Collapse",
     "daysOfWeek": {
@@ -1284,9 +1436,16 @@
       "english": "English",
       "portuguese": "Português"
     },
+    "languages": {
+      "es": "Spanish",
+      "en": "English",
+      "selectLanguage": "Select a language"
+    },
     "notifications": {
       "title": "Notifications",
       "subtitle": "Configure how and when to receive notifications",
+      "email": "Email Notifications",
+      "maintenanceAlerts": "Maintenance Alerts",
       "emailEnabled": {
         "label": "Email Notifications",
         "description": "Receive important alerts via email"

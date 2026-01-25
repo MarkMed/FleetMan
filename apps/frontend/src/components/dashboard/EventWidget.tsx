@@ -79,7 +79,10 @@ export const EventWidget: React.FC<EventWidgetProps> = ({
   // Empty state
   if (events.length === 0) {
     return (
-      <Card>
+      <Card
+        className="p-4"
+        style={{ animation: `fadeSlideIn 0.3s ease-out ${0.1}s both` }}
+      >
         <Heading2>{t("dashboard.events.title")}</Heading2>
         <div className="text-center py-12">
           <div className="text-gray-300 text-6xl mb-4">🔔</div>

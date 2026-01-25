@@ -190,26 +190,6 @@ export const ProfileScreen: React.FC = () => {
           )}
         </div>
       </div>
-
-      {/* Security Section */}
-      <Card>
-        <div className="p-6">
-          <Heading2 size="large" weight="bold" className="mb-4">
-            Seguridad y Privacidad
-          </Heading2>
-          <div className="flex flex-col md:flex-row gap-4">
-            <Button variant="outline" size="default">
-              Cambiar Contraseña
-            </Button>
-            <Button variant="outline" size="default">
-              Configurar 2FA
-            </Button>
-            <Button variant="outline" size="default">
-              Historial de Sesiones
-            </Button>
-          </div>
-        </div>
-      </Card>
     </div>
   );
 };

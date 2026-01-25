@@ -1,6 +1,6 @@
-import React from 'react';
-import { Button, TimerButton } from '../../ui';
-import { cn } from '../../../utils/cn';
+import React from "react";
+import { Button, TimerButton } from "../../ui";
+import { cn } from "../../../utils/cn";
 
 interface WizardControlsProps {
   /** Si es el primer step */
@@ -42,33 +42,28 @@ export const WizardControls: React.FC<WizardControlsProps> = ({
   onNext,
   onSubmit,
   onCancel,
-  previousLabel = 'Anterior',
-  nextLabel = 'Siguiente',
-  submitLabel = 'Enviar',
-  cancelLabel = 'Cancelar',
-  timerLabel = '¡Verifica los datos!',
+  previousLabel = "Anterior",
+  nextLabel = "Siguiente",
+  submitLabel = "Enviar",
+  cancelLabel = "Cancelar",
+  timerLabel = "¡Verifica los datos!",
   className,
 }) => {
   return (
-    <div className={cn('flex items-center justify-between pt-6 border-t border-border', className)}>
+    <div
+      className={cn(
+        "flex items-center justify-between pt-6 border-t border-border",
+        className,
+      )}
+    >
       {/* Left side - Previous/Cancel button */}
       <div className="flex items-center space-x-4">
-        {!isFirstStep && (
-          <Button
-            variant="secondary"
-            onPress={onPrevious}
-            disabled={isSubmitting}
-            className="px-6 py-2"
-          >
-            {previousLabel}
-          </Button>
-        )}
         {onCancel && (
           <Button
-            variant="ghost"
+            variant="outline"
             onPress={onCancel}
             disabled={isSubmitting}
-            className="text-muted-foreground hover:text-foreground"
+            className="bg-red-500/10 hover:bg-red-500/20 text-red-600 hover:text-red-600 dark:hover:text-red-300 border-2 border-red-400/70 hover:border-red-500"
           >
             {cancelLabel}
           </Button>
@@ -76,7 +71,17 @@ export const WizardControls: React.FC<WizardControlsProps> = ({
       </div>
 
       {/* Right side - Next/Submit button */}
-      <div>
+      <div className="flex flex-row gap-4">
+        {!isFirstStep && (
+          <Button
+            variant="outline"
+            onPress={onPrevious}
+            disabled={isSubmitting}
+            className="px-6 py-2 border-2 border-blue-200 hover:border-blue-300 bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 hover:text-blue-600 dark:hover:text-blue-300"
+          >
+            {previousLabel}
+          </Button>
+        )}
         {isLastStep ? (
           <TimerButton
             doubleConfirmation={false}
