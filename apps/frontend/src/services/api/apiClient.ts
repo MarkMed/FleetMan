@@ -31,7 +31,6 @@ class ApiClient {
 
   // Set authorization token
   setAuthToken(token: string | null) {
-    console.log("🔐 Setting auth token in apiClient:", token ? token : "null");
     if (token) {
       this.defaultHeaders["Authorization"] = `Bearer ${token}`;
     } else {

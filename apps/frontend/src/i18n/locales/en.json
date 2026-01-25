@@ -55,7 +55,7 @@
       "confirmPasswordHelper": "Must be identical to the previous password",
       "userType": "User type",
       "role": "Account Type",
-      "roleClient": "Client",
+      "roleClient": "Machinery Owner",
       "roleProvider": "Service Provider",
       "phone": "Phone Number",
       "companyName": "Company Name",
@@ -97,9 +97,9 @@
       "fullFormDescription": "Create your complete profile with all your company information and preferences",
       "quickDescription": "Register quickly with just the essential data",
       "canChangeAnytime": "You can complete your profile anytime from settings",
-      "clientType": "Client",
+      "clientType": "Machinery Owner",
       "clientTypeDescExtended": "Machinery user requesting services",
-      "providerType": "Provider",
+      "providerType": "Service Provider",
       "providerTypeDescExtended": "Company or professional offering maintenance and repair services",
       "clientFeature1": "Manage your machinery fleet",
       "clientFeature2": "Record checks and maintenance",
@@ -131,9 +131,9 @@
         "userType": {
           "title": "User Type",
           "description": "Select the account type that best describes your activity",
-          "clientTitle": "Client",
+          "clientTitle": "Machinery Owner",
           "clientDescription": "Machinery user requesting services",
-          "providerTitle": "Provider",
+          "providerTitle": "Service Provider",
           "providerDescription": "Company offering maintenance services"
         },
         "professionalInfo": {
@@ -1255,8 +1255,8 @@
   },
   "users": {
     "type": {
-      "client": "Client",
-      "provider": "Provider"
+      "client": "Machinery Owner",
+      "provider": "Service Provider"
     },
     "discovery": {
       "title": "Explore Contacts",
@@ -1317,6 +1317,19 @@
   },
   "profile": {
     "title": "My Profile",
+    "subtitle": "Manage your personal information and account preferences",
+    "editProfile": "Edit Profile",
+    "noCompanyName": "No company name",
+    "client": "Machinery Owner",
+    "provider": "Service Provider",
+    "activeAccount": "Active Account",
+    "memberSince": "Member since",
+    "contactInformation": "Contact Information",
+    "phone": "Phone",
+    "company": "Company",
+    "address": "Address",
+    "bio": "Biography",
+    "tags": "Tags",
     "menu": {
       "title": "My Profile",
       "ariaLabel": "User profile",
@@ -1565,22 +1578,6 @@
       "unsavedChanges": "You have unsaved changes",
       "loading": "Loading settings...",
       "loadError": "Error loading settings"
-    },
-    "profile": {
-      "title": "My Profile",
-      "subtitle": "Manage your personal information and account preferences",
-      "editProfile": "Edit Profile",
-      "noCompanyName": "No company name",
-      "client": "Client",
-      "provider": "Service Provider",
-      "activeAccount": "Active Account",
-      "memberSince": "Member since",
-      "contactInformation": "Contact Information",
-      "phone": "Phone",
-      "company": "Company",
-      "address": "Address",
-      "bio": "Biography",
-      "tags": "Tags"
     },
     "validation": {
       "emailRequired": "Email is required",

@@ -55,7 +55,7 @@
       "confirmPasswordHelper": "Debe ser idéntica a la contraseña anterior",
       "userType": "Tipo de usuario",
       "role": "Tipo de Cuenta",
-      "roleClient": "Cliente",
+      "roleClient": "Dueño de Maquinaria",
       "roleProvider": "Proveedor de Servicios",
       "phone": "Número de Teléfono",
       "companyName": "Nombre de la Empresa",
@@ -97,9 +97,9 @@
       "fullFormDescription": "Crea tu perfil completo con toda la información de tu empresa y preferencias",
       "quickDescription": "Regístrate rápidamente con solo los datos esenciales",
       "canChangeAnytime": "Podrás completar tu perfil en cualquier momento desde configuraciones",
-      "clientType": "Cliente",
+      "clientType": "Dueño de Maquinaria",
       "clientTypeDescExtended": "Usuario de maquinaria que solicita servicios",
-      "providerType": "Proveedor",
+      "providerType": "Proveedor de Servicios",
       "providerTypeDescExtended": "Empresa o profesional que ofrece servicios de mantenimiento y reparación",
       "clientFeature1": "Gestiona tu flota de maquinaria",
       "clientFeature2": "Registra chequeos y mantenimientos",
@@ -131,9 +131,9 @@
         "userType": {
           "title": "Tipo de Usuario",
           "description": "Selecciona el tipo de cuenta que mejor describe tu actividad",
-          "clientTitle": "Cliente",
+          "clientTitle": "Dueño de Maquinaria",
           "clientDescription": "Usuario de maquinaria que solicita servicios",
-          "providerTitle": "Proveedor",
+          "providerTitle": "Proveedor de Servicios",
           "providerDescription": "Empresa que ofrece servicios de mantenimiento"
         },
         "professionalInfo": {
@@ -1257,8 +1257,8 @@
   },
   "users": {
     "type": {
-      "client": "Cliente",
-      "provider": "Proveedor"
+      "client": "Dueño de Maquinaria",
+      "provider": "Proveedor de Servicios"
     },
     "discovery": {
       "title": "Explorar Contactos",
@@ -1319,6 +1319,19 @@
   },
   "profile": {
     "title": "Mi Perfil",
+    "subtitle": "Gestiona tu información personal y preferencias de cuenta",
+    "editProfile": "Editar Perfil",
+    "noCompanyName": "Sin nombre de empresa",
+    "client": "Dueño de Maquinaria",
+    "provider": "Proveedor de Servicios",
+    "activeAccount": "Cuenta Activa",
+    "memberSince": "Miembro desde",
+    "contactInformation": "Información de Contacto",
+    "phone": "Teléfono",
+    "company": "Empresa",
+    "address": "Dirección",
+    "bio": "Biografía",
+    "tags": "Etiquetas",
     "menu": {
       "title": "Mi Perfil",
       "ariaLabel": "Perfil de usuario",
@@ -1567,22 +1580,6 @@
       "unsavedChanges": "Tienes cambios sin guardar",
       "loading": "Cargando configuraciones...",
       "loadError": "Error al cargar las configuraciones"
-    },
-    "profile": {
-      "title": "Mi Perfil",
-      "subtitle": "Gestiona tu información personal y preferencias de cuenta",
-      "editProfile": "Editar Perfil",
-      "noCompanyName": "Sin nombre de empresa",
-      "client": "Cliente",
-      "provider": "Proveedor de Servicios",
-      "activeAccount": "Cuenta Activa",
-      "memberSince": "Miembro desde",
-      "contactInformation": "Información de Contacto",
-      "phone": "Teléfono",
-      "company": "Empresa",
-      "address": "Dirección",
-      "bio": "Biografía",
-      "tags": "Etiquetas"
     },
     "validation": {
       "emailRequired": "El correo es requerido",

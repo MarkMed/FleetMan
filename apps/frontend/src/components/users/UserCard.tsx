@@ -73,7 +73,7 @@ export const UserCard: React.FC<UserCardProps> = ({
   const navigate = useNavigate();
 
   // Type badge colors
-  const typeBadgeVariant = user.type === 'CLIENT' ? 'secondary' : 'success';
+  const typeBadgeVariant = user.type === 'CLIENT' ? 'success' : 'warning';
 
   // Service areas display (max 3 visible)
   const visibleServiceAreas = user.serviceAreas?.slice(0, 3) || [];
