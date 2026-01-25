@@ -35,9 +35,13 @@ interface UserPublicProfile {
   id: string;
   profile: {
     companyName?: string;
-    email: string;
+    email?: string;
+    bio?: string;
+    tags?: readonly string[];
   };
   type: 'CLIENT' | 'PROVIDER';
+  serviceAreas?: readonly string[];
+  isVerified?: boolean;
 }
 
 interface ContactSelectModalProps {
@@ -105,7 +109,7 @@ export const ContactSelectModal: React.FC<ContactSelectModalProps> = ({
    */
   const getAvatarLetter = (contact: UserPublicProfile): string => {
     const name = contact.profile.companyName || contact.profile.email;
-    return name.charAt(0).toUpperCase();
+    return name?.charAt(0).toUpperCase() || contact.profile.email?.charAt(0).toUpperCase() || '?';
   };
 
   /**
@@ -229,10 +233,12 @@ export const ContactSelectModal: React.FC<ContactSelectModalProps> = ({
                         </Badge>
                       </div>
 
-                      {/* Email como información secundaria */}
-                      <BodyText size="small" className="text-muted-foreground line-clamp-1 mt-1">
-                        {contact.profile.email}
-                      </BodyText>
+                      {/* Email como información secundaria (opcional) */}
+                      {contact.profile.email && (
+                        <BodyText size="small" className="text-muted-foreground line-clamp-1 mt-1">
+                          {contact.profile.email}
+                        </BodyText>
+                      )}
                     </div>
                   </div>
                 </CardContent>

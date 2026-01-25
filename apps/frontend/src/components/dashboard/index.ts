@@ -22,3 +22,4 @@ export { QuickActionsButton } from './QuickActionsButton';
 export { QuickActionsModal } from './QuickActionsModal';
 export { MachineSelectModal } from './MachineSelectModal';
 export { ContactSelectModal } from './ContactSelectModal';
+export { GlobalQuickActions } from './GlobalQuickActions';
