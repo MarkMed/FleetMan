@@ -115,7 +115,7 @@ export const QuickCheckWidget: React.FC<QuickCheckWidgetProps> = ({
       <div className="relative">
         <div
           ref={scrollRef}
-          className="flex space-x-4 overflow-x-auto overflow-y-hidden pb-4 scrollbar-hide z-100"
+          className="flex space-x-4 overflow-x-auto overflow-y-hidden pb-4 scrollbar-hide"
           onWheel={(e) => {            
             e.currentTarget.scrollLeft += e.deltaY
           }}
