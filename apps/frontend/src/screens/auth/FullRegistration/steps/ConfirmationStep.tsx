@@ -25,15 +25,6 @@ export const ConfirmationStep: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Step header */}
-      <div className="text-center">
-        <h2 className="text-2xl font-bold text-foreground">
-          {t('auth.register.wizard.confirmation.title')}
-        </h2>
-        <BodyText className="text-muted-foreground mt-2">
-          {t('auth.register.wizard.confirmation.description')}
-        </BodyText>
-      </div>
 
       {/* Data review sections */}
       <div className="space-y-4">

@@ -345,18 +345,6 @@ const QuickCheckDetailModal: React.FC<{
         </div>
       </div>
 
-      {/* Observations Section */}
-      {record.observations && (
-        <div>
-          <h3 className="text-sm font-semibold text-foreground mb-2">
-            {t('quickchecks.history.modal.observations')}
-          </h3>
-          <p className="text-sm text-muted-foreground bg-muted/50 p-3 rounded-lg">
-            {record.observations}
-          </p>
-        </div>
-      )}
-
       {/* Items List */}
       <div>
         <h3 className="text-sm font-semibold text-foreground mb-3">
@@ -406,6 +394,18 @@ const QuickCheckDetailModal: React.FC<{
           )}
         </div>
       </div>
+      
+      {/* Observations Section */}
+      {record.observations && (
+        <div>
+          <h3 className="text-sm font-semibold text-foreground mb-2">
+            {t('quickchecks.history.modal.observations')}
+          </h3>
+          <p className="text-sm text-muted-foreground bg-muted/50 p-3 rounded-lg">
+            {record.observations}
+          </p>
+        </div>
+      )}
     </div>
   );
 };

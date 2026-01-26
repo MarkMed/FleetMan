@@ -250,7 +250,7 @@ export const MachineSelectModal: React.FC<MachineSelectModalProps> = ({
         )}
         {/* Lista de máquinas */}
         {!isLoading && filteredMachines.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 overflow-y-auto max-h-[47vh] px-2 pb-3 overflow-x-hidden">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 overflow-y-auto max-h-[47vh] px-2 pb-3 overflow-x-hidden">
             {filteredMachines.map((machine) => (
               <Card
                 key={machine.id}

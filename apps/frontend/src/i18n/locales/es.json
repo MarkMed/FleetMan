@@ -55,7 +55,7 @@
       "confirmPasswordHelper": "Debe ser idéntica a la contraseña anterior",
       "userType": "Tipo de usuario",
       "role": "Tipo de Cuenta",
-      "roleClient": "Dueño de Maquinaria",
+      "roleClient": "Propietario de Maquinaria",
       "roleProvider": "Proveedor de Servicios",
       "phone": "Número de Teléfono",
       "companyName": "Nombre de la Empresa",
@@ -97,7 +97,7 @@
       "fullFormDescription": "Crea tu perfil completo con toda la información de tu empresa y preferencias",
       "quickDescription": "Regístrate rápidamente con solo los datos esenciales",
       "canChangeAnytime": "Podrás completar tu perfil en cualquier momento desde configuraciones",
-      "clientType": "Dueño de Maquinaria",
+      "clientType": "Propietario de Maquinaria",
       "clientTypeDescExtended": "Usuario de maquinaria que solicita servicios",
       "providerType": "Proveedor de Servicios",
       "providerTypeDescExtended": "Empresa o profesional que ofrece servicios de mantenimiento y reparación",
@@ -131,7 +131,7 @@
         "userType": {
           "title": "Tipo de Usuario",
           "description": "Selecciona el tipo de cuenta que mejor describe tu actividad",
-          "clientTitle": "Dueño de Maquinaria",
+          "clientTitle": "Propietario de Maquinaria",
           "clientDescription": "Usuario de maquinaria que solicita servicios",
           "providerTitle": "Proveedor de Servicios",
           "providerDescription": "Empresa que ofrece servicios de mantenimiento"
@@ -1257,7 +1257,7 @@
   },
   "users": {
     "type": {
-      "client": "Dueño de Maquinaria",
+      "client": "Propietario de Maquinaria",
       "provider": "Proveedor de Servicios"
     },
     "discovery": {
@@ -1348,7 +1348,7 @@
     "subtitle": "Gestiona tu información personal y preferencias de cuenta",
     "editProfile": "Editar Perfil",
     "noCompanyName": "Sin nombre de empresa",
-    "client": "Dueño de Maquinaria",
+    "client": "Propietario de Maquinaria",
     "provider": "Proveedor de Servicios",
     "activeAccount": "Cuenta Activa",
     "memberSince": "Miembro desde",
