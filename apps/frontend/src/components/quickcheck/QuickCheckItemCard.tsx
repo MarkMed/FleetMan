@@ -24,7 +24,7 @@ export const QuickCheckItemCard: React.FC<QuickCheckItemCardProps> = ({
 }) => {
   // Border color based on evaluation status
   const getBorderColor = () => {
-    if (mode !== 'EXECUTING' || !status) return 'bg-slate-300 dark:bg-slate-950';
+    if (mode !== 'EXECUTING' || !status) return 'bg-[hsl(var(--color-background))]/50';
     switch (status) {
       case 'approved':
         return 'border-green-500 bg-green-50/50 dark:bg-green-950/20';
@@ -33,14 +33,14 @@ export const QuickCheckItemCard: React.FC<QuickCheckItemCardProps> = ({
       case 'omitted':
         return 'border-yellow-500 bg-yellow-50/50 dark:bg-yellow-950/20';
       default:
-        return 'border-border bg-slate-300 dark:bg-slate-950';
+        return 'border-border bg-blue-200';
     }
   };
 
   return (
     <div
       className={cn(
-        'flex items-start gap-3 p-4 border rounded-lg transition-all',
+        'flex items-center gap-3 p-4 border rounded-lg transition-all',
         getBorderColor()
       )}
       style={{
@@ -48,8 +48,8 @@ export const QuickCheckItemCard: React.FC<QuickCheckItemCardProps> = ({
       }}
     >
       {/* Item number badge */}
-      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-        <span className="text-sm font-semibold text-primary">{index + 1}</span>
+      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gray-800/10 dark:bg-gray-100/10 flex items-center justify-center">
+        <span className="text-sm font-semibold text-foreground">{index + 1}</span>
       </div>
 
       {/* Item content */}
@@ -100,7 +100,7 @@ export const QuickCheckItemCard: React.FC<QuickCheckItemCardProps> = ({
               variant="outline"
               size="sm"
               onPress={onDelete}
-              className="gap-1.5 text-destructive hover:bg-destructive/10 border-destructive/30"
+              className="gap-1.5 bg-destructive/10 text-destructive hover:bg-destructive/30 border-destructive/30 hover:text-red-800 dark:hover:text-red-300"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />

@@ -45,7 +45,7 @@ export const QuickCheckItemsList: React.FC<QuickCheckItemsListProps> = ({
               )}
             </div>
 
-            {/* Actions (только в режиме EDITING) */}
+            {/* Actions (EDITING and Deleting) */}
             {mode === 'EDITING' && onEditItem && onDeleteItem && (
               <div className="flex gap-2 flex-shrink-0">
                 <button
@@ -61,7 +61,7 @@ export const QuickCheckItemsList: React.FC<QuickCheckItemsListProps> = ({
                 <button
                   type="button"
                   onClick={() => onDeleteItem(item.id)}
-                  className="p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-md transition-colors"
+                  className="p-2 text-muted-foreground bg-red-500/10 hover:text-destructive hover:bg-destructive/10 rounded-md "
                   title="Eliminar item"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

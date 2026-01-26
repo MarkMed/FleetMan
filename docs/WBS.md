@@ -195,6 +195,16 @@ respuestas estructuradas y manejo de errores (email duplicado, etc.).
 		- Dependencias: 1.2, 1.3, 0.10, 0.12, 0.14 (FS)
 		- Spike: **No**
 
+	- 2.1b **Registro Extendido - Wizard Opcional** [Sprint #14].
+Extender flujo de registro con opción de elegir entre registro básico (actual) o registro completo (wizard extendido). Frontend: Pantalla de registro inicial con un modal que ofrezca 2 opciones ("Registro Rápido" vs "Registro Completo"), wizard extendido con steps adicionales: (1) Datos básicos (nombre, email, contraseña), (2) Información profesional (empresa, rubro, especialidad, rol), (3) Preferencias iniciales (idioma, notificaciones), (4) Completar perfil (bio, tags, avatar - opcional), (5) Confirmación. Backend: Validar y mejorar en caso que sea necesario los endpoint POST /auth/register acepta campos opcionales adicionales, validaciones Zod extendidas para campos profesionales, inicialización de preferencias en User model. UX: Opción "Saltar" en cada step del wizard extendido, progress indicator claro, posibilidad de completar después desde perfil. Reutiliza componentes de 10.1, 10.2, 10.3 para captura de datos.
+		- Horas estimadas: **8**hs
+		- Margen: ±**1.6**hs (P80)
+		- Incertidumbre: **Media**
+		- Dependencias: 2.1, 10.1c, 10.2c, 10.3 (FS)
+		- Spike: **No**
+		- PERT: Optimista 6hs, Probable 8hs, Pesimista 11hs
+		- MoSCoW: **Should Have**
+
 	- 2.2 **Login de usuario** (RF-002).
 Frontend: Formulario de login con validación, recordar usuario, estados de error,
 loading y redirección post-auth. Backend: Endpoint POST /auth/login, generación 
@@ -307,13 +317,41 @@ Interfaz de usuario para edición de máquinas. Componente: EditMachineForm o mo
 		- Spike: **No**
 		- PERT: Optimista 2hs, Probable 3hs, Pesimista 4hs
 
-	- 3.4 **QuickActions Dashboard** (UX).
-Componente de acciones rápidas en Dashboard con overlay blur. Incluye: QuickCheck, Reportar Evento, Solicitar Repuesto, Nueva Máquina. Modal intermedio para selección de máquina en las primeras 3 acciones.
-		- Horas estimadas: **12**hs
+	- 3.4 **QuickActions - Sistema de Acciones Rápidas** (UX).
+Sistema completo de acciones rápidas con Float Action Button (FAB), modales de selección y navegación dinámica.
+		- Horas estimadas: **12**hs (distribuidas en subtareas)
 		- Margen: ±**2.5**hs (P80)
 		- Incertidumbre: **Media**
 		- Dependencias: 3.1, 0.10 (FS), SS con 4.2, 6.2, 7.1
 		- Spike: **No**
+
+	- 3.4a **QuickActions - Float Button + Modal de Acciones** (UX).
+Componente Float Action Button (FAB) accesible globalmente y modal con lista de acciones. FAB: Botón flotante posicionado bottom-right (fixed), ícono "+" o "⚡", animación hover y pulse sutil, z-index alto para visibilidad, accesible desde cualquier pantalla. Modal Acciones: Overlay blur backdrop, lista de 5 acciones con iconos: (1) Realizar QuickCheck 📋, (2) Reportar Evento 🚨, (3) Solicitar Repuesto 🔧, (4) Nueva Máquina ➕, (5) Mensajes 💬. Card por acción con ícono + título + descripción breve. Click acción: Si requiere máquina (1-3) → abrir MachineSelectorModal (ver 3.4b), si no (4-5) → navegar directo. Estados: cerrado por defecto, abre con click FAB, cierra con click backdrop o "X", animación fade-in/slide-up. Responsive: FAB siempre visible en mobile/desktop.
+		- Horas estimadas: **4**hs
+		- Margen: ±**0.8**hs (P80)
+		- Incertidumbre: **Baja-Media**
+		- Dependencias: 0.10 (FS)
+		- Spike: **No**
+		- PERT: Optimista 3hs, Probable 4hs, Pesimista 5.5hs
+
+	- 3.4b **QuickActions - Machine Selector Modal** (UX).
+Modal intermedio de selección de máquina para acciones que requieren contexto de máquina específica. UI: Lista scrollable de máquinas del usuario (GET /machines), cada item muestra: nombre, foto thumbnail, tipo, estado (badge ACTIVE/INACTIVE). Search bar para filtrar por nombre. Empty state si no hay máquinas ("Primero registra una máquina"). Loading skeleton mientras carga datos. Click máquina: cerrar modal + ejecutar navegación dinámica según acción seleccionada (ver 3.4c). Botón "Cancelar" para volver al modal de acciones. Responsive: grid 2 columnas desktop, 1 columna mobile. Lazy loading: solo cargar al abrir modal (no precarga).
+		- Horas estimadas: **4**hs
+		- Margen: ±**0.8**hs (P80)
+		- Incertidumbre: **Media**
+		- Dependencias: 3.1, 3.4a (FS)
+		- Spike: **No**
+		- PERT: Optimista 3hs, Probable 4hs, Pesimista 5.5hs
+
+	- 3.4c **QuickActions - Integration con Navegación** (UX).
+Lógica de navegación dinámica según acción + máquina seleccionada. Routing dinámico: (1) QuickCheck → `/machines/${machineId}/quickcheck/new`, (2) Reportar Evento → `/machines/${machineId}/events/report`, (3) Solicitar Repuesto → `/machines/${machineId}/spare-parts`, (4) Nueva Máquina → `/machines/new`, (5) Mensajes → `/messages` (chat directo sin máquina). Service quickActionsService.ts: método `navigateToAction(actionType, machineId?)` que construye URL y ejecuta `router.push()`. State management: Context o Zustand para manejar estado FAB abierto/cerrado globalmente. Integration: Conectar modal acciones con navigateToAction, conectar machine selector con mismo servicio. Testing: Verificar navegación correcta para cada combinación acción+máquina, verificar cierre de modales tras navegación, verificar que FAB no interfiere con elementos clickeables.
+		- Horas estimadas: **4**hs
+		- Margen: ±**0.8**hs (P80)
+		- Incertidumbre: **Media**
+		- Dependencias: 3.4a, 3.4b (FS), SS con 4.2, 6.2, 7.1
+		- Spike: **No**
+		- PERT: Optimista 3hs, Probable 4hs, Pesimista 5.5hs
+		- Nota: Navegación debe esperar a que existan las rutas destino (QuickCheck, Events, SpareParts)
 
 	- 3.5 **Paginación de Lista de Máquinas** [Should Have].
 Implementación completa de paginación para escalabilidad. Backend: Verificar y ajustar endpoints GET /machines para soportar parámetros page, limit, total count en headers/metadata, optimización de queries con skip/limit. Frontend: Componente de paginación reutilizable con controles prev/next/pages, integración con lista de máquinas, gestión de estado de página actual, peticiones correctas con query params, estados de loading entre páginas.
@@ -500,6 +538,19 @@ Limitación automática de eventos por máquina y configurabilidad de registro.
 		- Spike: **No**
 		- Sprint tentativo: **Sprint #14 o #15** (Post-MVP, NFR)
 		- PERT: Optimista 6hs, Probable 8hs, Pesimista 11hs
+
+	- 4.2f **Machine Events - Email Notifications System** [Should Have].
+Sistema modular de notificaciones por email cuando se crean eventos de máquina. Se integra como observador del use case CreateMachineEvent, permitiendo notificar a usuarios relevantes según reglas configurables por organización. Alcance: (1) EmailService (Infrastructure Layer): Configurar nodemailer SMTP, generar plantillas HTML responsive, enviar emails sin bloquear flujo principal, logging de errores. (2) NotificationConfig (Domain Layer): Modelo de reglas configurables con NotificationRule {eventTypeId?, minSeverity: 'LOW'|'MEDIUM'|'HIGH'|'CRITICAL', recipients: string[], enabled: boolean} y NotificationConfig {organizationId, rules[]}. (3) NotificationConfigRepository (Infrastructure Layer): Colección separada MongoDB con operaciones findByOrganization, update, create. (4) Integración CreateMachineEventUseCase: Agregar dependencias EmailService + NotificationConfigRepository en constructor, método privado sendNotificationIfNeeded() que obtiene config org, filtra reglas aplicables (tipo + severidad), envía email a destinatarios únicos, captura errores sin romper flujo. (5) API Endpoints: GET/PUT /api/v1/notifications/config (obtener/actualizar reglas), POST /api/v1/notifications/test (enviar email de prueba). Variables ENV: EMAIL_HOST, EMAIL_PORT, EMAIL_SECURE, EMAIL_USER, EMAIL_PASS, EMAIL_FROM. Email template: HTML inline styles, asunto `[SEVERIDAD] Tipo Evento - Nombre Máquina`, body con detalles máquina/evento/fecha/asignado, link a FleetMan. Consideraciones: No bloqueante (mismo proceso pero no afecta response), validar destinatarios (solo usuarios de org), SPF/DKIM/DMARC en dominio, secrets en ENV, logging detallado. Orden implementación: EmailService (1d) → NotificationConfig Domain (0.5d) → NotificationConfigRepository (0.5d) → Integrar Use Case (0.5d) → DI (0.5d) → API Endpoints (1d). Extensibilidad futura: Múltiples canales (SMS/Slack/WhatsApp), plantillas personalizables, webhooks, digest diario, queue con prioridades.
+		- Horas estimadas: **20**hs
+		- Margen: ±**4.0**hs (P80)
+		- Incertidumbre: **Media-Alta**
+		- Dependencias: 4.2b (CreateMachineEventUseCase debe existir), 0.11 (Backend setup) (FS)
+		- Spike: **No**
+		- MoSCoW: **Should Have**
+		- Sprint tentativo: **Sprint #15-#16** (Post-MVP, mejora comunicación proactiva)
+		- PERT: Optimista 16hs, Probable 20hs, Pesimista 26hs
+		- **Dependencias adicionales:** nodemailer, @types/nodemailer
+		- **Referencia:** docs/machine-events-email-notifications.md
 
 	- 4.3 **Historial unificado** (RF-009).
 Timeline consolidado de manttos, incidencias y quickchecks.
@@ -988,9 +1039,38 @@ Barra, filtros y resultados.
 		- Dependencias: 11.1 (FS)
 		- Spike: **No**
 
-12. **Ayuda & Guías** (RF-019)
+12. **Dashboard & UX Enhancements** (Sprint #14)
 
-	- 11.1 **Ayuda inline mínima** / "cómo usar esta página" [NiceToHave].
+	- 12.1 **Dashboard - Últimos QuickChecks**.
+Agregar sección al dashboard mostrando los últimos QuickChecks realizados (5-10 más recientes). Backend: Verificar/crear endpoint GET /api/quickchecks/recent?limit=10 con filtro por usuario y máquinas del usuario, ordenar por fecha descendente, incluir datos de máquina asociada. Frontend: Card/widget "QuickChecks Recientes" con lista compacta mostrando: nombre máquina, resultado (PASS/FAIL), fecha, score, link a detalle. Estados empty ("No hay QuickChecks recientes"), loading skeleton, error con retry. Integrar en DashboardScreen con layout grid responsive. Estilos: Indicadores visuales para PASS (verde) y FAIL (rojo), iconos, formato de fecha relativo ("hace 2 horas").
+		- Horas estimadas: **5**hs
+		- Margen: ±**1.0**hs (P80)
+		- Incertidumbre: **Media**
+		- Dependencias: 6.4 (QuickCheck debe existir) (FS)
+		- Spike: **No**
+		- PERT: Optimista 4hs, Probable 5hs, Pesimista 7hs
+
+	- 12.2 **Dashboard - Últimos Eventos Reportados**.
+Agregar sección al dashboard mostrando los últimos eventos reportados (5-10 más recientes). Backend: Verificar/crear endpoint GET /api/machine-events/recent?limit=10 con filtro por usuario y máquinas del usuario, ordenar por reportedAt descendente, incluir typeId/name y máquina. Frontend: Card/widget "Últimos Eventos" con lista compacta mostrando: tipo de evento, nombre máquina, fecha, severidad (si aplica), link a detalle. Estados empty ("No hay eventos recientes"), loading, error. Layout grid junto a QuickChecks widget. Estilos: Badges para severidad/tipo de evento, iconos contextuales, fecha relativa.
+		- Horas estimadas: **5**hs
+		- Margen: ±**1.0**hs (P80)
+		- Incertidumbre: **Media**
+		- Dependencias: 4.2d (MachineEvents debe existir) (FS)
+		- Spike: **No**
+		- PERT: Optimista 4hs, Probable 5hs, Pesimista 7hs
+
+	- 12.3 **Dashboard Simplificado - Layout Final**.
+Simplificar y reorganizar dashboard para enfocarse solo en las 2 nuevas secciones (QuickChecks y Eventos recientes). Remover/minimizar otros widgets si existen. Layout: Grid responsive 2 columnas (desktop) / 1 columna (mobile), header con bienvenida y fecha, cada sección como card independiente con header, cuerpo scrollable y footer con "Ver todos". Consistencia visual con resto de la app. Testing de responsive y performance.
+		- Horas estimadas: **2**hs
+		- Margen: ±**0.5**hs (P80)
+		- Incertidumbre: **Baja**
+		- Dependencias: 12.1, 12.2 (FS)
+		- Spike: **No**
+		- PERT: Optimista 1.5hs, Probable 2hs, Pesimista 3hs
+
+13. **Ayuda & Guías** (RF-019)
+
+	- 13.1 **Ayuda inline mínima** / "cómo usar esta página" [NiceToHave].
 Tooltips/accordions por pantalla.
 		- Horas estimadas: **6**hs
 		- Margen: ±**1.0**hs (P80)
@@ -998,7 +1078,7 @@ Tooltips/accordions por pantalla.
 		- Dependencias: 0.10 (FS)
 		- Spike: **No**
 
-	- 11.2 **Tutorial overlay / tours** [Post-MVP].
+	- 13.2 **Tutorial overlay / tours** [Post-MVP].
 Onboarding guiado paso a paso.
 		- Horas estimadas: **12**hs
 		- Margen: ±**2.5**hs (P80)
@@ -1006,9 +1086,9 @@ Onboarding guiado paso a paso.
 		- Dependencias: 12.1 (FS)
 		- Spike: **No**
 
-13. **Accesibilidad & UX**
+14. **Accesibilidad & UX**
 
-	- 13.1 **Responsive grid & breakpoints**.
+	- 14.1 **Responsive grid & breakpoints**.
 Layouts móviles/desktop.
 		- Horas estimadas: **6**hs
 		- Margen: ±**1.0**hs (P80)
@@ -1016,7 +1096,7 @@ Layouts móviles/desktop.
 		- Dependencias: 0.10 (FS)
 		- Spike: **No**
 
-	- 13.2 **A11y mínima** (focus, labels, contraste).
+	- 14.2 **A11y mínima** (focus, labels, contraste).
 Roles/ARIA y navegación con teclado.
 		- Horas estimadas: **6**hs
 		- Margen: ±**1.0**hs (P80)
@@ -1024,15 +1104,15 @@ Roles/ARIA y navegación con teclado.
 		- Dependencias: 0.10 (FS)
 		- Spike: **No**
 
-	- 13.3 **Pruebas visuales móviles/desktop**.
+	- 14.3 **Pruebas visuales móviles/desktop**.
 Validación en 2–3 navegadores + móvil.
 		- Horas estimadas: **5**hs
 		- Margen: ±**1.0**hs (P80)
 		- Incertidumbre: **Baja**
-		- Dependencias: 13.1 (FS)
+		- Dependencias: 14.1 (FS)
 		- Spike: **No**
 
-	- 13.4a **Setup navegación básica + React Router**.
+	- 14.4a **Setup navegación básica + React Router**.
 Frontend: Configuración básica de React Router con definición de rutas principales, navegación entre páginas, actualización de URLs, rutas protegidas simples por autenticación, y layout básico. Establece la navegación fundamental para cambio de páginas y URLs sin complejidades adicionales.
 		- Horas estimadas: **4**hs
 		- Margen: ±**0.8**hs (P80)
@@ -1040,40 +1120,41 @@ Frontend: Configuración básica de React Router con definición de rutas princi
 		- Dependencias: 0.14, 2.2 (FS)
 		- Spike: **No**
 
-	- 13.4b **Navegación avanzada + UX**.
+	- 14.4b **Navegación avanzada + UX**.
 	Frontend: Extensión del routing con lazy loading de rutas, breadcrumbs, guards de navegación por rol, navegación programática con hooks personalizados, layouts anidados, y utilidades para transiciones. Mejoras de UX y patrones escalables para desarrollo posterior.
 		- Horas estimadas: **4**hs
 		- Margen: ±**0.8**hs (P80)
 		- Incertidumbre: **Media**
-		- Dependencias: 13.4a, 2.5 (FS)
+		- Dependencias: 14.4a, 2.5 (FS)
 		- Spike: **No**
 
-	- 13.5 **Theme toggle** (UI + persistencia).
-	Implementación del selector de tema claro/oscuro: configuración de Tailwind dark mode, variables CSS para theming, hook `useTheme` para gestión de estado, persistencia en localStorage, toggle UI en header/navbar, y pruebas en componentes principales.
+	- 14.5 **Theme toggle** (UI + persistencia).
+	Implementación del selector de tema claro/oscuro: configuración de Tailwind dark mode, variables CSS para theming, hook `useTheme` para gestión de estado, persistencia en localStorage, toggle en página de configuración.
 		- Horas estimadas: **2**hs
 		- Margen: ±**0.4**hs (P80)
 		- Incertidumbre: **Baja**
 		- Dependencias: 0.9, 0.14 (FS)
 		- Spike: **No**
 
-	- 13.6 **Settings screen** (pantalla de ajustes: tema + idioma + prefs).
-	Pantalla de configuración de la app: ruta `/settings`, UI para gestión de preferencias (tema claro/oscuro, idioma español/inglés, otras configuraciones básicas), integración con hooks de tema e i18n, botones para guardar/restaurar defaults, y pruebas de navegación y persistencia.
-		- Horas estimadas: **4**hs
-		- Margen: ±**0.8**hs (P80)
+	- 14.6 **Settings screen** (pantalla de ajustes: tema + idioma + notificaciones + prefs).
+	Pantalla de configuración de la app: ruta `/settings`, UI para gestión de preferencias. Secciones: (1) Apariencia: Selector tema claro/oscuro (integración con 14.5 useTheme hook), (2) Idioma: Select para español/inglés (integración con 0.15 i18n), (3) Notificaciones: Toggle "Recibir eventos de máquinas por email" (checkbox con descripción "Recibe alertas de eventos críticos en tu correo"), campo email destinatario (prellenado con user.email, editable), selector frecuencia (Inmediato/Resumen diario), lista tipos eventos a notificar (checkboxes: Mantenimiento/Fallas/QuickCheck/Todos), preview configuración actual. (4) Otros: Configuraciones básicas adicionales. Botones: "Guardar Cambios" (valida + persiste en backend), "Restaurar Defaults" (resetea a valores iniciales), "Enviar Email de Prueba" (llama a POST /notifications/test para verificar config SMTP). Integración backend: GET/PUT /users/me/notification-preferences endpoint, validaciones Zod, persistencia en User.notificationPreferences {emailEnabled: boolean, emailAddress: string, frequency: 'immediate'|'daily', eventTypes: string[]}. Estados: Loading skeleton al cargar preferencias, toast success/error al guardar, confirmación antes de restaurar defaults. Responsive, validaciones en tiempo real.
+		- Horas estimadas: **6**hs
+		- Margen: ±**1.2**hs (P80)
 		- Incertidumbre: **Media**
-		- Dependencias: 13.4a, 13.5, 0.15 (FS)
+		- Dependencias: 14.4a, 14.5, 0.15, 4.2f (email system debe existir para test) (FS)
 		- Spike: **No**
+		- PERT: Optimista 5hs, Probable 6hs, Pesimista 8hs
 
-	- 13.7 **Navigation Drawer Global**.
+	- 14.7 **Navigation Drawer Global**.
 	Implementar componente NavigationDrawer/Sidebar para navegación global accesible desde todas las páginas. Tecnología: React Aria o componente custom. Funcionalidad: Estado persistente (abierto/cerrado) con Zustand, responsive (desktop: sidebar, mobile: drawer), links a secciones principales (Dashboard, Máquinas, Mantenimientos, QuickCheck, Notificaciones), animaciones smooth. Integración: Layout wrapper para todas las rutas autenticadas.
 		- Horas estimadas: **7**hs
 		- Margen: ±**1.2**hs (P80)
 		- Incertidumbre: **Media**
-		- Dependencias: 13.4a, 0.10 (FS)
+		- Dependencias: 14.4a, 0.10 (FS)
 		- Spike: **No**
 		- PERT: Optimista 5hs, Probable 7hs, Pesimista 10hs
 
-	- 13.8 **UI Polish - QuickCheck & Wizard**.
+	- 14.8 **UI Polish - QuickCheck & Wizard**.
 	Mejoras rápidas de interfaz usuario. Animaciones de entrada (fade-in/slide-up) para items en QuickCheck results list usando Framer Motion o CSS transitions. Reordenar inputs en MachineRegistrationWizard Step 1 para flujo más natural (Marca → Modelo → Type → Nombre de referencia). Cambios solo en capa de presentación, sin lógica de backend.
 		- Horas estimadas: **0.75**hs
 		- Margen: ±**0.25**hs (P80)
@@ -1082,20 +1163,29 @@ Frontend: Configuración básica de React Router con definición de rutas princi
 		- Spike: **No**
 		- **Tareas agrupadas:** [2] Animaciones, [4] Reorder inputs
 
-	- 13.9 **UI/UX Enhancement - Simplicidad y Progressive Disclosure** (NFR).
+	- 14.9 **UI/UX Enhancement - Simplicidad y Progressive Disclosure** (NFR).
 Refinamiento holístico de la experiencia de usuario en todas las pantallas existentes de la aplicación, con foco en simplicidad visual y cognitiva. Objetivo: Mejorar la calidad de uso, comprensión y navegación del sistema sin agregar nuevas funcionalidades core. Aplicar principio de Progressive Disclosure: mostrar primero lo esencial, revelar información adicional de forma gradual y contextual, facilitar exploración sin abrumar. Alcance: (1) Auditoría UX de pantallas principales (Dashboard, Máquinas List/Detail, QuickCheck, Mantenimientos, Notificaciones, Settings), (2) Identificar puntos de sobrecarga cognitiva o información redundante, (3) Rediseño/simplificación de layouts con jerarquía visual clara (tipografía, espaciado, agrupación), (4) Implementar patrones de Progressive Disclosure: tooltips informativos, collapsible sections, tabs/accordions para contenido secundario, estados empty con CTAs claros, (5) Consistencia de componentes: botones, cards, forms, modals con misma estructura y estilo, (6) Testing con usuario (informal) para validar mejoras. NO incluye: nuevas funcionalidades, refactor de backend, cambios en lógica de negocio, rediseño total de identidad visual (mantener guía de estilos existente). Tecnologías: Tailwind CSS utilities, ShadCN UI components (Accordion, Tooltip, Collapsible), Framer Motion para transiciones suaves. Entregables: Pantallas simplificadas con Progressive Disclosure aplicado, documentación de patrones UX adoptados, notas de mejoras implementadas por pantalla.
 		- Horas estimadas: **12**hs
 		- Margen: ±**2.5**hs (P80)
 		- Incertidumbre: **Media-Alta**
-		- Dependencias: 13.7, 4.1f, 4.2d, 8.4 (FS) - Requiere features principales implementadas
+		- Dependencias: 14.7, 4.1f, 4.2d, 8.4 (FS) - Requiere features principales implementadas
 		- Spike: **No** (refinamiento iterativo sobre código existente)
 		- PERT: Optimista 9hs, Probable 12hs, Pesimista 16hs
 		- Nota: **Tarea planificada para Sprint #13 o #14** (post-MVP), enfocada en pulido de calidad de uso antes de entregas finales. Se considera requerimiento NO funcional (NFR) que mejora usabilidad sin alterar funcionalidad core.
 		- **Tareas conceptuales agrupadas:** [Auditoría UX], [Simplificación layouts], [Progressive Disclosure], [Consistencia componentes], [Testing usuario]
 
-14. **Calidad & Pruebas** (alineado a SQA)
+	- 14.10 **Mini Perfil en Navbar + Logout Reubicado** [Sprint #14].
+Mejorar accesibilidad de perfil y logout en la interfaz. Frontend: Agregar botón de mini perfil en navbar (esquina superior derecha) con avatar/icono usuario + nombre, dropdown/modal al hacer click con opciones: "Ver Perfil" (navegar a /profile), "Editar Perfil" (navegar a /profile/edit), "Cerrar Sesión" (ejecutar logout). Mover botón de cerrar sesión del navbar/header al final del NavigationDrawer/SideMenu (si existe) como opción adicional. Estilos: Dropdown con animación fade-in, hover states, iconos claros para cada acción, responsive (mismo comportamiento mobile/desktop). Testing: Click fuera del dropdown cierra el modal, navegación correcta, logout funcional desde ambas ubicaciones.
+		- Horas estimadas: **4**hs
+		- Margen: ±**0.8**hs (P80)
+		- Incertidumbre: **Baja-Media**
+		- Dependencias: 14.7 (NavigationDrawer), 10.1c (EditProfile), 2.3 (Logout) (FS)
+		- Spike: **No**
+		- PERT: Optimista 3hs, Probable 4hs, Pesimista 6hs
 
-	- 14.1 **Estrategia & DoD QA**.
+15. **Calidad & Pruebas** (alineado a SQA)
+
+	- 15.1 **Estrategia & DoD QA**.
 Criterios de listo y enfoque de pruebas.
 		- Horas estimadas: **5**hs
 		- Margen: ±**1.0**hs (P80)
@@ -1103,7 +1193,7 @@ Criterios de listo y enfoque de pruebas.
 		- Dependencias: 0.2 (FS)
 		- Spike: **No**
 
-	- 14.2 **Config Jest** (front/back, TS, coverage).
+	- 15.2 **Config Jest** (front/back, TS, coverage).
 Presets, scripts y coverage.
 		- Horas estimadas: **6**hs
 		- Margen: ±**1.0**hs (P80)
@@ -1111,7 +1201,7 @@ Presets, scripts y coverage.
 		- Dependencias: 0.2 (FS)
 		- Spike: **No**
 
-	- 14.3a **Unit tests Backend**.
+	- 15.3a **Unit tests Backend**.
 Casos de uso, servicios, validaciones y errores.
 		- Horas estimadas: **12**hs
 		- Margen: ±**2.5**hs (P80)
@@ -1119,7 +1209,7 @@ Casos de uso, servicios, validaciones y errores.
 		- Dependencias: SS con 2–8
 		- Spike: **No**
 
-	- 14.3b **Unit tests Frontend**.
+	- 15.3b **Unit tests Frontend**.
 Hooks, utils y lógica de módulos.
 		- Horas estimadas: **10**hs
 		- Margen: ±**2.0**hs (P80)
@@ -1127,7 +1217,7 @@ Hooks, utils y lógica de módulos.
 		- Dependencias: SS con 2–8
 		- Spike: **No**
 
-	- 14.4 **Datos de prueba** (semillas y factories).
+	- 15.4 **Datos de prueba** (semillas y factories).
 Fixtures y factories para tests.
 		- Horas estimadas: **4**hs
 		- Margen: ±**0.7**hs (P80)
@@ -1135,7 +1225,7 @@ Fixtures y factories para tests.
 		- Dependencias: 1.4 (FS)
 		- Spike: **No**
 
-	- 14.5 **Sanitización manual por feature**.
+	- 15.5 **Sanitización manual por feature**.
 Checklist de smoke por pantalla/flujo.
 		- Horas estimadas: **8**hs
 		- Margen: ±**1.5**hs (P80)
@@ -1143,7 +1233,7 @@ Checklist de smoke por pantalla/flujo.
 		- Dependencias: SS con 2–9
 		- Spike: **No**
 
-	- 14.7 **Triage & fix post-UAT**.
+	- 15.7 **Triage & fix post-UAT**.
 Registro, severidades, fixes y verificación.
 		- Horas estimadas: **10**hs
 		- Margen: ±**2.0**hs (P80)
@@ -1151,7 +1241,7 @@ Registro, severidades, fixes y verificación.
 		- Dependencias: 21.2 (FS)
 		- Spike: **No**
 
-	- 14.8 **Smoke E2E de flujos críticos**.
+	- 15.8 **Smoke E2E de flujos críticos**.
 Auth → máquina → recordatorio → notificación → QC.
 		- Horas estimadas: **6**hs
 		- Margen: ±**1.0**hs (P80)
@@ -1159,17 +1249,17 @@ Auth → máquina → recordatorio → notificación → QC.
 		- Dependencias: 2–8 (FS)
 		- Spike: **No**
 
-	- 14.9 **Gestión de defectos**.
+	- 15.9 **Gestión de defectos**.
 Triage continuo, hotfix path y mini-regresión.
 		- Horas estimadas: **6**hs
 		- Margen: ±**1.0**hs (P80)
 		- Incertidumbre: **Media**
-		- Dependencias: SS con 14.5–14.8
+		- Dependencias: SS con 15.5–15.8
 		- Spike: **No**
 
-15. **Seguridad & Hardening**
+16. **Seguridad & Hardening**
 
-	- 15.1 **Hashing, rate-limit, CORS**.
+	- 16.1 **Hashing, rate-limit, CORS**.
 Config seguro básico en API.
 		- Horas estimadas: **6**hs
 		- Margen: ±**1.0**hs (P80)
@@ -1177,7 +1267,7 @@ Config seguro básico en API.
 		- Dependencias: 2.2 (FS)
 		- Spike: **No**
 
-	- 15.2 **Validaciones Zod en controllers**.
+	- 16.2 **Validaciones Zod en controllers**.
 Validación exhaustiva en endpoints.
 		- Horas estimadas: **8**hs
 		- Margen: ±**1.5**hs (P80)
@@ -1185,7 +1275,7 @@ Validación exhaustiva en endpoints.
 		- Dependencias: 1.3 (FS)
 		- Spike: **No**
 
-	- 15.3 **Permisos por endpoint** (RBAC ligero).
+	- 16.3 **Permisos por endpoint** (RBAC ligero).
 Chequeos de rol en rutas.
 		- Horas estimadas: **6**hs
 		- Margen: ±**1.0**hs (P80)
@@ -1193,9 +1283,9 @@ Chequeos de rol en rutas.
 		- Dependencias: 2.5 (FS)
 		- Spike: **No**
 
-16. **Observabilidad ligera**
+17. **Observabilidad ligera**
 
-	- 16.1 **Logger estructurado** (niveles, request-id).
+	- 17.1 **Logger estructurado** (niveles, request-id).
 Logging JSON y correlación simple.
 		- Horas estimadas: **5**hs
 		- Margen: ±**1.0**hs (P80)
@@ -1203,17 +1293,17 @@ Logging JSON y correlación simple.
 		- Dependencias: 0.2, 0.12 (FS)
 		- Spike: **No**
 
-	- 16.2 **Métricas mínimas en logs** (contadores) [Post-MVP].
+	- 17.2 **Métricas mínimas en logs** (contadores) [Post-MVP].
 Contadores por evento/acción en logs.
 		- Horas estimadas: **6**hs
 		- Margen: ±**1.0**hs (P80)
 		- Incertidumbre: **Media**
-		- Dependencias: 16.1 (FS)
+		- Dependencias: 17.1 (FS)
 		- Spike: **No**
 
-17. **Deploy & Demo**
+18. **Deploy & Demo**
 
-	- 17.1 **Taller Deploy - Conceptos Generales** (Sesión 1).
+	- 18.1 **Taller Deploy - Conceptos Generales** (Sesión 1).
 Primera sesión de conceptos fundamentales de deploy y DevOps.
 		- Horas estimadas: **3**hs
 		- Margen: ±**0.5**hs (P80)
@@ -1221,7 +1311,7 @@ Primera sesión de conceptos fundamentales de deploy y DevOps.
 		- Dependencias: —
 		- Spike: **No**
 
-	- 17.2 **Taller Deploy - Conceptos Generales** (Sesión 2).
+	- 18.2 **Taller Deploy - Conceptos Generales** (Sesión 2).
 Segunda sesión de conceptos fundamentales de deploy y DevOps.
 		- Horas estimadas: **3**hs
 		- Margen: ±**0.5**hs (P80)
@@ -1229,7 +1319,7 @@ Segunda sesión de conceptos fundamentales de deploy y DevOps.
 		- Dependencias: —
 		- Spike: **No**
 
-	- 17.3 **Taller Deploy - AWS** (Sesión 1).
+	- 18.3 **Taller Deploy - AWS** (Sesión 1).
 Primera sesión de capacitación en servicios AWS para deploy.
 		- Horas estimadas: **3**hs
 		- Margen: ±**0.5**hs (P80)
@@ -1237,7 +1327,7 @@ Primera sesión de capacitación en servicios AWS para deploy.
 		- Dependencias: —
 		- Spike: **No**
 
-	- 17.4 **Taller Deploy - AWS** (Sesión 2).
+	- 18.4 **Taller Deploy - AWS** (Sesión 2).
 Segunda sesión de capacitación en servicios AWS para deploy.
 		- Horas estimadas: **3**hs
 		- Margen: ±**0.5**hs (P80)
@@ -1245,7 +1335,7 @@ Segunda sesión de capacitación en servicios AWS para deploy.
 		- Dependencias: —
 		- Spike: **No**
 
-	- 17.5 **Taller Deploy - Azure** (Sesión 1).
+	- 18.5 **Taller Deploy - Azure** (Sesión 1).
 Primera sesión de capacitación en servicios Azure para deploy.
 		- Horas estimadas: **3**hs
 		- Margen: ±**0.5**hs (P80)
@@ -1253,7 +1343,7 @@ Primera sesión de capacitación en servicios Azure para deploy.
 		- Dependencias: —
 		- Spike: **No**
 
-	- 17.6 **Taller Deploy - Azure** (Sesión 2).
+	- 18.6 **Taller Deploy - Azure** (Sesión 2).
 Segunda sesión de capacitación en servicios Azure para deploy.
 		- Horas estimadas: **3**hs
 		- Margen: ±**0.5**hs (P80)
@@ -1261,7 +1351,7 @@ Segunda sesión de capacitación en servicios Azure para deploy.
 		- Dependencias: —
 		- Spike: **No**
 
-	- 17.7 **Taller Deploy - Deploy en Práctica**.
+	- 18.7 **Taller Deploy - Deploy en Práctica**.
 Sesión práctica de implementación de deploy en entorno real.
 		- Horas estimadas: **3**hs
 		- Margen: ±**0.5**hs (P80)
@@ -1269,15 +1359,15 @@ Sesión práctica de implementación de deploy en entorno real.
 		- Dependencias: —
 		- Spike: **No**
 
-	- 17.8 **Build & deploy demo** (front estático + API).
+	- 18.8 **Build & deploy demo** (front estático + API).
 Empaquetado, hosting y health-check simple.
 		- Horas estimadas: **8**hs
 		- Margen: ±**1.5**hs (P80)
 		- Incertidumbre: **Media**
-		- Dependencias: 0.4, 14.2 (FS)
+		- Dependencias: 0.4, 15.2 (FS)
 		- Spike: **No**
 
-	- 17.9 **Semillas demo** (usar 1.4).
+	- 18.9 **Semillas demo** (usar 1.4).
 Carga inicial del dataset de demo.
 		- Horas estimadas: **3**hs
 		- Margen: ±**0.5**hs (P80)
@@ -1285,34 +1375,34 @@ Carga inicial del dataset de demo.
 		- Dependencias: 1.4 (FS)
 		- Spike: **No**
 
-	- 17.10 **Script "reset demo"** [NiceToHave].
+	- 18.10 **Script "reset demo"** [NiceToHave].
 	Script idempotente de reinicialización.
 		- Horas estimadas: **4**hs
 		- Margen: ±**0.7**hs (P80)
 		- Incertidumbre: **Baja**
-		- Dependencias: 17.9 (FS)
+		- Dependencias: 18.9 (FS)
 		- Spike: **No**
 
-	- 17.11 **Azure Deploy - Config práctica** (Azure App Service).
+	- 18.11 **Azure Deploy - Config práctica** (Azure App Service).
 		Configuración práctica de deploy en Azure App Service: creación de recursos (App Service + MongoDB Atlas o Cosmos), configuración de variables de entorno, conexión con repositorio GitHub para CI/CD básico, configuración de dominios y SSL, y pruebas de deploy del frontend + backend. Aprovecha el taller universitario del 27 nov.
 		- Horas estimadas: **9**hs
 		- Margen: ±**1.8**hs (P80)
 		- Incertidumbre: **Media**
-		- Dependencias: 17.5, 17.6, 17.8 (FS)
+		- Dependencias: 18.5, 18.6, 18.8 (FS)
 		- Spike: **No**
 
-	- 17.12 **Azure Static Web App - Fix 404 en Refresh**.
+	- 18.12 **Azure Static Web App - Fix 404 en Refresh**.
 		Configurar fallback routing para SPA en Azure Static Web App. Crear archivo staticwebapp.config.json con navigationFallback apuntando a index.html. Soluciona error 404 al refrescar página o acceder directamente a rutas internas (/machines, /quickcheck, etc.). Crítico para usabilidad en producción (compartir links, bookmarks, refresh).
 		- Horas estimadas: **1**hs
 		- Margen: ±**0.5**hs (P80)
 		- Incertidumbre: **Baja**
-		- Dependencias: 17.11 (FS)
+		- Dependencias: 18.11 (FS)
 		- Spike: **No**
 		- **Tarea agrupada:** [3] Azure routing fix
 
-18. **Documentación & Capacitación**
+19. **Documentación & Capacitación**
 
-	- 18.1 **README + guía arranque dev**.
+	- 19.1 **README + guía arranque dev**.
 Setup, scripts y troubleshooting breve.
 		- Horas estimadas: **4**hs
 		- Margen: ±**0.7**hs (P80)
@@ -1320,7 +1410,7 @@ Setup, scripts y troubleshooting breve.
 		- Dependencias: 0.1 (FS)
 		- Spike: **No**
 
-	- 18.2 **API docs** (OpenAPI simple).
+	- 19.2 **API docs** (OpenAPI simple).
 Endpoints principales y ejemplos.
 		- Horas estimadas: **6**hs
 		- Margen: ±**1.0**hs (P80)
@@ -1328,7 +1418,7 @@ Endpoints principales y ejemplos.
 		- Dependencias: 2–9 (FS)
 		- Spike: **No**
 
-	- 18.3 **Manual breve de usuario** [NiceToHave].
+	- 19.3 **Manual breve de usuario** [NiceToHave].
 Guía funcional mínima por pantalla.
 		- Horas estimadas: **6**hs
 		- Margen: ±**1.0**hs (P80)
@@ -1336,9 +1426,9 @@ Guía funcional mínima por pantalla.
 		- Dependencias: 12.1 (FS)
 		- Spike: **No**
 
-19. **Gobernanza de Alcance** (MVP)
+20. **Gobernanza de Alcance** (MVP)
 
-	- 19.1 **Scope freeze** (MoSCoW).
+	- 20.1 **Scope freeze** (MoSCoW).
 Cierre de alcance y criterios.
 		- Horas estimadas: **2**hs
 		- Margen: ±**0.3**hs (P80)
@@ -1346,15 +1436,15 @@ Cierre de alcance y criterios.
 		- Dependencias: —
 		- Spike: **No**
 
-	- 19.2 **Control de cambios**.
+	- 20.2 **Control de cambios**.
 Registro de desvíos y pases a Post-MVP.
 		- Horas estimadas: **3**hs
 		- Margen: ±**0.5**hs (P80)
 		- Incertidumbre: **Baja**
-		- Dependencias: 19.1 (FS)
+		- Dependencias: 20.1 (FS)
 		- Spike: **No**
 
-	- 19.3 **Feature toggles**.
+	- 20.3 **Feature toggles**.
 Flags para diferir capacidades.
 		- Horas estimadas: **5**hs
 		- Margen: ±**1.0**hs (P80)
@@ -1362,19 +1452,19 @@ Flags para diferir capacidades.
 		- Dependencias: 0.2 (FS)
 		- Spike: **No**
 
-20. **Backlog Post-MVP (consolidado)**
+21. **Backlog Post-MVP (consolidado)**
 
-	- 20.1 **Consolidación y tracking del backlog Post-MVP**.
+	- 21.1 **Consolidación y tracking del backlog Post-MVP**.
 Curaduría y priorización para fases futuras.
 		- Horas estimadas: **2**hs
 		- Margen: ±**0.3**hs (P80)
 		- Incertidumbre: **Baja**
-		- Dependencias: 18.2 (FS)
+		- Dependencias: 19.2 (FS)
 		- Spike: **No**
 
-21. **Gestión del Proyecto & Scrumban** (LOE dominical encadenado)
+22. **Gestión del Proyecto & Scrumban** (LOE dominical encadenado)
 
-	- 21.1 **Reporte Académico** (dominical).
+	- 22.1 **Reporte Académico** (dominical).
 Informe semanal de avances/bloqueos y decisiones; "precalienta" la demo.
 		- Horas estimadas: **0.9**hs/sprint
 		- Margen: ±**0.1**hs (P80)
@@ -1382,23 +1472,23 @@ Informe semanal de avances/bloqueos y decisiones; "precalienta" la demo.
 		- Dependencias: Cierre sprint previo (FS)
 		- Spike: **No**
 
-	- 21.2 **Demo/UAT con cliente** (dominical).
+	- 22.2 **Demo/UAT con cliente** (dominical).
 Demostración, sincronización y feedback/UAT inmediato.
 		- Horas estimadas: **1.5**hs/sprint
 		- Margen: ±**0.1**hs (P80)
 		- Incertidumbre: **Baja**
-		- Dependencias: 21.1 (FS)
+		- Dependencias: 22.1 (FS)
 		- Spike: **No**
 
-	- 21.3 **Sprint Planning de Sprint #x** (donde x es el número del sprint correspondiente).
+	- 22.3 **Sprint Planning de Sprint #x** (donde x es el número del sprint correspondiente).
 Planificación de la iteración con foco en ruta crítica.
 		- Horas estimadas: **1.3**hs/sprint
 		- Margen: ±**0.1**hs (P80)
 		- Incertidumbre: **Baja**
-		- Dependencias: 21.2 (FS)
+		- Dependencias: 22.2 (FS)
 		- Spike: **No**
 
-	- 21.4 **Informe de avance** (académico).
+	- 22.4 **Informe de avance** (académico).
 Documento extenso que resume y explica todo lo realizado en un conjunto de semanas. Propósito 100% académico, describe progreso, decisiones técnicas, arquitectura implementada, lecciones aprendidas y próximos pasos del proyecto.
 		- Horas estimadas: **No aplica** (tarea ya realizada)
 		- Horas reales: **1.2**hs
@@ -1407,9 +1497,9 @@ Documento extenso que resume y explica todo lo realizado en un conjunto de seman
 		- Dependencias: Cierre de período de múltiples sprints (FS)
 		- Spike: **No**
 
-22. **Pre-Proyecto / Anteproyecto**
+23. **Pre-Proyecto / Anteproyecto**
 
-	- 22.1 **Talleres** (instancias de guía general).
+	- 23.1 **Talleres** (instancias de guía general).
 Participación en sesiones de taller para guía general del proyecto.
 		- Horas estimadas: **3**hs
 		- Margen: **No est.**
@@ -1417,7 +1507,7 @@ Participación en sesiones de taller para guía general del proyecto.
 		- Dependencias: —
 		- Spike: **No**
 
-	- 22.2 **Tutorías** (guía con tutor asignado).
+	- 23.2 **Tutorías** (guía con tutor asignado).
 Sesiones individuales de tutoría con el tutor asignado.
 		- Horas estimadas: **1**hs
 		- Margen: **No est.**
@@ -1425,151 +1515,151 @@ Sesiones individuales de tutoría con el tutor asignado.
 		- Dependencias: —
 		- Spike: **No**
 
-	- 22.3 **Refinamiento de estructura**.
+	- 23.3 **Refinamiento de estructura**.
 Refinamiento de la estructura general del documento de anteproyecto.
 		- Horas estimadas: **No est.**
 		- Margen: **No est.**
 		- Incertidumbre: **No est.**
-		- Dependencias: 22.1, 22.2 (FS)
+		- Dependencias: 23.1, 23.2 (FS)
 		- Spike: **No**
 
-	- 22.4 **Refinar descripción de cliente**.
+	- 23.4 **Refinar descripción de cliente**.
 Mejora y refinamiento de la descripción del cliente objetivo.
 		- Horas estimadas: **No est.**
 		- Margen: **No est.**
 		- Incertidumbre: **No est.**
-		- Dependencias: 22.3 (FS)
+		- Dependencias: 23.3 (FS)
 		- Spike: **No**
 
-	- 22.5 **Refinar introducción**.
+	- 23.5 **Refinar introducción**.
 Refinamiento de la introducción del proyecto.
 		- Horas estimadas: **No est.**
 		- Margen: **No est.**
 		- Incertidumbre: **No est.**
-		- Dependencias: 22.3 (FS)
+		- Dependencias: 23.3 (FS)
 		- Spike: **No**
 
-	- 22.6 **Refinar presentación del problema**.
+	- 23.6 **Refinar presentación del problema**.
 Mejora en la presentación y definición del problema a resolver.
 		- Horas estimadas: **No est.**
 		- Margen: **No est.**
 		- Incertidumbre: **No est.**
-		- Dependencias: 22.4, 22.5 (FS)
+		- Dependencias: 23.4, 23.5 (FS)
 		- Spike: **No**
 
-	- 22.7 **Investigar competencia**.
+	- 23.7 **Investigar competencia**.
 Análisis y documentación de la competencia existente.
 		- Horas estimadas: **No est.**
 		- Margen: **No est.**
 		- Incertidumbre: **No est.**
-		- Dependencias: 22.6 (FS)
+		- Dependencias: 23.6 (FS)
 		- Spike: **No**
 
-	- 22.8 **Redactar alternativas a la solución**.
+	- 23.8 **Redactar alternativas a la solución**.
 Documentación de alternativas consideradas para la solución.
 		- Horas estimadas: **No est.**
 		- Margen: **No est.**
 		- Incertidumbre: **No est.**
-		- Dependencias: 22.7 (FS)
+		- Dependencias: 23.7 (FS)
 		- Spike: **No**
 
-	- 22.9 **Refinar arquitectura**.
+	- 23.9 **Refinar arquitectura**.
 Refinamiento de la propuesta de arquitectura del sistema.
 		- Horas estimadas: **No est.**
 		- Margen: **No est.**
 		- Incertidumbre: **No est.**
-		- Dependencias: 22.8 (FS)
+		- Dependencias: 23.8 (FS)
 		- Spike: **No**
 
-	- 22.10 **Refinar tecnologías**.
+	- 23.10 **Refinar tecnologías**.
 Refinamiento de la selección y justificación de tecnologías.
 		- Horas estimadas: **No est.**
 		- Margen: **No est.**
 		- Incertidumbre: **No est.**
-		- Dependencias: 22.9 (FS)
+		- Dependencias: 23.9 (FS)
 		- Spike: **No**
 
-	- 22.11 **Refinar lista de necesidades**.
+	- 23.11 **Refinar lista de necesidades**.
 Mejora y completitud de la lista de necesidades del cliente.
 		- Horas estimadas: **No est.**
 		- Margen: **No est.**
 		- Incertidumbre: **No est.**
-		- Dependencias: 22.4 (FS)
+		- Dependencias: 23.4 (FS)
 		- Spike: **No**
 
-	- 22.12 **Crear sección de procesos identificados**.
+	- 23.12 **Crear sección de procesos identificados**.
 Documentación de los procesos de negocio identificados.
 		- Horas estimadas: **No est.**
 		- Margen: **No est.**
 		- Incertidumbre: **No est.**
-		- Dependencias: 22.11 (FS)
+		- Dependencias: 23.11 (FS)
 		- Spike: **No**
 
-	- 22.13 **Refinar objetivos del proyecto**.
+	- 23.13 **Refinar objetivos del proyecto**.
 Refinamiento de los objetivos generales y específicos del proyecto.
 		- Horas estimadas: **No est.**
 		- Margen: **No est.**
 		- Incertidumbre: **No est.**
-		- Dependencias: 22.6 (FS)
+		- Dependencias: 23.6 (FS)
 		- Spike: **No**
 
-	- 22.14 **Redactar actores involucrados**.
+	- 23.14 **Redactar actores involucrados**.
 Identificación y documentación de todos los actores del sistema.
 		- Horas estimadas: **No est.**
 		- Margen: **No est.**
 		- Incertidumbre: **No est.**
-		- Dependencias: 22.12 (FS)
+		- Dependencias: 23.12 (FS)
 		- Spike: **No**
 
-	- 22.15 **Refinar requerimientos**.
+	- 23.15 **Refinar requerimientos**.
 Refinamiento de los requerimientos funcionales y no funcionales.
 		- Horas estimadas: **No est.**
 		- Margen: **No est.**
 		- Incertidumbre: **No est.**
-		- Dependencias: 22.13, 22.14 (FS)
+		- Dependencias: 23.13, 23.14 (FS)
 		- Spike: **No**
 
-	- 22.16 **Refinar alcances y limitaciones**.
+	- 23.16 **Refinar alcances y limitaciones**.
 Definición clara de alcances y limitaciones del proyecto.
 		- Horas estimadas: **No est.**
 		- Margen: **No est.**
 		- Incertidumbre: **No est.**
-		- Dependencias: 22.15 (FS)
+		- Dependencias: 23.15 (FS)
 		- Spike: **No**
 
-	- 22.17 **Diagramar arquitectura**.
+	- 23.17 **Diagramar arquitectura**.
 Creación de diagramas de la arquitectura propuesta.
 		- Horas estimadas: **No est.**
 		- Margen: **No est.**
 		- Incertidumbre: **No est.**
-		- Dependencias: 22.9 (FS)
+		- Dependencias: 23.9 (FS)
 		- Spike: **No**
 
-	- 22.18 **Hacer diagrama Conceptual de Dominio**.
+	- 23.18 **Hacer diagrama Conceptual de Dominio**.
 Creación del diagrama conceptual del dominio del problema.
 		- Horas estimadas: **No est.**
 		- Margen: **No est.**
 		- Incertidumbre: **No est.**
-		- Dependencias: 22.14, 22.12 (FS)
+		- Dependencias: 23.14, 23.12 (FS)
 		- Spike: **No**
 
-	- 22.19 **Planear tareas y sprints**.
+	- 23.19 **Planear tareas y sprints**.
 Planificación inicial de tareas y sprints del proyecto.
 		- Horas estimadas: **No est.**
 		- Margen: **No est.**
 		- Incertidumbre: **No est.**
-		- Dependencias: 22.16, 22.17, 22.18 (FS)
+		- Dependencias: 23.16, 23.17, 23.18 (FS)
 		- Spike: **No**
 
-	- 22.20 **Refinamientos varios**.
+	- 23.20 **Refinamientos varios**.
 Refinamientos menores y ajustes finales del documento.
 		- Horas estimadas: **No est.**
 		- Margen: **No est.**
 		- Incertidumbre: **No est.**
-		- Dependencias: 22.19 (FS)
+		- Dependencias: 23.19 (FS)
 		- Spike: **No**
 
-	- 22.21 **Buffer de entrega final**.
+	- 23.21 **Buffer de entrega final**.
 Instancia comodín para refinar últimos detalles del proyecto, completar documentación pendiente, finalizar features en curso, realizar verificaciones finales de calidad y atender ajustes de último momento previos a la entrega académica.
 		- Horas estimadas: **10**hs
 		- Margen: ±**2.0**hs (P80)
@@ -1577,39 +1667,39 @@ Instancia comodín para refinar últimos detalles del proyecto, completar docume
 		- Dependencias: Cierre Sprint 16 (FS)
 		- Spike: **No**
 
-23. **Eventos Académicos** (Hitos sin horas de desarrollo)
+24. **Eventos Académicos** (Hitos sin horas de desarrollo)
 
-	- 23.1 **Entrega Primera Instancia**.
+	- 24.1 **Entrega Primera Instancia**.
 Presentación de primera instancia del proyecto para revisión académica.
 		- Fecha: **Noviembre 2025**
 		- Horas de desarrollo: **0**hs (Evento/Hito)
 		- Dependencias: Finalización Sprint correspondiente
 		- Preparación: Incluida en tareas de documentación existentes
 
-	- 23.2 **Entrega Segunda Instancia**.
+	- 24.2 **Entrega Segunda Instancia**.
 Presentación de segunda instancia con correcciones y mejoras.
 		- Fecha: **Diciembre 2025**
 		- Horas de desarrollo: **0**hs (Evento/Hito)
-		- Dependencias: 23.1, avances del MVP
+		- Dependencias: 24.1, avances del MVP
 		- Preparación: Incluida en tareas de documentación existentes
 
-	- 23.3 **Entrega Final del Proyecto**.
+	- 24.3 **Entrega Final del Proyecto**.
 Entrega completa del MVP y documentación final del proyecto.
 		- Fecha: **Febrero 2026**
 		- Horas de desarrollo: **0**hs (Evento/Hito)
 		- Dependencias: Finalización de todos los sprints del MVP
 		- Preparación: Incluida en sprint final
 
-	- 23.4 **Defensa del Proyecto**.
+	- 24.4 **Defensa del Proyecto**.
 Presentación oral y defensa del proyecto ante tribunal académico.
 		- Fecha: **Marzo-Abril 2026**
 		- Horas de desarrollo: **0**hs (Evento/Hito)
-		- Dependencias: 23.3 (FS)
+		- Dependencias: 24.3 (FS)
 		- Preparación: Requiere preparación de presentación (incluida en documentación)
 
-	- 23.5 **Cierre Académico**.
+	- 24.5 **Cierre Académico**.
 Finalización formal del proceso académico y entrega de calificaciones.
 		- Fecha: **Abril 2026**
 		- Horas de desarrollo: **0**hs (Evento/Hito)
-		- Dependencias: 23.4 (FS)
+		- Dependencias: 24.4 (FS)
 		- Preparación: No requiere trabajo adicional de desarrollo

@@ -28,11 +28,11 @@ const badgeVariants = cva(
         success:
           'border-transparent bg-success text-success-foreground hover:bg-success/80',
         warning:
-          'border-transparent bg-warning text-warning-foreground hover:bg-warning/80',
+          'border-transparent bg-warning text-yellow-950 hover:bg-warning/80',
         destructive:
           'border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80',
         secondary:
-          'border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80',
+          'border-transparent bg-blue-200/30 text-secondary-foreground hover:bg-blue-400/40',
         outline: 'text-foreground border-border hover:bg-accent',
       },
       size: {

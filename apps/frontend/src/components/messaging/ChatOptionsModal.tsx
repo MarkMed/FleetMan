@@ -174,7 +174,7 @@ export const ChatOptionsModal = ({
             <Button
               key={index}
               variant={action.variant}
-              className={`h-auto py-4 px-4 justify-start text-left transition-colors ${
+              className={`h-auto py-4 px-4 justify-start text-left transition-colors bg-[hsl(var(--color-card))] ${
                 action.isCTA 
                   ? 'bg-primary text-primary-foreground hover:bg-primary/90' 
                   : action.isDestructive 

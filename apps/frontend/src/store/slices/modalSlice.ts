@@ -175,7 +175,7 @@ interface ModalActions {
    * Show confirmation modal and return a promise
    * Promise resolves to true if confirmed, false if cancelled
    */
-  showConfirmation: (config: Omit<ModalConfig, 'variant'>) => Promise<boolean>;
+  showConfirmation: (config: ModalConfig) => Promise<boolean>;
   /**
    * Update modal configuration while it's open
    */
@@ -323,14 +323,13 @@ export const useModalStore = create<ModalStore>((set, get) => ({
     });
   },
 
-  showConfirmation: (config: Omit<ModalConfig, 'variant'>) => {
+  showConfirmation: (config: ModalConfig) => {
     return new Promise<boolean>((resolve) => {
       set({
         isOpen: true,
         config: {
           ...defaultConfig,
           ...config,
-          variant: 'confirmation',
           showConfirm: true,
           showCancel: true,
         },

@@ -8,7 +8,6 @@ interface UIStore extends UIState {
   toggleSidebar: () => void;
   setSidebarCollapsed: (collapsed: boolean) => void;
   setTheme: (theme: 'light' | 'dark' | 'system') => void;
-  setLanguage: (language: 'es' | 'en') => void;
   toggleTheme: () => void;
 }
 
@@ -18,7 +17,6 @@ export const useUIStore = create<UIStore>()(
       // Initial state
       sidebarCollapsed: false,
       theme: 'system',
-      language: 'es',
 
       // Actions
       toggleSidebar: () => {
@@ -44,10 +42,6 @@ export const useUIStore = create<UIStore>()(
         }
       },
 
-      setLanguage: (language: 'es' | 'en') => {
-        set({ language });
-      },
-
       toggleTheme: () => {
         const currentTheme = get().theme;
         const nextTheme = currentTheme === 'light' ? 'dark' : 'light';
@@ -59,7 +53,6 @@ export const useUIStore = create<UIStore>()(
       partialize: (state) => ({
         sidebarCollapsed: state.sidebarCollapsed,
         theme: state.theme,
-        language: state.language,
       }),
     }
   )

@@ -80,7 +80,7 @@ export const AlarmActionMenuModal = ({
             <Button
               key={index}
               variant="outline"
-              className="h-auto py-4 px-4 justify-start text-left hover:bg-accent transition-colors"
+              className="h-auto py-4 px-4 justify-start text-left bg-[hsl(var(--color-card))] hover:bg-accent transition-colors"
               onPress={() => handleActionClick(action.onClick)}
             >
               <div className="flex items-start gap-3 w-full">

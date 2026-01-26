@@ -1,11 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useLoginViewModel } from '../../viewModels/auth';
 import { InputField, Button, Checkbox, Card, CardHeader, CardContent, CardTitle, CardDescription, Skeleton } from '../../components/ui';
 import { Mail, Lock } from 'lucide-react';
 
 // TODO: Mejorar a RHF para validación más robusta y UX (Sprint futuro)
 export const LoginScreen: React.FC = () => {
+  const { t } = useTranslation();
   const {
     formData,
     formErrors,
@@ -21,10 +23,10 @@ export const LoginScreen: React.FC = () => {
       <div className="w-full max-w-md space-y-8">
         <div className="text-center">
           <h1 className="text-3xl font-bold tracking-tight text-foreground">
-            Iniciar Sesión
+            {t('auth.login.title')}
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            Ingresa a tu cuenta FleetMan
+            {t('auth.login.subtitle')}
           </p>
         </div>
 
@@ -49,8 +51,8 @@ export const LoginScreen: React.FC = () => {
                 <div className="space-y-4">
                   {/* Email Field */}
                   <InputField
-                    label="Email"
-                    placeholder="tu@email.com"
+                    label={t('auth.login.email')}
+                    placeholder={t('auth.login.emailPlaceholder')}
                     icon={Mail}
                     keyboardType="email"
                     value={formData.email}
@@ -59,13 +61,13 @@ export const LoginScreen: React.FC = () => {
                     } as React.ChangeEvent<HTMLInputElement>)}
                     error={formErrors.email}
                     required
-                    helperText="Ingresa el email de tu cuenta"
+                    helperText={t('auth.login.emailHelper')}
                   />
 
                   {/* Password Field */}
                   <InputField
-                    label="Contraseña"
-                    placeholder="Tu contraseña"
+                    label={t('auth.login.password')}
+                    placeholder={t('auth.login.passwordPlaceholder')}
                     icon={Lock}
                     secureTextEntry
                     value={formData.password}
@@ -74,7 +76,7 @@ export const LoginScreen: React.FC = () => {
                     } as React.ChangeEvent<HTMLInputElement>)}
                     error={formErrors.password}
                     required
-                    helperText="Mínimo 8 caracteres"
+                    helperText={t('auth.login.passwordHelper')}
                   />
 
                   {/* Remember Me and Forgot Password */}
@@ -91,7 +93,7 @@ export const LoginScreen: React.FC = () => {
                         htmlFor="rememberMe" 
                         className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                       >
-                        Recordarme
+                        {t('auth.login.rememberMe')}
                       </label>
                     </div>
 
@@ -99,7 +101,7 @@ export const LoginScreen: React.FC = () => {
                       to="/auth/forgot-password"
                       className="text-sm font-medium text-primary hover:text-primary/80 transition-colors"
                     >
-                      ¿Olvidaste tu contraseña?
+                      {t('auth.login.forgotPassword')}
                     </Link>
                   </div>
                 </div>
@@ -122,7 +124,7 @@ export const LoginScreen: React.FC = () => {
                   loading={isLoading}
                   className="w-full"
                 >
-                  {isLoading ? 'Iniciando sesión...' : 'Iniciar sesión'}
+                  {isLoading ? t('auth.login.loggingIn') : t('auth.login.loginButton')}
                 </Button>
               </form>
             )}
@@ -132,12 +134,12 @@ export const LoginScreen: React.FC = () => {
         {/* Register Link */}
         <div className="text-center">
           <p className="text-sm text-muted-foreground">
-            ¿No tienes una cuenta?{' '}
+            {t('auth.login.noAccount')}{' '}
             <Link
               to="/auth/register"
               className="font-medium text-primary hover:text-primary/80 transition-colors"
             >
-              Crear cuenta
+              {t('auth.login.createAccount')}
             </Link>
           </p>
         </div>

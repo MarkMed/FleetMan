@@ -1,5 +1,21 @@
 {
+  "validation": {
+    "required": "Este campo es obligatorio",
+    "invalidEmail": "Correo electrónico inválido",
+    "passwordMinLength": "La contraseña debe tener al menos 8 caracteres",
+    "passwordComplexity": "Debe contener mayúsculas, minúsculas y números",
+    "passwordMismatch": "Las contraseñas no coinciden",
+    "invalidPhone": "Número de teléfono inválido",
+    "minLength": "Mínimo {{count}} caracteres",
+    "maxLength": "Máximo {{count}} caracteres"
+  },
   "auth": {
+    "email": "Correo Electrónico",
+    "emailPlaceholder": "tu@email.com",
+    "password": "Contraseña",
+    "passwordPlaceholder": "Mínimo 8 caracteres",
+    "confirmPassword": "Confirmar Contraseña",
+    "confirmPasswordPlaceholder": "Repite tu contraseña",
     "sessionExpired": {
       "title": "Sesión expirada",
       "description": "Por razones de seguridad, tu sesión ha expirado. Por favor, inicia sesión nuevamente para continuar.",
@@ -9,29 +25,162 @@
       "title": "Iniciar Sesión",
       "subtitle": "Accede a tu cuenta de gestión de flota",
       "email": "Correo Electrónico",
+      "emailPlaceholder": "tu@email.com",
+      "emailHelper": "Ingresa el email de tu cuenta",
       "password": "Contraseña",
+      "passwordPlaceholder": "Tu contraseña",
+      "passwordHelper": "Mínimo 8 caracteres",
       "rememberMe": "Recordarme",
       "forgotPassword": "¿Olvidaste tu contraseña?",
       "loginButton": "Iniciar Sesión",
+      "loggingIn": "Iniciando sesión...",
       "noAccount": "¿No tienes una cuenta?",
+      "createAccount": "Crear cuenta",
       "signUpLink": "Regístrate aquí"
     },
     "register": {
       "title": "Registrarse",
       "subtitle": "Crea tu cuenta de gestión de flota",
       "name": "Nombre Completo",
+      "namePlaceholder": "Tu nombre completo",
+      "nameHelper": "Nombre de tu empresa o personal",
       "email": "Correo Electrónico",
+      "emailPlaceholder": "tu@email.com",
+      "emailHelper": "Email que usarás para iniciar sesión",
       "password": "Contraseña",
+      "passwordPlaceholder": "Mínimo 8 caracteres",
+      "passwordHelper": "Debe contener mayúsculas, minúsculas y números",
       "confirmPassword": "Confirmar Contraseña",
+      "confirmPasswordPlaceholder": "Repite tu contraseña",
+      "confirmPasswordHelper": "Debe ser idéntica a la contraseña anterior",
+      "userType": "Tipo de usuario",
       "role": "Tipo de Cuenta",
-      "roleClient": "Cliente",
+      "roleClient": "Propietario de Maquinaria",
       "roleProvider": "Proveedor de Servicios",
       "phone": "Número de Teléfono",
       "companyName": "Nombre de la Empresa",
       "businessName": "Nombre del Negocio",
       "registerButton": "Crear Cuenta",
+      "creatingAccount": "Creando cuenta...",
       "hasAccount": "¿Ya tienes una cuenta?",
-      "signInLink": "Inicia sesión aquí"
+      "loginLink": "Iniciar Sesión",
+      "signInLink": "Inicia sesión aquí",
+      "strengthWeak": "Débil",
+      "strengthMedium": "Media",
+      "strengthStrong": "Fuerte",
+      "strengthWeakMessage": "Muy fácil de adivinar",
+      "strengthMediumMessage": "Puede ser más segura",
+      "strengthStrongMessage": "¡Excelente seguridad!",
+      "providerInfo": "Como proveedor, el nombre de tu empresa es obligatorio",
+      "passwordStrength": {
+        "weak": "Débil",
+        "medium": "Media",
+        "strong": "Fuerte",
+        "weakHint": "Muy fácil de adivinar",
+        "mediumHint": "Puede ser más segura",
+        "strongHint": "¡Excelente seguridad!"
+      },
+      "companyNameRequiredHelper": "Obligatorio para proveedores de servicios",
+      "companyNameOptionalHelper": "Opcional: nombre de tu empresa o negocio",
+      "phoneHelper": "Recomendado para facilitar la comunicación",
+      "addressHelper": "Dirección completa de tu empresa o negocio",
+      "providerRequiresCompanyNameHint": "Los proveedores deben proporcionar un nombre de empresa para continuar",
+      "error": {
+        "title": "Error en el registro",
+        "invalidData": "Por favor, verifica que todos los campos estén correctos",
+        "unknown": "Ocurrió un error inesperado. Por favor, inténtalo de nuevo"
+      },
+      "chooseMethod": "Elige tu método de registro",
+      "methodDescription": "Selecciona la opción que mejor se adapte a tus necesidades",
+      "completeRegistration": "Registro Completo",
+      "quickRegistration": "Registro Rápido",
+      "fullFormDescription": "Crea tu perfil completo con toda la información de tu empresa y preferencias",
+      "quickDescription": "Regístrate rápidamente con solo los datos esenciales",
+      "canChangeAnytime": "Podrás completar tu perfil en cualquier momento desde configuraciones",
+      "clientType": "Propietario de Maquinaria",
+      "clientTypeDescExtended": "Usuario de maquinaria que solicita servicios",
+      "providerType": "Proveedor de Servicios",
+      "providerTypeDescExtended": "Empresa o profesional que ofrece servicios de mantenimiento y reparación",
+      "clientFeature1": "Gestiona tu flota de maquinaria",
+      "clientFeature2": "Registra chequeos y mantenimientos",
+      "clientFeature3": "Conecta con proveedores de servicios",
+      "providerFeature1": "Ofrece servicios a clientes",
+      "providerFeature2": "Gestiona tu cartera de clientes",
+      "providerFeature3": "Recibe notificaciones de oportunidades",
+      "features": {
+        "credentials": "Credenciales de acceso",
+        "userType": "Tipo de usuario",
+        "professionalInfo": "Información profesional",
+        "profileCompletion": "Perfil y etiquetas",
+        "preferences": "Preferencias del sistema",
+        "completeProfileLater": "Podrás completar tu perfil después"
+      },
+      "wizard": {
+        "credentials": {
+          "title": "Credenciales de Acceso",
+          "description": "Configura tu email y contraseña para acceder a la plataforma",
+          "emailPlaceholder": "tu@empresa.com",
+          "passwordPlaceholder": "Mínimo 8 caracteres",
+          "confirmPasswordPlaceholder": "Repite tu contraseña",
+          "passwordHint": "Usa al menos 8 caracteres con mayúsculas, minúsculas y números",
+          "passwordStrength": "Fortaleza de la contraseña",
+          "strengthWeak": "Débil",
+          "strengthMedium": "Media",
+          "strengthStrong": "Fuerte"
+        },
+        "userType": {
+          "title": "Tipo de Usuario",
+          "description": "Selecciona el tipo de cuenta que mejor describe tu actividad",
+          "clientTitle": "Propietario de Maquinaria",
+          "clientDescription": "Usuario de maquinaria que solicita servicios",
+          "providerTitle": "Proveedor de Servicios",
+          "providerDescription": "Empresa que ofrece servicios de mantenimiento"
+        },
+        "professionalInfo": {
+          "title": "Información Profesional",
+          "description": "Datos de tu empresa para facilitar la comunicación",
+          "companyNameLabel": "Nombre de la Empresa",
+          "companyNamePlaceholder": "Ej: Construcciones ABC S.A.",
+          "phoneLabel": "Teléfono",
+          "phonePlaceholder": "+34 600 000 000",
+          "addressLabel": "Dirección",
+          "addressPlaceholder": "Calle, número, ciudad, código postal",
+          "providerRequired": "Como proveedor, el nombre de la empresa es obligatorio",
+          "optionalFieldsHint": "Teléfono es opcional pero recomendado para la comunicación con soporte."
+        },
+        "profileCompletion": {
+          "title": "Completa tu Perfil",
+          "description": "Añade información adicional para destacar tu empresa (opcional)",
+          "bioLabel": "Biografía de la Empresa",
+          "bioPlaceholder": "Cuéntanos sobre tu empresa, servicios, experiencia...",
+          "bioHint": "Describe brevemente tu empresa y servicios",
+          "tagsLabel": "Etiquetas",
+          "tagsPlaceholder": "Ej: excavadoras, mantenimiento, hidráulica",
+          "tagsHint": "Añade hasta 5 etiquetas para ayudar a otros a encontrarte",
+          "canSkipHint": "Este paso es opcional. Puedes completar tu perfil más tarde desde Configuración.",
+          "benefitsTitle": "Beneficios de completar tu perfil",
+          "benefits": "Beneficios de completar tu perfil",
+          "benefit1": "Mayor visibilidad en búsquedas",
+          "benefit2": "Conexiones más relevantes",
+          "benefit3": "Confianza de otros usuarios"
+        },
+        "preferences": {
+          "title": "Preferencias del Sistema",
+          "description": "Personaliza tu experiencia en la plataforma (opcional)",
+          "language": "Idioma",
+          "languageDescription": "Selecciona el idioma de la interfaz",
+          "notifications": "Notificaciones",
+          "notificationsDescription": "Configura qué notificaciones deseas recibir",
+          "changeInSettingsHint": "Podrás cambiar estas preferencias en cualquier momento desde Configuraciones"
+        },
+        "confirmation": {
+          "title": "Confirmación",
+          "description": "Revisa toda tu información antes de crear tu cuenta",
+          "termsAgreement": "Al crear tu cuenta, aceptas nuestros Términos de Servicio y Política de Privacidad",
+          "finalActionHint": "Haz clic en 'Finalizar' para crear tu cuenta",
+          "verifyData": "¡Verifica los datos!"
+        }
+      }
     },
     "errors": {
       "invalidCredentials": "Correo o contraseña inválidos",
@@ -78,6 +227,8 @@
     "select": "Seleccionar",
     "selectAll": "Seleccionar Todo",
     "none": "Ninguno",
+    "more": "Más",
+    "retry": "Reintentar",
     "all": "Todos",
     "actions": "Acciones",
     "details": "Detalles",
@@ -90,12 +241,14 @@
     "imageLoadError": "Error al cargar la imagen",
     "uses": "usos",
     "tags": "etiquetas",
-    "retry": "Reintentar",
     "description": "Descripción",
     "expand": "Expandir",
     "collapse": "Colapsar",
     "comingSoon": "Próximamente",
     "featureComingSoon": "Esta funcionalidad estará disponible próximamente",
+    "recommended": "Recomendado",
+    "optional": "Opcional",
+    "minutes": "minutos",
     "daysOfWeek": {
       "full": {
         "SUN": "Domingo",
@@ -118,20 +271,41 @@
     }
   },
   "navigation": {
-    "dashboard": "Panel Principal",
-    "machines": "Máquinas",
+    "dashboard": "Dashboard",
+    "machines": "Mis Máquinas",
     "machineDetail": "Detalle de Máquina",
     "alarms": "Alarmas",
     "maintenance": "Mantenimiento",
     "quickcheck": "Chequeo Rápido",
     "notifications": "Notificaciones",
+    "messages": "Mensajes",
+    "contactDiscovery": "Explorar Contactos",
+    "contacts": "Contactos",
+    "profile": "Perfil",
     "reports": "Reportes",
-    "settings": "Configuración"
+    "settings": "Configuración",
+    "menu": "Menú"
   },
   "machines": {
     "title": "Máquinas",
     "addMachine": "Agregar Máquina",
     "machineDetails": "Detalles de la Máquina",
+    "list": {
+      "title": "Gestión de Máquinas",
+      "subtitle": "Administra tu inventario de máquinas y su información",
+      "newMachine": "+ Nueva Máquina",
+      "loadError": "No pudimos cargar las máquinas.",
+      "retry": "Reintentar",
+      "empty": "No hay máquinas registradas todavía.",
+      "brand": "Marca",
+      "model": "Modelo",
+      "serialNumber": "Nº Serie",
+      "type": "Tipo",
+      "status": "Estado",
+      "actions": "Acciones",
+      "view": "Ver",
+      "loading": "Cargando..."
+    },
     "breadcrumb": {
       "machines": "Máquinas",
       "detail": "Detalle",
@@ -219,6 +393,107 @@
       }
     },
     "registration": {
+      "screen": {
+        "title": "Registrar Nueva Máquina",
+        "subtitle": "Completa la información en los siguientes pasos para registrar una nueva máquina en el sistema.",
+        "loadError": "No se pudieron cargar los tipos de máquina",
+        "loadErrorDescription": "Verifica tu conexión o intenta recargar.",
+        "retry": "Reintentar",
+        "registrationError": "Error en el registro"
+      },
+      "steps": {
+        "basicInfo": {
+          "title": "Información Básica",
+          "description": "Datos principales de la máquina"
+        },
+        "photo": {
+          "title": "Foto de la Máquina",
+          "description": "Imagen representativa"
+        },
+        "technicalSpecs": {
+          "title": "Especificaciones Técnicas",
+          "description": "Detalles técnicos y ubicación"
+        },
+        "confirmation": {
+          "title": "Confirmación",
+          "description": "Revisar y confirmar los datos"
+        }
+      },
+      "basicInfo": {
+        "brand": "Marca",
+        "brandPlaceholder": "Ej: Caterpillar",
+        "model": "Modelo",
+        "modelPlaceholder": "Ej: 320D",
+        "serialNumber": "Número de serie",
+        "serialNumberPlaceholder": "Ej: CAT320D12345",
+        "serialNumberImmutable": "El número de serie no puede modificarse",
+        "machineType": "Tipo de máquina",
+        "machineTypePlaceholder": "Selecciona un tipo",
+        "machineTypeError": "Error al cargar tipos",
+        "machineTypeImmutable": "El tipo de máquina no puede modificarse",
+        "name": "Nombre de referencia",
+        "namePlaceholder": "Ej: Excavadora 001",
+        "description": "Descripción",
+        "descriptionPlaceholder": "Descripción adicional de la máquina...",
+        "tip": "<0>Consejo:</0> Asegúrate de que el número de serie sea único y esté visible en la máquina. Esta información será fundamental para el seguimiento y mantenimiento."
+      },
+      "technicalSpecs": {
+        "title": "Especificaciones Técnicas",
+        "year": "Año de fabricación",
+        "yearPlaceholder": "Ej: {{year}}",
+        "operatingHours": "Horas de operación",
+        "operatingHoursPlaceholder": "Ej: 1500",
+        "operatingHoursHelper": "Horas acumuladas de uso",
+        "fuelType": "Fuente de Energía",
+        "fuelTypePlaceholder": "Selecciona la fuente de energía",
+        "currentLocation": "Ubicación actual",
+        "currentLocationPlaceholder": "Ej: Obra Downtown - Sector A",
+        "assignmentTitle": "Asignación y Responsable",
+        "assignedTo": "Asignar a",
+        "assignedToPlaceholder": "Ej: Juan Pérez",
+        "assignedToHelper": "Persona responsable de esta máquina (operador, encargado, etc.)",
+        "usageScheduleTitle": "Programación de Uso",
+        "usageScheduleDescription": "Define cuántas horas por día opera la máquina y qué días de la semana. Esta información se utiliza para calcular alertas de mantenimiento automáticas.",
+        "dailyHours": "Horas diarias de operación",
+        "dailyHoursPlaceholder": "Ej: 8",
+        "dailyHoursHelper": "Promedio de horas que opera por día (1-24)",
+        "operatingDays": "Días de operación",
+        "operatingDaysHelper": "Selecciona los días en que esta máquina opera habitualmente",
+        "weeklyHoursCalculation": "<0>{{days}}</0> día(s) × <1>{{dailyHours}}</1> horas/día = <2>{{weeklyHours}}</2> horas/semana",
+        "weeklyHoursInfo": "Esta programación se usará para calcular alertas de mantenimiento basadas en horas de uso reales.",
+        "accessoriesTitle": "Accesorios y Características",
+        "attachments": "Accesorios instalados",
+        "attachmentsPlaceholder": "Ej: Martillo hidráulico, Cuchara de excavación, Pulgar hidráulico",
+        "attachmentsHelper": "Separa los accesorios con comas",
+        "specialFeatures": "Características especiales",
+        "specialFeaturesPlaceholder": "Ej: Sistema de aire acondicionado, GPS integrado, Cámara de reversa",
+        "specialFeaturesHelper": "Separa las características con comas",
+        "operationalStatusTitle": "Estado Operativo",
+        "isActive": "Máquina activa",
+        "isActiveHelper": "Indica si la máquina está actualmente en uso operativo",
+        "note": "<0>Nota:</0> Solo el año de fabricación es obligatorio. El resto de campos te ayudarán a tener un mejor control y seguimiento de tus máquinas en el sistema."
+      },
+      "confirmation": {
+        "title": "Confirma la información",
+        "subtitle": "Revisa todos los datos antes de registrar la máquina en el sistema",
+        "basicInfo": "Información Básica",
+        "notSelected": "No seleccionado",
+        "photo": "Foto de la Máquina",
+        "photoUploadInfo": "La foto se subirá a Cloudinary al confirmar el registro",
+        "photoLaterMarked": "Foto marcada para agregar más tarde",
+        "photoLaterInfo": "Podrás subir la foto desde la página de detalles después del registro",
+        "cancelButton": "Cancelar",
+        "confirmButton": "Registrar Máquina",
+        "technicalSpecs": "Especificaciones Técnicas",
+        "locationStatus": "Ubicación y Estado",
+        "status": "Estado",
+        "active": "Activa",
+        "inactive": "Inactiva",
+        "errorsFound": "Se encontraron errores en la información:",
+        "validationError": "Error de validación",
+        "goBackToFix": "Por favor, regresa a los pasos anteriores para corregir estos errores.",
+        "finalMessage": "Al hacer clic en \"Registrar Máquina\", se creará un nuevo registro en el sistema. Esta información podrá ser editada posteriormente desde la gestión de máquinas."
+      },
       "verificationTime": "¡Verifica los datos!",
       "uploadingPhoto": "Subiendo foto a Cloudinary...",
       "photoSaved": "Foto guardada exitosamente",
@@ -230,12 +505,6 @@
         "skipPhoto": "Omitir foto y continuar",
         "cancel": "Cancelar registro",
         "tooManyRetries": "Demasiados intentos fallidos. Por favor, intenta más tarde o continúa sin foto."
-      },
-      "confirmation": {
-        "title": "Confirmar Registro",
-        "description": "¿Estás seguro de que deseas registrar esta máquina? Esta acción creará un nuevo registro en el sistema.",
-        "cancelButton": "Cancelar",
-        "confirmButton": "Registrar Máquina"
       },
       "photo": {
         "title": "Foto de la Máquina",
@@ -261,6 +530,24 @@
       "loading": "Procesando y redireccionando..."
     },
     "edit": {
+      "steps": {
+        "basicInfo": {
+          "title": "Información Básica",
+          "description": "Datos principales de la máquina"
+        },
+        "photo": {
+          "title": "Foto de la Máquina",
+          "description": "Imagen representativa"
+        },
+        "technicalSpecs": {
+          "title": "Especificaciones Técnicas",
+          "description": "Detalles técnicos y ubicación"
+        },
+        "confirmation": {
+          "title": "Confirmación",
+          "description": "Revisar y confirmar los cambios"
+        }
+      },
       "title": "Editar detalles de la máquina: {{machineName}}",
       "subtitle": "Actualiza la información de",
       "serialNumber": "Nº Serie",
@@ -724,8 +1011,88 @@
       "reportGenerated": "Reporte {{reportName}} generado exitosamente"
     }
   },
+  "quickchecks": {
+    "result": {
+      "approved": "Aprobado",
+      "disapproved": "Desaprobado",
+      "notInitiated": "No iniciado"
+    },
+    "stats": {
+      "approved": "Aprobados",
+      "disapproved": "Desaprobados",
+      "omitted": "Omitidos"
+    },
+    "history": {
+      "title": "Historial de Revisiones",
+      "subtitle": "QuickChecks ejecutados para esta máquina",
+      "backButton": "Volver al QuickCheck",
+      "loading": "Cargando historial...",
+      "error": {
+        "title": "Error al cargar historial",
+        "unexpected": "Ocurrió un error inesperado"
+      },
+      "empty": {
+        "title": "No hay QuickChecks realizados",
+        "description": "Aún no se han ejecutado QuickChecks para esta máquina",
+        "action": "Realizar primer QuickCheck"
+      },
+      "viewDetails": "Ver detalles",
+      "modal": {
+        "title": "Detalles del QuickCheck",
+        "responsible": "Responsable",
+        "workerId": "ID Trabajador",
+        "observations": "Observaciones",
+        "itemsEvaluated": "Items Evaluados"
+      },
+      "breadcrumbs": {
+        "machines": "Máquinas",
+        "detail": "Detalle",
+        "quickcheck": "QuickCheck",
+        "history": "Historial"
+      }
+    },
+    "screen": {
+      "title": "QuickCheck de Prevención",
+      "viewHistory": "Ver Historial",
+      "breadcrumbs": {
+        "machines": "Máquinas",
+        "detail": "Detalle",
+        "quickcheck": "QuickCheck"
+      },
+      "modes": {
+        "editing": "Define y administra los items de verificación",
+        "executing": "Evalúa cada item del checklist",
+        "completed": "Revisa el resultado de la evaluación"
+      },
+      "editing": {
+        "header": "Items de verificación",
+        "subtitle": "Gestiona los items que se verificarán en cada QuickCheck",
+        "addItem": "Agregar item",
+        "startExecution": "Iniciar Prevención",
+        "itemCount": "Items de verificación ({{count}})"
+      },
+      "executing": {
+        "title": "Ejecutando QuickCheck",
+        "subtitle": "Evalúa cada item como Aprobado, Desaprobado u Omitido",
+        "cancel": "Cancelar",
+        "observations": "Observaciones (opcional)",
+        "observationsPlaceholder": "Agrega cualquier observación relevante sobre la evaluación...",
+        "charactersCount": "{{count}} caracteres",
+        "discard": "Descartar",
+        "sending": "Enviando...",
+        "submit": "Finalizar y Enviar"
+      },
+      "deleteModal": {
+        "title": "Eliminar item",
+        "description": "¿Estás seguro de que deseas eliminar \"{{name}}\"? Esta acción no se puede deshacer.",
+        "confirm": "Eliminar",
+        "cancel": "Cancelar"
+      }
+    }
+  },
   "dashboard": {
     "title": "Panel Principal",
+    "welcome": "Bienvenido",
     "overview": "Resumen",
     "quickActions": "Acciones Rápidas",
     "recentActivity": "Actividad Reciente",
@@ -739,6 +1106,40 @@
       "reportEvent": "Reportar Evento",
       "requestSpare": "Solicitar Repuesto",
       "newMachine": "Nueva Máquina"
+    },
+    "quickchecks": {
+      "title": "Últimos QuickChecks Realizados",
+      "count": "{{count}} chequeos",
+      "loadMore": "Ver más",
+      "loadingMore": "Cargando...",
+      "error": "No se pudieron cargar los QuickChecks. Intenta de nuevo.",
+      "empty": {
+        "title": "No hay QuickChecks realizados",
+        "description": "Aún no se han realizado chequeos en tus máquinas."
+      },
+      "viewMachine": "Historial de QuickChecks"
+    },
+    "events": {
+      "title": "Últimos Reportes de Eventos",
+      "count": "{{count}} eventos",
+      "loadMore": "Ver más",
+      "loadingMore": "Cargando...",
+      "error": "No se pudieron cargar los eventos. Intenta de nuevo.",
+      "empty": {
+        "title": "No hay eventos registrados",
+        "description": "No se han reportado eventos en tus máquinas."
+      },
+      "viewMachine": "Historial de Eventos",
+      "reportedBy": "Reportado por",
+      "eventType": {
+        "unspecified": "Evento no especificado"
+      },
+      "severity": {
+        "low": "Bajo",
+        "medium": "Medio",
+        "high": "Alto",
+        "critical": "Crítico"
+      }
     }
   },
   "forms": {
@@ -856,8 +1257,8 @@
   },
   "users": {
     "type": {
-      "client": "Cliente",
-      "provider": "Proveedor"
+      "client": "Propietario de Maquinaria",
+      "provider": "Proveedor de Servicios"
     },
     "discovery": {
       "title": "Explorar Contactos",
@@ -916,8 +1317,72 @@
       "messagingComingSoon": "Mensajería disponible próximamente"
     }
   },
+  "quickActions": {
+    "title": "Acciones Rápidas",
+    "selectAction": "Selecciona una acción para continuar",
+    "performQuickCheck": "Realizar QuickCheck",
+    "performQuickCheckDesc": "Ejecutar chequeo de seguridad en una máquina",
+    "reportEvent": "Reportar Evento",
+    "reportEventDesc": "Registrar un evento de mantenimiento",
+    "viewHistory": "Ir a Historial",
+    "viewHistoryDesc": "Ver historial de eventos o chequeos",
+    "sendMessage": "Enviar Mensaje a...",
+    "sendMessageDesc": "Contactar a un usuario de tus contactos",
+    "newMachine": "Nueva Máquina",
+    "newMachineDesc": "Registrar una nueva máquina en el sistema",
+    "viewNotifications": "Ver Notificaciones",
+    "viewNotificationsDesc": "Revisar notificaciones pendientes",
+    "selectMachine": "Selecciona una Máquina",
+    "selectMachineDesc": "Elige la máquina para realizar la acción",
+    "noMachines": "No hay máquinas registradas",
+    "noMachinesDesc": "Registra tu primera máquina para comenzar",
+    "registerFirstMachine": "Registrar Primera Máquina",
+    "selectContact": "Selecciona un Contacto",
+    "selectContactDesc": "Elige el usuario al que deseas contactar",
+    "noContacts": "No tienes contactos",
+    "noContactsDesc": "Explora usuarios para agregarlos a tu lista",
+    "discoverUsers": "Descubrir Usuarios"
+  },
   "profile": {
     "title": "Mi Perfil",
+    "subtitle": "Gestiona tu información personal y preferencias de cuenta",
+    "editProfile": "Editar Perfil",
+    "noCompanyName": "Sin nombre de empresa",
+    "client": "Propietario de Maquinaria",
+    "provider": "Proveedor de Servicios",
+    "activeAccount": "Cuenta Activa",
+    "memberSince": "Miembro desde",
+    "contactInformation": "Información de Contacto",
+    "phone": "Teléfono",
+    "company": "Empresa",
+    "address": "Dirección",
+    "bio": "Biografía",
+    "tags": "Etiquetas",
+    "menu": {
+      "title": "Mi Perfil",
+      "ariaLabel": "Perfil de usuario",
+      "viewProfile": "Ver Perfil",
+      "viewProfileDesc": "Consulta tu información de perfil",
+      "editProfile": "Editar Perfil",
+      "editProfileDesc": "Actualiza tus datos personales",
+      "logout": "Cerrar Sesión",
+      "logoutDesc": "Salir de tu cuenta",
+      "logoutConfirm": {
+        "title": "¿Cerrar Sesión?",
+        "message": "¿Estás seguro que deseas cerrar sesión?",
+        "confirm": "Cerrar Sesión",
+        "cancel": "Cancelar"
+      },
+      "logoutLoading": "Cerrando sesión...",
+      "logoutSuccess": {
+        "title": "Sesión cerrada",
+        "message": "Sesión cerrada exitosamente"
+      },
+      "logoutError": {
+        "title": "Error",
+        "message": "Error al cerrar sesión"
+      }
+    },
     "edit": {
       "title": "Editar Perfil",
       "subtitle": "Actualiza tu información personal y profesional",
@@ -984,6 +1449,170 @@
         "invalidStep": "Paso de validación inválido",
         "unexpectedError": "Error inesperado durante la validación"
       }
+    }
+  },
+  "settings": {
+    "title": "Configuraciones del Sistema",
+    "subtitle": "Personaliza el comportamiento y preferencias del sistema FleetMan",
+    "appearance": {
+      "title": "Apariencia",
+      "subtitle": "Personaliza la apariencia de la aplicación",
+      "theme": {
+        "label": "Tema",
+        "description": "Selecciona el tema de color de la aplicación",
+        "light": "Claro",
+        "lightAria": "Cambiar a tema claro",
+        "dark": "Oscuro",
+        "darkAria": "Cambiar a tema oscuro",
+        "system": "Sistema",
+        "systemAria": "Usar tema del sistema"
+      }
+    },
+    "language": {
+      "title": "Idioma del Sistema",
+      "subtitle": "Selecciona el idioma de la interfaz",
+      "label": "Idioma",
+      "description": "Todos los textos se mostrarán en el idioma seleccionado",
+      "spanish": "Español",
+      "english": "English",
+      "portuguese": "Português"
+    },
+    "languages": {
+      "es": "Español",
+      "en": "English",
+      "selectLanguage": "Selecciona un idioma"
+    },
+    "notifications": {
+      "title": "Notificaciones",
+      "subtitle": "Configura cómo y cuándo recibir notificaciones",
+      "email": "Notificaciones por Email",
+      "maintenanceAlerts": "Alertas de Mantenimiento",
+      "emailEnabled": {
+        "label": "Notificaciones por Email",
+        "description": "Recibir alertas importantes por correo electrónico"
+      },
+      "emailAddress": {
+        "label": "Correo de Notificaciones",
+        "placeholder": "tu@email.com",
+        "description": "Dirección donde recibirás las notificaciones"
+      },
+      "frequency": {
+        "label": "Frecuencia de Envío",
+        "description": "Con qué frecuencia enviar las notificaciones",
+        "immediate": "Inmediato",
+        "daily": "Resumen Diario",
+        "weekly": "Resumen Semanal"
+      },
+      "eventTypes": {
+        "label": "Tipos de Eventos a Notificar",
+        "description": "Selecciona qué eventos quieres recibir por email",
+        "maintenance": "Mantenimiento Requerido",
+        "failures": "Fallas y Averías",
+        "quickcheck": "QuickCheck No Aprobados",
+        "all": "Todos los Eventos"
+      },
+      "maintenanceAlerts": {
+        "label": "Alertas de Mantenimiento",
+        "description": "Recordatorios de mantenimiento programado"
+      },
+      "lowStockAlerts": {
+        "label": "Alertas de Stock Bajo",
+        "description": "Cuando los repuestos estén por agotarse"
+      },
+      "pushNotifications": {
+        "label": "Notificaciones Push",
+        "description": "Notificaciones en tiempo real en el navegador"
+      }
+    },
+    "maintenance": {
+      "title": "Configuración de Mantenimiento",
+      "subtitle": "Parámetros para recordatorios y programación",
+      "preventiveInterval": {
+        "label": "Intervalo de Mantenimiento Preventivo (horas)",
+        "description": "Cada cuántas horas de operación programar mantenimiento",
+        "placeholder": "500"
+      },
+      "anticipationDays": {
+        "label": "Días de Anticipación para Alertas",
+        "description": "Con cuántos días de antelación enviar recordatorios",
+        "placeholder": "7"
+      },
+      "dailyOperatingHours": {
+        "label": "Horas de Operación Diaria Promedio",
+        "description": "Promedio de horas que operan las máquinas por día",
+        "placeholder": "8"
+      }
+    },
+    "security": {
+      "title": "Configuración de Seguridad",
+      "subtitle": "Parámetros de sesión y autenticación",
+      "sessionTimeout": {
+        "label": "Tiempo de Sesión (minutos)",
+        "description": "Tiempo de inactividad antes de cerrar sesión automáticamente",
+        "option30": "30 minutos",
+        "option60": "1 hora",
+        "option120": "2 horas",
+        "option480": "8 horas"
+      },
+      "require2FA": {
+        "label": "Requiere 2FA para operaciones críticas",
+        "description": "Eliminar máquinas, cambios de configuración, etc."
+      }
+    },
+    "timezone": {
+      "label": "Zona Horaria",
+      "description": "Zona horaria para fechas y horarios",
+      "santiago": "Santiago (GMT-3)",
+      "buenosAires": "Buenos Aires (GMT-3)",
+      "saoPaulo": "São Paulo (GMT-3)",
+      "utc": "UTC (GMT+0)"
+    },
+    "dateFormat": {
+      "label": "Formato de Fecha",
+      "description": "Cómo mostrar las fechas en la aplicación",
+      "ddmmyyyy": "DD/MM/YYYY",
+      "mmddyyyy": "MM/DD/YYYY",
+      "yyyymmdd": "YYYY-MM-DD"
+    },
+    "currency": {
+      "label": "Moneda",
+      "description": "Moneda para mostrar valores monetarios",
+      "clp": "Peso Chileno (CLP)",
+      "usd": "Dólar Americano (USD)",
+      "eur": "Euro (EUR)",
+      "brl": "Real Brasileño (BRL)"
+    },
+    "buttons": {
+      "save": "Guardar Cambios",
+      "saving": "Guardando...",
+      "restoreDefaults": "Restaurar Valores Predeterminados",
+      "testEmail": "Enviar Email de Prueba",
+      "cancel": "Cancelar"
+    },
+    "messages": {
+      "languageChanged": "Idioma cambiado correctamente",
+      "updatedCount": "{{count}} configuración actualizada",
+      "updatedCount_plural": "{{count}} configuraciones actualizadas",
+      "testEmailDescription": "Revisa tu bandeja de entrada para confirmar que las notificaciones funcionan correctamente",
+      "saveSuccess": "Configuraciones guardadas correctamente",
+      "saveError": "Error al guardar las configuraciones",
+      "testEmailSent": "Email de prueba enviado a {{email}}",
+      "testEmailError": "Error al enviar el email de prueba",
+      "restoreConfirmTitle": "¿Restaurar valores predeterminados?",
+      "restoreConfirmMessage": "Esta acción restablecerá todas las configuraciones a sus valores iniciales. Los cambios de tema e idioma se mantendrán.",
+      "restoreConfirmButton": "Restaurar",
+      "restoreCancelButton": "Cancelar",
+      "restoreSuccess": "Configuraciones restauradas correctamente",
+      "unsavedChanges": "Tienes cambios sin guardar",
+      "loading": "Cargando configuraciones...",
+      "loadError": "Error al cargar las configuraciones"
+    },
+    "validation": {
+      "emailRequired": "El correo es requerido",
+      "emailInvalid": "Ingresa un correo válido",
+      "numberMin": "El valor debe ser al menos {{min}}",
+      "numberMax": "El valor no puede exceder {{max}}",
+      "required": "Este campo es requerido"
     }
   }
 }

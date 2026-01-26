@@ -31,7 +31,6 @@ class ApiClient {
 
   // Set authorization token
   setAuthToken(token: string | null) {
-    console.log("🔐 Setting auth token in apiClient:", token ? token : "null");
     if (token) {
       this.defaultHeaders["Authorization"] = `Bearer ${token}`;
     } else {
@@ -179,6 +178,21 @@ class ApiClient {
             // Actual logout, state cleanup, and navigation are handled by useSessionExpiredHandler.
             // This prevents tight coupling and allows the UI layer to control user flow.
             window.dispatchEvent(new CustomEvent('session-expired'));
+          }
+        }
+        
+        // Detect 409 Conflict (e.g., duplicate email, resource conflict)
+        if (response.status === 409) {
+          // Show error toast for conflict errors
+          try {
+            const { toast } = await import('../../hooks/useToast');
+            const errorMessage = data?.message || 'Resource conflict';
+            toast.error({
+              title: 'Error',
+              description: errorMessage,
+            });
+          } catch (e) {
+            console.warn('apiClient: failed to show conflict error toast', e);
           }
         }
         

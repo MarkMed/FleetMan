@@ -43,20 +43,20 @@ export function MachineRegistrationScreen() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
+    <div className="max-w-4xl mx-auto">
       {/* Header */}
       <div className="mb-8">
         <TextBlock as="h1" size="headline">
-          Registrar Nueva Máquina
+          {t('machines.registration.screen.title')}
         </TextBlock>
         <TextBlock as="p" size="medium" className="mt-2 text-gray-600">
-          Completa la información en los siguientes pasos para registrar una nueva máquina en el sistema.
+          {t('machines.registration.screen.subtitle')}
         </TextBlock>
       </div>
 
       {/* If machine types are loading, render a full-form skeleton to reflect the whole structure */}
       {machineTypesLoading && (!machineTypeList || (Array.isArray(machineTypeList) && machineTypeList.length === 0)) && (
-        <div className="hadow-lg rounded-lg p-6">
+        <div className="shadow-lg rounded-lg p-6">
           <div className="space-y-6">
             <div className="h-8 w-1/3"><Skeleton className="h-8 w-full" /></div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -78,11 +78,11 @@ export function MachineRegistrationScreen() {
         <div className="mb-6 bg-yellow-50 border border-yellow-200 rounded-md p-4">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-sm font-medium text-yellow-800">No se pudieron cargar los tipos de máquina</h3>
-              <p className="mt-1 text-sm text-yellow-700">Verifica tu conexión o intenta recargar.</p>
+              <h3 className="text-sm font-medium text-yellow-800">{t('machines.registration.screen.loadError')}</h3>
+              <p className="mt-1 text-sm text-yellow-700">{t('machines.registration.screen.loadErrorDescription')}</p>
             </div>
             <div>
-              <Button onPress={() => refetchMachineTypes()} className="ml-4">Reintentar</Button>
+              <Button onPress={() => refetchMachineTypes()} className="ml-4">{t('machines.registration.screen.retry')}</Button>
             </div>
           </div>
         </div>
@@ -99,7 +99,7 @@ export function MachineRegistrationScreen() {
             </div>
             <div className="ml-3">
               <h3 className="text-sm font-medium text-red-800">
-                Error en el registro
+                {t('machines.registration.screen.registrationError')}
               </h3>
               <div className="mt-2 text-sm text-red-700">
                 {form.formState.errors.root.message}

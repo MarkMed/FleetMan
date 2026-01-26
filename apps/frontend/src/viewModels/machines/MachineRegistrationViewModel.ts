@@ -133,8 +133,8 @@ export function useMachineRegistrationViewModel(): MachineRegistrationViewModel 
   // Configuración de los steps del wizard
   const wizardSteps: WizardStep<MachineRegistrationData>[] = [
     {
-      title: 'Información Básica',
-      description: 'Datos principales de la máquina',
+      title: t('machines.registration.steps.basicInfo.title'),
+      description: t('machines.registration.steps.basicInfo.description'),
       component: BasicInfoStep,
       isValid: () => {
         // 1. Check for validation errors (handle nested structure)
@@ -155,8 +155,8 @@ export function useMachineRegistrationViewModel(): MachineRegistrationViewModel 
       },
     },
     {
-      title: 'Foto de la Máquina',
-      description: 'Imagen representativa',
+      title: t('machines.registration.steps.photo.title'),
+      description: t('machines.registration.steps.photo.description'),
       component: PhotoStep,
       isValid: () => {
         // Valid if either photoFile selected OR "add later" checked
@@ -168,8 +168,8 @@ export function useMachineRegistrationViewModel(): MachineRegistrationViewModel 
       },
     },
     {
-      title: 'Especificaciones Técnicas',
-      description: 'Detalles técnicos y ubicación',
+      title: t('machines.registration.steps.technicalSpecs.title'),
+      description: t('machines.registration.steps.technicalSpecs.description'),
       component: TechnicalSpecsStep,
       isValid: () => {
         // 1. Check for validation errors
@@ -185,8 +185,8 @@ export function useMachineRegistrationViewModel(): MachineRegistrationViewModel 
       },
     },
     {
-      title: 'Confirmación',
-      description: 'Revisar y confirmar los datos',
+      title: t('machines.registration.steps.confirmation.title'),
+      description: t('machines.registration.steps.confirmation.description'),
       component: ConfirmationStep,
       isValid: () => Object.keys(form.formState.errors).length === 0, // Summary step - valid only if no errors
     },

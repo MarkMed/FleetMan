@@ -334,3 +334,9 @@ export { useUserStats } from './useUserStats';
 
 // Messaging (Sprint #12 - Module 3: User Communication System)
 export { useSendMessage, useMessages, useAllMessages } from './useMessages';
+
+// Dashboard (Sprint #12 - Bundle 12: Dashboard Recent Activity)
+export { useDashboard } from './useDashboard';
+
+// UI Interaction hooks
+export { useDragScroll } from './useDragScroll';

@@ -48,9 +48,9 @@ export const WizardProgress: React.FC<WizardProgressProps> = ({
         // Completed step
         'bg-success border-success text-success-foreground': status === 'completed',
         // Visited step (but not current)
-        'bg-accent border-accent text-accent-foreground': status === 'visited',
+        'bg-slate-300/15 border-slate-300/55 text-accent-foreground': status === 'visited',
         // Pending step
-        'bg-muted border-muted text-muted-foreground': status === 'pending',
+        'bg-gray-600/25 dark:bg-gray-600/85 border-muted text-muted-foreground': status === 'pending',
         // Clickable
         'cursor-pointer hover:scale-105 hover:shadow-md': isClickable,
         'cursor-default': !isClickable,
@@ -64,7 +64,7 @@ export const WizardProgress: React.FC<WizardProgressProps> = ({
       'flex-1 h-1 mx-2 rounded transition-all duration-300',
       {
         'bg-success': isCompleted,
-        'bg-muted': !isCompleted,
+        'bg-gray-600/25 dark:bg-gray-600/85': !isCompleted,
       }
     );
   };
@@ -76,9 +76,9 @@ export const WizardProgress: React.FC<WizardProgressProps> = ({
   };
 
   return (
-    <div className={cn('w-full py-4', className)}>
+    <div className={cn('w-full', className)}>
       {/* Progress Bar: solo indicadores visuales, sin nombres de pasos */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between">
         {steps.map((stepIndex) => (
           <React.Fragment key={stepIndex}>
             {/* Step Circle */}

@@ -16,7 +16,7 @@ interface InfoModalConfig extends Omit<ModalConfig, 'variant' | 'showConfirm' | 
  * Configuration for confirmation modals
  * These modals return a promise that resolves to true/false
  */
-interface ConfirmationModalConfig extends Omit<ModalConfig, 'variant'> {
+interface ConfirmationModalConfig extends ModalConfig {
   /**
    * The action being confirmed (affects button styling)
    * @default 'default'
@@ -158,6 +158,7 @@ class ModalHelper {
         variant = 'confirmation';
         break;
     }
+    modalConfig.variant = variant;
 
     return this.getStore().showConfirmation({
       ...modalConfig,

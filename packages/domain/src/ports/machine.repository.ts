@@ -314,10 +314,92 @@ export interface IMachineRepository {
     currentOperatingHours: number
   ): Promise<Result<void, DomainError>>;
 
+  /**
+   * 🆕 Sprint #12 (Bundle 12): Obtiene QuickChecks recientes de todas las máquinas del usuario
+   * 
+   * Query agregada a nivel MongoDB para performance óptima.
+   * Pasos de agregación:
+   * 1. $match: filtra máquinas del usuario (ownerId)
+   * 2. $unwind: descompone array quickChecks[]
+   * 3. $sort: ordena por quickChecks.date descendente
+   * 4. $skip/$limit: paginación
+   * 5. $lookup: enriquece con machineType
+   * 6. $project: formatea respuesta con datos de máquina
+   * 
+   * @param userId - ID del propietario
+   * @param limit - Cantidad de registros a retornar (default 5, max 50)
+   * @param offset - Offset para paginación "Load More" (default 0)
+   * @returns Array de QuickChecks con datos enriquecidos de máquina
+   */
+  getRecentQuickChecksForUser(
+    userId: UserId,
+    limit: number,
+    offset: number
+  ): Promise<{
+    data: Array<{
+      quickCheck: IQuickCheckRecord;
+      machine: {
+        id: string;
+        name: string;
+        brand: string;
+        model: string;
+        serialNumber: string;
+        machineType?: { id: string; name: string };
+      };
+    }>;
+    total: number;
+  }>;
+
+  /**
+   * 🆕 Sprint #12 (Bundle 12): Obtiene eventos recientes de todas las máquinas del usuario
+   * 
+   * Query agregada a nivel MongoDB para performance óptima.
+   * Pasos de agregación:
+   * 1. $match: filtra máquinas del usuario (ownerId)
+   * 2. $unwind: descompone array eventsHistory[]
+   * 3. $sort: ordena por eventsHistory.createdAt descendente
+   * 4. $skip/$limit: paginación
+   * 5. $lookup: enriquece con eventType y machineType
+   * 6. $project: formatea respuesta con datos completos
+   * 
+   * @param userId - ID del propietario
+   * @param limit - Cantidad de registros a retornar (default 5, max 50)
+   * @param offset - Offset para paginación "Load More" (default 0)
+   * @returns Array de eventos con datos enriquecidos de máquina y tipo
+   */
+  getRecentEventsForUser(
+    userId: UserId,
+    limit: number,
+    offset: number
+  ): Promise<{
+    data: Array<{
+      event: IMachineEvent;
+      machine: {
+        id: string;
+        name: string;
+        brand: string;
+        model: string;
+        serialNumber: string;
+        machineType?: { id: string; name: string };
+      };
+      eventType: {
+        id: string;
+        name: string;
+        severity?: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+      };
+    }>;
+    total: number;
+  }>;
+
   // TODO: Métodos estratégicos para considerar:
   // findNearLocation(lat: number, lng: number, radiusKm: number): Promise<Machine[]>; // Geolocalización
   // findByOperatingHoursRange(min: number, max: number): Promise<Machine[]>; // Por horas de uso
   // findDueForMaintenance(beforeDate?: Date): Promise<Machine[]>; // Mantenimiento pendiente
   // findBySpecs(specs: Partial<MachineSpecs>): Promise<Machine[]>; // Búsqueda por especificaciones
   // updateOperatingHours(id: MachineId, hours: number): Promise<void>; // Actualización específica
+  
+  // Future dashboard enhancements:
+  // getDashboardSummaryStats(userId: UserId): Promise<DashboardStats>; // Estadísticas agregadas
+  // getQuickCheckComplianceRate(userId: UserId, period: 'daily' | 'weekly' | 'monthly'): Promise<number>; // Tasa de cumplimiento
+  // getCriticalEventsCount(userId: UserId): Promise<number>; // Eventos críticos pendientes
 }

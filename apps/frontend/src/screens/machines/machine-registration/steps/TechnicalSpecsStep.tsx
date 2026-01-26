@@ -1,6 +1,6 @@
 import React from 'react';
 import { useFormContext, Controller } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
+import { useTranslation, Trans } from 'react-i18next';
 import { InputField, Select, Textarea, Checkbox } from '../../../../components/ui';
 import { MachineRegistrationData } from '@contracts';
 import { DayOfWeek } from '@packages/domain';
@@ -40,7 +40,7 @@ export function TechnicalSpecsStep() {
     <div className="space-y-8">
       {/* Especificaciones básicas */}
       <div>
-        <h3 className="text-lg font-semibold text-foreground mb-4">Especificaciones Técnicas</h3>
+        <h3 className="text-lg font-semibold text-foreground mb-4">{t('machines.registration.technicalSpecs.title')}</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Año - REQUERIDO */}
           <Controller
@@ -48,13 +48,13 @@ export function TechnicalSpecsStep() {
             name="technicalSpecs.year"
             render={({ field: { onChange, onBlur, value } }) => (
               <InputField
-                label="Año de fabricación"
+                label={t('machines.registration.technicalSpecs.year')}
                 required
                 keyboardType="numeric"
                 value={value?.toString() || ''}
                 onChangeText={(text) => onChange(parseInt(text) || undefined)}
                 onBlur={onBlur}
-                placeholder={`Ej: ${new Date().getFullYear()}`}
+                placeholder={t('machines.registration.technicalSpecs.yearPlaceholder', { year: new Date().getFullYear() })}
                 error={errors.technicalSpecs?.year?.message}
               />
             )}
@@ -66,13 +66,13 @@ export function TechnicalSpecsStep() {
             name="technicalSpecs.operatingHours"
             render={({ field: { onChange, onBlur, value } }) => (
               <InputField
-                label="Horas de operación"
+                label={t('machines.registration.technicalSpecs.operatingHours')}
                 keyboardType="numeric"
                 value={value?.toString() || ''}
                 onChangeText={(text) => onChange(parseInt(text) || undefined)}
                 onBlur={onBlur}
-                placeholder="Ej: 1500"
-                helperText="Horas acumuladas de uso"
+                placeholder={t('machines.registration.technicalSpecs.operatingHoursPlaceholder')}
+                helperText={t('machines.registration.technicalSpecs.operatingHoursHelper')}
                 error={errors.technicalSpecs?.operatingHours?.message}
               />
             )}
@@ -84,11 +84,11 @@ export function TechnicalSpecsStep() {
               name="technicalSpecs.fuelType"
               render={({ field: { onChange, value } }) => (
                 <Select
-                  label="Fuente de Energía"
+                  label={t('machines.registration.technicalSpecs.fuelType')}
                   value={value || ''}
                   onValueChange={onChange}
                   options={fuelTypes}
-                  placeholder="Selecciona la fuente de energía"
+                  placeholder={t('machines.registration.technicalSpecs.fuelTypePlaceholder')}
                   error={errors.technicalSpecs?.fuelType?.message}
                 />
               )}
@@ -98,11 +98,11 @@ export function TechnicalSpecsStep() {
             name="technicalSpecs.currentLocation"
             render={({ field: { onChange, onBlur, value } }) => (
               <InputField
-                label="Ubicación actual"
+                label={t('machines.registration.technicalSpecs.currentLocation')}
                 value={value || ''}
                 onChangeText={onChange}
                 onBlur={onBlur}
-                placeholder="Ej: Obra Downtown - Sector A"
+                placeholder={t('machines.registration.technicalSpecs.currentLocationPlaceholder')}
                 error={errors.technicalSpecs?.currentLocation?.message}
               />
             )}
@@ -113,7 +113,7 @@ export function TechnicalSpecsStep() {
       {/* ✨ NUEVA SECCIÓN - Asignación y Responsable - Task 3.2a */}
       <div>
         <h3 className="text-lg font-semibold text-foreground mb-4">
-          Asignación y Responsable
+          {t('machines.registration.technicalSpecs.assignmentTitle')}
         </h3>
        
         <Controller
@@ -121,12 +121,12 @@ export function TechnicalSpecsStep() {
           name="technicalSpecs.assignedTo"
           render={({ field: { onChange, onBlur, value } }) => (
             <InputField
-              label="Asignar a"
+              label={t('machines.registration.technicalSpecs.assignedTo')}
               value={value || ''}
               onChangeText={onChange}
               onBlur={onBlur}
-              placeholder="Ej: Juan Pérez"
-              helperText="Persona responsable de esta máquina (operador, encargado, etc.)"
+              placeholder={t('machines.registration.technicalSpecs.assignedToPlaceholder')}
+              helperText={t('machines.registration.technicalSpecs.assignedToHelper')}
               error={errors.technicalSpecs?.assignedTo?.message}
             />
           )}
@@ -136,11 +136,10 @@ export function TechnicalSpecsStep() {
       {/* ✨ NUEVA SECCIÓN - Programación de Uso - Task 3.2a */}
       <div>
         <h3 className="text-lg font-semibold text-foreground mb-4">
-          Programación de Uso
+          {t('machines.registration.technicalSpecs.usageScheduleTitle')}
         </h3>
         <p className="text-sm text-muted-foreground mb-6">
-          Define cuántas horas por día opera la máquina y qué días de la semana. 
-          Esta información se utiliza para calcular alertas de mantenimiento automáticas.
+          {t('machines.registration.technicalSpecs.usageScheduleDescription')}
         </p>
        
         <div className="space-y-6">
@@ -150,13 +149,13 @@ export function TechnicalSpecsStep() {
             name="technicalSpecs.usageSchedule.dailyHours"
             render={({ field: { onChange, onBlur, value } }) => (
               <InputField
-                label="Horas diarias de operación"
+                label={t('machines.registration.technicalSpecs.dailyHours')}
                 keyboardType="numeric"
                 value={value?.toString() || ''}
                 onChangeText={(text) => onChange(parseInt(text) || undefined)}
                 onBlur={onBlur}
-                placeholder="Ej: 8"
-                helperText="Promedio de horas que opera por día (1-24)"
+                placeholder={t('machines.registration.technicalSpecs.dailyHoursPlaceholder')}
+                helperText={t('machines.registration.technicalSpecs.dailyHoursHelper')}
                 error={errors.technicalSpecs?.usageSchedule?.dailyHours?.message}
               />
             )}
@@ -174,10 +173,10 @@ export function TechnicalSpecsStep() {
               return (
                 <div>
                   <label className="text-sm font-medium text-foreground">
-                    Días de operación
+                    {t('machines.registration.technicalSpecs.operatingDays')}
                   </label>
                   <p className="text-xs text-muted-foreground mb-3">
-                    Selecciona los días en que esta máquina opera habitualmente
+                    {t('machines.registration.technicalSpecs.operatingDaysHelper')}
                   </p>
                  
                   {/* Grid de botones para días */}
@@ -230,11 +229,15 @@ export function TechnicalSpecsStep() {
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                         <div className="text-info">
-                          <strong>{selectedDays.length}</strong> día(s) × <strong>{dailyHours}</strong> horas/día = <strong>{weeklyHours} horas/semana</strong>
+                          <Trans
+                            i18nKey="machines.registration.technicalSpecs.weeklyHoursCalculation"
+                            values={{ days: selectedDays.length, dailyHours, weeklyHours }}
+                            components={{ 0: <strong />, 1: <strong />, 2: <strong /> }}
+                          />
                         </div>
                       </div>
                       <p className="text-xs text-info/80 mt-2">
-                        Esta programación se usará para calcular alertas de mantenimiento basadas en horas de uso reales.
+                        {t('machines.registration.technicalSpecs.weeklyHoursInfo')}
                       </p>
                     </div>
                   )}
@@ -254,19 +257,19 @@ export function TechnicalSpecsStep() {
 
       {/* Accesorios y características especiales */}
       <div>
-        <h3 className="text-lg font-semibold text-foreground mb-4">Accesorios y Características</h3>
+        <h3 className="text-lg font-semibold text-foreground mb-4">{t('machines.registration.technicalSpecs.accessoriesTitle')}</h3>
         <div className="space-y-6">
           <Controller
             control={control}
             name="technicalSpecs.attachments"
             render={({ field: { onChange, onBlur, value } }) => (
               <Textarea
-                label="Accesorios instalados"
+                label={t('machines.registration.technicalSpecs.attachments')}
                 value={value?.join(', ') || ''}
                 onChangeText={(text) => onChange(text ? text.split(',').map(s => s.trim()).filter(s => s.length > 0) : [])}
                 onBlur={onBlur}
-                placeholder="Ej: Martillo hidráulico, Cuchara de excavación, Pulgar hidráulico"
-                helperText="Separa los accesorios con comas"
+                placeholder={t('machines.registration.technicalSpecs.attachmentsPlaceholder')}
+                helperText={t('machines.registration.technicalSpecs.attachmentsHelper')}
                 rows={3}
                 error={errors.technicalSpecs?.attachments?.message}
               />
@@ -278,12 +281,12 @@ export function TechnicalSpecsStep() {
             name="technicalSpecs.specialFeatures"
             render={({ field: { onChange, onBlur, value } }) => (
               <Textarea
-                label="Características especiales"
+                label={t('machines.registration.technicalSpecs.specialFeatures')}
                 value={value?.join(', ') || ''}
                 onChangeText={(text) => onChange(text ? text.split(',').map(s => s.trim()).filter(s => s.length > 0) : [])}
                 onBlur={onBlur}
-                placeholder="Ej: Sistema de aire acondicionado, GPS integrado, Cámara de reversa"
-                helperText="Separa las características con comas"
+                placeholder={t('machines.registration.technicalSpecs.specialFeaturesPlaceholder')}
+                helperText={t('machines.registration.technicalSpecs.specialFeaturesHelper')}
                 rows={3}
                 error={errors.technicalSpecs?.specialFeatures?.message}
               />
@@ -294,7 +297,7 @@ export function TechnicalSpecsStep() {
 
       {/* Estado operativo */}
       <div>
-        <h3 className="text-lg font-semibold text-foreground mb-4">Estado Operativo</h3>
+        <h3 className="text-lg font-semibold text-foreground mb-4">{t('machines.registration.technicalSpecs.operationalStatusTitle')}</h3>
         <Controller
           control={control}
           name="technicalSpecs.isActive"
@@ -306,10 +309,10 @@ export function TechnicalSpecsStep() {
               />
               <div className="text-sm">
                 <label className="font-medium text-foreground">
-                  Máquina activa
+                  {t('machines.registration.technicalSpecs.isActive')}
                 </label>
                 <p className="text-muted-foreground">
-                  Indica si la máquina está actualmente en uso operativo
+                  {t('machines.registration.technicalSpecs.isActiveHelper')}
                 </p>
               </div>
             </div>
@@ -326,9 +329,10 @@ export function TechnicalSpecsStep() {
           </div>
           <div className="ml-3">
             <p className="text-sm text-info">
-              <strong>Nota:</strong> Solo el año de fabricación es obligatorio. 
-              El resto de campos te ayudarán a tener un mejor control y seguimiento 
-              de tus máquinas en el sistema.
+              <Trans 
+                i18nKey="machines.registration.technicalSpecs.note"
+                components={{ 0: <strong /> }}
+              />
             </p>
           </div>
         </div>

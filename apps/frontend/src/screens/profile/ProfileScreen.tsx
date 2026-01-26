@@ -1,10 +1,12 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../store/AuthProvider';
 import { Heading1, Heading2, BodyText, Button, Card, Badge, Skeleton } from '@components/ui';
 import { User, Mail, Phone, Calendar, Shield, Edit, Building2, MapPin, Tag } from 'lucide-react';
 
 export const ProfileScreen: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { user, isLoading } = useAuth();
 
@@ -33,15 +35,15 @@ export const ProfileScreen: React.FC = () => {
       <div className="flex justify-between items-center">
         <div>
           <Heading1 size="headline" className="tracking-tight text-foreground">
-            Mi Perfil
+            {t('profile.title')}
           </Heading1>
           <BodyText className="text-muted-foreground">
-            Gestiona tu información personal y preferencias de cuenta
+            {t('profile.subtitle')}
           </BodyText>
         </div>
         <Button variant="filled" size="default" onPress={handleEditProfile}>
           <Edit className="w-4 h-4 mr-2" />
-          Editar Perfil
+          {t('profile.editProfile')}
         </Button>
       </div>
 
@@ -55,21 +57,21 @@ export const ProfileScreen: React.FC = () => {
               </div>
               <div>
                 <Heading2 size="large" weight="bold" className="text-foreground">
-                  {user.profile?.companyName || 'Sin nombre de empresa'}
+                  {user.profile?.companyName || t('profile.noCompanyName')}
                 </Heading2>
                 <BodyText size="small" className="text-muted-foreground">
-                  {user.type === 'CLIENT' ? 'Cliente' : 'Proveedor de Servicios'}
+                  {user.type === 'CLIENT' ? t('profile.client') : t('profile.provider')}
                 </BodyText>
               </div>
               <div className="w-full pt-4 border-t border-border space-y-2">
                 <div className="flex items-center justify-center gap-2 text-muted-foreground">
                   <Shield className="w-4 h-4" />
-                  <BodyText size="small">Cuenta Activa</BodyText>
+                  <BodyText size="small">{t('profile.activeAccount')}</BodyText>
                 </div>
                 <div className="flex items-center justify-center gap-2 text-muted-foreground">
                   <Calendar className="w-4 h-4" />
                   <BodyText size="small">
-                    Miembro desde {new Date(user.createdAt).toLocaleDateString('es-ES', { 
+                    {t('profile.memberSince')} {new Date(user.createdAt).toLocaleDateString('es-ES', { 
                       month: 'short', 
                       year: 'numeric' 
                     })}
@@ -86,7 +88,7 @@ export const ProfileScreen: React.FC = () => {
           <Card>
             <div className="p-6">
               <Heading2 size="large" weight="bold" className="mb-4">
-                Información de Contacto
+                {t('profile.contactInformation')}
               </Heading2>
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
@@ -95,7 +97,7 @@ export const ProfileScreen: React.FC = () => {
                   </div>
                   <div>
                     <BodyText size="small" className="text-muted-foreground">
-                      Email
+                      {t('auth.email')}
                     </BodyText>
                     <BodyText weight="medium" className="text-foreground">
                       {user.email}
@@ -110,7 +112,7 @@ export const ProfileScreen: React.FC = () => {
                     </div>
                     <div>
                       <BodyText size="small" className="text-muted-foreground">
-                        Teléfono
+                        {t('profile.phone')}
                       </BodyText>
                       <BodyText weight="medium" className="text-foreground">
                         {user.profile.phone}
@@ -126,7 +128,7 @@ export const ProfileScreen: React.FC = () => {
                     </div>
                     <div>
                       <BodyText size="small" className="text-muted-foreground">
-                        Empresa
+                        {t('profile.company')}
                       </BodyText>
                       <BodyText weight="medium" className="text-foreground">
                         {user.profile.companyName}
@@ -142,7 +144,7 @@ export const ProfileScreen: React.FC = () => {
                     </div>
                     <div>
                       <BodyText size="small" className="text-muted-foreground">
-                        Dirección
+                        {t('profile.address')}
                       </BodyText>
                       <BodyText weight="medium" className="text-foreground">
                         {user.profile.address}
@@ -159,7 +161,7 @@ export const ProfileScreen: React.FC = () => {
             <Card>
               <div className="p-6">
                 <Heading2 size="large" weight="bold" className="mb-3">
-                  Biografía
+                  {t('profile.bio')}
                 </Heading2>
                 <BodyText className="text-foreground whitespace-pre-wrap">
                   {user.profile.bio}
@@ -175,7 +177,7 @@ export const ProfileScreen: React.FC = () => {
                 <div className="flex items-center gap-2 mb-3">
                   <Tag className="w-5 h-5 text-primary" />
                   <Heading2 size="large" weight="bold">
-                    Etiquetas
+                    {t('profile.tags')}
                   </Heading2>
                 </div>
                 <div className="flex flex-wrap gap-2">
@@ -190,26 +192,6 @@ export const ProfileScreen: React.FC = () => {
           )}
         </div>
       </div>
-
-      {/* Security Section */}
-      <Card>
-        <div className="p-6">
-          <Heading2 size="large" weight="bold" className="mb-4">
-            Seguridad y Privacidad
-          </Heading2>
-          <div className="flex flex-col md:flex-row gap-4">
-            <Button variant="outline" size="default">
-              Cambiar Contraseña
-            </Button>
-            <Button variant="outline" size="default">
-              Configurar 2FA
-            </Button>
-            <Button variant="outline" size="default">
-              Historial de Sesiones
-            </Button>
-          </div>
-        </div>
-      </Card>
     </div>
   );
 };

@@ -1,10 +1,16 @@
-import React from 'react';
-import { useWizard } from './useWizard';
-import { WizardProgress } from './WizardProgress';
-import { WizardControls } from './WizardControls';
-import { WizardProps } from './types';
-import { Card, CardHeader, CardContent, CardTitle, CardDescription } from '../../ui';
-import { cn } from '../../../utils/cn';
+import React from "react";
+import { useWizard } from "./useWizard";
+import { WizardProgress } from "./WizardProgress";
+import { WizardControls } from "./WizardControls";
+import { WizardProps } from "./types";
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  CardTitle,
+  CardDescription,
+} from "../../ui";
+import { cn } from "../../../utils/cn";
 
 /**
  * Componente Wizard principal para formularios multi-step
@@ -20,9 +26,7 @@ export function Wizard<T = any>({
   className,
   showProgress = true,
 }: WizardProps<T>) {
-  
-  console.log('🔷 [Wizard] Renderizando... steps:', steps.length, 'isSubmitting:', isSubmitting);
-  
+
   const wizard = useWizard({
     steps,
     initialData,
@@ -56,25 +60,11 @@ export function Wizard<T = any>({
     onBack: previousStep,
   };
 
-  // Extraer títulos para el progress
-  const stepTitles = steps.map(step => step.title);
-
   return (
-    <div className={cn('w-full max-w-4xl mx-auto', className)}>
-      <Card className="shadow-lg">
+    <div className={cn("w-full max-w-4xl mx-auto", className)}>
+      <Card className="shadow-lg max-h-[90vh] overflow-y-auto">
         {/* Header del wizard: solo título grande y mini descripción del paso actual */}
-        <CardHeader className="text-left pb-0">
-          <CardTitle className="text-2xl font-bold text-foreground">
-            {currentStepConfig.title}
-          </CardTitle>
-          {currentStepConfig.description && (
-            <CardDescription className="text-muted-foreground mt-2">
-              {currentStepConfig.description}
-            </CardDescription>
-          )}
-        </CardHeader>
-
-        <CardContent className="px-6 pb-6">
+        <CardHeader className="text-left pb-0 sticky top-0 bg-gray-100/70 dark:bg-gray-900/30 backdrop-blur-[1px]">
           {/* Progress indicator: solo visual, sin nombres de pasos */}
           {showProgress && (
             <WizardProgress
@@ -84,10 +74,22 @@ export function Wizard<T = any>({
               // stepTitles eliminado para evitar duplicidad visual
               allowStepClick={true}
               onStepClick={goToStep}
-              className="mb-8"
+              className="mb-4"
             />
           )}
+          <div className="mb-4">
+            <CardTitle className="text-2xl font-bold text-foreground">
+              {currentStepConfig.title}
+            </CardTitle>
+            {currentStepConfig.description && (
+              <CardDescription className="text-muted-foreground mt-2">
+                {currentStepConfig.description}
+              </CardDescription>
+            )}
+          </div>
+        </CardHeader>
 
+        <CardContent className="px-6 pb-6">
           {/* Step content */}
           <div className="min-h-[400px]">
             <currentStepConfig.component {...stepProps} />
@@ -120,27 +122,10 @@ export function Wizard<T = any>({
             onSubmit={submitWizard}
             onCancel={onCancel}
             timerLabel={timerLabel}
-            className="mt-8"
+            className="mt-8 sticky bottom-0 bg-gray-100/70 dark:bg-gray-900/30 backdrop-blur-[1px] py-4"
           />
         </CardContent>
       </Card>
-
-      {/* Debug info (solo en desarrollo) */}
-      {process.env.NODE_ENV === 'development' && (
-        <div className="mt-4 p-4 bg-gray-100 rounded-md text-xs text-gray-600">
-          <strong>Debug Info:</strong>
-          <br />
-          Current Step: {currentStep + 1} / {steps.length}
-          <br />
-          Is Valid: {isValid ? 'Yes' : 'No'}
-          <br />
-          Visited Steps: {Array.from(visitedSteps).join(', ')}
-          <br />
-          Wizard Data: {JSON.stringify(data, null, 2)}
-          <br />
-          <strong>FormProvider Context:</strong> Available
-        </div>
-      )}
     </div>
   );
 }

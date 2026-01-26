@@ -1,9 +1,14 @@
 import React, { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useNavigationStore } from '@store/slices';
+import { useAuthStore } from '@store/slices/authSlice';
+import { useLogoutWithConfirmation } from '@hooks/useLogoutWithConfirmation';
 import { getDrawerNavItems } from '@constants';
 import { cn } from '@utils/cn';
-import { X } from 'lucide-react';
+import { Button } from '@components/ui';
+import { X, LogOut } from 'lucide-react';
+import { getAvatarLetter, getUserDisplayName } from '@utils/userHelpers';
 
 /**
  * NavigationDrawer - Sidebar deslizable con navegación completa
@@ -20,7 +25,10 @@ import { X } from 'lucide-react';
 export const NavigationDrawer: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useTranslation();
   const { isDrawerOpen, closeDrawer } = useNavigationStore();
+  const { user } = useAuthStore();
+  const handleLogout = useLogoutWithConfirmation();
   
   const navItems = getDrawerNavItems();
 
@@ -64,6 +72,15 @@ export const NavigationDrawer: React.FC = () => {
     return location.pathname === href || location.pathname.startsWith(`${href}/`);
   };
 
+  /**
+   * Sprint #14 Task 14.10: Logout handler con confirmación
+   * Delegado al hook compartido useLogoutWithConfirmation
+   */
+  const handleLogoutClick = () => {
+    closeDrawer(); // Cerrar drawer primero
+    handleLogout(); // Usar hook compartido
+  };
+
   if (!isDrawerOpen) return null;
 
   return (
@@ -93,28 +110,30 @@ export const NavigationDrawer: React.FC = () => {
           'bg-background border-r border-border',
           'shadow-lg',
           // Animation
-          'animate-slide-in-from-left'
+          'animate-slide-in-from-left',
+          'z-50'
         )}
         role="dialog"
         aria-modal="true"
         aria-label="Menú de navegación"
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-border">
+        <div className="flex items-center justify-between p-4 py-3 border-b border-border">
           <h2 className="text-lg font-semibold text-foreground">FleetMan</h2>
-          <button
-            onClick={closeDrawer}
+          <Button
+            onPress={closeDrawer}
             className={cn(
               'p-2 rounded-md',
               'text-muted-foreground hover:text-foreground',
               'hover:bg-accent',
               'transition-colors',
-              'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary'
+              'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary',
+              'bg-transparent'
             )}
             aria-label="Cerrar menú"
           >
             <X className="w-5 h-5" />
-          </button>
+          </Button>
         </div>
 
         {/* Navigation Items */}
@@ -126,43 +145,83 @@ export const NavigationDrawer: React.FC = () => {
               
               return (
                 <li key={item.id}>
-                  <button
-                    onClick={() => handleNavClick(item.href)}
+                  <Button
+                    onPress={() => handleNavClick(item.href)}
                     className={cn(
                       // Layout
                       'w-full flex items-center gap-3 px-4 py-3',
                       'rounded-lg',
                       // Typography
-                      'text-sm font-medium',
+                      'text-lg font-medium',
                       // Transitions
                       'transition-all duration-200',
                       // Focus
                       'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary',
+                      'bg-transparent',
+                      'justify-start',
                       // Active state - primary color
                       active ? [
                         'bg-primary/10 text-primary',
                         'shadow-sm',
+                        'hover:bg-[hsl(var(--color-card))] hover:text-foreground',
                       ] : [
                         'text-muted-foreground',
-                        'hover:bg-accent hover:text-foreground',
+                        'hover:bg-[hsl(var(--color-card))] hover:text-foreground',
                       ]
                     )}
                     aria-current={active ? 'page' : undefined}
                   >
                     <Icon className="w-5 h-5 flex-shrink-0" />
-                    <span>{item.label}</span>
-                  </button>
+                    <span>{t(item.labelKey)}</span>
+                  </Button>
                 </li>
               );
             })}
           </ul>
         </nav>
 
-        {/* Footer (optional) */}
-        <div className="p-4 border-t border-border">
-          <p className="text-xs text-muted-foreground text-center">
-            © {new Date().getFullYear()} FleetMan
-          </p>
+        {/* Footer - Sprint #14 Task 14.10: User info + Logout */}
+        <div className="border-t border-border">
+          {/* User info card */}
+          {user && (
+            <div className="p-4 border-b border-border">
+              <div className="flex items-center gap-3">
+                {/* Avatar - Uses theme token bg-primary instead of hardcoded color */}
+                <div className="w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-medium flex-shrink-0">
+                  {getAvatarLetter(user.email)}
+                </div>
+                
+                {/* User details */}
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-foreground truncate">
+                    {getUserDisplayName(user)}
+                  </p>
+                  <p className="text-xs text-muted-foreground truncate">
+                    {user.email}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Logout button */}
+          <div className="w-full justify-start p-4">
+            <Button
+              variant="outline"
+              onPress={handleLogoutClick  }
+              className='w-full justify-start gap-3 h-auto text-destructive border border-red-600 bg-destructive/5 hover:bg-destructive/20 hover:text-destructive'
+            >
+              <LogOut className="w-5 h-5" />
+              <span>{t('profile.menu.logout')}</span>
+            </Button>
+          </div>
+
+          {/* Copyright */}
+          <div className="p-4">
+            <p className="text-xs text-muted-foreground text-center">
+              © {new Date().getFullYear()} FleetMan
+            </p>
+          </div>
         </div>
       </aside>
     </>

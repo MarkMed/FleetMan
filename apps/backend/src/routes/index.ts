@@ -13,6 +13,7 @@ import userDiscoveryRoutes from './user-discovery.routes';
 import contactRoutes from './contact.routes';
 import userStatsRoutes from './user-stats.routes';
 import messageRoutes from './message.routes';
+import dashboardRoutes from './dashboard.routes';
 
 /**
  * Router principal de la API v1
@@ -61,6 +62,9 @@ router.use('/users', userStatsRoutes);
 
 // Message routes (Sprint #12 - Module 3) - Sistema de mensajería 1-a-1
 router.use('/messages', messageRoutes);
+
+// Dashboard routes (Sprint #12 - Bundle 12) - Datos de actividad reciente para dashboard
+router.use('/dashboard', dashboardRoutes);
 
 // TODO: Agregar más rutas según se implementen los módulos
 // router.use('/maintenance', maintenanceRoutes);
