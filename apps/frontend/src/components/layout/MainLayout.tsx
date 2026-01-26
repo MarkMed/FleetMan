@@ -5,6 +5,7 @@ import { MobileBottomNav } from './MobileBottomNav';
 import { NavigationDrawer } from './NavigationDrawer';
 import { useNavigationSync } from '@hooks/useNavigationSync';
 import { useMachineTypes, useNotificationObserver } from '@hooks';
+import { GlobalQuickActions } from '../dashboard';
 
 export const MainLayout: React.FC = () => {
   // Sync current route with navigation store
@@ -25,6 +26,7 @@ export const MainLayout: React.FC = () => {
       <main className="container mx-auto px-4 py-8 md:pt-24 pb-20 md:pb-8">
         <Outlet />
       </main>
+      
       {/* Desktop/Tablet Top Navigation Bar */}
       <NavBar />
 
@@ -33,6 +35,9 @@ export const MainLayout: React.FC = () => {
 
       {/* Navigation Drawer (opens from left) */}
       <NavigationDrawer />
+
+      {/* QuickActions System - Sprint #14 Task 2.1c */}
+      <GlobalQuickActions />
     </div>
   );
 };

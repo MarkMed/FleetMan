@@ -18,6 +18,7 @@ export interface RegisterFormData {
   email: string;
   password: string;
   confirmPassword: string;
+  type: 'CLIENT' | 'PROVIDER'; // 🆕 Sprint #14 Task 2.1b: User type selection
 }
 
 export interface RegisterFormErrors {
@@ -25,6 +26,7 @@ export interface RegisterFormErrors {
   email?: string;
   password?: string;
   confirmPassword?: string;
+  type?: string; // 🆕 Sprint #14 Task 2.1b: Type validation error
   general?: string;
 }
 

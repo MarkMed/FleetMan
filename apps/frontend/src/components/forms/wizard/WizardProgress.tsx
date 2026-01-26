@@ -76,9 +76,9 @@ export const WizardProgress: React.FC<WizardProgressProps> = ({
   };
 
   return (
-    <div className={cn('w-full py-4', className)}>
+    <div className={cn('w-full', className)}>
       {/* Progress Bar: solo indicadores visuales, sin nombres de pasos */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between">
         {steps.map((stepIndex) => (
           <React.Fragment key={stepIndex}>
             {/* Step Circle */}

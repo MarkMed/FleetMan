@@ -9,6 +9,8 @@ import { MainLayout } from '../components/layout/MainLayout';
 // Import screens
 import { LoginScreen } from '../screens/auth/LoginScreen';
 import { RegisterScreen } from '../screens/auth/RegisterScreen';
+import { RegistrationSelectScreen } from '../screens/auth/RegistrationSelectScreen';
+import { FullRegistrationScreen } from '../screens/auth/FullRegistration/FullRegistrationScreen';
 import { DashboardScreen } from '../screens/dashboard/DashboardScreen';
 import { MachinesScreen } from '../screens/machines/MachinesScreen';
 import { MachineDetailsScreen } from '../screens/machines/MachineDetailsScreen';
@@ -53,7 +55,11 @@ export const AppRouter: React.FC = () => {
       <Route path="/auth" element={<PublicRoute />}>
         <Route element={<AuthLayout />}>
           <Route path="login" element={<LoginScreen />} />
-          <Route path="register" element={<RegisterScreen />} />
+          {/* Registration routes - Sprint #14 Task 2.1b */}
+          <Route path="register" element={<Navigate to="/auth/register/select" replace />} />
+          <Route path="register/select" element={<RegistrationSelectScreen />} />
+          <Route path="register/quick" element={<RegisterScreen />} />
+          <Route path="register/full-form" element={<FullRegistrationScreen />} />
         </Route>
       </Route>
 

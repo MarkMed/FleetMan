@@ -3,7 +3,7 @@ import { Loader2 } from "lucide-react";
 import { useDragScroll } from "@hooks/useDragScroll";
 import { QuickCheckListItem } from "./QuickCheckListItem";
 import type { RecentQuickCheckDTO } from "@packages/contracts";
-import { BodyText, Card, Heading2} from "@components/ui";
+import { BodyText, Card, Heading2 } from "@components/ui";
 
 interface QuickCheckWidgetProps {
   quickChecks: RecentQuickCheckDTO[];
@@ -82,7 +82,10 @@ export const QuickCheckWidget: React.FC<QuickCheckWidgetProps> = ({
   // Empty state
   if (quickChecks.length === 0) {
     return (
-      <div className="bg-white rounded-lg shadow-md p-6">
+      <Card
+        className="p-4"
+        style={{ animation: `fadeSlideIn 0.3s ease-out ${0.3}s both` }}
+      >
         <Heading2>{t("dashboard.quickchecks.title")}</Heading2>
         <div className="text-center py-12">
           <div className="text-gray-300 text-6xl mb-4">📋</div>
@@ -93,7 +96,7 @@ export const QuickCheckWidget: React.FC<QuickCheckWidgetProps> = ({
             {t("dashboard.quickchecks.empty.description")}
           </p>
         </div>
-      </div>
+      </Card>
     );
   }
 
@@ -116,8 +119,8 @@ export const QuickCheckWidget: React.FC<QuickCheckWidgetProps> = ({
         <div
           ref={scrollRef}
           className="flex space-x-4 overflow-x-auto overflow-y-hidden pb-4 scrollbar-hide"
-          onWheel={(e) => {            
-            e.currentTarget.scrollLeft += e.deltaY
+          onWheel={(e) => {
+            e.currentTarget.scrollLeft += e.deltaY;
           }}
         >
           {quickChecks.map((qc, index) => (

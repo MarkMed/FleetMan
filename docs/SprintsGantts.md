@@ -407,73 +407,73 @@ gantt
 
 ---
 
-## Sprint #13 (2026-01-12 → 2026-01-18)
+## Sprint #13 (2026-01-11 → 2026-01-17)
 
 ```mermaid
 gantt
-  title Sprint 13 (2026-01-12 → 2026-01-18) - Quality & Refinement Sprint
+  title Sprint 13 (2026-01-11 → 2026-01-17) - Quality & Refinement Sprint
   dateFormat  YYYY-MM-DD
   axisFormat  %d
 
   %% Asumimos 5 h/día. Horas estimadas incluidas en el nombre.
   %% Orden estratégico: simple → complejo para momentum
 
-  20.2 Demo/UAT de Sprint #12 (1.5hs)          :t202, 2026-01-12, 1d
-  20.3 Sprint Planning de Sprint #13 (1.3hs)   :t203, 2026-01-12, 1d
-  21.2 Tutorías (1hs)                          :t212, 2026-01-13, 1d
-  20.1 Reporte Académico Sprint #12 (5hs)      :t201, 2026-01-13, 1d
+  20.2 Demo/UAT de Sprint #12 (1.5hs)          :t202, 2026-01-11, 1d
+  20.3 Sprint Planning de Sprint #13 (1.3hs)   :t203, 2026-01-11, 1d
+  21.2 Tutorías (1hs)                          :t212, 2026-01-12, 1d
+  20.1 Reporte Académico Sprint #12 (5hs)      :t201, 2026-01-12, 1d
 
-  10.1a User Editing Domain+Persistence (2hs)  :t101a, 2026-01-14, 1d
-  10.1b User Editing Application Backend (3hs) :t101b, 2026-01-14, 1d
-  10.1c User Editing Frontend UI (3hs)         :t101c, 2026-01-14, 1d
+  10.1a User Editing Domain+Persistence (2hs)  :t101a, 2026-01-13, 1d
+  10.1b User Editing Application Backend (3hs) :t101b, 2026-01-13, 1d
+  10.1c User Editing Frontend UI (3hs)         :t101c, 2026-01-13, 1d
 
-  10.2a Bio & Tags Domain+Persistence (2hs)    :t102a, 2026-01-15, 1d
-  10.2b Bio & Tags Application Backend (2hs)   :t102b, 2026-01-15, 1d
-  10.2c Bio & Tags Frontend UI (2hs)           :t102c, 2026-01-15, 1d
+  10.2a Bio & Tags Domain+Persistence (2hs)    :t102a, 2026-01-14, 1d
+  10.2b Bio & Tags Application Backend (2hs)   :t102b, 2026-01-14, 1d
+  10.2c Bio & Tags Frontend UI (2hs)           :t102c, 2026-01-14, 1d
 
-  9.3e Accept Chat Requests (4hs)              :t93e, 2026-01-16, 1d
-  9.3f Block Users (3hs)                       :t93f, 2026-01-16, 1d
-  9.3g Request Tracking (2hs)                  :t93g, 2026-01-16, 1d
-  9.3h UI Integration (3hs)                    :t93h, 2026-01-16, 1d
+  9.3e Accept Chat Requests (4hs)              :t93e, 2026-01-15, 1d
+  9.3f Block Users (3hs)                       :t93f, 2026-01-15, 1d
+  9.3g Request Tracking (2hs)                  :t93g, 2026-01-15, 1d
+  9.3h UI Integration (3hs)                    :t93h, 2026-01-15, 1d
 
-  3.3a Machine Editing Domain+Persistence (2hs) :t33a, 2026-01-17, 1d
-  3.3b Machine Editing Application (2hs)       :t33b, 2026-01-17, 1d
-  3.3c Machine Editing Frontend (3hs)          :t33c, 2026-01-17, 1d
-  10.3 Image Upload Adaptation (3hs)           :t103, 2026-01-17, 1d
+  3.3a Machine Editing Domain+Persistence (2hs) :t33a, 2026-01-16, 1d
+  3.3b Machine Editing Application (2hs)       :t33b, 2026-01-16, 1d
+  3.3c Machine Editing Frontend (3hs)          :t33c, 2026-01-16, 1d
+  10.3 Image Upload Adaptation (3hs)           :t103, 2026-01-16, 1d
 
   section Hitos
-  Cierre Sprint 13                             :milestone, s13, 2026-01-18, 0d
+  Cierre Sprint 13                             :milestone, s13, 2026-01-17, 0d
 ```
 
 ---
 
-## Sprint #14 (2026-01-19 → 2026-01-25)
+## Sprint #14 (2026-01-18 → 2026-01-24)
 
 ```mermaid
 gantt
-  title Sprint 14 (2026-01-19 → 2026-01-25) - UX & Usability Boost + Dashboard Refresh
+  title Sprint 14 (2026-01-18 → 2026-01-24) - UX & Usability Boost + Dashboard Refresh
   dateFormat  YYYY-MM-DD
   axisFormat  %d
 
   %% Asumimos 5 h/día. Horas estimadas incluidas en el nombre.
   %% Orden según tabla: Overhead → UX/Nav/Settings → Dashboard → Registro → Reporte
 
-  22.2 Demo/UAT de Sprint #13 (1.5hs)          :t222, 2026-01-19, 1d
-  22.3 Sprint Planning de Sprint #14 (1.3hs)   :t223, 2026-01-19, 1d
-  22.4 Tutorías (1hs)                          :t224, 2026-01-20, 1d
-  22.1 Reporte Académico Sprint #13 (5hs)      :t221, 2026-01-20, 1d
+  22.2 Demo/UAT de Sprint #13 (1.5hs)          :t222, 2026-01-18, 1d
+  22.3 Sprint Planning de Sprint #14 (1.3hs)   :t223, 2026-01-18, 1d
+  22.4 Tutorías (1hs)                          :t224, 2026-01-19, 1d
+  22.1 Reporte Académico Sprint #13 (5hs)      :t221, 2026-01-19, 1d
 
-  14.10 Mini Perfil Navbar + Logout (4hs)      :t1410, 2026-01-21, 1d
-  14.5 Theme toggle (2hs)                      :t145, 2026-01-21, 1d
-  14.6 Settings screen + Email Toggle (6hs)    :t146, 2026-01-21, 1d
+  14.10 Mini Perfil Navbar + Logout (4hs)      :t1410, 2026-01-20, 1d
+  14.5 Theme toggle (2hs)                      :t145, 2026-01-20, 1d
+  14.6 Settings screen + Email Toggle (6hs)    :t146, 2026-01-20, 1d
 
-  12.1 Dashboard Últimos QuickChecks (5hs)     :t121, 2026-01-22, 1d
-  12.2 Dashboard Últimos Eventos (5hs)         :t122, 2026-01-22, 2d
-  12.3 Dashboard Layout Final (2hs)            :t123, 2026-01-23, 1d
-  2.1b Registro Extendido Wizard (8hs)         :t21b, 2026-01-24, 1d
+  12.1 Dashboard Últimos QuickChecks (5hs)     :t121, 2026-01-21, 1d
+  12.2 Dashboard Últimos Eventos (5hs)         :t122, 2026-01-21, 2d
+  12.3 Dashboard Layout Final (2hs)            :t123, 2026-01-22, 1d
+  2.1b Registro Extendido Wizard (8hs)         :t21b, 2026-01-23, 1d
 
   section Hitos
-  Cierre Sprint 14                             :milestone, s14, 2026-01-25, 0d
+  Cierre Sprint 14                             :milestone, s14, 2026-01-24, 0d
 ```
 
 ---

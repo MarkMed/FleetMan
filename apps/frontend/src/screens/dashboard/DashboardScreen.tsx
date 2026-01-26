@@ -22,6 +22,8 @@ import { Heading1 } from "@components/ui";
  * - useDashboard hook gestiona datos y paginación
  * - Widgets independientes (EventWidget, QuickCheckWidget)
  * - TanStack Query para cache y optimización
+ * 
+ * Note: QuickActions FAB ahora está en MainLayout (acceso global)
  */
 export const DashboardScreen: React.FC = () => {
   const { t } = useTranslation();

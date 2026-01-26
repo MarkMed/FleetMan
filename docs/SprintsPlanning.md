@@ -703,7 +703,7 @@ Distribución por categoría:
 
 **Riesgos:** Feature social nueva requiere considerar UX de interacción. Validar con cliente que relación unidireccional de contactos es aceptable para MVP.
 
-### **Sprint #13**: dom 12 ene → sáb 18 ene 2026
+### **Sprint #13**: dom 11 ene → sáb 17 ene 2026
 
 **Objetivo:** 🧪 Quality & Refinement Sprint - Mejoras de calidad de vida, complementos al chat, ediciones de entidades, y enriquecimiento de perfiles de usuario.
 
@@ -796,7 +796,7 @@ Distribución por categoría:
 
 **Riesgos:** Sprint en período post-navideño, posible fatiga del equipo. Mantener motivación con victorias tempranas.
 
-### **Sprint #14**: dom 19 ene → sáb 25 ene 2026
+### **Sprint #14**: dom 18 ene → sáb 24 ene 2026
 
 **Objetivo:** 🎨 UX & Usability Boost + Dashboard Refresh - Mejoras de calidad de vida, dashboard simplificado con vistas clave, navegación mejorada, y extensiones al registro.
 
@@ -812,11 +812,11 @@ Distribución por categoría:
 | Desarrollo | 12.1 Dashboard - Últimos QuickChecks | 8 | 5 | 5 |
 | Desarrollo | 12.2 Dashboard - Últimos Eventos Reportados | 9 | 5 | 5.8 |
 | Desarrollo | 12.3 Dashboard Simplificado - Layout Final | 10 | 2 | 3.4 |
-| Desarrollo | 2.1b Registro Extendido - Wizard Opcional | 11 | 8 | |
+| Desarrollo | 2.1b Registro Extendido - Wizard Opcional | 11 | 8 | 6.9 |
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales | Consumo |
 |:---:|:----------:|:-------:|
-| **40.8**hs | **9.85**hs | **24.1%** |
+| **40.8**hs | **40.15**hs | **98.4%** |
 
 Buffer reservado: **-5.8**hs ⚠️
 Total con buffer: **35**hs
@@ -828,13 +828,13 @@ xychart-beta
     y-axis "Horas" 0 --> 44
     
     line [5, 1.5, 1.3, 1, 5, 5, 2, 4, 8, 2, 6, 40.8]
-    line [5.3, 1.25, 1.9, 1.4, 0, 0, 0, 0, 0, 0, 0, 9.85]
+    line [5.3, 1.25, 1.9, 1.4, 5, 5.8, 3.4, 2.9, 6.9, 1.1, 5.2, 40.15]
 ```
 
 Distribución por categoría:
 | Documentación | Desarrollo | QA | Capacitación | Gestión |
 |:-------:|:----------:|:--:|:------------:|:-------------:|
-| **5**hs | **32**hs | **0**hs | **1**hs | **2.8**hs |
+| **5**hs (est) / **5.3**hs (real) | **32**hs (est) / **30.3**hs (real) | **0**hs | **1**hs (est) / **1.4**hs (real) | **2.8**hs (est) / **3.15**hs (real) |
 
 **Notas del Sprint:**
 - **Sprint enfocado en usabilidad y mejoras de calidad de vida** NO en nuevas features core, priorizando pulido de UX y navegación
