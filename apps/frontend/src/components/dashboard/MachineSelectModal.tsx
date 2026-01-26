@@ -10,7 +10,6 @@ import {
   Button,
 } from "@components/ui";
 import { Search, Settings, ArrowLeft } from "lucide-react";
-import { cn } from "@utils/cn";
 import type { CreateMachineResponse as Machine } from "@contracts";
 
 /**
@@ -83,7 +82,6 @@ export const MachineSelectModal: React.FC<MachineSelectModalProps> = ({
   onOpenChange,
   machines,
   onSelectMachine,
-  actionType,
   isLoading = false,
   onGoBack,
 }) => {
@@ -121,48 +119,6 @@ export const MachineSelectModal: React.FC<MachineSelectModalProps> = ({
     setSearchQuery(""); // Reset search on close
   };
 
-  /**
-   * Renderizar badge de status con color correspondiente
-   */
-  const getStatusBadge = (status: string) => {
-    const statusMap: Record<
-      string,
-      {
-        label: string;
-        variant:
-          | "default"
-          | "secondary"
-          | "destructive"
-          | "success"
-          | "warning";
-      }
-    > = {
-      ACTIVE: { label: t("machines.statuses.active"), variant: "success" },
-      INACTIVE: {
-        label: t("machines.statuses.inactive"),
-        variant: "secondary",
-      },
-      MAINTENANCE: {
-        label: t("machines.statuses.maintenance"),
-        variant: "warning",
-      },
-      OUT_OF_SERVICE: {
-        label: t("machines.statuses.broken"),
-        variant: "destructive",
-      },
-    };
-
-    const statusInfo = statusMap[status] || {
-      label: status,
-      variant: "default" as const,
-    };
-    return (
-      <Badge variant={statusInfo.variant} className="text-xs">
-        {statusInfo.label}
-      </Badge>
-    );
-  };
-
   return (
     <Modal
       open={open}
@@ -185,7 +141,7 @@ export const MachineSelectModal: React.FC<MachineSelectModalProps> = ({
               className="w-fit"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
-              {t("common.back", "Atr\u00e1s")}
+              {t("common.back")}
             </Button>
           )}
           <div className="relative flex-1">

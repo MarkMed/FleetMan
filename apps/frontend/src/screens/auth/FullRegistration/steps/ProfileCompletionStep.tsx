@@ -1,7 +1,7 @@
 import React from "react";
 import { useFormContext, Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { Textarea, TagInput, BodyText, Badge } from "@components/ui";
+import { Textarea, TagInput, BodyText } from "@components/ui";
 import { USER_PROFILE_LIMITS } from "@contracts";
 import type { CompleteRegistrationData } from "../../../../types/registration.types";
 

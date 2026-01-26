@@ -1,7 +1,7 @@
 import React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { Select, Checkbox, BodyText, Badge, Card, CardContent } from '@components/ui';
+import { Select, Checkbox, BodyText, Card, CardContent } from '@components/ui';
 import { Globe, Bell } from 'lucide-react';
 import type { CompleteRegistrationData } from '../../../../types/registration.types';
 

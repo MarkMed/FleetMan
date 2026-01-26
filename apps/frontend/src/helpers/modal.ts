@@ -159,7 +159,6 @@ class ModalHelper {
         break;
     }
     modalConfig.variant = variant;
-    console.log("Modal confirm config:", { ...modalConfig, confirmText, cancelText });
 
     return this.getStore().showConfirmation({
       ...modalConfig,

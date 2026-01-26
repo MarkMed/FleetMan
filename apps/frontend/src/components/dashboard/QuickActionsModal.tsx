@@ -5,10 +5,8 @@ import {
   CheckCircle, 
   AlertCircle, 
   Clock, 
-  MessageSquare, 
-  Plus,
+  MessageSquare,
   Bell,
-  Settings
 } from 'lucide-react';
 
 /**
@@ -49,8 +47,7 @@ export type QuickActionId =
   | 'quickcheck' 
   | 'reportEvent' 
   | 'viewHistory' 
-  | 'sendMessage' 
-  | 'newMachine'
+  | 'sendMessage'
   | 'notifications';
 
 interface QuickAction {

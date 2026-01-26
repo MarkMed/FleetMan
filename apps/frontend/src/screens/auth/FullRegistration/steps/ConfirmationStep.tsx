@@ -2,7 +2,7 @@ import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { Card, CardHeader, CardContent, BodyText, Heading3, Badge } from '@components/ui';
-import { Mail, User, Building, Phone, MapPin, FileText, Tag, Globe, Bell, Users, Briefcase } from 'lucide-react';
+import { Mail, Building, Phone, MapPin, FileText, Tag, Globe, Bell, Users, Briefcase } from 'lucide-react';
 import type { CompleteRegistrationData } from '../../../../types/registration.types';
 
 /**

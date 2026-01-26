@@ -9,7 +9,7 @@ import {
   Skeleton,
   Button,
 } from "@components/ui";
-import { Search, User, Users, ArrowLeft } from "lucide-react";
+import { Search, Users, ArrowLeft } from "lucide-react";
 import { cn } from "@utils/cn";
 
 /**
@@ -157,7 +157,7 @@ export const ContactSelectModal: React.FC<ContactSelectModalProps> = ({
               className="w-fit"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
-              {t("common.back", "Atr\u00e1s")}
+              {t("common.back")}
             </Button>
           )}
           <div className="relative flex-1">
@@ -224,7 +224,7 @@ export const ContactSelectModal: React.FC<ContactSelectModalProps> = ({
         )}
         {/* Lista de contactos */}
         {!isLoading && filteredContacts.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[60vh] overflow-y-auto max-h-[47vh] px-2 pb-3 overflow-x-hidden">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[60vh] overflow-y-auto px-2 pb-3 overflow-x-hidden">
             {filteredContacts.map((contact) => (
               <Card
                 key={contact.id}

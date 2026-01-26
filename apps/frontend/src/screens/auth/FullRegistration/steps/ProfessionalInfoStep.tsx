@@ -2,7 +2,7 @@ import React from "react";
 import { useFormContext, Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { InputField, Textarea, BodyText } from "@components/ui";
-import { Building, Phone, MapPin } from "lucide-react";
+import { Building, Phone } from "lucide-react";
 import type { CompleteRegistrationData } from "../../../../types/registration.types";
 
 /**

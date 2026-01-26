@@ -1,7 +1,7 @@
 import React from 'react';
 import { useFormContext, Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { InputField, BodyText } from '@components/ui';
+import { InputField } from '@components/ui';
 import { Mail, Lock } from 'lucide-react';
 import type { CompleteRegistrationData } from '../../../../types/registration.types';
 

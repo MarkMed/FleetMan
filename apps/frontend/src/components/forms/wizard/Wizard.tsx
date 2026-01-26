@@ -26,12 +26,6 @@ export function Wizard<T = any>({
   className,
   showProgress = true,
 }: WizardProps<T>) {
-  console.log(
-    "🔷 [Wizard] Renderizando... steps:",
-    steps.length,
-    "isSubmitting:",
-    isSubmitting,
-  );
 
   const wizard = useWizard({
     steps,
