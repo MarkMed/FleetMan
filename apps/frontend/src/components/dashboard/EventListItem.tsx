@@ -42,7 +42,8 @@ export const EventListItem: React.FC<EventListItemProps> = ({
   };
 
   // Format date (formato corto para dashboard) - usa locale según idioma actual
-  const dateLocale = i18n.language === 'es' ? es : enUS;
+  // Usa startsWith para manejar códigos regionales como 'es-ES', 'en-US', etc.
+  const dateLocale = i18n.language.startsWith('es') ? es : enUS;
   const formattedDate = format(new Date(event.createdAt), "d MMM yyyy, HH:mm", {
     locale: dateLocale,
   });

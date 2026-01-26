@@ -208,7 +208,7 @@ export const NavigationDrawer: React.FC = () => {
           <div className="w-full justify-start p-4">
             <Button
               variant="outline"
-              onPress={handleLogout}
+              onPress={handleLogoutClick  }
               className='w-full justify-start gap-3 h-auto text-destructive border border-red-600 bg-destructive/5 hover:bg-destructive/20 hover:text-destructive'
             >
               <LogOut className="w-5 h-5" />

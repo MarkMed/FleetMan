@@ -81,13 +81,6 @@ export function useQuickActions() {
       return;
     }
 
-    // Acciones directas (no requieren selección)
-    if (actionId === 'newMachine') {
-      navigate('/machines/new');
-      setSelectedAction(null);
-      return;
-    }
-
     if (actionId === 'notifications') {
       navigate('/notifications');
       setSelectedAction(null);

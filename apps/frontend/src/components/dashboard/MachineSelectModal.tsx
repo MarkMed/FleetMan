@@ -5,7 +5,6 @@ import {
   Card,
   CardContent,
   BodyText,
-  Badge,
   Skeleton,
   Button,
 } from "@components/ui";

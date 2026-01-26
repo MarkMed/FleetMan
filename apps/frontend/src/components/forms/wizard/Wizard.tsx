@@ -60,9 +60,6 @@ export function Wizard<T = any>({
     onBack: previousStep,
   };
 
-  // Extraer títulos para el progress
-  const stepTitles = steps.map((step) => step.title);
-
   return (
     <div className={cn("w-full max-w-4xl mx-auto", className)}>
       <Card className="shadow-lg max-h-[90vh] overflow-y-auto">
