@@ -1,6 +1,6 @@
 # WBS
 
-0. **Fundaciones / Setup**
+## 0. **Fundaciones / Setup**
 	- 0.1 **Repos & monorepo** (front React+Vite, back Node/TS, shared/DTO/Zod).
 Crear el monorepo con workspaces, configs TS, scripts y shared/ para contratos.
 		- Horas estimadas: **8**hs
@@ -145,7 +145,18 @@ Instalación y configuración de dependencias core del frontend: React, Vite, Sh
 		- Dependencias: 0.7, 0.14 (FS)
 		- Spike: **No**
 
-1. **Dominio & Datos**
+	- 0.16 **Email Infrastructure Setup** (Base genérica) [Sprint #15].
+Configuración base del sistema de emails reutilizable. Backend: Verificar/Instalar nodemailer, crear EmailService en infrastructure layer con métodos sendEmail(to, subject, html) y sendTemplateEmail(to, templateName, data), configurar SMTP (Gmail/SendGrid/Mailtrap para dev), crear EmailTemplateService para generar HTML con layout wrapper común (header, footer, estilos inline), agregar variables ENV (EMAIL_HOST, EMAIL_PORT, EMAIL_SECURE, EMAIL_USER, EMAIL_PASS, EMAIL_FROM, EMAIL_BASE_URL). Templates base: Crear plantilla HTML wrapper con estilos inline responsive, placeholders para content dinámico. NO incluye lógica de negocio específica (eso va en 2.4 Password Recovery y 4.2f Event Notifications). Estructura: apps/backend/src/infrastructure/email/EmailService.ts, apps/backend/src/infrastructure/email/templates/, apps/backend/src/infrastructure/email/EmailTemplateService.ts.
+		- Horas estimadas: **4**hs
+		- Margen: ±**0.8**hs (P80)
+		- Incertidumbre: **Media**
+		- Dependencias: 0.11 (Backend setup) (FS)
+		- Spike: **No**
+		- PERT: Optimista 3hs, Probable 4hs, Pesimista 6hs
+		- MoSCoW: **Must Have** (base para 2.4 y 4.2f)
+		- Sprint tentativo: **#15**
+
+## 1. **Dominio & Datos**
 
 	- 1.1 **Modelo** (User, Machine, MaintenanceReminder, MachineEvent, QuickCheck, Notification, SparePart, etc.).
 Entidades, relaciones e invariantes del dominio.
@@ -181,7 +192,7 @@ Datos de ejemplo para dev, pruebas y demo.
 		- Dependencias: 1.2 (FS)
 		- Spike: **No**
 
-2. **Autenticación & Roles** (RF-001..004)
+## 2. **Autenticación & Roles** (RF-001..004)
 
 	- 2.1 **Registro** (RF-001).
 Frontend: Wizard form component con validación multi-step (datos personales, 
@@ -223,13 +234,16 @@ Cierre manual/por inactividad.
 		- Dependencias: 2.2 (FS)
 		- Spike: **No**
 
-	- 2.4 **Recuperación de contraseña** (RF-004) [NiceToHave].
-Flujo de reset vía token temporal.
-		- Horas estimadas: **8**hs
-		- Margen: ±**1.5**hs (P80)
+	- 2.4 **Recuperación de contraseña** (RF-004) [Sprint #15].
+Flujo completo de reset de contraseña vía email con token temporal. Backend: (1) Endpoint POST /auth/forgot-password (body: {email}): generar token JWT temporal con expiración 1 hora, guardar en User.passwordResetToken + User.passwordResetExpires, enviar email con link de reset usando EmailService (template 'password-reset'), validar que email exista y esté activo, rate limiting (máx 3 requests/15min por email). (2) Endpoint POST /auth/reset-password (body: {token, newPassword}): validar token no expirado, verificar que User.passwordResetToken coincida, hashear nueva contraseña (bcrypt), limpiar passwordResetToken/Expires, guardar cambio, invalidar sesiones existentes (opcional), responder con success. Frontend: (1) Al clickear en "Olvidaste tu contraseña", envíe la petición correspondiente al backend, y cuando este responda se mueste el mensaje success "Revisa tu email" en un modal, error handling (email no encontrado, rate limit). (2) ResetPasswordScreen (/reset-password/:token): form con inputs nueva contraseña + confirmar, con validación zod y RHF, loading state, redirect a login tras success, error handling (token inválido/expirado). Email Template: Diseño responsive con botón CTA "Restablecer Contraseña" que apunta a FRONTEND_URL/reset-password/:token, advertencia de expiración (1 hora), mensaje de seguridad. Validaciones: Contraseña segura (min 8 chars, mayúscula, minúscula, número), token único y no reusable, expiración estricta. Security: No revelar si email existe (siempre responder success), token suficientemente largo (JWT), HTTPS obligatorio en prod.
+		- Horas estimadas: **6**hs
+		- Margen: ±**1.2**hs (P80)
 		- Incertidumbre: **Media**
-		- Dependencias: 2.1 (FS)
+		- Dependencias: 2.1, 0.16 (EmailService) (FS)
 		- Spike: **No**
+		- PERT: Optimista 5hs, Probable 6hs, Pesimista 8hs
+		- MoSCoW: **Must Have** (feature crítica de seguridad)
+		- Sprint tentativo: **#15**
 
 	- 2.5 **AutZ por rol** (admin/técnico/distribuidor).
 Guards/claims por rol en API y UI.
@@ -249,7 +263,7 @@ Permitir a usuarios modificar su información personal. Frontend: Formulario de 
 		- PERT: Optimista 5hs, Probable 7hs, Pesimista 10hs
 		- MoSCoW: **Should Have**
 
-3. **Maquinaria** (RF-005, RF-006)
+## 3. **Maquinaria** (RF-005, RF-006)
 
 	- 3.1 **Alta de máquina (RF-005) + ReactHookForms + Wizard Component**.
 Frontend: Implementación de ReactHookForms como sistema de formularios estándar + 
@@ -383,7 +397,7 @@ Sistema de permisos granulares para compartir datos de máquinas (read-only). Do
 		- PERT: Optimista 12hs, Probable 16hs, Pesimista 22hs
 		- MoSCoW: **Should Have**
 
-4. **Mantenimiento & Eventos** (RF-007..RF-009)
+## 4. **Mantenimiento & Eventos** (RF-007..RF-009)
 
 	- 4.1a **MaintenanceAlarm - Domain + Contracts + Persistence** (RF-007).
 Infraestructura de datos para alarmas de mantenimiento programado. Domain: Crear entidad MaintenanceAlarm como subdocumento de Machine (patrón igual a MachineEvent y Notification). Campos MaintenanceAlarm: {id, name, description?, targetOperatingHours, isActive, createdBy, createdAt, lastTriggeredAt?, timesTriggered}. Modificar Machine model para agregar maintenanceAlarms?: IMaintenanceAlarm[] como subdocumento array. Verificar existencia de machine.operatingHours (número acumulado de horas de uso), agregar si no existe. Extender IMachineRepository con métodos: addMaintenanceAlarm, getMaintenanceAlarms, updateMaintenanceAlarm, deleteMaintenanceAlarm (soft delete con isActive:false). Contracts: Crear maintenance-alarm.contract.ts con schemas Zod (MaintenanceAlarmSchema, CreateMaintenanceAlarmRequestSchema, UpdateMaintenanceAlarmRequestSchema, GetMaintenanceAlarmsResponseSchema). Persistence: Crear MaintenanceAlarmSubSchema en machine.model.ts como subdocumento embedded, implementar métodos CRUD en MachineRepository, índices para queries eficientes. Mapper: Crear maintenance-alarm.mapper.ts para conversión Document ↔ Domain.
@@ -539,19 +553,6 @@ Limitación automática de eventos por máquina y configurabilidad de registro.
 		- Sprint tentativo: **Sprint #14 o #15** (Post-MVP, NFR)
 		- PERT: Optimista 6hs, Probable 8hs, Pesimista 11hs
 
-	- 4.2f **Machine Events - Email Notifications System** [Should Have].
-Sistema modular de notificaciones por email cuando se crean eventos de máquina. Se integra como observador del use case CreateMachineEvent, permitiendo notificar a usuarios relevantes según reglas configurables por organización. Alcance: (1) EmailService (Infrastructure Layer): Configurar nodemailer SMTP, generar plantillas HTML responsive, enviar emails sin bloquear flujo principal, logging de errores. (2) NotificationConfig (Domain Layer): Modelo de reglas configurables con NotificationRule {eventTypeId?, minSeverity: 'LOW'|'MEDIUM'|'HIGH'|'CRITICAL', recipients: string[], enabled: boolean} y NotificationConfig {organizationId, rules[]}. (3) NotificationConfigRepository (Infrastructure Layer): Colección separada MongoDB con operaciones findByOrganization, update, create. (4) Integración CreateMachineEventUseCase: Agregar dependencias EmailService + NotificationConfigRepository en constructor, método privado sendNotificationIfNeeded() que obtiene config org, filtra reglas aplicables (tipo + severidad), envía email a destinatarios únicos, captura errores sin romper flujo. (5) API Endpoints: GET/PUT /api/v1/notifications/config (obtener/actualizar reglas), POST /api/v1/notifications/test (enviar email de prueba). Variables ENV: EMAIL_HOST, EMAIL_PORT, EMAIL_SECURE, EMAIL_USER, EMAIL_PASS, EMAIL_FROM. Email template: HTML inline styles, asunto `[SEVERIDAD] Tipo Evento - Nombre Máquina`, body con detalles máquina/evento/fecha/asignado, link a FleetMan. Consideraciones: No bloqueante (mismo proceso pero no afecta response), validar destinatarios (solo usuarios de org), SPF/DKIM/DMARC en dominio, secrets en ENV, logging detallado. Orden implementación: EmailService (1d) → NotificationConfig Domain (0.5d) → NotificationConfigRepository (0.5d) → Integrar Use Case (0.5d) → DI (0.5d) → API Endpoints (1d). Extensibilidad futura: Múltiples canales (SMS/Slack/WhatsApp), plantillas personalizables, webhooks, digest diario, queue con prioridades.
-		- Horas estimadas: **20**hs
-		- Margen: ±**4.0**hs (P80)
-		- Incertidumbre: **Media-Alta**
-		- Dependencias: 4.2b (CreateMachineEventUseCase debe existir), 0.11 (Backend setup) (FS)
-		- Spike: **No**
-		- MoSCoW: **Should Have**
-		- Sprint tentativo: **Sprint #15-#16** (Post-MVP, mejora comunicación proactiva)
-		- PERT: Optimista 16hs, Probable 20hs, Pesimista 26hs
-		- **Dependencias adicionales:** nodemailer, @types/nodemailer
-		- **Referencia:** docs/machine-events-email-notifications.md
-
 	- 4.3 **Historial unificado** (RF-009).
 Timeline consolidado de manttos, incidencias y quickchecks.
 		- Horas estimadas: **15**hs
@@ -596,7 +597,7 @@ Funcionalidad para posponer temporalmente alertas sin afectar configuración bas
 		- PERT: Optimista 8hs, Probable 11hs, Pesimista 15hs
 		- MoSCoW: **Should Have**
 
-6. **QuickCheck** (RF-011, RF-017)
+## 6. **QuickCheck** (RF-011, RF-017)
 
 	- 6.1 **Domain + Persistence** (RF-011).
 Capa de Dominio y Persistencia: Definir entidades QuickCheckTemplate y QuickCheckItem con Value Objects y reglas de negocio. Crear interfaces de repositorios (IQuickCheckTemplateRepository). Implementar schemas Mongoose (QuickCheckTemplateSchema, QuickCheckItemSchema) con índices. Crear contratos Zod compartidos (CreateQuickCheckTemplateDTO, QuickCheckItemDTO) para validación isomórfica. Mappers entre Domain ↔ Persistence.
@@ -662,25 +663,30 @@ Doble integración: Notificaciones + Eventos de Máquina. Funcionalidad: Cuando 
 		- Spike: **No**
 		- PERT: Optimista 1.5hs, Probable 2hs, Pesimista 3hs
 
-7. **Repuestos** (RF-012..RF-014) [NiceToHave]
+## 7. **Repuestos** (RF-012..RF-014) [NiceToHave]
 
-	- 7.1 **Alta/edición repuesto** (RF-012/014).
-CRUD simple atado a máquina.
-		- Horas estimadas: **8**hs
-		- Margen: ±**1.5**hs (P80)
+	- 7.1 **Alta/edición repuesto** (RF-012/014) [Sprint #15 - Versión 0.0.1].
+CRUD básico simplificado de repuestos atado a máquina. Backend: Definir SparePart como subdocumento de Machine (NO entidad independiente) con campos mínimos {id, name, partNumber?, quantity, addedAt, notes?}, agregar Machine.spareParts[] array, extender MachineRepository con métodos addSparePart, getSpareParts, updateSparePart, deleteSparePart. Frontend: Form modal "Agregar Repuesto" accesible desde MachineDetailScreen con inputs (nombre, número parte opcional, cantidad), tabla simple de repuestos en MachineDetailScreen con columnas (nombre, número, cantidad, fecha, acciones), botones editar/eliminar inline. NO incluir: estados complejos (instalado/pendiente/retirado), historial de cambios, alertas de stock, costos, proveedores, imágenes. Validaciones básicas: nombre requerido (min 3 chars), cantidad numérica positiva. Objetivo: Tracking mínimo viable de consumibles por máquina (versión 0.0.1 del gestor de repuestos).
+		- Horas estimadas: **6**hs
+		- Margen: ±**1.2**hs (P80)
 		- Incertidumbre: **Media**
 		- Dependencias: 3.1 (FS)
 		- Spike: **No**
+		- PERT: Optimista 5hs, Probable 6hs, Pesimista 8hs
+		- MoSCoW: **Should Have**
+		- Sprint tentativo: **#15**
 
-	- 7.2 **Listado por máquina** (RF-013).
-Vista de repuestos con estados básicos.
-		- Horas estimadas: **6**hs
-		- Margen: ±**1.0**hs (P80)
+	- 7.2 **Listado por máquina** (RF-013) [Post-Sprint #15].
+Vista de repuestos con estados básicos y filtros. Expandir tabla de 7.1 agregando: filtro por nombre (search), ordenamiento (nombre, fecha, cantidad), empty state ("No hay repuestos registrados"), paginación si > 20 items. Badge visual para cantidad baja (< 5 unidades). Export simple a CSV opcional. NO incluir: gráficos, dashboards, estadísticas avanzadas.
+		- Horas estimadas: **4**hs
+		- Margen: ±**0.8**hs (P80)
 		- Incertidumbre: **Baja**
 		- Dependencias: 7.1 (FS)
 		- Spike: **No**
+		- PERT: Optimista 3hs, Probable 4hs, Pesimista 5.5hs
+		- MoSCoW: **Could Have**
 
-8. **Centro de Notificaciones** (RF-016)
+## 8. **Centro de Notificaciones** (RF-016)
 
 	- 8.1 **Domain + Contracts + Persistence**.
 Capa de Dominio y Persistencia: Definir estructura Notification como subdocumento de User (notificationType, message, wasSeen, notificationDate, sourceId, sourceType). Extender User schema en Mongoose agregando array de notifications con índices apropiados. Crear contratos Zod compartidos (AddNotificationDTO, NotificationDTO, MarkAsSeenDTO). NO crear entidad independiente ni repositorio separado - extender UserRepository. Implementar métodos básicos para add/get/markAsSeen en UserRepository.
@@ -789,7 +795,19 @@ Limitación automática de notificaciones por usuario y capacidad de eliminació
 		- Sprint tentativo: **Sprint #14 o #15** (Post-MVP, NFR)
 		- PERT: Optimista 5hs, Probable 7hs, Pesimista 10hs
 
-9. **Comunicación entre Usuarios** (RF-015)
+	- 8.7 **Email Channel - Notificaciones por Email** [Should Have] [Sprint #15].
+Extensión del sistema de notificaciones agregando canal de email. Integración simple siguiendo el patrón existente: Eventos → Notificaciones (in-app) → Emails. Alcance SIMPLIFICADO: (1) Email Templates: Crear 2-3 templates HTML específicos para notificaciones reutilizando wrapper de 0.16: 'notification-event' (eventos de máquina), 'notification-maintenance' (alarmas de mantenimiento), 'notification-quickcheck' (QuickCheck fallido). Cada template con asunto dinámico, body con detalles relevantes, botón CTA a la app. (2) Integración en AddNotificationUseCase: Inyectar EmailService como dependencia, después de guardar notificación en User.notifications[] llamar a `emailService.sendTemplateEmail(user.email, templateName, notificationData)`, capturar errores sin romper flujo principal (email falla silenciosamente, notificación in-app siempre persiste). (3) Campo User.emailNotificationsEnabled (boolean, default true): Verificar antes de enviar email, permitir usuario opt-out desde Settings (toggle en 14.6). NO incluir: reglas configurables complejas, NotificationConfig separado, API endpoints de config, filtrado por severidad/tipo, recipients múltiples, rate limiting (eso es overengineering). Orden implementación: Templates HTML (1hs) → Hook en AddNotificationUseCase (1.5hs) → Testing manual con Mailtrap (1hs) → Campo User.emailNotificationsEnabled + validación (0.5hs). Objetivo: Emails simples 1-a-1 cuando se genera notificación, arquitectura limpia emailSystem.send(data) sin feature-creep.
+		- Horas estimadas: **4**hs
+		- Margen: ±**0.8**hs (P80)
+		- Incertidumbre: **Baja-Media**
+		- Dependencias: 8.2 (AddNotificationUseCase debe existir), 0.16 (EmailService base) (FS)
+		- Spike: **No**
+		- MoSCoW: **Should Have**
+		- Sprint tentativo: **#15** (Nice-to-have, mejora comunicación)
+		- PERT: Optimista 3hs, Probable 4hs, Pesimista 6hs
+		- Nota: **Canal adicional del sistema de notificaciones**, no sistema separado
+
+## 9. **Comunicación entre Usuarios** (RF-015)
 
 	- 9.1 **User Discovery - Descubrimiento de usuarios**.
 Módulo para descubrir y explorar usuarios registrados en la plataforma. NO incluye relación de contactos (eso es 9.2).
@@ -930,7 +948,7 @@ Sistema de chat básico 1-a-1 entre contactos. NO incluir features avanzadas (gr
 			- Spike: **No**
 			- PERT: Optimista 2hs, Probable 3hs, Pesimista 4hs
 
-10. **Enriquecimiento de Usuarios & Datos**
+## 10. **Enriquecimiento de Usuarios & Datos**
 
 	- 10.1 **Edición de Perfil de Usuario**.
 Funcionalidad completa para que usuarios editen su información de perfil. Desglosada por capas arquitectónicas.
@@ -1021,7 +1039,7 @@ Mejoras al flujo de onboarding existente (2.3) para capturar información adicio
 		- Spike: **No**
 		- PERT: Optimista 3hs, Probable 4hs, Pesimista 6hs
 
-11. **Búsqueda & Filtros** (RF-018) [Post-MVP]
+## 11. **Búsqueda & Filtros** (RF-018) [Post-MVP]
 
 	- 11.1 **Query service + índices**.
 Texto simple/estado y endpoints de búsqueda.
@@ -1039,7 +1057,7 @@ Barra, filtros y resultados.
 		- Dependencias: 11.1 (FS)
 		- Spike: **No**
 
-12. **Dashboard & UX Enhancements** (Sprint #14)
+## 12. **Dashboard & UX Enhancements** (Sprint #14)
 
 	- 12.1 **Dashboard - Últimos QuickChecks**.
 Agregar sección al dashboard mostrando los últimos QuickChecks realizados (5-10 más recientes). Backend: Verificar/crear endpoint GET /api/quickchecks/recent?limit=10 con filtro por usuario y máquinas del usuario, ordenar por fecha descendente, incluir datos de máquina asociada. Frontend: Card/widget "QuickChecks Recientes" con lista compacta mostrando: nombre máquina, resultado (PASS/FAIL), fecha, score, link a detalle. Estados empty ("No hay QuickChecks recientes"), loading skeleton, error con retry. Integrar en DashboardScreen con layout grid responsive. Estilos: Indicadores visuales para PASS (verde) y FAIL (rojo), iconos, formato de fecha relativo ("hace 2 horas").
@@ -1068,15 +1086,35 @@ Simplificar y reorganizar dashboard para enfocarse solo en las 2 nuevas seccione
 		- Spike: **No**
 		- PERT: Optimista 1.5hs, Probable 2hs, Pesimista 3hs
 
-13. **Ayuda & Guías** (RF-019)
+## 13. **Ayuda & Guías** (RF-019)
 
-	- 13.1 **Ayuda inline mínima** / "cómo usar esta página" [NiceToHave].
-Tooltips/accordions por pantalla.
-		- Horas estimadas: **6**hs
-		- Margen: ±**1.0**hs (P80)
-		- Incertidumbre: **Baja**
+	- 13.1 **Sistema de Ayuda** [NiceToHave].
+Infraestructura completa de ayuda con tooltips inline, páginas de ayuda, y tutoriales guiados. Incluye subtareas para implementación incremental.
+		- Horas estimadas: **18**hs (total desglosado en subtareas)
+		- Margen: ±**3.5**hs (P80)
+		- Incertidumbre: **Media**
 		- Dependencias: 0.10 (FS)
 		- Spike: **No**
+
+	- 13.1a **Help System - Pages & Content Base** [Sprint #15].
+Crear sistema de ayuda inicial con contenido base extensible. Frontend: Página /help con layout sidebar (navegación por secciones) + content area, router para /help/:section, componentes HelpArticle (Markdown render con react-markdown), HelpSection (lista de artículos en sidebar), HelpSearch (búsqueda simple client-side con filter). Contenido inicial: 3 artículos básicos en Markdown: (1) "Introducción al Dashboard" (qué ver, widgets principales), (2) "Gestionar Máquinas" (alta, edición, estados), (3) "QuickCheck - Inspecciones Rápidas" (crear checklist, ejecutar, interpretar resultados). Screenshots placeholders con texto "[Imagen: Dashboard principal]". Backend: NO necesario, contenido estático en apps/frontend/src/content/help/ como archivos .md. Estilos: Tipografía clara, código syntax highlighting opcional, responsive, breadcrumbs, botón "Volver" en cada artículo. NO incluir: tutorial interactivo overlay (eso es 13.2), tooltips contextuales inline (eso es 13.1b), videos, búsqueda full-text backend. Objetivo: Base extensible para agregar más contenido en futuros sprints.
+		- Horas estimadas: **5**hs
+		- Margen: ±**1.0**hs (P80)
+		- Incertidumbre: **Media**
+		- Dependencias: 14.4a (routing) (FS)
+		- Spike: **No**
+		- PERT: Optimista 4hs, Probable 5hs, Pesimista 7hs
+		- MoSCoW: **Should Have**
+		- Sprint tentativo: **#15**
+
+	- 13.1b **Tooltips & Ayuda Inline Contextual** [Post-MVP].
+Tooltips y ayuda contextual en pantallas complejas. Agregar iconos "?" con popovers explicativos en forms, paneles de configuración, y features avanzadas. Component Tooltip reutilizable con diferentes tamaños y posiciones.
+		- Horas estimadas: **4**hs
+		- Margen: ±**0.8**hs (P80)
+		- Incertidumbre: **Baja**
+		- Dependencias: 13.1a (FS)
+		- Spike: **No**
+		- PERT: Optimista 3hs, Probable 4hs, Pesimista 5.5hs
 
 	- 13.2 **Tutorial overlay / tours** [Post-MVP].
 Onboarding guiado paso a paso.
@@ -1086,7 +1124,7 @@ Onboarding guiado paso a paso.
 		- Dependencias: 12.1 (FS)
 		- Spike: **No**
 
-14. **Accesibilidad & UX**
+## 14. **Accesibilidad & UX**
 
 	- 14.1 **Responsive grid & breakpoints**.
 Layouts móviles/desktop.
@@ -1183,7 +1221,7 @@ Mejorar accesibilidad de perfil y logout en la interfaz. Frontend: Agregar botó
 		- Spike: **No**
 		- PERT: Optimista 3hs, Probable 4hs, Pesimista 6hs
 
-15. **Calidad & Pruebas** (alineado a SQA)
+## 15. **Calidad & Pruebas** (alineado a SQA)
 
 	- 15.1 **Estrategia & DoD QA**.
 Criterios de listo y enfoque de pruebas.
@@ -1257,7 +1295,7 @@ Triage continuo, hotfix path y mini-regresión.
 		- Dependencias: SS con 15.5–15.8
 		- Spike: **No**
 
-16. **Seguridad & Hardening**
+## 16. **Seguridad & Hardening**
 
 	- 16.1 **Hashing, rate-limit, CORS**.
 Config seguro básico en API.
@@ -1283,7 +1321,7 @@ Chequeos de rol en rutas.
 		- Dependencias: 2.5 (FS)
 		- Spike: **No**
 
-17. **Observabilidad ligera**
+## 17. **Observabilidad ligera**
 
 	- 17.1 **Logger estructurado** (niveles, request-id).
 Logging JSON y correlación simple.
@@ -1301,7 +1339,7 @@ Contadores por evento/acción en logs.
 		- Dependencias: 17.1 (FS)
 		- Spike: **No**
 
-18. **Deploy & Demo**
+## 18. **Deploy & Demo**
 
 	- 18.1 **Taller Deploy - Conceptos Generales** (Sesión 1).
 Primera sesión de conceptos fundamentales de deploy y DevOps.
@@ -1400,7 +1438,7 @@ Carga inicial del dataset de demo.
 		- Spike: **No**
 		- **Tarea agrupada:** [3] Azure routing fix
 
-19. **Documentación & Capacitación**
+## 19. **Documentación & Capacitación**
 
 	- 19.1 **README + guía arranque dev**.
 Setup, scripts y troubleshooting breve.
@@ -1426,7 +1464,7 @@ Guía funcional mínima por pantalla.
 		- Dependencias: 12.1 (FS)
 		- Spike: **No**
 
-20. **Gobernanza de Alcance** (MVP)
+## 20. **Gobernanza de Alcance** (MVP)
 
 	- 20.1 **Scope freeze** (MoSCoW).
 Cierre de alcance y criterios.
@@ -1452,7 +1490,7 @@ Flags para diferir capacidades.
 		- Dependencias: 0.2 (FS)
 		- Spike: **No**
 
-21. **Backlog Post-MVP (consolidado)**
+## 21. **Backlog Post-MVP (consolidado)**
 
 	- 21.1 **Consolidación y tracking del backlog Post-MVP**.
 Curaduría y priorización para fases futuras.
@@ -1462,7 +1500,7 @@ Curaduría y priorización para fases futuras.
 		- Dependencias: 19.2 (FS)
 		- Spike: **No**
 
-22. **Gestión del Proyecto & Scrumban** (LOE dominical encadenado)
+## 22. **Gestión del Proyecto & Scrumban** (LOE dominical encadenado)
 
 	- 22.1 **Reporte Académico** (dominical).
 Informe semanal de avances/bloqueos y decisiones; "precalienta" la demo.
@@ -1497,7 +1535,7 @@ Documento extenso que resume y explica todo lo realizado en un conjunto de seman
 		- Dependencias: Cierre de período de múltiples sprints (FS)
 		- Spike: **No**
 
-23. **Pre-Proyecto / Anteproyecto**
+## 23. **Pre-Proyecto / Anteproyecto**
 
 	- 23.1 **Talleres** (instancias de guía general).
 Participación en sesiones de taller para guía general del proyecto.
@@ -1667,7 +1705,7 @@ Instancia comodín para refinar últimos detalles del proyecto, completar docume
 		- Dependencias: Cierre Sprint 16 (FS)
 		- Spike: **No**
 
-24. **Eventos Académicos** (Hitos sin horas de desarrollo)
+## 24. **Eventos Académicos** (Hitos sin horas de desarrollo)
 
 	- 24.1 **Entrega Primera Instancia**.
 Presentación de primera instancia del proyecto para revisión académica.
@@ -1703,3 +1741,82 @@ Finalización formal del proceso académico y entrega de calificaciones.
 		- Horas de desarrollo: **0**hs (Evento/Hito)
 		- Dependencias: 24.4 (FS)
 		- Preparación: No requiere trabajo adicional de desarrollo
+
+## 25. **Documentación Académica Final** (Preparación entrega 10 feb 2026)
+
+	- 25.1 **Auditoría de Documentación Existente** [Sprint #15].
+Revisar qué documentación académica ya existe vs. qué requiere la entrega final. Crear checklist exhaustivo de secciones obligatorias del informe final (introducción, objetivos, alcance, arquitectura, implementación, testing, resultados, conclusiones, bibliografía, anexos), identificar gaps críticos y secundarios con priorización (Must/Should/Could), listar documentación técnica existente reutilizable (WBS.md, architecture.md, sprintsGoals.md, user-journey.md, testing docs), planificar estructura de carpetas para documentación académica final. Reunión con tutor para validar estructura propuesta y obtener feedback sobre enfoque. Entregable: Documento checklist-documentacion-academica.md con estado actual y plan de completitud.
+		- Horas estimadas: **3**hs
+		- Margen: ±**0.6**hs (P80)
+		- Incertidumbre: **Baja**
+		- Dependencias: Cierre Sprint #14 (FS)
+		- Spike: **No**
+		- PERT: Optimista 2hs, Probable 3hs, Pesimista 4hs
+		- MoSCoW: **Must Have**
+		- Sprint tentativo: **#15**
+
+	- 25.2 **Memoria Técnica - Arquitectura & Diseño** [Sprint #15-#16].
+Documentar decisiones arquitectónicas y diseño del sistema. Secciones: (1) Arquitectura de alto nivel (Clean Architecture, capas Domain/Application/Infrastructure/Presentation), (2) Diagramas actualizados (C4 Context/Container/Component, ER actualizado con colecciones finales, diagramas de flujo de features principales), (3) Decisiones técnicas justificadas (por qué React+Vite, Node/Express, MongoDB, TanStack Query, Zod, etc.), (4) Patrones implementados (Repository, Use Case, Result pattern, Observer para notificaciones), (5) Estructura de código y convenciones (monorepo, shared contracts, naming conventions). Formato: LaTeX o Markdown exportable a PDF, diagramas en Mermaid o Draw.io, secciones de 2-4 páginas cada una.
+		- Horas estimadas: **8**hs
+		- Margen: ±**1.6**hs (P80)
+		- Incertidumbre: **Media**
+		- Dependencias: 25.1 (FS)
+		- Spike: **No**
+		- PERT: Optimista 6hs, Probable 8hs, Pesimista 11hs
+		- MoSCoW: **Must Have**
+		- Sprint tentativo: **#15 inicio, #16 finalización**
+
+	- 25.3 **Memoria Técnica - Implementación & Testing** [Sprint #16].
+Documentar features implementadas con evidencia y estrategia de testing. Secciones: (1) Features core implementadas (Auth, Máquinas, QuickCheck, Eventos, Mantenimientos, Notificaciones, Repuestos, Ayuda) con descripción funcional y screenshots, (2) Estrategia de testing aplicada (unitarios, integración, E2E con qué herramientas, cobertura alcanzada), (3) Resultados de QA (bugs encontrados y resueltos, issues críticos pendientes si existen), (4) NFRs cumplidos (performance, seguridad, accesibilidad, PWA), (5) Limitaciones conocidas del MVP. Formato: Evidencia visual (screenshots, GIFs, tablas de resultados), código relevante como anexo opcional.
+		- Horas estimadas: **10**hs
+		- Margen: ±**2.0**hs (P80)
+		- Incertidumbre: **Media-Alta**
+		- Dependencias: 25.2 (FS)
+		- Spike: **No**
+		- PERT: Optimista 8hs, Probable 10hs, Pesimista 14hs
+		- MoSCoW: **Must Have**
+		- Sprint tentativo: **#16**
+
+	- 25.4 **Manual de Usuario Final** [Sprint #16].
+Extender 19.3 con capturas actualizadas y flujos completos. Secciones: (1) Introducción al sistema (qué es FleetMan, propósito, beneficios), (2) Guía de inicio rápido (registro, primer login, dashboard overview), (3) Funcionalidades detalladas por módulo (Máquinas, QuickCheck, Mantenimientos, Eventos, Notificaciones, Repuestos), (4) Casos de uso comunes con paso a paso visual, (5) Troubleshooting y FAQs (problemas comunes y soluciones), (6) Glosario de términos. Formato: PDF con screenshots actuales, navegación con índice, lenguaje no técnico orientado a usuario final.
+		- Horas estimadas: **6**hs
+		- Margen: ±**1.2**hs (P80)
+		- Incertidumbre: **Media**
+		- Dependencias: 25.3, 19.3 (FS)
+		- Spike: **No**
+		- PERT: Optimista 5hs, Probable 6hs, Pesimista 8hs
+		- MoSCoW: **Must Have**
+		- Sprint tentativo: **#16**
+
+	- 25.5 **Manual de Deployment** [Sprint #16].
+Documentar proceso completo de deploy y configuración. Secciones: (1) Arquitectura de deployment (Azure App Service para backend, Azure Static Web Apps para frontend, MongoDB Atlas), (2) Configuración step-by-step (creación de recursos, variables ENV necesarias, secrets, dominios), (3) CI/CD pipeline (GitHub Actions workflows explicados, triggers, stages), (4) Monitoreo y logs (dónde ver logs, métricas básicas, alertas), (5) Troubleshooting deployment (errores comunes, health checks, rollback), (6) Mantenimiento (updates, backups, escalado). Formato: Markdown o PDF con comandos copy-paste, screenshots de Azure Portal.
+		- Horas estimadas: **4**hs
+		- Margen: ±**0.8**hs (P80)
+		- Incertidumbre: **Baja-Media**
+		- Dependencies: 17.1, 17.2 (Deploy debe existir) (FS)
+		- Spike: **No**
+		- PERT: Optimista 3hs, Probable 4hs, Pesimista 6hs
+		- MoSCoW: **Should Have**
+		- Sprint tentativo: **#16**
+
+	- 25.6 **Conclusiones & Trabajo Futuro** [Sprint #16].
+Redactar conclusiones del proyecto y roadmap post-MVP. Secciones: (1) Conclusiones generales (objetivos cumplidos, aprendizajes clave, resultados vs. expectativas), (2) Desafíos encontrados (técnicos, gestión, académicos) y cómo se resolvieron, (3) Retrospectiva técnica (qué funcionó bien, qué se haría diferente), (4) Trabajo futuro (features pendientes del backlog 21.1, mejoras de escalabilidad, integraciones con sistemas externos, monetización), (5) Reflexión académica (aplicación de conocimientos, habilidades desarrolladas, proyección profesional). Formato: 3-5 páginas, tono reflexivo y analítico.
+		- Horas estimadas: **5**hs
+		- Margen: ±**1.0**hs (P80)
+		- Incertidumbre: **Media**
+		- Dependencias: 25.3 (FS)
+		- Spike: **No**
+		- PERT: Optimista 4hs, Probable 5hs, Pesimista 7hs
+		- MoSCoW: **Must Have**
+		- Sprint tentativo: **#16**
+
+	- 25.7 **Revisión & Correcciones Finales** [Sprint #17 Buffer].
+Integración de feedback del tutor y correcciones finales. Actividades: (1) Revisión completa de coherencia narrativa entre secciones, (2) Correcciones ortográficas y gramaticales (Grammarly/LanguageTool), (3) Verificación de formato académico (citas, bibliografía, numeración, tablas de contenido), (4) Checklist pre-entrega (todas las secciones completas, anexos incluidos, PDFs generados), (5) Integración de feedback del tutor en puntos críticos, (6) Generación de versión final (compilar LaTeX/Markdown a PDF, empaquetar anexos, preparar presentación de defensa). Entregable: Documento final empaquetado listo para entrega 10 feb.
+		- Horas estimadas: **8**hs
+		- Margen: ±**1.6**hs (P80)
+		- Incertidumbre: **Media**
+		- Dependencias: 25.2, 25.3, 25.4, 25.5, 25.6 (FS)
+		- Spike: **No**
+		- PERT: Optimista 6hs, Probable 8hs, Pesimista 11hs
+		- MoSCoW: **Must Have**
+		- Sprint tentativo: **#17 (días finales antes de entrega)**
