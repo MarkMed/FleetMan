@@ -24,7 +24,7 @@ Los diagramas Gantt de este proyecto utilizan una **escala de tiempo basada en h
 - ✅ Facilita la planificación basada en capacidad del equipo
 - ✅ Las estimaciones originales (en horas) se mantienen visibles en los nombres de las tareas
 
-## Sprint #0 (2025-10-12 → 2025-10-18)
+## **Sprint #0** (2025-10-12 → 2025-10-18)
 
 ```mermaid
 %%{initBORRAR: {'theme':'base', 'themeVariables': {'primaryColor':'#9ab4e4ff'}}}%%
@@ -50,7 +50,7 @@ gantt
 
 ---
 
-## Sprint #1 (2025-10-19 → 2025-10-25)
+## **Sprint #1** (2025-10-19 → 2025-10-25)
 
 ```mermaid
 gantt
@@ -73,7 +73,7 @@ gantt
 
 ---
 
-## Sprint #2 (2025-10-26 → 2025-11-01)
+## **Sprint #2** (2025-10-26 → 2025-11-01)
 
 ```mermaid
 gantt
@@ -98,7 +98,7 @@ gantt
 
 ---
 
-## Sprint #3 (2025-11-02 → 2025-11-08)
+## **Sprint #3** (2025-11-02 → 2025-11-08)
 
 ```mermaid
 gantt
@@ -122,7 +122,7 @@ gantt
 
 ---
 
-## Sprint #4 (2025-11-09 → 2025-11-15)
+## **Sprint #4** (2025-11-09 → 2025-11-15)
 
 ```mermaid
 gantt
@@ -150,7 +150,7 @@ gantt
 
 ---
 
-## Sprint #5 (2025-11-16 → 2025-11-22)
+## **Sprint #5** (2025-11-16 → 2025-11-22)
 
 ```mermaid
 gantt
@@ -176,7 +176,7 @@ gantt
 
 ---
 
-## Sprint #6 (2025-11-23 → 2025-11-29)
+## **Sprint #6** (2025-11-23 → 2025-11-29)
 
 ```mermaid
 gantt
@@ -212,7 +212,7 @@ gantt
 
 ---
 
-## Sprint #7 (2025-11-30 → 2025-12-06)
+## **Sprint #7** (2025-11-30 → 2025-12-06)
 
 ```mermaid
 gantt
@@ -242,7 +242,7 @@ gantt
 
 ---
 
-## Sprint #8 (2025-12-07 → 2025-12-13)
+## **Sprint #8** (2025-12-07 → 2025-12-13)
 
 ```mermaid
 gantt
@@ -282,7 +282,7 @@ gantt
 
 ---
 
-## Sprint #9 (2025-12-14 → 2025-12-20)
+## **Sprint #9** (2025-12-14 → 2025-12-20)
 
 ```mermaid
 gantt
@@ -326,7 +326,7 @@ gantt
 
 ---
 
-## Sprint #10 (2025-12-21 → 2025-12-27)
+## **Sprint #10** (2025-12-21 → 2025-12-27)
 
 ```mermaid
 gantt
@@ -352,7 +352,7 @@ gantt
 
 ---
 
-## Sprint #11 (2025-12-28 → 2026-01-03)
+## **Sprint #11** (2025-12-28 → 2026-01-03)
 
 ```mermaid
 gantt
@@ -379,7 +379,7 @@ gantt
 
 ---
 
-## Sprint #12 (2026-01-04 → 2026-01-10)
+## **Sprint #12** (2026-01-04 → 2026-01-10)
 
 ```mermaid
 gantt
@@ -407,7 +407,7 @@ gantt
 
 ---
 
-## Sprint #13 (2026-01-11 → 2026-01-17)
+## **Sprint #13** (2026-01-11 → 2026-01-17)
 
 ```mermaid
 gantt
@@ -447,7 +447,7 @@ gantt
 
 ---
 
-## Sprint #14 (2026-01-18 → 2026-01-24)
+## **Sprint #14** (2026-01-18 → 2026-01-24)
 
 ```mermaid
 gantt
@@ -473,36 +473,43 @@ gantt
   2.1b Registro Extendido Wizard (8hs)         :t21b, 2026-01-23, 1d
 
   section Hitos
-  Cierre Sprint 14                             :milestone, s14, 2026-01-24, 0d
+  Cierre Sprint 14                             :milestone, s14, 2026-01-25, 0d
 ```
 
 ---
 
-## Sprint #15 (2026-01-25 → 2026-01-31)
+## **Sprint #15** (2026-01-25 → 2026-01-31)
 
 ```mermaid
 gantt
-  title Sprint 15 (2026-01-25 → 2026-01-31)
+  title Sprint 15 (2026-01-25 → 2026-01-31) - Email & Tracking
   dateFormat  YYYY-MM-DD
   axisFormat  %d
 
   %% Asumimos 5 h/día. Horas estimadas incluidas en el nombre.
+  %% Orden por dependencias: Overhead → Email base → Features dependientes → Docs
 
-  20.1 Reporte Académico (0.9hs)               :t201, 2026-01-25, 1d
-  20.2 Demo/UAT de Sprint #14 (1.5hs)          :t202, 2026-01-25, 1d
-  20.3 Sprint Planning de Sprint #15 (1.3hs)      :t203, 2026-01-25, 1d
-  13.7 Triage & fix post-UAT (10hs)            :t137, after t203, 2d
-  13.9 Gestión de defectos (6hs)               :t139, after t137, 2d
-  11.1 Ayuda inline mínima / "cómo usar esta página" (6hs) :t111, after t139, 2d
-  19.1 Consolidación y tracking del backlog Post-MVP (2hs) :t191, after t111, 1d
+  22.2 Demo/UAT de Sprint #14 (1.5hs)          :t222, 2026-01-25, 1d
+  22.3 Sprint Planning de Sprint #15 (1.3hs)   :t223, 2026-01-25, 1d
+  22.1 Reporte Académico Sprint #14 (5hs)      :t221, 2026-01-26, 1d
+  22.4 Tutorías (1hs)                          :t224, 2026-01-26, 1d
+
+  0.16 Email Infrastructure Setup (4hs)        :t016, 2026-01-27, 1d
+  8.7 Email Channel - Notificaciones (4hs)     :t87, 2026-01-27, 1d
+  2.4 Password Recovery (6hs)                  :t24, 2026-01-28, 1d
+
+  7.1 Alta/edición repuesto (6hs)              :t71, 2026-01-28, 2d
+  7.2 Listado por máquina (4hs)                :t72, after t71, 1d
+
+  25.1 Auditoría Documentación (3hs)          :t251, 2026-01-31, 1d
 
   section Hitos
-  Cierre Sprint 15                             :milestone, s15, 2026-01-31, 1d
+  Cierre Sprint 15                             :milestone, s15, 2026-02-01, 0d
 ```
 
 ---
 
-## Sprint #16 (2026-02-01 → 2026-02-07)
+## **Sprint #16** (2026-02-01 → 2026-02-07)
 
 ```mermaid
 gantt
@@ -526,7 +533,7 @@ gantt
 
 ---
 
-## Sprint #17 (2026-02-08 → 2026-02-14)
+## **Sprint #17** (2026-02-08 → 2026-02-14)
 
 ```mermaid
 gantt

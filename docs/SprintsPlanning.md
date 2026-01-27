@@ -1,6 +1,6 @@
 ﻿# Planes de Sprints
 
-### **Sprint #0**: dom 12 oct → sáb 18 oct 2025
+## **Sprint #0**: dom 12 oct → sáb 18 oct 2025
 
 **Objetivo:** Finalizar y entregar documento de Anteproyecto.
 
@@ -31,7 +31,7 @@ Distribución por categoría:
 
 **Riesgos:** Sprint retrospectivo sin estimaciones previas; tareas ya completadas o en progreso.
 
-### **Sprint #1**: dom 19 oct → sáb 25 oct 2025
+## **Sprint #1**: dom 19 oct → sáb 25 oct 2025
 
 **Objetivo:** Configurar entornos y herramientas de desarrollo (dependencias, monorepo, editor online).
 
@@ -73,7 +73,7 @@ Distribución por categoría:
 
 **Riesgos:** Sprint denso enfocado en configuración inicial. La configuración del monorepo y entornos es crítica para el resto del proyecto. La entrega del anteproyecto puede requerir ajustes de última hora.
 
-### **Sprint #2**: dom 26 oct → sáb 1 nov 2025
+## **Sprint #2**: dom 26 oct → sáb 1 nov 2025
 
 **Objetivo:** Lograr un User Journey refinado y aprobado por el cliente. Crear entidades (clases) básicas.
 
@@ -116,7 +116,7 @@ Distribución por categoría:
 
 **Riesgos:** El design system puede requerir iteraciones con feedback del cliente.
 
-### **Sprint #3**: dom 2 nov → sáb 8 nov 2025
+## **Sprint #3**: dom 2 nov → sáb 8 nov 2025
 
 **Objetivo:** Establecer la infraestructura básica de backend y frontend necesaria para el desarrollo posterior de funcionalidades de dominio.
 
@@ -156,7 +156,7 @@ Distribución por categoría:
 |:-------:|:----------:|:--:|:------------:|:-------------:|
 | **8.9**hs | **16.0**hs | **0**hs | **3.9**hs | **0.9**hs |
 
-### **Sprint #4**: dom 9 nov → sáb 15 nov 2025
+## **Sprint #4**: dom 9 nov → sáb 15 nov 2025
 
 **Objetivo:** 🎯 Auth Básico Funcional - Registro, login, autologin, session JWT y logout.
 
@@ -197,7 +197,7 @@ Distribución por categoría:
 |:-------:|:----------:|:--:|:------------:|:-------------:|
 | **11.9**hs | **22.9**hs | **0**hs | **3.78**hs | **0.9**hs |
 
-### **Sprint #5**: dom 16 nov → sáb 22 nov 2025
+## **Sprint #5**: dom 16 nov → sáb 22 nov 2025
 
 **Objetivo:** 🎯 Mejoras en Formularios y registro de máquina - ReactHookForms + Wizard Component + Alta máquinas.
 
@@ -235,7 +235,7 @@ Distribución por categoría:
 |:-------:|:----------:|:--:|:------------:|:-------------:|
 | **2.8**hs | **23.8**hs | **0**hs | **6**hs | **0.9**hs |
 
-### **Sprint #6**: dom 23 nov → sáb 29 nov 2025
+## **Sprint #6**: dom 23 nov → sáb 29 nov 2025
 
 **Objetivo:** 🚀 Deploy Azure + PWA + i18n + Theme + Settings — Disponibilizar demo deployada y pulir UX con internacionalización y tema.
 
@@ -278,7 +278,7 @@ Distribución por categoría:
 |:-------:|:----------:|:--:|:------------:|:-------------:|
 | **5**hs | **29**hs | **0**hs | **4**hs | **2.8**hs |
 
-### **Sprint #7**: dom 30 nov → sáb 6 dic 2025
+## **Sprint #7**: dom 30 nov → sáb 6 dic 2025
 
 **Objetivo:** 📋 QuickCheck MVP + Azure Deploy - Sistema completo de inspecciones rápidas por capas (Domain → Application → UI → Integration).
 
@@ -352,7 +352,7 @@ Distribución por categoría:
 - ⚠️ **Posible descope**: Si tiempo aprieta, mover 6.2a (CRUD templates) a Sprint #8 y usar template hardcoded
 - ⚠️ **Dependencias**: Orden estricto de capas (no paralelizable)
 
-### **Sprint #8**: dom 7 dic → sáb 13 dic 2025
+## **Sprint #8**: dom 7 dic → sáb 13 dic 2025
 
 **Objetivo:** 🎯 Machine Management Enhancement + PWA Base + QuickCheck Refinement - Mejoras críticas post-MVP QuickCheck y fundación PWA.
 
@@ -410,7 +410,7 @@ xychart-beta
 - **Azure Fix crítico:** Soluciona 404 en refresh de rutas SPA
 - **Deferred a Sprint #9:** Sistema de fotos completo Cloudinary (17hs), Scheduler + Alertas (requiere decisión arquitectónica previa)
 
-### **Sprint #9**: dom 14 dic → sáb 20 dic 2025
+## **Sprint #9**: dom 14 dic → sáb 20 dic 2025
 
 **Objetivo:** 🔔 Centro de Notificaciones Completo - Sistema completo front/back de bandeja de notificaciones multi-source con primera integración funcional.
 
@@ -454,7 +454,7 @@ Distribución por categoría:
 
 **Riesgos:** Integración entre notificaciones y eventos puede ser compleja.
 
-### **Sprint #10**: dom 21 dic → sáb 27 dic 2025
+## **Sprint #10**: dom 21 dic → sáb 27 dic 2025
 
 **Objetivo:** � Sistema de Eventos de Máquina - Historial completo con eventos manuales/automáticos + tipos dinámicos crowdsourcing + integración QuickCheck.
 
@@ -530,7 +530,7 @@ Distribución por categoría:
 4. 6.6 requiere 4.2b completo (CreateMachineEventUseCase + CreateEventTypeUseCase)
 
 
-### **Sprint #11**: dom 28 dic → sáb 3 ene 2026
+## **Sprint #11**: dom 28 dic → sáb 3 ene 2026
 
 **Objetivo:** 🔧 Sistema de Mantenimientos Programados - Alarmas automáticas basadas en horas de uso con CronJob + integración con Eventos y Notificaciones.
 
@@ -616,7 +616,7 @@ Distribución por categoría:
 
 **Riesgos:** Período de fiestas navideñas (Año Nuevo) puede impactar disponibilidad. CronJob es funcionalidad nueva que requiere testing cuidadoso.
 
-### **Sprint #12**: dom 4 ene → sáb 10 ene 2026
+## **Sprint #12**: dom 4 ene → sáb 10 ene 2026
 
 **Objetivo:** 💬 Comunicación entre Usuarios - Sistema de descubrimiento, gestión de contactos y mensajería básica 1-a-1.
 
@@ -703,7 +703,7 @@ Distribución por categoría:
 
 **Riesgos:** Feature social nueva requiere considerar UX de interacción. Validar con cliente que relación unidireccional de contactos es aceptable para MVP.
 
-### **Sprint #13**: dom 11 ene → sáb 17 ene 2026
+## **Sprint #13**: dom 11 ene → sáb 17 ene 2026
 
 **Objetivo:** 🧪 Quality & Refinement Sprint - Mejoras de calidad de vida, complementos al chat, ediciones de entidades, y enriquecimiento de perfiles de usuario.
 
@@ -796,7 +796,7 @@ Distribución por categoría:
 
 **Riesgos:** Sprint en período post-navideño, posible fatiga del equipo. Mantener motivación con victorias tempranas.
 
-### **Sprint #14**: dom 18 ene → sáb 24 ene 2026
+## **Sprint #14**: dom 18 ene → sáb 24 ene 2026
 
 **Objetivo:** 🎨 UX & Usability Boost + Dashboard Refresh - Mejoras de calidad de vida, dashboard simplificado con vistas clave, navegación mejorada, y extensiones al registro.
 
@@ -878,6 +878,99 @@ Distribución por categoría:
 **Prioridades de Usabilidad (de mayor a menor impacto):**
 1. **🌟 CRÍTICO - Dashboard simplificado (12.1-12.3):** Pantalla inicial que usuarios ven diariamente, impacto inmediato en percepción de valor
 2. **🌟 CRÍTICO - Mini Perfil & Logout (14.10):** Mejora navegación y consistencia, problema actual de logout mal ubicado
+
+## **Sprint #15**: dom 26 ene → sáb 1 feb 2026
+
+**Objetivo:** 📧 Comunicación & Tracking - Sistema de email, recuperación de contraseña, tracking de repuestos v0.1, y documentación académica.
+
+| Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
+|-----------:|:-------|:---------------:|:---------------:|:------------:|
+| Gestión | 22.2 Demo/UAT de Sprint #14 | 1 | 1.5 | |
+| Gestión | 22.3 Sprint Planning de Sprint #15 | 2 | 1.3 | |
+| Documentación | 22.1 Reporte Académico del Sprint #14 | 3 | 5 | |
+| Capacitación | 22.4 Tutorías (guía con tutor asignado) | 4 | 1 | |
+| Desarrollo | 0.16 Email Infrastructure Setup | 5 | 4 | |
+| Desarrollo | 2.4 Recuperación de contraseña (backend + frontend) | 6 | 6 | |
+| Desarrollo | 8.7 Email Channel - Notificaciones por Email | 7 | 4 | |
+| Desarrollo | 7.1 Alta/edición repuesto (Domain + App + UI) | 8 | 6 | |
+| Desarrollo | 7.2 Listado por máquina (expandir UI) | 9 | 4 | |
+| Documentación | 25.1 Auditoría de Documentación Existente | 10 | 3 | |
+
+| Total Horas Estimadas (sin buffer) | Total Horas Reales | Consumo |
+|:---:|:----------:|:-------:|
+| **35.8**hs | **0**hs | **0.0%** |
+
+Buffer reservado: **-0.8**hs ⚠️
+Total con buffer: **35**hs
+
+```mermaid
+xychart-beta
+    title "Sprint #15: Horas Estimadas (azul) vs Reales (verde)"
+    x-axis "Tareas" ["22.1", "22.2", "22.3", "22.4", "0.16", "2.4", "8.7", "7.1", "7.2", "25.1", "TOTAL"]
+    y-axis "Horas" 0 --> 38
+    
+    line [5, 1.5, 1.3, 1, 4, 6, 4, 6, 4, 3, 35.8]
+    line [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+```
+
+Distribución por categoría:
+| Documentación | Desarrollo | QA | Capacitación | Gestión |
+|:-------:|:----------:|:--:|:------------:|:-------------:|
+| **8**hs | **24**hs | **0**hs | **1**hs | **2.8**hs |
+
+**Notas del Sprint:**
+- **Sprint enfocado en comunicación y nice-to-have features** - Email system, password recovery, repuestos tracking básico
+- **Email Infrastructure (0.16 - 4hs):** Base genérica con nodemailer, EmailService, templates HTML, ENV config - Reutilizable para 2.4 y 8.7
+- **Password Recovery (2.4 - 6hs):** Flujo completo forgot-password/reset-password con JWT token temporal, email template, frontend forms
+- **Email Channel (8.7 - 4hs):** Hook simple en AddNotificationUseCase para enviar emails 1-a-1, templates específicos (events, maintenance, quickcheck)
+- **Repuestos v0.1 (7.1+7.2 - 10hs):** CRUD básico subdocumento de Machine (name, partNumber, quantity, notes), tabla con filtros y acciones
+- **Documentación Académica (25.1 - 3hs):** Auditoría de documentación existente, checklist de sección obligatorias, plan de completitud
+- **Arquitectura limpia:** 0.16 (infra base) → 2.4 (use case) + 8.7 (use case) reutilizan EmailService
+
+**Orden de ejecución (por dependencias):**
+  1. **Overhead (22.2-22.4 - 3.8hs):** Demo, Planning, Tutorías
+  2. **Email Infrastructure (0.16 - 4hs):** Base para 2.4 y 8.7, prioridad alta
+  3. **Password Recovery (2.4 - 6hs):** Feature crítica de seguridad, depende de 0.16
+  4. **Email Channel (8.7 - 4hs):** Extensión del sistema de notificaciones, depende de 0.16
+  5. **Repuestos (7.1+7.2 - 10hs):** Feature independiente, tracking básico de consumibles
+  6. **Auditoría Docs (25.1 - 3hs):** Preparar checklist para documentación final Sprint #16
+  7. **Reporte Académico (22.1 - 5hs):** Documentación Sprint #14 al final
+
+**Punto de decisión Day 4 EOD:**
+- Si Email (0.16+2.4+8.7 - 14hs) completo + Repuestos (7.1 - 6hs) en buen progreso, evaluar:
+  - **Opción A:** Continuar con 7.2 (4hs) según plan actual
+  - **Opción B:** Descope 7.2, iniciar 25.2 Memoria Técnica - Arquitectura (2-3hs inicio)
+  - **Opción C:** Descope 7.2, agregar 13.1a Help Pages (5hs)
+
+**Fortalezas:**
+- ✅ **Email Infrastructure:** nodemailer setup + templates reutilizables, DRY principle
+- ✅ **Password Recovery:** JWT temporal, email template, flow clásico de forgot/reset
+- ✅ **Email Channel:** Arquitectura simple (hook en AddNotificationUseCase), fail-safe
+- ✅ **Repuestos v0.1:** Subdocumento simple, CRUD básico, tracking mínimo viable
+- ✅ **Auditoría Docs:** Prepara Sprint #16 100% documentación, identifica gaps críticos
+
+**Riesgos y Mitigaciones:**
+- ⚠️ **Buffer negativo (-0.8hs):** Sprint ajustado, requiere disciplina en estimaciones
+- ⚠️ **Nodemailer config:** Primera vez configurando SMTP, puede requerir debugging (Mailtrap para dev)
+- ⚠️ **Password recovery testing:** Flujo completo con email real, requiere validación exhaustiva
+- ✅ **Mitigación:** 0.16 incluye script de testing manual, verificar SMTP config temprano
+- ✅ **Mitigación:** 7.2 es expandible, puede simplificar (solo filtro por nombre, sin ordenamiento complejo)
+- ✅ **Descope opcional:** Si crítico, defer 7.2 (4hs) a Sprint #16 o Post-MVP
+
+**Dependencias críticas:**
+1. 0.16 debe completarse antes de 2.4 y 8.7 (EmailService necesario)
+2. 8.7 depende de 8.2 (AddNotificationUseCase ya existe desde Sprint #9)
+3. 7.2 depende de 7.1 (componentes y endpoints necesarios)
+4. 25.1 es independiente, puede ejecutarse en paralelo
+5. 2.4 frontend requiere 2.4 backend completo (endpoints forgot/reset)
+
+**Prioridades de Features (de mayor a menor impacto):**
+1. **🌟 CRÍTICO - Email Infrastructure (0.16):** Base para toda comunicación por email, bloquea 2.4 y 8.7
+2. **🌟 CRÍTICO - Password Recovery (2.4):** Feature de seguridad esencial, usuario bloqueado sin esto
+3. **👍 IMPORTANTE - Email Channel (8.7):** Mejora comunicación proactiva, notificaciones fuera de la app
+4. **👍 IMPORTANTE - Repuestos v0.1 (7.1):** Tracking básico útil, diferenciador para fleet management
+5. **✅ NICE-TO-HAVE - Repuestos Listado (7.2):** Expandir UI con filtros/ordenamiento, puede simplificar
+6. **📚 IMPORTANTE - Auditoría Docs (25.1):** Preparación Sprint #16 documentación final, entrega 10 feb
 3. **🔥 ALTO - Theme & Settings (14.5-14.6):** Accesibilidad (dark mode) + centralización de configuraciones, mejora calidad percibida
 4. **📊 MEDIO - Registro Extendido (2.1b):** Mejora onboarding para usuarios power, no crítico (registro básico ya funciona)
 5. **🚀 ALTO (descope) - QuickActions (3.4):** Botón flotante con acceso rápido a funciones comunes, mejora productividad (pero 12hs no caben)
@@ -914,7 +1007,7 @@ Distribución por categoría:
 
 **Riesgos:** Sprint muy denso con buffer negativo, requiere disciplina en estimaciones y ejecución. Priorizar Dashboard y UX core, 2.1b es condicional.
 
-### **Sprint #15**: dom 25 ene → sáb 31 ene 2026
+## **Sprint #15**: dom 25 ene → sáb 31 ene 2026
 
 **Objetivo:** 🎁 Full Nice-to-Have + UX - Recuperación password + búsqueda + ayuda + mejoras UX.
 
@@ -941,15 +1034,15 @@ Distribución por categoría:
 |:-------:|:----------:|:--:|:------------:|:-------------:|
 | **5**hs | **6**hs | **16**hs | **1**hs | **2.8**hs |
 
-### **Sprint #16**: dom 1 feb → sáb 7 feb 2026
+## **Sprint #16**: dom 1 feb → sáb 7 feb 2026
 
 **Objetivo:** ✨ Último Sprint Desarrollo - Full pulida, nada de features nuevas, documentación.
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
-| Documentación | 20.1 Reporte Académico del Sprint #15 | 1 | 5 | |
 | Gestión | 20.2 Demo/UAT de Sprint #15 | 2 | 1.5 | |
 | Gestión | 20.3 Sprint Planning de Sprint #16 | 3 | 1.3 | |
+| Documentación | 20.1 Reporte Académico del Sprint #15 | 1 | 5 | |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | |
 | Desarrollo | 7.1 Alta/edición repuesto (RF-012/014) [NiceToHave] | 5 | 8 | |
 | Desarrollo | 7.2 Listado por máquina (RF-013) [NiceToHave] | 6 | 6 | |
@@ -970,7 +1063,7 @@ Distribución por categoría:
 
 **Nota:** Este sprint incluye principalmente funcionalidades NiceToHave y puede ajustarse según el estado del proyecto.
 
-### **Sprint #17**: dom 8 feb → sáb 14 feb 2026
+## **Sprint #17**: dom 8 feb → sáb 14 feb 2026
 
 **Objetivo:** Buffer final de entrega - refinamientos, documentación y verificaciones finales para la entrega académica.
 
