@@ -885,10 +885,10 @@ Distribución por categoría:
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
-| Gestión | 22.2 Demo/UAT de Sprint #14 | 1 | 1.5 | |
-| Gestión | 22.3 Sprint Planning de Sprint #15 | 2 | 1.3 | |
-| Documentación | 22.1 Reporte Académico del Sprint #14 | 3 | 5 | |
-| Capacitación | 22.4 Tutorías (guía con tutor asignado) | 4 | 1 | |
+| Gestión | 22.2 Demo/UAT de Sprint #14 | 1 | 1.5 | 1.9 |
+| Gestión | 22.3 Sprint Planning de Sprint #15 | 2 | 1.3 | 0.9 |
+| Documentación | 22.1 Reporte Académico del Sprint #14 | 3 | 5 | 5.5 |
+| Capacitación | 22.4 Tutorías (guía con tutor asignado) | 4 | 1 | 0.6 |
 | Desarrollo | 0.16 Email Infrastructure Setup | 5 | 4 | |
 | Desarrollo | 2.4 Recuperación de contraseña (backend + frontend) | 6 | 6 | |
 | Desarrollo | 8.7 Email Channel - Notificaciones por Email | 7 | 4 | |
