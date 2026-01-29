@@ -26,6 +26,25 @@ GITHUB_TOKEN=tu_token_aqui
 
 ⚠️ **IMPORTANTE**: Nunca subas tu archivo `.env` al repositorio. Ya está incluido en `.gitignore`.
 
+### 3. Configuración de Email System (Backend)
+
+Para desarrollo local del backend con capacidades de email (Sprint #15):
+
+```bash
+# Navegar al backend
+cd apps/backend
+
+# Copiar el template
+cp .env.example .env
+
+# Editar y agregar credenciales de Mailtrap
+# SMTP_HOST=smtp.mailtrap.io
+# SMTP_USER=tu_usuario_mailtrap
+# SMTP_PASS=tu_password_mailtrap
+```
+
+**Para Azure Deployment:** Ver [docs/deployment/azure-email-config-manual.md](docs/deployment/azure-email-config-manual.md)
+
 ## Instalación
 
 ```bash

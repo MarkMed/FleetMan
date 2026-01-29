@@ -11,6 +11,14 @@ const envSchema = z.object({
   CORS_ORIGIN: z.string().default('http://localhost:5173'),
   RATE_LIMIT_WINDOW_MS: z.number().default(15 * 60 * 1000), // 15 minutes
   RATE_LIMIT_MAX_REQUESTS: z.number().default(100),
+  // Sprint #15 - Email Configuration
+  SMTP_HOST: z.string().min(1),
+  SMTP_PORT: z.number().min(1).max(65535),
+  SMTP_SECURE: z.boolean().default(false),
+  SMTP_USER: z.string().min(1),
+  SMTP_PASS: z.string().min(1),
+  EMAIL_FROM: z.string().email(),
+  APP_BASE_URL: z.string().url(),
 });
 
 // Validación con envalid para mejor experiencia de desarrollo
@@ -23,6 +31,14 @@ const env = cleanEnv(process.env, {
   CORS_ORIGIN: str({ default: 'http://localhost:5173' }),
   RATE_LIMIT_WINDOW_MS: str({ default: '900000' }), // 15 minutes in ms
   RATE_LIMIT_MAX_REQUESTS: str({ default: '100' }),
+  // Sprint #15 - Email Configuration
+  SMTP_HOST: str(),
+  SMTP_PORT: port(),
+  SMTP_SECURE: bool({ default: false }),
+  SMTP_USER: str(),
+  SMTP_PASS: str(),
+  EMAIL_FROM: str(),
+  APP_BASE_URL: str(),
 });
 
 // Configuración tipada y validada
@@ -45,6 +61,22 @@ export const config = {
   rateLimit: {
     windowMs: parseInt(env.RATE_LIMIT_WINDOW_MS),
     maxRequests: parseInt(env.RATE_LIMIT_MAX_REQUESTS),
+  },
+  // Sprint #15 - Email Configuration
+  email: {
+    smtp: {
+      host: env.SMTP_HOST,
+      port: env.SMTP_PORT, // Ya es number desde envalid
+      secure: env.SMTP_SECURE,
+      auth: {
+        user: env.SMTP_USER,
+        pass: env.SMTP_PASS,
+      },
+    },
+    from: env.EMAIL_FROM,
+  },
+  app: {
+    baseUrl: env.APP_BASE_URL,
   },
 } as const;
 

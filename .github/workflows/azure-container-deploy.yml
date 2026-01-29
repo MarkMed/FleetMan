@@ -69,7 +69,14 @@ jobs:
               CORS_ORIGIN="${{ secrets.CORS_ORIGIN }}" \
               CRON_MAINTENANCE_SCHEDULE="${{ secrets.CRON_MAINTENANCE_SCHEDULE }}" \
               RATE_LIMIT_WINDOW_MS="${{ secrets.RATE_LIMIT_WINDOW_MS }}" \
-              RATE_LIMIT_MAX_REQUESTS="${{ secrets.RATE_LIMIT_MAX_REQUESTS }}"
+              RATE_LIMIT_MAX_REQUESTS="${{ secrets.RATE_LIMIT_MAX_REQUESTS }}" \
+              SMTP_HOST="live.smtp.mailtrap.io" \
+              SMTP_PORT="587" \
+              SMTP_SECURE="false" \
+              SMTP_USER="${{ secrets.SMTP_USER }}" \
+              SMTP_PASS="${{ secrets.SMTP_PASS }}" \
+              EMAIL_FROM="noreply@fleetman.com" \
+              APP_BASE_URL="https://gentle-meadow-0e3923810.azurestaticapps.net"
           
           echo "✅ Deployment completed successfully!"
 
