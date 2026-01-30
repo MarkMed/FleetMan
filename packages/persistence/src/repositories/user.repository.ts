@@ -176,6 +176,7 @@ export class UserRepository implements IUserRepository {
       // Preparar datos de actualización desde entidad de dominio
       const updateData: any = {
         email: user.email.getValue(),
+        passwordHash: user.getPasswordHash(), // 🔴 BUGFIX: Include password hash for password reset flow
         profile: {
           phone: user.profile.phone,
           companyName: user.profile.companyName,
@@ -187,11 +188,35 @@ export class UserRepository implements IUserRepository {
         updatedAt: new Date() // Forzar actualización de timestamp
       };
 
+      // 🔴 BUGFIX: Include password reset token fields if they exist (or clear them if undefined)
+      // This ensures clearPasswordResetToken() changes are persisted
+      if (user.getPasswordResetToken() !== undefined) {
+        updateData.passwordResetToken = user.getPasswordResetToken();
+      }
+      if (user.getPasswordResetExpires() !== undefined) {
+        updateData.passwordResetExpires = user.getPasswordResetExpires();
+      }
+
+      // If reset token fields are undefined, explicitly unset them from DB
+      const unsetFields: any = {};
+      if (user.getPasswordResetToken() === undefined) {
+        unsetFields.passwordResetToken = '';
+      }
+      if (user.getPasswordResetExpires() === undefined) {
+        unsetFields.passwordResetExpires = '';
+      }
+
+      // Build update operation with both $set and $unset
+      const updateOperation: any = { $set: updateData };
+      if (Object.keys(unsetFields).length > 0) {
+        updateOperation.$unset = unsetFields;
+      }
+
       // Usar $set para actualización parcial (solo campos especificados)
       // findByIdAndUpdate con runValidators: true ejecuta validaciones del schema
       const result = await UserModel.findByIdAndUpdate(
         user.id.getValue(),
-        { $set: updateData },
+        updateOperation,
         { 
           new: true, // Retornar documento actualizado
           runValidators: true // Ejecutar validaciones del schema
