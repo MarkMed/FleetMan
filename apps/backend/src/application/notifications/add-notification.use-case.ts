@@ -7,6 +7,7 @@ import type { AddNotificationRequest } from '@packages/contracts';
 import { eventBus } from '../../infrastructure/events';
 import { EmailService } from '@packages/infra';
 import { NodemailerTransport, EmailTemplateService } from '@packages/infra';
+import { NotificationTranslatorService } from '../../services/i18n/notification-translator.service';
 
 /**
  * Use Case: Add Notification to User
@@ -287,9 +288,24 @@ export class AddNotificationUseCase {
           : `${config.app.baseUrl}${notification.actionUrl}`
         : undefined;
 
+      // 4a. 🆕 Sprint #15 Task 8.7: Translate notification key to English message
+      // Backend sends i18n keys (e.g., 'notification.machine.created')
+      // Translate with metadata interpolation before sending to email template
+      const translatedMessage = NotificationTranslatorService.translate(
+        notification.message, // i18n key
+        notification.metadata  // Variables for {{interpolation}}
+      );
+
+      logger.debug({
+        userId,
+        originalKey: notification.message,
+        translatedMessage,
+        hasTranslation: NotificationTranslatorService.hasTranslation(notification.message)
+      }, 'Notification message translated for email');
+
       const templateData = {
         userName,
-        message: notification.message,
+        message: translatedMessage, // ← Translated message (was: notification.message)
         notificationDate: new Date(),
         sourceType: notification.sourceType,
         actionUrl: fullActionUrl,
@@ -305,7 +321,7 @@ export class AddNotificationUseCase {
       const emailResult = await this.emailService.sendTemplatedEmail(
         'notification',
         userPublicData.email,
-        this.getEmailSubject(notification),
+        this.getEmailSubject(notification, translatedMessage), // ← Pass translated message
         templateData
       );
 
@@ -424,15 +440,25 @@ export class AddNotificationUseCase {
    * @param notification - Datos de la notificación
    * @returns Subject del email
    */
-  private getEmailSubject(notification: AddNotificationRequest): string {
+  /**
+   * 🆕 Sprint #15 Task 8.7: Generate email subject with translated message
+   * 
+   * @param notification - Notification request with i18n key
+   * @param translatedMessage - Already translated message (English)
+   * @returns Email subject with [SOURCE] prefix and translated preview
+   */
+  private getEmailSubject(
+    notification: AddNotificationRequest, 
+    translatedMessage: string
+  ): string {
     const prefix = notification.sourceType 
-      ? `[${notification.sourceType}]` 
+      ? `[${notification.sourceType.toUpperCase()}]` 
       : '[FleetMan]';
 
-    // Truncar mensaje si es muy largo (max 50 chars en subject)
-    const messagePreview = notification.message.length > 50
-      ? `${notification.message.substring(0, 50)}...`
-      : notification.message;
+    // Truncar mensaje traducido si es muy largo (max 50 chars en subject)
+    const messagePreview = translatedMessage.length > 50
+      ? `${translatedMessage.substring(0, 50)}...`
+      : translatedMessage;
 
     return `${prefix} ${messagePreview}`;
   }
