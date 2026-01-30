@@ -198,6 +198,11 @@ const userSchema = new Schema<IUserDocument>({
         },
         message: `Tags must be an array of max ${USER_PROFILE_LIMITS.MAX_TAGS} strings, each max ${USER_PROFILE_LIMITS.MAX_TAG_LENGTH} characters`
       }
+    },
+    // 📧 Sprint #15 Task 8.7: Email Notification Preferences
+    emailNotifications: {
+      type: Boolean,
+      default: true // Opt-out approach: usuarios reciben emails por defecto, pueden desactivar
     }
   },
   

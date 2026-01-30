@@ -83,6 +83,7 @@ export interface IUserProfile {
   readonly address?: string;
   readonly bio?: string; // 🆕 Sprint #13 Task 10.2: Biografía (max 500 chars)
   readonly tags?: readonly string[]; // 🆕 Sprint #13 Task 10.2: Tags/etiquetas (max 5, cada uno max 100 chars)
+  readonly emailNotifications?: boolean; // 🆕 Sprint #15 Task 8.7: Preferencia de notificaciones por email (default: true)
 }
 
 export interface IMachineSpecs {
