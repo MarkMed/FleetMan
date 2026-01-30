@@ -38,6 +38,57 @@
       "createAccount": "Crear cuenta",
       "signUpLink": "Regístrate aquí"
     },
+    "forgotPassword": {
+      "title": "Recuperar Contraseña",
+      "subtitle": "Te enviaremos un correo para reestablecer tu contraseña",
+      "instructions": "Ingresa tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña",
+      "emailLabel": "Correo Electrónico",
+      "emailPlaceholder": "tu@email.com",
+      "emailHelper": "Ingresa el email asociado a tu cuenta",
+      "submitButton": "Enviar Correo",
+      "submitting": "Enviando...",
+      "successTitle": "Correo Enviado",
+      "successMessage": "Se ha enviado un correo electrónico con instrucciones para restablecer tu contraseña. Si tu cuenta existe en nuestro sistema, recibirás el correo en los próximos minutos.",
+      "spamNotice": "Si no lo encuentras en tu bandeja de entrada, revisa tu carpeta de spam o correo no deseado.",
+      "closeModal": "Entendido",
+      "backToLogin": "Volver al inicio de sesión",
+      "newWindowNotice": "Podrás continuar desde el enlace en el correo que se abrirá en una nueva ventana.",
+      "emailRequired": "El correo electrónico es requerido",
+      "invalidEmail": "Formato de correo electrónico inválido",
+      "error": {
+        "title": "Error",
+        "unknown": "Ocurrió un error al procesar tu solicitud. Por favor, inténtalo de nuevo."
+      }
+    },
+    "resetPassword": {
+      "title": "Restablecer Contraseña",
+      "subtitle": "Crea una nueva contraseña para tu cuenta",
+      "instructions": "Tu nueva contraseña debe tener al menos 8 caracteres e incluir mayúsculas, minúsculas y números",
+      "newPasswordLabel": "Nueva Contraseña",
+      "newPasswordPlaceholder": "Mínimo 8 caracteres",
+      "newPasswordHelper": "Debe contener mayúsculas, minúsculas y números",
+      "confirmPasswordLabel": "Confirmar Nueva Contraseña",
+      "confirmPasswordPlaceholder": "Repite tu nueva contraseña",
+      "confirmPasswordHelper": "Debe ser idéntica a la contraseña anterior",
+      "submitButton": "Restablecer Contraseña",
+      "submitting": "Restableciendo...",
+      "successTitle": "Contraseña Actualizada",
+      "successMessage": "Tu contraseña ha sido actualizada exitosamente. Ya puedes iniciar sesión con tu nueva contraseña.",
+      "redirecting": "Redirigiendo al inicio de sesión...",
+      "goToLogin": "Ir al Inicio de Sesión",
+      "passwordMismatch": "Las contraseñas no coinciden",
+      "passwordRequired": "La nueva contraseña es requerida",
+      "passwordMinLength": "La contraseña debe tener al menos 8 caracteres",
+      "passwordComplexity": "La contraseña debe contener al menos una mayúscula, una minúscula y un número",
+      "error": {
+        "title": "Error al Restablecer Contraseña",
+        "tokenExpired": "El enlace de restablecimiento ha expirado. Por favor, solicita uno nuevo.",
+        "tokenInvalid": "El enlace de restablecimiento es inválido. Por favor, solicita uno nuevo.",
+        "accountDeactivated": "Tu cuenta ha sido desactivada. Contacta al soporte para más información.",
+        "unknown": "Ocurrió un error inesperado. Por favor, inténtalo de nuevo.",
+        "requestNewLink": "Solicitar Nuevo Enlace"
+      }
+    },
     "register": {
       "title": "Registrarse",
       "subtitle": "Crea tu cuenta de gestión de flota",
