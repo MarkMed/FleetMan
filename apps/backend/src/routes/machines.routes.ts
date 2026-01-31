@@ -116,7 +116,7 @@ router.get('/',
 router.post('/',
   requestSanitization,
   authMiddleware,
-  requireRole(['CLIENT']),
+  requireRole(['CLIENT', 'PROVIDER']),
   validateRequest({ body: CreateMachineRequestSchema }),
   machineController.create.bind(machineController)
 );

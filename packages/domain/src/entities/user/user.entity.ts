@@ -39,6 +39,9 @@ interface UserProps {
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
+  // Sprint #15 - Task 2.4: Password Recovery Flow
+  passwordResetToken?: string;   // Token JWT para reset de password (temporal)
+  passwordResetExpires?: Date;   // Fecha de expiración del token (1 hora)
 }
 
 /**
@@ -50,6 +53,9 @@ export type UserEntityData = Omit<UserProps, 'id' | 'email' | 'createdAt' | 'upd
   email: string;           // Raw string desde MongoDB
   createdAt: Date | string; // Puede venir como string desde JSON
   updatedAt: Date | string; // Puede venir como string desde JSON
+  // Sprint #15 - Task 2.4: Password Recovery Flow
+  passwordResetToken?: string;   // Opcional - Token JWT para reset
+  passwordResetExpires?: Date | string; // Opcional - Puede ser Date o string ISO
 };
 
 /**
@@ -158,6 +164,13 @@ export abstract class User {
         ? new Date(data.updatedAt) 
         : data.updatedAt;
 
+      // Sprint #15 - Task 2.4: Convertir passwordResetExpires si existe
+      const passwordResetExpires = data.passwordResetExpires
+        ? (typeof data.passwordResetExpires === 'string' 
+            ? new Date(data.passwordResetExpires) 
+            : data.passwordResetExpires)
+        : undefined;
+
       const props: UserProps = {
         id: userIdResult.data,
         email: emailResult.data,
@@ -167,6 +180,9 @@ export abstract class User {
         isActive: data.isActive,
         createdAt,
         updatedAt,
+        // Sprint #15 - Task 2.4: Password Recovery fields
+        passwordResetToken: data.passwordResetToken,
+        passwordResetExpires,
       };
 
       return ok(props);
@@ -525,6 +541,105 @@ export abstract class User {
     
     return ok(undefined);
   }
+
+  // =============================================================================
+  // 🔐 PASSWORD RECOVERY METHODS (Sprint #15 - Task 2.4)
+  // =============================================================================
+
+  /**
+   * Establece el token de reset de contraseña y su fecha de expiración
+   * Sprint #15 - Task 2.4: Password Recovery Flow
+   * 
+   * @param token - Token JWT generado para el reset
+   * @param expiresInHours - Horas hasta la expiración del token (default: 1)
+   * @returns Result<void, DomainError> - Success si se estableció correctamente
+   */
+  public setPasswordResetToken(token: string, expiresInHours: number = 1): Result<void, DomainError> {
+    // Validar token no vacío
+    if (!token || token.trim().length === 0) {
+      return err(DomainError.validation('Password reset token cannot be empty'));
+    }
+
+    // Validar expiración razonable (mínimo 5 minutos, máximo 24 horas)
+    if (expiresInHours < 0.0833 || expiresInHours > 24) {
+      return err(DomainError.validation('Token expiration must be between 5 minutes and 24 hours'));
+    }
+
+    // Calcular fecha de expiración
+    const expiresAt = new Date();
+    expiresAt.setHours(expiresAt.getHours() + expiresInHours);
+
+    this.props.passwordResetToken = token;
+    this.props.passwordResetExpires = expiresAt;
+    this.props.updatedAt = new Date();
+
+    return ok(undefined);
+  }
+
+  /**
+   * Limpia el token de reset de contraseña después de usarlo o cuando expire
+   * Sprint #15 - Task 2.4: Password Recovery Flow
+   * 
+   * @returns Result<void, DomainError> - Success siempre (idempotente)
+   */
+  public clearPasswordResetToken(): Result<void, DomainError> {
+    this.props.passwordResetToken = undefined;
+    this.props.passwordResetExpires = undefined;
+    this.props.updatedAt = new Date();
+
+    return ok(undefined);
+  }
+
+  /**
+   * Verifica si el token de reset es válido (existe y no ha expirado)
+   * Sprint #15 - Task 2.4: Password Recovery Flow
+   * 
+   * @param token - Token a verificar
+   * @returns boolean - true si el token es válido, false en caso contrario
+   */
+  public hasValidPasswordResetToken(token: string): boolean {
+    // Verificar que exista el token
+    if (!this.props.passwordResetToken || !this.props.passwordResetExpires) {
+      return false;
+    }
+
+    // Verificar que el token coincida
+    if (this.props.passwordResetToken !== token) {
+      return false;
+    }
+
+    // Verificar que no haya expirado
+    const now = new Date();
+    if (now > this.props.passwordResetExpires) {
+      return false;
+    }
+
+    return true;
+  }
+
+  /**
+   * Obtiene el token de reset de contraseña (solo para verificación)
+   * Sprint #15 - Task 2.4: Password Recovery Flow
+   * 
+   * @returns string | undefined - Token si existe, undefined en caso contrario
+   */
+  public getPasswordResetToken(): string | undefined {
+    return this.props.passwordResetToken;
+  }
+
+  /**
+   * Obtiene la fecha de expiración del token
+   * Sprint #15 - Task 2.4: Password Recovery Flow
+   * 
+   * @returns Date | undefined - Fecha de expiración si existe
+   */
+  public getPasswordResetExpires(): Date | undefined {
+    return this.props.passwordResetExpires ? new Date(this.props.passwordResetExpires) : undefined;
+  }
+
+  // =============================================================================
+  // END PASSWORD RECOVERY METHODS
+  // =============================================================================
 
   /**
    * Verifica si el usuario puede realizar una acción específica

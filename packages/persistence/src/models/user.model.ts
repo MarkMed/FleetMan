@@ -27,31 +27,40 @@ interface INotificationSubdoc extends Omit<INotification, 'id'> {
 /**
  * Base User Document interface extending domain IUser
  * Adds Mongoose-specific _id, document methods, and passwordHash for persistence
+ * Sprint #15 - Task 2.4: Added passwordResetToken and passwordResetExpires
  */
 export interface IUserDocument extends Omit<IUser, 'id' | 'notifications'>, Document {
   _id: Types.ObjectId;
   id: string; // Virtual getter from _id
   passwordHash: string; // Only for persistence, not exposed in domain interfaces
+  passwordResetToken?: string; // 🆕 Sprint #15 - Password reset token
+  passwordResetExpires?: Date; // 🆕 Sprint #15 - Token expiration time
   notifications?: Types.DocumentArray<INotificationSubdoc>; // Sprint #9 - Subdocument array
 }
 
 /**
  * Client User Document interface
+ * Sprint #15 - Task 2.4: Added passwordResetToken and passwordResetExpires
  */
 export interface IClientUserDocument extends Omit<IClientUser, 'id' | 'notifications'>, Document {
   _id: Types.ObjectId;
   id: string;
   passwordHash: string;
+  passwordResetToken?: string; // 🆕 Sprint #15
+  passwordResetExpires?: Date; // 🆕 Sprint #15
   notifications?: Types.DocumentArray<INotificationSubdoc>;
 }
 
 /**
  * Provider User Document interface
+ * Sprint #15 - Task 2.4: Added passwordResetToken and passwordResetExpires
  */
 export interface IProviderUserDocument extends Omit<IProviderUser, 'id' | 'notifications'>, Document {
   _id: Types.ObjectId;
   id: string;
   passwordHash: string;
+  passwordResetToken?: string; // 🆕 Sprint #15
+  passwordResetExpires?: Date; // 🆕 Sprint #15
   notifications?: Types.DocumentArray<INotificationSubdoc>;
 }
 
@@ -189,6 +198,11 @@ const userSchema = new Schema<IUserDocument>({
         },
         message: `Tags must be an array of max ${USER_PROFILE_LIMITS.MAX_TAGS} strings, each max ${USER_PROFILE_LIMITS.MAX_TAG_LENGTH} characters`
       }
+    },
+    // 📧 Sprint #15 Task 8.7: Email Notification Preferences
+    emailNotifications: {
+      type: Boolean,
+      default: true // Opt-out approach: usuarios reciben emails por defecto, pueden desactivar
     }
   },
   
@@ -224,7 +238,22 @@ const userSchema = new Schema<IUserDocument>({
   // Bloquea envío de mensajes y remueve de acceptedChatsFrom (mutuamente excluyente)
   usersBlackList: {
     type: [String],
-    default: []  }
+    default: []
+  },
+
+  // 🔐 Sprint #15 Task 2.4: Password Recovery Fields
+  // Token JWT temporal para resetear contraseña (opcional)
+  passwordResetToken: {
+    type: String,
+    sparse: true, // Solo indexa documentos donde el campo existe
+    select: false // No incluir en queries por defecto (seguridad)
+  },
+
+  // Fecha de expiración del token de reset (opcional)
+  passwordResetExpires: {
+    type: Date,
+    sparse: true
+  }
 }, {
   timestamps: true, // Adds createdAt and updatedAt
   discriminatorKey: 'type',
@@ -273,6 +302,12 @@ userSchema.index({ acceptedChatsFrom: 1 }, { sparse: true });
 // Optimizes queries: { usersBlackList: userId } to check if user is blocked
 // Sparse index: only indexes documents where usersBlackList array exists and is non-empty
 userSchema.index({ usersBlackList: 1 }, { sparse: true });
+
+// 🔐 Sprint #15 Task 2.4: Password Reset Token index
+// Optimizes queries: UserRepository.findByResetToken({ passwordResetToken, passwordResetExpires: { $gt: now } })
+// Compound index for both token and expiry to support queries checking valid (non-expired) tokens
+// Sparse index: only indexes documents where passwordResetToken exists (most users won't have one)
+userSchema.index({ passwordResetToken: 1, passwordResetExpires: 1 }, { sparse: true });
 
 // Note: Notification queries use in-memory filtering (not MongoDB queries),
 // so a compound index on notification fields wouldn't be beneficial.

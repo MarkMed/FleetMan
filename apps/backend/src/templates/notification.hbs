@@ -1,0 +1,118 @@
+<!-- Template de contenido para emails de notificación -->
+<!-- Sprint #15 - Task 8.7: Email Notification System -->
+<!-- Este contenido será inyectado en {{content}} de base.hbs -->
+
+<!-- Título dinámico con icono según notificationType -->
+<table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin-bottom: 24px;">
+  <tr>
+    <td style="text-align: center;">
+      <!-- Icono circular según notificationType -->
+      {{#if isSuccess}}
+      <div style="display: inline-block; width: 56px; height: 56px; background-color: #d1fae5; border-radius: 50%; margin-bottom: 16px;">
+        <span style="display: inline-block; margin-top: 16px; font-size: 24px;">✓</span>
+      </div>
+      {{else if isWarning}}
+      <div style="display: inline-block; width: 56px; height: 56px; background-color: #fef3c7; border-radius: 50%; margin-bottom: 16px;">
+        <span style="display: inline-block; margin-top: 16px; font-size: 24px;">⚠</span>
+      </div>
+      {{else if isError}}
+      <div style="display: inline-block; width: 56px; height: 56px; background-color: #fee2e2; border-radius: 50%; margin-bottom: 16px;">
+        <span style="display: inline-block; margin-top: 16px; font-size: 24px;">✕</span>
+      </div>
+      {{else if isNewMessage}}
+      <div style="display: inline-block; width: 56px; height: 56px; background-color: #dbeafe; border-radius: 50%; margin-bottom: 16px;">
+        <span style="display: inline-block; margin-top: 16px; font-size: 24px;">💬</span>
+      </div>
+      {{else}}
+      <div style="display: inline-block; width: 56px; height: 56px; background-color: #dbeafe; border-radius: 50%; margin-bottom: 16px;">
+        <span style="display: inline-block; margin-top: 16px; font-size: 24px;">ℹ</span>
+      </div>
+      {{/if}}
+
+      <h2 style="margin: 0 0 8px; font-size: 24px; font-weight: 600; color: #1f2937;">
+        Nueva notificación en FleetMan
+      </h2>
+      
+      {{#if sourceType}}
+      <p style="margin: 0 0 4px; font-size: 13px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px;">
+        {{sourceType}}
+      </p>
+      {{/if}}
+      
+      <p style="margin: 0; font-size: 12px; color: #9ca3af;">
+        {{formatDateTime notificationDate}}
+      </p>
+    </td>
+  </tr>
+</table>
+
+<!-- Saludo personalizado -->
+<p style="margin: 0 0 16px; font-size: 15px; color: #374151; line-height: 1.6;">
+  Hola <strong>{{userName}}</strong>,
+</p>
+
+<!-- Mensaje principal de la notificación -->
+<div style="margin: 0 0 24px; padding: 20px; background-color: {{messageBackgroundColor}}; border-left: 4px solid {{messageBorderColor}}; border-radius: 4px;">
+  <p style="margin: 0; font-size: 15px; color: #1f2937; line-height: 1.6; font-weight: 500;">
+    {{message}}
+  </p>
+</div>
+
+<!-- Metadata adicional (si existe) -->
+{{#if metadata}}
+<div style="margin: 0 0 24px;">
+  {{#if metadata.machineName}}
+  <p style="margin: 0 0 8px; font-size: 14px; color: #6b7280;">
+    <strong>Máquina:</strong> {{metadata.machineName}}
+  </p>
+  {{/if}}
+  
+  {{#if metadata.eventTitle}}
+  <p style="margin: 0 0 8px; font-size: 14px; color: #6b7280;">
+    <strong>Evento:</strong> {{metadata.eventTitle}}
+  </p>
+  {{/if}}
+  
+  {{#if metadata.senderName}}
+  <p style="margin: 0 0 8px; font-size: 14px; color: #6b7280;">
+    <strong>Remitente:</strong> {{metadata.senderName}}
+  </p>
+  {{/if}}
+  
+  {{#if metadata.preview}}
+  <p style="margin: 0 0 8px; font-size: 14px; color: #6b7280; font-style: italic;">
+    "{{metadata.preview}}"
+  </p>
+  {{/if}}
+  
+  {{#if metadata.responsibleName}}
+  <p style="margin: 0 0 8px; font-size: 14px; color: #6b7280;">
+    <strong>Responsable:</strong> {{metadata.responsibleName}}
+  </p>
+  {{/if}}
+</div>
+{{/if}}
+
+<!-- CTA Button (si actionUrl existe) -->
+{{#if actionUrl}}
+<table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+  <tr>
+    <td style="text-align: center; padding: 0 0 24px;">
+      <a href="{{actionUrl}}" 
+         style="display: inline-block; padding: 14px 32px; background-color: {{buttonColor}}; color: #ffffff; text-decoration: none; font-size: 15px; font-weight: 600; border-radius: 6px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);">
+        Ver detalles
+      </a>
+    </td>
+  </tr>
+</table>
+{{/if}}
+
+<!-- Aviso informativo -->
+<div style="margin: 0; padding: 16px; background-color: #f9fafb; border-left: 3px solid #d1d5db; border-radius: 4px;">
+  <p style="margin: 0 0 8px; font-size: 13px; color: #6b7280; line-height: 1.5;">
+    Este es un email de notificación automática. Puedes gestionar tus preferencias de notificaciones desde tu perfil en FleetMan.
+  </p>
+  <p style="margin: 0; font-size: 12px; color: #9ca3af;">
+    <a href="{{appBaseUrl}}/profile/settings" style="color: #3b82f6; text-decoration: none;">Gestionar preferencias de email</a>
+  </p>
+</div>

@@ -11,6 +11,8 @@ import { LoginScreen } from '../screens/auth/LoginScreen';
 import { RegisterScreen } from '../screens/auth/RegisterScreen';
 import { RegistrationSelectScreen } from '../screens/auth/RegistrationSelectScreen';
 import { FullRegistrationScreen } from '../screens/auth/FullRegistration/FullRegistrationScreen';
+import { ForgotPasswordScreen } from '../screens/auth/ForgotPasswordScreen';
+import { ResetPasswordScreen } from '../screens/auth/ResetPasswordScreen';
 import { DashboardScreen } from '../screens/dashboard/DashboardScreen';
 import { MachinesScreen } from '../screens/machines/MachinesScreen';
 import { MachineDetailsScreen } from '../screens/machines/MachineDetailsScreen';
@@ -60,8 +62,14 @@ export const AppRouter: React.FC = () => {
           <Route path="register/select" element={<RegistrationSelectScreen />} />
           <Route path="register/quick" element={<RegisterScreen />} />
           <Route path="register/full-form" element={<FullRegistrationScreen />} />
+          {/* Password Recovery routes - Sprint #15 Task 2.4 */}
+          <Route path="forgot-password" element={<ForgotPasswordScreen />} />
         </Route>
       </Route>
+
+      {/* Reset Password Route - Public but outside AuthLayout (standalone page) */}
+      {/* Note: Backend sends link as /reset-password/:token (not /auth/reset-password) */}
+      <Route path="/reset-password/:token" element={<ResetPasswordScreen />} />
 
       {/* Protected routes - accessible only when authenticated */}
       <Route path="/" element={<ProtectedRoute />}>

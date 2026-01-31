@@ -225,6 +225,49 @@ export interface IUserRepository {
    */
   isContact(userId: UserId, contactUserId: UserId): Promise<boolean>;
 
+  // =============================================================================
+  // 🔐 PASSWORD RECOVERY METHODS (Sprint #15 - Task 2.4)
+  // =============================================================================
+
+  /**
+   * Busca un usuario por su token de reset de contraseña
+   * Sprint #15 - Task 2.4: Password Recovery Flow
+   * 
+   * Solo retorna el usuario si:
+   * - El token existe en DB
+   * - El token NO ha expirado (passwordResetExpires > now)
+   * 
+   * @param token - Token JWT generado para el reset
+   * @returns Result<User, DomainError> - Success con usuario si token válido, Fail si no existe o expiró
+   */
+  findByResetToken(token: string): Promise<Result<User, DomainError>>;
+
+  /**
+   * Guarda el token de reset en el usuario
+   * Sprint #15 - Task 2.4: Password Recovery Flow
+   * 
+   * Este método actualiza SOLO los campos passwordResetToken y passwordResetExpires
+   * No modifica otros campos del usuario
+   * 
+   * @param userId - ID del usuario
+   * @param token - Token JWT generado
+   * @param expiresAt - Fecha de expiración del token
+   * @returns Result<void, DomainError> - Success si se guardó correctamente
+   */
+  saveResetToken(userId: UserId, token: string, expiresAt: Date): Promise<Result<void, DomainError>>;
+
+  /**
+   * Limpia el token de reset después de usarlo
+   * Sprint #15 - Task 2.4: Password Recovery Flow
+   * 
+   * Este método establece passwordResetToken y passwordResetExpires a null
+   * Se llama después de un reset exitoso o cuando el token expira
+   * 
+   * @param userId - ID del usuario
+   * @returns Result<void, DomainError> - Success si se limpió correctamente
+   */
+  clearResetToken(userId: UserId): Promise<Result<void, DomainError>>;
+
   // TODO: Métodos estratégicos para futuro (Contact Management avanzado)
   // getContactsByTag(userId: UserId, tag: string): Promise<Result<User[], DomainError>>; // Filtrar por tags
   // getFavoriteContacts(userId: UserId): Promise<Result<User[], DomainError>>; // Solo favoritos
