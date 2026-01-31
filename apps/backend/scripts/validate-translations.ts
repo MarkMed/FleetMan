@@ -5,111 +5,51 @@
  * Validates that ALL notification keys defined in NOTIFICATION_MESSAGE_KEYS
  * have corresponding English translations in NotificationTranslatorService.
  * 
+ * SSOT COMPLIANCE:
+ * - Imports real NOTIFICATION_MESSAGE_KEYS from constants file
+ * - Reads EN_TRANSLATIONS from NotificationTranslatorService source file
+ * - No duplication of constants (fixes GitHub Copilot finding #5)
+ * 
  * Run: cd apps/backend && npx tsx scripts/validate-translations.ts
  */
 
 /// <reference types="node" />
 
-// Import only the constants (no config dependencies)
-const NOTIFICATION_MESSAGE_KEYS = {
-  quickcheck: {
-    completed: {
-      approved: 'notification.quickcheck.completed.approved',
-      disapproved: 'notification.quickcheck.completed.disapproved',
-      notInitiated: 'notification.quickcheck.completed.notInitiated'
-    },
-    created: 'notification.quickcheck.created',
-    assigned: 'notification.quickcheck.assigned'
-  },
-  machine: {
-    created: 'notification.machine.created',
-    updated: 'notification.machine.updated',
-    deleted: 'notification.machine.deleted',
-    statusChanged: 'notification.machine.statusChanged',
-    event: {
-      maintenanceCompleted: 'notification.machine.event.maintenanceCompleted',
-      repairStarted: 'notification.machine.event.repairStarted',
-      repairCompleted: 'notification.machine.event.repairCompleted',
-      breakdown: 'notification.machine.event.breakdown',
-      safetyIncident: 'notification.machine.event.safetyIncident',
-      machineStopped: 'notification.machine.event.machineStopped',
-      statusChange: 'notification.machine.event.statusChange',
-      technicalInspection: 'notification.machine.event.technicalInspection',
-      partReplacement: 'notification.machine.event.partReplacement'
-    }
-  },
-  maintenance: {
-    scheduled: 'notification.maintenance.scheduled',
-    reminder: 'notification.maintenance.reminder',
-    overdue: 'notification.maintenance.overdue',
-    completed: 'notification.maintenance.completed',
-    cancelled: 'notification.maintenance.cancelled',
-    rescheduled: 'notification.maintenance.rescheduled',
-    alarmTriggered: 'notification.maintenance.alarmTriggered'
-  },
-  user: {
-    assigned: 'notification.user.assigned',
-    unassigned: 'notification.user.unassigned',
-    roleChanged: 'notification.user.roleChanged',
-    permissionsChanged: 'notification.user.permissionsChanged'
-  },
-  system: {
-    welcome: 'notification.system.welcome',
-    passwordChanged: 'notification.system.passwordChanged',
-    accountUpdated: 'notification.system.accountUpdated',
-    dataExported: 'notification.system.dataExported',
-    reportGenerated: 'notification.system.reportGenerated'
+import * as fs from 'fs';
+import * as path from 'path';
+
+// Import real SSOT (no inline duplicates)
+import { NOTIFICATION_MESSAGE_KEYS } from '../src/constants/notification-messages.constants';
+
+/**
+ * Parse EN_TRANSLATIONS from NotificationTranslatorService source file
+ * This avoids importing the service (which would load config)
+ */
+function parseTranslationsFromSource(): Record<string, string> {
+  const servicePath = path.join(__dirname, '../src/services/i18n/notification-translator.service.ts');
+  const sourceCode = fs.readFileSync(servicePath, 'utf-8');
+  
+  // Extract EN_TRANSLATIONS object
+  const translationsMatch = sourceCode.match(/const EN_TRANSLATIONS: Record<string, string> = \{([\s\S]*?)\n\};/);
+  
+  if (!translationsMatch) {
+    throw new Error('Could not parse EN_TRANSLATIONS from NotificationTranslatorService');
   }
-};
-
-// Inline translations (copy from NotificationTranslatorService)
-const EN_TRANSLATIONS: Record<string, string> = {
-  // QuickCheck notifications
-  'notification.quickcheck.completed.approved': 'Machine {{machineName}} approved by {{responsibleName}}',
-  'notification.quickcheck.completed.disapproved': 'Machine {{machineName}} disapproved by {{responsibleName}}: {{observation}}',
-  'notification.quickcheck.completed.notInitiated': 'Machine {{machineName}} not initiated by {{responsibleName}}: {{observation}}',
-  'notification.quickcheck.created': 'New QuickCheck created for machine {{machineName}}',
-  'notification.quickcheck.assigned': 'QuickCheck assigned to you for machine {{machineName}}',
-
-  // Machine notifications
-  'notification.machine.created': 'Machine Registered! {{machineType}} {{brand}} {{serialNumber}}',
-  'notification.machine.updated': 'Machine {{machineName}} updated',
-  'notification.machine.deleted': 'Machine {{machineName}} removed from system',
-  'notification.machine.statusChanged': 'Machine {{machineName}} status changed to {{newStatus}}',
-
-  // Machine events
-  'notification.machine.event.maintenanceCompleted': 'Maintenance completed on {{machineName}}',
-  'notification.machine.event.repairStarted': 'Repair started on {{machineName}}',
-  'notification.machine.event.repairCompleted': 'Repair completed on {{machineName}}',
-  'notification.machine.event.breakdown': 'Breakdown reported on {{machineName}}',
-  'notification.machine.event.safetyIncident': '⚠️ Safety incident on {{machineName}}',
-  'notification.machine.event.machineStopped': 'Machine {{machineName}} stopped',
-  'notification.machine.event.statusChange': 'Status change on {{machineName}}',
-  'notification.machine.event.technicalInspection': 'Technical inspection on {{machineName}}',
-  'notification.machine.event.partReplacement': 'Part replaced on {{machineName}}',
-
-  // Maintenance notifications
-  'notification.maintenance.scheduled': 'Maintenance scheduled for {{machineName}} on {{scheduledDate}}',
-  'notification.maintenance.reminder': 'Reminder: Maintenance due for {{machineName}} on {{dueDate}}',
-  'notification.maintenance.overdue': '⚠️ Overdue maintenance for {{machineName}}',
-  'notification.maintenance.completed': 'Maintenance completed on {{machineName}}',
-  'notification.maintenance.cancelled': 'Maintenance cancelled for {{machineName}}',
-  'notification.maintenance.rescheduled': 'Maintenance rescheduled for {{machineName}} to {{newDate}}',
-  'notification.maintenance.alarmTriggered': '⚠️ {{alarmTitle}}',
-
-  // User notifications
-  'notification.user.assigned': 'You have been assigned to {{machineName}}',
-  'notification.user.unassigned': 'You have been unassigned from {{machineName}}',
-  'notification.user.roleChanged': 'Your role has been changed to {{newRole}}',
-  'notification.user.permissionsChanged': 'Your permissions have been updated',
-
-  // System notifications
-  'notification.system.welcome': 'Welcome to FleetMan, {{userName}}',
-  'notification.system.passwordChanged': 'Your password has been changed',
-  'notification.system.accountUpdated': 'Your account information has been updated',
-  'notification.system.dataExported': 'Your data export is ready: {{fileName}}',
-  'notification.system.reportGenerated': 'Report generated: {{reportName}}'
-};
+  
+  const translationsBlock = translationsMatch[1];
+  const translations: Record<string, string> = {};
+  
+  // Parse each line: 'key': 'value',
+  const lineRegex = /'([^']+)':\s*'([^']+(?:\\.[^']*)*)',?/g;
+  let match;
+  
+  while ((match = lineRegex.exec(translationsBlock)) !== null) {
+    const [, key, value] = match;
+    translations[key] = value;
+  }
+  
+  return translations;
+}
 
 /**
  * Extract all string values (keys) from NOTIFICATION_MESSAGE_KEYS object
@@ -131,22 +71,36 @@ function extractAllKeys(obj: any, keys: string[] = []): string[] {
 function validateTranslationCompleteness() {
   console.log('🔍 Validating notification translations...\n');
 
-  // Extract all notification keys from constants
+  // Extract all notification keys from real SSOT
   const allDefinedKeys = extractAllKeys(NOTIFICATION_MESSAGE_KEYS);
+  
+  // Parse translations from source file (avoids config import)
+  const translations = parseTranslationsFromSource();
+  const allTranslationKeys = Object.keys(translations);
+  
   console.log(`📊 Found ${allDefinedKeys.length} notification keys in NOTIFICATION_MESSAGE_KEYS`);
-  console.log(`📚 Found ${Object.keys(EN_TRANSLATIONS).length} translations in EN_TRANSLATIONS\n`);
+  console.log(`📚 Found ${allTranslationKeys.length} translations in NotificationTranslatorService\n`);
 
-  // Track missing translations
+  // Track validation results
   const missingTranslations: string[] = [];
+  const orphanedTranslations: string[] = [];
   
   // Verify each key has a translation
   for (const key of allDefinedKeys) {
-    if (!EN_TRANSLATIONS[key]) {
+    if (!translations[key]) {
       missingTranslations.push(key);
     }
   }
+  
+  // Check for orphaned translations (translations without corresponding keys)
+  const definedKeysSet = new Set(allDefinedKeys);
+  for (const translationKey of allTranslationKeys) {
+    if (!definedKeysSet.has(translationKey)) {
+      orphanedTranslations.push(translationKey);
+    }
+  }
 
-  // Report results
+  // Report missing translations
   if (missingTranslations.length > 0) {
     console.error('❌ VALIDATION FAILED\n');
     console.error(`Missing English translations for ${missingTranslations.length} notification key(s):\n`);
@@ -157,6 +111,16 @@ function validateTranslationCompleteness() {
     console.error('   to match apps/frontend/src/i18n/locales/en.json\n');
     process.exit(1);
   }
+  
+  // Report orphaned translations (warnings only, don't fail)
+  if (orphanedTranslations.length > 0) {
+    console.warn('⚠️  Found orphaned translations (no corresponding keys):\n');
+    orphanedTranslations.forEach(key => {
+      console.warn(`  ⚠️  ${key}`);
+    });
+    console.warn('\n💡 These translations exist but have no corresponding key in NOTIFICATION_MESSAGE_KEYS');
+    console.warn('   Consider removing them or adding the corresponding constants.\n');
+  }
 
   // Success
   console.log('✅ VALIDATION PASSED\n');
@@ -164,10 +128,17 @@ function validateTranslationCompleteness() {
   
   // Show sample translations
   console.log('📝 Sample Translations:\n');
-  console.log(`  QuickCheck Approved: "${EN_TRANSLATIONS['notification.quickcheck.completed.approved']}"`);
-  console.log(`  Machine Created: "${EN_TRANSLATIONS['notification.machine.created']}"`);
-  console.log(`  Maintenance Alarm: "${EN_TRANSLATIONS['notification.maintenance.alarmTriggered']}"`);
-  console.log(`  System Welcome: "${EN_TRANSLATIONS['notification.system.welcome']}"`);
+  const sampleKeys = [
+    { key: 'notification.quickcheck.completed.approved', label: 'QuickCheck Approved' },
+    { key: 'notification.machine.created', label: 'Machine Created' },
+    { key: 'notification.maintenance.alarmTriggered', label: 'Maintenance Alarm' },
+    { key: 'notification.system.welcome', label: 'System Welcome' }
+  ];
+  
+  for (const { key, label } of sampleKeys) {
+    const translation = translations[key] || key;
+    console.log(`  ${label}: "${translation}"`);
+  }
 
   console.log('\n✅ Translation system ready for production!\n');
   process.exit(0);
