@@ -268,7 +268,7 @@ export const CreateEditSparePartModal: React.FC<CreateEditSparePartModalProps> =
             loading={isSubmitting}
             disabled={isSubmitting}
           >
-            {isEditMode ? t('common.save') : t('common.create')}
+            {isEditMode ? t('common.save') : t('common.save')}
           </Button>
         </div>
       </form>

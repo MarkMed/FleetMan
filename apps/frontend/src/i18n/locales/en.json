@@ -300,6 +300,8 @@
     "minutes": "minutes",
     "expand": "Expand",
     "collapse": "Collapse",
+    "createdAt": "Created",
+    "updatedAt": "Last Updated",
     "daysOfWeek": {
       "full": {
         "SUN": "Sunday",
@@ -1674,14 +1676,14 @@
     "serialId": "Serial ID",
     "amount": "Amount",
     "units": "units",
-    "createNew": "Create New Spare Part",
+    "createNew": "Register",
     "searchPlaceholder": "Search by name or serial ID...",
     "showing": "Showing {{count}} of {{total}} spare parts",
     "noResults": "No spare parts found matching your search",
     "empty": {
       "title": "No spare parts registered",
       "description": "Start by adding the first spare part for this machine",
-      "action": "Create First Spare Part"
+      "action": "Register First Spare Part"
     },
     "notFound": {
       "title": "Spare part not found",
@@ -1698,7 +1700,7 @@
       "amount": "Amount",
       "amountPlaceholder": "0",
       "amountHelper": "Available quantity in inventory",
-      "createTitle": "Create New Spare Part",
+      "createTitle": " Register New Spare Part",
       "editTitle": "Edit Spare Part"
     },
     "options": {
@@ -1722,7 +1724,7 @@
       "metadata": "Metadata"
     },
     "notifications": {
-      "created": "Spare part created successfully",
+      "created": "Spare part registered successfully",
       "updated": "Spare part updated successfully",
       "deleted": "Spare part deleted successfully",
       "createError": "Error creating spare part",

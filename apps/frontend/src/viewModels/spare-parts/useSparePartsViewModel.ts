@@ -89,7 +89,8 @@ export function useSparePartsViewModel(machineId: string | undefined) {
   const [isCreateEditModalOpen, setIsCreateEditModalOpen] = useState(false);
   const [isOptionsModalOpen, setIsOptionsModalOpen] = useState(false);
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchInput, setSearchInput] = useState(''); // What user types
+  const [searchQuery, setSearchQuery] = useState(''); // Active search filter
 
   // ========================
   // DATA FETCHING
@@ -289,16 +290,31 @@ export function useSparePartsViewModel(machineId: string | undefined) {
   };
   
   /**
-   * Handle search query change
+   * Handle search input change (while typing)
    */
-  const handleSearchChange = (query: string) => {
-    setSearchQuery(query);
+  const handleSearchInputChange = (input: string) => {
+    setSearchInput(input);
+  };
+  
+  /**
+   * Execute search (on button click or Enter)
+   */
+  const handleSearch = () => {
+    setSearchQuery(searchInput);
     
     // TODO (v0.0.2): Trigger server-side search if total > 50
     // if (total > 50) {
-    //   // Debounce and call API with search param
-    //   debouncedServerSearch(query);
+    //   // Call API with search param
+    //   serverSearch(searchInput);
     // }
+  };
+  
+  /**
+   * Clear search and reset to show all items
+   */
+  const handleClearSearch = () => {
+    setSearchInput('');
+    setSearchQuery('');
   };
   
   /**
@@ -328,6 +344,7 @@ export function useSparePartsViewModel(machineId: string | undefined) {
       isLoading,
       error: error?.message,
       machineId,
+      searchInput,
       searchQuery,
       isCreating: createMutation.isPending,
       isUpdating: updateMutation.isPending,
@@ -386,7 +403,9 @@ export function useSparePartsViewModel(machineId: string | undefined) {
       handleEditPart,
       handleOpenOptions,
       handleOpenDeleteConfirm,
-      handleSearchChange,
+      handleSearchInputChange,
+      handleSearch,
+      handleClearSearch,
       handleCloseModals,
       handleRetry,
     },

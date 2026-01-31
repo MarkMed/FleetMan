@@ -2,6 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card, BodyText, Button } from '@components/ui';
 import { ChevronRight, MoreVertical } from 'lucide-react';
+import { formatDateShort } from '@utils';
 
 /**
  * Type for spare part entity
@@ -62,7 +63,7 @@ export const SparePartCard: React.FC<SparePartCardProps> = ({
   onOptions,
   className = '',
 }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   // 🔮 POST-MVP: Low stock indicator (amount < threshold)
   // const isLowStock = sparePart.amount < 5;
@@ -87,23 +88,34 @@ export const SparePartCard: React.FC<SparePartCardProps> = ({
 
       {/* Metadata Grid */}
       <div className="space-y-2 mb-4">
+        
+        {/* Date of creation */}
+        <div className="flex justify-between items-center">
+          <BodyText size="regular" className="text-muted-foreground">
+            {t('common.createdAt')}:
+          </BodyText>
+          <BodyText size="regular" weight="medium" className="text-foreground">
+            {formatDateShort(sparePart.createdAt, i18n.language)}
+          </BodyText>
+        </div>
+
         {/* Serial ID */}
         <div className="flex justify-between items-center">
-          <BodyText size="small" className="text-muted-foreground">
+          <BodyText size="regular" className="text-muted-foreground">
             {t('spareParts.serialId')}:
           </BodyText>
-          <BodyText size="small" weight="medium" className="text-foreground">
+          <BodyText size="regular" weight="medium" className="text-foreground">
             {sparePart.serialId}
           </BodyText>
         </div>
 
         {/* Amount */}
         <div className="flex justify-between items-center">
-          <BodyText size="small" className="text-muted-foreground">
+          <BodyText size="regular" className="text-muted-foreground">
             {t('spareParts.amount')}:
           </BodyText>
           <BodyText 
-            size="small" 
+            size="regular" 
             weight="medium" 
             className="text-foreground"
             // 🔮 POST-MVP: Low stock indicator
@@ -118,22 +130,22 @@ export const SparePartCard: React.FC<SparePartCardProps> = ({
       <div className="flex gap-2 pt-3 border-t border-border">
         {/* Ver Details Button (Primary action) */}
         <Button
-          variant="outline"
+          variant="filled"
           className="flex-1 justify-between"
           onPress={() => onView(sparePart)}
         >
-          <span>{t('common.view')}</span>
-          <ChevronRight className="h-4 w-4" />
+          <BodyText>{t('common.view')}</BodyText>
+          <ChevronRight className="h-4 w-4 ml-2" />
         </Button>
 
         {/* Options Menu Button (Secondary action) */}
         <Button
           variant="outline"
-          className="px-3"
           onPress={() => onOptions(sparePart)}
-          aria-label={t('spareParts.options')}
+          aria-label={t('common.actions')}
         >
-          <MoreVertical className="h-4 w-4" />
+          <BodyText>{t('common.actions')}</BodyText>
+          <MoreVertical className="h-4 w-4 ml-2" />
         </Button>
       </div>
     </Card>

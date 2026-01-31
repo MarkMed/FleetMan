@@ -302,6 +302,8 @@
     "recommended": "Recomendado",
     "optional": "Opcional",
     "minutes": "minutos",
+    "createdAt": "Creado",
+    "updatedAt": "Última Actualización",
     "daysOfWeek": {
       "full": {
         "SUN": "Domingo",
@@ -1676,14 +1678,14 @@
     "serialId": "ID de Serie",
     "amount": "Cantidad",
     "units": "unidades",
-    "createNew": "Crear Nuevo Repuesto",
+    "createNew": "Registrar",
     "searchPlaceholder": "Buscar por nombre o ID de serie...",
     "showing": "Mostrando {{count}} de {{total}} repuestos",
     "noResults": "No se encontraron repuestos que coincidan con tu búsqueda",
     "empty": {
       "title": "No hay repuestos registrados",
       "description": "Comienza agregando el primer repuesto para esta máquina",
-      "action": "Crear Primer Repuesto"
+      "action": "Registrar Primer Repuesto"
     },
     "notFound": {
       "title": "Repuesto no encontrado",
@@ -1700,7 +1702,7 @@
       "amount": "Cantidad",
       "amountPlaceholder": "0",
       "amountHelper": "Cantidad disponible en inventario",
-      "createTitle": "Crear Nuevo Repuesto",
+      "createTitle": "Registrar Nuevo Repuesto",
       "editTitle": "Editar Repuesto"
     },
     "options": {
@@ -1724,7 +1726,7 @@
       "metadata": "Metadatos"
     },
     "notifications": {
-      "created": "Repuesto creado exitosamente",
+      "created": "Repuesto registrado exitosamente",
       "updated": "Repuesto actualizado exitosamente",
       "deleted": "Repuesto eliminado exitosamente",
       "createError": "Error al crear el repuesto",
