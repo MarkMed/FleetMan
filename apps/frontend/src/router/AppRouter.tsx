@@ -30,6 +30,7 @@ import { ConfigurationsScreen } from '../screens/settings/ConfigurationsScreen';
 import { ExamplesScreen } from '../screens/ExamplesScreen';
 import { UserDiscoveryScreen, MyContactsScreen } from '../screens/users';
 import { ConversationsListScreen, ChatScreen } from '../screens/messaging';
+import { SparePartsListScreen, SparePartDetailScreen } from '../screens/spare-parts';
 
 // Route components
 import { ProtectedRoute } from '../router/ProtectedRoute';
@@ -85,6 +86,8 @@ export const AppRouter: React.FC = () => {
           <Route path="machines/:id/events" element={<MachineEventsScreen />} />
           <Route path="machines/:id/alarms" element={<MaintenanceAlarmsListScreen />} />
           <Route path="machines/:id/maintenance-alarms/:alarmId" element={<AlarmDetailScreen />} />
+          <Route path="machines/:id/spare-parts" element={<SparePartsListScreen />} />
+          <Route path="machines/:id/spare-parts/:sparePartId" element={<SparePartDetailScreen />} />
           <Route path="machines/:id/quickcheck" element={<QuickCheckScreen />} />
           <Route path="machines/:id/quickcheck/history" element={<QuickCheckHistoryScreen />} />
 

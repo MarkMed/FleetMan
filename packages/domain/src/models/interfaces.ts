@@ -200,6 +200,21 @@ export interface IMachineType {
 }
 
 /**
+ * Interface pública para SparePart (Repuesto)
+ * Sprint #15/16 - Task 7.1: Alta/edición repuesto
+ * Entidad independiente con referencia a machineId
+ */
+export interface ISparePart {
+  readonly id: string;
+  readonly name: string;
+  readonly serialId: string;
+  readonly amount: number;
+  readonly machineId: string;
+  readonly createdAt: Date;
+  readonly updatedAt: Date;
+}
+
+/**
  * Interface pública para MachineEvent
  * NOTA: NO tiene machineId porque está embebido en Machine.eventsHistory[]
  * Similar a IQuickCheckRecord que no tiene machineId
