@@ -55,6 +55,7 @@
       "newWindowNotice": "You can continue from the link in the email which will open in a new window.",
       "emailRequired": "Email address is required",
       "invalidEmail": "Invalid email format",
+      "errorTitle": "Error Sending Email",
       "error": {
         "title": "Error",
         "unknown": "An error occurred while processing your request. Please try again."
@@ -80,6 +81,7 @@
       "passwordRequired": "New password is required",
       "passwordMinLength": "Password must be at least 8 characters",
       "passwordComplexity": "Password must contain at least one uppercase, one lowercase, and one number",
+      "errorTitle": "Reset Error",
       "error": {
         "title": "Error Resetting Password",
         "tokenExpired": "The reset link has expired. Please request a new one.",

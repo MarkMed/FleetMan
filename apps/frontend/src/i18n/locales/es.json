@@ -55,6 +55,7 @@
       "newWindowNotice": "Podrás continuar desde el enlace en el correo que se abrirá en una nueva ventana.",
       "emailRequired": "El correo electrónico es requerido",
       "invalidEmail": "Formato de correo electrónico inválido",
+      "errorTitle": "Error al Enviar Correo",
       "error": {
         "title": "Error",
         "unknown": "Ocurrió un error al procesar tu solicitud. Por favor, inténtalo de nuevo."
@@ -80,6 +81,7 @@
       "passwordRequired": "La nueva contraseña es requerida",
       "passwordMinLength": "La contraseña debe tener al menos 8 caracteres",
       "passwordComplexity": "La contraseña debe contener al menos una mayúscula, una minúscula y un número",
+      "errorTitle": "Error al Restablecer",
       "error": {
         "title": "Error al Restablecer Contraseña",
         "tokenExpired": "El enlace de restablecimiento ha expirado. Por favor, solicita uno nuevo.",

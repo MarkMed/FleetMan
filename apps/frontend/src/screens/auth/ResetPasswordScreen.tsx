@@ -1,7 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useParams, useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import { authService } from '../../services/api/authService';
+import React from 'react';
+import { Link } from 'react-router-dom';
 import { 
   InputField, 
   Button, 
@@ -14,21 +12,24 @@ import {
   ModalFooter
 } from '../../components/ui';
 import { Lock, CheckCircle, AlertCircle, ArrowRight } from 'lucide-react';
-import type { ResetPasswordRequest } from '@packages/contracts';
+import { useResetPasswordViewModel } from '../../viewModels/auth/ResetPasswordViewModel';
 
 /**
  * ResetPasswordScreen - Sprint #15 Task 2.4
  * 
- * Permite a usuarios restablecer su contraseña usando token del email.
+ * MVVM-lite Pattern:
+ * - View: Renders UI based on ViewModel state
+ * - ViewModel: Handles business logic (validation, API calls, state)
+ * - Separation: View has ZERO business logic
  * 
  * Flow:
  * 1. Usuario hace click en link del email: /reset-password/:token
- * 2. Extrae token de URL params
+ * 2. ViewModel extrae token de URL params
  * 3. Ingresa nueva contraseña + confirmación
- * 4. Validación: contraseñas coinciden + fortaleza (8 chars, mayúscula, minúscula, número)
- * 5. POST /api/v1/auth/reset-password { token, password }
- * 6. Success: redirect a /auth/login con mensaje
- * 7. Error: mostrar mensaje específico (token expirado/inválido)
+ * 4. ViewModel valida: contraseñas coinciden + fortaleza (8 chars, mayúscula, minúscula, número)
+ * 5. ViewModel llama authService.resetPassword
+ * 6. Success: ViewModel muestra modal y auto-redirect a /auth/login
+ * 7. Error: ViewModel maneja errores específicos (token expirado/inválido)
  * 
  * Security:
  * - Token JWT verificado en backend (signature + DB + expiration)
@@ -41,151 +42,8 @@ import type { ResetPasswordRequest } from '@packages/contracts';
  * - Auto-redirect a login después de 3 segundos en success
  */
 export const ResetPasswordScreen: React.FC = () => {
-  const { t } = useTranslation();
-  const { token } = useParams<{ token: string }>();
-  const navigate = useNavigate();
-
-  // Form state
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [passwordError, setPasswordError] = useState('');
-  const [confirmPasswordError, setConfirmPasswordError] = useState('');
-
-  // UI state
-  const [isLoading, setIsLoading] = useState(false);
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
-  const [tokenError, setTokenError] = useState(false);
-
-  /**
-   * Validate token exists in URL params
-   */
-  useEffect(() => {
-    if (!token) {
-      setTokenError(true);
-      setErrorMessage(t('auth.resetPassword.error.tokenInvalid'));
-    }
-  }, [token, t]);
-
-  /**
-   * Validate password strength
-   * Must match ResetPasswordRequest schema from contracts
-   */
-  const validatePassword = (): boolean => {
-    setPasswordError('');
-    
-    if (!password) {
-      setPasswordError(t('auth.resetPassword.passwordRequired'));
-      return false;
-    }
-
-    if (password.length < 8) {
-      setPasswordError(t('auth.resetPassword.passwordMinLength'));
-      return false;
-    }
-
-    // Regex: at least 1 uppercase, 1 lowercase, 1 number
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/;
-    if (!passwordRegex.test(password)) {
-      setPasswordError(t('auth.resetPassword.passwordComplexity'));
-      return false;
-    }
-
-    return true;
-  };
-
-  /**
-   * Validate password confirmation matches
-   */
-  const validateConfirmPassword = (): boolean => {
-    setConfirmPasswordError('');
-    
-    if (password !== confirmPassword) {
-      setConfirmPasswordError(t('auth.resetPassword.passwordMismatch'));
-      return false;
-    }
-
-    return true;
-  };
-
-  /**
-   * Handle form submission
-   * Validates both passwords and calls backend API
-   */
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    // Validate all fields
-    const isPasswordValid = validatePassword();
-    const isConfirmValid = validateConfirmPassword();
-
-    if (!isPasswordValid || !isConfirmValid) {
-      return;
-    }
-
-    if (!token) {
-      setErrorMessage(t('auth.resetPassword.error.tokenInvalid'));
-      return;
-    }
-
-    setIsLoading(true);
-    setErrorMessage('');
-
-    try {
-      const payload: ResetPasswordRequest = {
-        token: token.trim(),
-        password: password
-      };
-
-      await authService.resetPassword(payload);
-
-      // Success: show modal and auto-redirect to login
-      setShowSuccessModal(true);
-      
-      // Auto-redirect after 3 seconds
-      setTimeout(() => {
-        navigate('/auth/login', { 
-          state: { 
-            message: t('auth.resetPassword.successMessage') 
-          } 
-        });
-      }, 3000);
-
-    } catch (error: any) {
-      console.error('Reset password error:', error);
-      
-      // Handle specific error cases
-      const status = error?.response?.status;
-      const message = error?.response?.data?.message;
-
-      if (status === 400 && message?.includes('expired')) {
-        setErrorMessage(t('auth.resetPassword.error.tokenExpired'));
-        setTokenError(true);
-      } else if (status === 400 && message?.includes('invalid')) {
-        setErrorMessage(t('auth.resetPassword.error.tokenInvalid'));
-        setTokenError(true);
-      } else if (status === 403) {
-        setErrorMessage(t('auth.resetPassword.error.accountDeactivated'));
-      } else {
-        setErrorMessage(
-          message || t('auth.resetPassword.error.unknown')
-        );
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  /**
-   * Handle manual redirect to login from success modal
-   */
-  const handleGoToLogin = () => {
-    navigate('/auth/login', { 
-      state: { 
-        message: t('auth.resetPassword.successMessage') 
-      } 
-    });
-  };
+  // ViewModel handles ALL business logic
+  const vm = useResetPasswordViewModel();
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4 py-12 sm:px-6 lg:px-8">
@@ -193,16 +51,16 @@ export const ResetPasswordScreen: React.FC = () => {
         {/* Header */}
         <div className="text-center">
           <h1 className="text-3xl font-bold tracking-tight text-foreground">
-            {t('auth.resetPassword.title')}
+            {vm.t('auth.resetPassword.title')}
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            {t('auth.resetPassword.subtitle')}
+            {vm.t('auth.resetPassword.subtitle')}
           </p>
         </div>
 
         <Card className="border-0 shadow-xl">
           <CardContent className="p-6">
-            {tokenError ? (
+            {vm.state.tokenError ? (
               /* Token Invalid/Expired State */
               <div className="space-y-6">
                 <div className="rounded-md bg-destructive/10 border border-destructive/20 p-4">
@@ -210,10 +68,10 @@ export const ResetPasswordScreen: React.FC = () => {
                     <AlertCircle className="h-5 w-5 text-destructive flex-shrink-0" />
                     <div className="ml-3">
                       <h3 className="text-sm font-medium text-destructive">
-                        {t('auth.resetPassword.error.title')}
+                        {vm.t('auth.resetPassword.error.title')}
                       </h3>
                       <p className="mt-2 text-sm text-destructive/80">
-                        {errorMessage}
+                        {vm.state.errorMessage}
                       </p>
                     </div>
                   </div>
@@ -227,7 +85,7 @@ export const ResetPasswordScreen: React.FC = () => {
                       size="lg"
                       className="w-full"
                     >
-                      {t('auth.resetPassword.error.requestNewLink')}
+                      {vm.t('auth.resetPassword.error.requestNewLink')}
                     </Button>
                   </Link>
                   <Link to="/auth/login" className="block">
@@ -236,14 +94,14 @@ export const ResetPasswordScreen: React.FC = () => {
                       size="lg"
                       className="w-full"
                     >
-                      {t('auth.forgotPassword.backToLogin')}
+                      {vm.t('auth.forgotPassword.backToLogin')}
                     </Button>
                   </Link>
                 </div>
               </div>
             ) : (
               /* Reset Password Form */
-              <form className="space-y-6" onSubmit={handleSubmit}>
+              <form className="space-y-6" onSubmit={vm.actions.handleSubmit}>
                 {/* Instructions */}
                 <div className="rounded-md bg-blue-50 border border-blue-200 p-4">
                   <div className="flex">
@@ -252,7 +110,7 @@ export const ResetPasswordScreen: React.FC = () => {
                     </div>
                     <div className="ml-3">
                       <p className="text-sm text-blue-700">
-                        {t('auth.resetPassword.instructions')}
+                        {vm.t('auth.resetPassword.instructions')}
                       </p>
                     </div>
                   </div>
@@ -260,41 +118,41 @@ export const ResetPasswordScreen: React.FC = () => {
 
                 {/* New Password Field */}
                 <InputField
-                  label={t('auth.resetPassword.newPasswordLabel')}
-                  placeholder={t('auth.resetPassword.newPasswordPlaceholder')}
+                  label={vm.t('auth.resetPassword.newPasswordLabel')}
+                  placeholder={vm.t('auth.resetPassword.newPasswordPlaceholder')}
                   icon={Lock}
                   secureTextEntry
-                  value={password}
-                  onChangeText={setPassword}
-                  onBlur={validatePassword}
-                  error={passwordError}
+                  value={vm.state.password}
+                  onChangeText={vm.actions.handlePasswordChange}
+                  onBlur={vm.actions.validatePassword}
+                  error={vm.state.passwordError}
                   required
-                  helperText={t('auth.resetPassword.newPasswordHelper')}
-                  disabled={isLoading}
+                  helperText={vm.t('auth.resetPassword.newPasswordHelper')}
+                  disabled={vm.state.isLoading}
                 />
 
                 {/* Confirm Password Field */}
                 <InputField
-                  label={t('auth.resetPassword.confirmPasswordLabel')}
-                  placeholder={t('auth.resetPassword.confirmPasswordPlaceholder')}
+                  label={vm.t('auth.resetPassword.confirmPasswordLabel')}
+                  placeholder={vm.t('auth.resetPassword.confirmPasswordPlaceholder')}
                   icon={Lock}
                   secureTextEntry
-                  value={confirmPassword}
-                  onChangeText={setConfirmPassword}
-                  onBlur={validateConfirmPassword}
-                  error={confirmPasswordError}
+                  value={vm.state.confirmPassword}
+                  onChangeText={vm.actions.handleConfirmPasswordChange}
+                  onBlur={vm.actions.validateConfirmPassword}
+                  error={vm.state.confirmPasswordError}
                   required
-                  helperText={t('auth.resetPassword.confirmPasswordHelper')}
-                  disabled={isLoading}
+                  helperText={vm.t('auth.resetPassword.confirmPasswordHelper')}
+                  disabled={vm.state.isLoading}
                 />
 
                 {/* Error Message */}
-                {errorMessage && !tokenError && (
+                {vm.state.errorMessage && !vm.state.tokenError && (
                   <div className="rounded-md bg-destructive/10 border border-destructive/20 p-3">
                     <div className="flex">
                       <AlertCircle className="h-5 w-5 text-destructive flex-shrink-0" />
                       <p className="ml-2 text-sm text-destructive font-medium">
-                        {errorMessage}
+                        {vm.state.errorMessage}
                       </p>
                     </div>
                   </div>
@@ -306,12 +164,12 @@ export const ResetPasswordScreen: React.FC = () => {
                   variant="filled"
                   size="lg"
                   className="w-full"
-                  loading={isLoading}
-                  disabled={isLoading}
+                  loading={vm.state.isLoading}
+                  disabled={!vm.computed.canSubmit}
                 >
-                  {isLoading 
-                    ? t('auth.resetPassword.submitting')
-                    : t('auth.resetPassword.submitButton')
+                  {vm.state.isLoading 
+                    ? vm.t('auth.resetPassword.submitting')
+                    : vm.t('auth.resetPassword.submitButton')
                   }
                 </Button>
 
@@ -321,7 +179,7 @@ export const ResetPasswordScreen: React.FC = () => {
                     to="/auth/login"
                     className="inline-flex items-center text-sm font-medium text-primary hover:text-primary/80 transition-colors"
                   >
-                    {t('auth.forgotPassword.backToLogin')}
+                    {vm.t('auth.forgotPassword.backToLogin')}
                   </Link>
                 </div>
               </form>
@@ -330,7 +188,7 @@ export const ResetPasswordScreen: React.FC = () => {
         </Card>
 
         {/* Success Modal */}
-        <Modal open={showSuccessModal} onOpenChange={setShowSuccessModal}>
+        <Modal open={vm.state.showSuccessModal} onOpenChange={() => {}}>
           <ModalContent className="max-w-md">
             <ModalHeader>
               <div className="flex items-center justify-center mb-4">
@@ -339,31 +197,31 @@ export const ResetPasswordScreen: React.FC = () => {
                 </div>
               </div>
               <ModalTitle className="text-center">
-                {t('auth.resetPassword.successTitle')}
+                {vm.t('auth.resetPassword.successTitle')}
               </ModalTitle>
             </ModalHeader>
 
             <div className="space-y-4">
               <p className="text-sm text-muted-foreground text-center">
-                {t('auth.resetPassword.successMessage')}
+                {vm.t('auth.resetPassword.successMessage')}
               </p>
 
               <div className="rounded-md bg-blue-50 border border-blue-200 p-3 text-center">
                 <p className="text-xs text-blue-800">
-                  {t('auth.resetPassword.redirecting')}
+                  {vm.t('auth.resetPassword.redirecting')}
                 </p>
               </div>
             </div>
 
             <ModalFooter className="mt-6">
               <Button
-                onPress={handleGoToLogin}
+                onPress={vm.actions.handleGoToLogin}
                 variant="filled"
                 size="default"
                 className="w-full"
               >
                 <span className="flex items-center justify-center">
-                  {t('auth.resetPassword.goToLogin')}
+                  {vm.t('auth.resetPassword.goToLogin')}
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </span>
               </Button>
