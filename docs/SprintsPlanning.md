@@ -1,4 +1,4 @@
-﻿# Planes de Sprints
+# Planes de Sprints
 
 ## **Sprint #0**: dom 12 oct → sáb 18 oct 2025
 
@@ -824,11 +824,11 @@ Total con buffer: **35**hs
 ```mermaid
 xychart-beta
     title "Sprint #14: Horas Estimadas (azul) vs Reales (verde)"
-    x-axis "Tareas" ["22.1", "22.2", "22.3", "22.4", "12.1", "12.2", "12.3", "14.10", "2.1b", "14.5", "14.6", "TOTAL"]
+    x-axis "Tareas" ["22.2", "22.3", "22.1", "22.4", "14.10", "14.5", "14.6", "12.1", "12.2", "12.3", "2.1b", "TOTAL"]
     y-axis "Horas" 0 --> 44
     
-    line [5, 1.5, 1.3, 1, 5, 5, 2, 4, 8, 2, 6, 40.8]
-    line [5.3, 1.25, 1.9, 1.4, 5, 5.8, 3.4, 2.9, 6.9, 1.1, 5.2, 40.15]
+    line [1.5, 1.3, 5, 1, 4, 2, 6, 5, 5, 2, 8, 40.8]
+    line [1.25, 1.9, 5.3, 1.4, 2.9, 1.1, 5.2, 5, 5.8, 3.4, 6.9, 40.15]
 ```
 
 Distribución por categoría:
@@ -889,16 +889,16 @@ Distribución por categoría:
 | Gestión | 22.3 Sprint Planning de Sprint #15 | 2 | 1.3 | 0.9 |
 | Documentación | 22.1 Reporte Académico del Sprint #14 | 3 | 5 | 5.5 |
 | Capacitación | 22.4 Tutorías (guía con tutor asignado) | 4 | 1 | 0.6 |
-| Desarrollo | 0.16 Email Infrastructure Setup | 5 | 4 | |
-| Desarrollo | 2.4 Recuperación de contraseña (backend + frontend) | 6 | 6 | |
-| Desarrollo | 8.7 Email Channel - Notificaciones por Email | 7 | 4 | |
+| Desarrollo | 0.16 Email Infrastructure Setup | 5 | 4 | 6.2 |
+| Desarrollo | 2.4 Recuperación de contraseña (backend + frontend) | 6 | 6 | 4.3 |
+| Desarrollo | 8.7 Email Channel - Notificaciones por Email | 7 | 4 | 2.2 |
 | Desarrollo | 7.1 Alta/edición repuesto (Domain + App + UI) | 8 | 6 | |
 | Desarrollo | 7.2 Listado por máquina (expandir UI) | 9 | 4 | |
 | Documentación | 25.1 Auditoría de Documentación Existente | 10 | 3 | |
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales | Consumo |
 |:---:|:----------:|:-------:|
-| **35.8**hs | **0**hs | **0.0%** |
+| **35.8**hs | **21.6**hs | **60.3%** |
 
 Buffer reservado: **-0.8**hs ⚠️
 Total con buffer: **35**hs
@@ -906,11 +906,11 @@ Total con buffer: **35**hs
 ```mermaid
 xychart-beta
     title "Sprint #15: Horas Estimadas (azul) vs Reales (verde)"
-    x-axis "Tareas" ["22.1", "22.2", "22.3", "22.4", "0.16", "2.4", "8.7", "7.1", "7.2", "25.1", "TOTAL"]
+    x-axis "Tareas" ["22.2", "22.3", "22.1", "22.4", "0.16", "2.4", "8.7", "7.1", "7.2", "25.1", "TOTAL"]
     y-axis "Horas" 0 --> 38
     
-    line [5, 1.5, 1.3, 1, 4, 6, 4, 6, 4, 3, 35.8]
-    line [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    line [1.5, 1.3, 5, 1, 4, 6, 4, 6, 4, 3, 35.8]
+    line [1.9, 0.9, 5.5, 0.6, 6.2, 4.3, 2.2, 0, 0, 0, 21.6]
 ```
 
 Distribución por categoría:
