@@ -303,6 +303,12 @@ userSchema.index({ acceptedChatsFrom: 1 }, { sparse: true });
 // Sparse index: only indexes documents where usersBlackList array exists and is non-empty
 userSchema.index({ usersBlackList: 1 }, { sparse: true });
 
+// 🔐 Sprint #15 Task 2.4: Password Reset Token index
+// Optimizes queries: UserRepository.findByResetToken({ passwordResetToken, passwordResetExpires: { $gt: now } })
+// Compound index for both token and expiry to support queries checking valid (non-expired) tokens
+// Sparse index: only indexes documents where passwordResetToken exists (most users won't have one)
+userSchema.index({ passwordResetToken: 1, passwordResetExpires: 1 }, { sparse: true });
+
 // Note: Notification queries use in-memory filtering (not MongoDB queries),
 // so a compound index on notification fields wouldn't be beneficial.
 // If we implement aggregation pipeline in the future, consider adding:

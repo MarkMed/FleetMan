@@ -176,7 +176,6 @@ export class UserRepository implements IUserRepository {
       // Preparar datos de actualización desde entidad de dominio
       const updateData: any = {
         email: user.email.getValue(),
-        passwordHash: user.getPasswordHash(), // 🔴 BUGFIX: Include password hash for password reset flow
         profile: {
           phone: user.profile.phone,
           companyName: user.profile.companyName,
@@ -188,26 +187,35 @@ export class UserRepository implements IUserRepository {
         updatedAt: new Date() // Forzar actualización de timestamp
       };
 
-      // 🔴 BUGFIX: Include password reset token fields if they exist (or clear them if undefined)
-      // This ensures clearPasswordResetToken() changes are persisted
-      if (user.getPasswordResetToken() !== undefined) {
-        updateData.passwordResetToken = user.getPasswordResetToken();
-      }
-      if (user.getPasswordResetExpires() !== undefined) {
-        updateData.passwordResetExpires = user.getPasswordResetExpires();
-      }
-
-      // If reset token fields are undefined, explicitly unset them from DB
-      const unsetFields: any = {};
-      if (user.getPasswordResetToken() === undefined) {
-        unsetFields.passwordResetToken = '';
-      }
-      if (user.getPasswordResetExpires() === undefined) {
-        unsetFields.passwordResetExpires = '';
+      // 🔴 CRITICAL FIX: Only include passwordHash if it's explicitly loaded/set
+      // passwordHash is select: false, so findById() doesn't load it
+      // Including undefined would overwrite the DB value with null/empty
+      const passwordHash = user.getPasswordHash();
+      if (passwordHash !== undefined && passwordHash !== null && passwordHash !== '') {
+        updateData.passwordHash = passwordHash;
       }
 
-      // Build update operation with both $set and $unset
+      // 🔴 Password reset token handling - only update if explicitly changed
+      // These fields are also select: false and sparse: true
+      // We use dedicated methods (saveResetToken/clearResetToken) for these
+      const resetToken = user.getPasswordResetToken();
+      const resetExpires = user.getPasswordResetExpires();
+      
+      // Build update operation
       const updateOperation: any = { $set: updateData };
+      
+      // Only unset reset fields if they were explicitly loaded and are now undefined
+      // This prevents clearing valid tokens during unrelated profile updates
+      const unsetFields: any = {};
+      if (resetToken === undefined && resetExpires === undefined) {
+        // Both undefined likely means they weren't loaded, skip unsetting
+        // to preserve existing tokens in DB
+      } else if (resetToken === null || resetExpires === null) {
+        // Explicitly set to null means intentional clear (from clearResetToken)
+        if (resetToken === null) unsetFields.passwordResetToken = '';
+        if (resetExpires === null) unsetFields.passwordResetExpires = '';
+      }
+      
       if (Object.keys(unsetFields).length > 0) {
         updateOperation.$unset = unsetFields;
       }

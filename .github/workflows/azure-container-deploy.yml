@@ -76,7 +76,7 @@ jobs:
               SMTP_USER="${{ secrets.SMTP_USER }}" \
               SMTP_PASS="${{ secrets.SMTP_PASS }}" \
               EMAIL_FROM="${{ secrets.EMAIL_FROM }}" \
-              APP_BASE_URL="https://gentle-meadow-0e3923810.azurestaticapps.net"
+              APP_BASE_URL="${{ secrets.APP_BASE_URL }}"
           
           echo "✅ Deployment completed successfully!"
 

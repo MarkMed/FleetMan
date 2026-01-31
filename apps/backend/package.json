@@ -4,7 +4,8 @@
   "scripts": {
     "dev": "tsx watch src/main.ts",
     "dev:debug": "tsx watch --inspect src/main.ts",
-    "build": "tsc -p tsconfig.build.json",
+    "build": "tsc -p tsconfig.build.json && npm run copy-templates",
+    "copy-templates": "copyfiles -u 1 src/templates/**/*.hbs dist/",
     "start": "node dist/main.js",
     "start:prod": "NODE_ENV=production node dist/main.js",
     "seed:machine-types": "tsx src/scripts/seed-machine-types.ts",
@@ -54,6 +55,7 @@
     "@typescript-eslint/eslint-plugin": "^8.46.3",
     "@typescript-eslint/parser": "^8.46.3",
     "concurrently": "^9.2.1",
+    "copyfiles": "^2.4.1",
     "eslint": "^9.39.1",
     "nodemon": "^3.1.10",
     "prettier": "^3.6.2",

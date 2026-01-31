@@ -40,6 +40,7 @@ export const useResetPasswordViewModel = () => {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [tokenError, setTokenError] = useState(false);
+  const [redirectTimeoutId, setRedirectTimeoutId] = useState<NodeJS.Timeout | null>(null);
 
   /**
    * Validate token exists in URL params on mount
@@ -50,6 +51,17 @@ export const useResetPasswordViewModel = () => {
       setErrorMessage(t('auth.resetPassword.error.tokenInvalid'));
     }
   }, [token, t]);
+
+  /**
+   * Cleanup redirect timeout on unmount or when modal closes
+   */
+  useEffect(() => {
+    return () => {
+      if (redirectTimeoutId) {
+        clearTimeout(redirectTimeoutId);
+      }
+    };
+  }, [redirectTimeoutId]);
 
   /**
    * Validate password strength
@@ -155,32 +167,42 @@ export const useResetPasswordViewModel = () => {
       // Success: show modal and auto-redirect to login
       setShowSuccessModal(true);
       
-      // Auto-redirect after 3 seconds
-      setTimeout(() => {
+      // Clear any existing timeout
+      if (redirectTimeoutId) {
+        clearTimeout(redirectTimeoutId);
+      }
+      
+      // Auto-redirect after 3 seconds and store timeout ID for cleanup
+      const timeoutId = setTimeout(() => {
         navigate('/auth/login', { 
           state: { 
             message: t('auth.resetPassword.successMessage') 
           } 
         });
       }, 3000);
+      
+      setRedirectTimeoutId(timeoutId);
 
     } catch (error: any) {
       console.error('Reset password error:', error);
       
-      // Handle specific error cases
+      // Handle specific error cases using error.code instead of parsing message text
       const status = error?.response?.status;
+      const errorCode = error?.response?.data?.error; // Backend sends structured error codes
       const message = error?.response?.data?.message;
       let errorMsg = '';
 
-      if (status === 400 && message?.includes('expired')) {
-        errorMsg = t('auth.resetPassword.error.tokenExpired');
+      // Use error codes (stable) instead of parsing localized message strings
+      if (status === 400 || errorCode === 'INVALID_OR_EXPIRED_TOKEN') {
+        // Token invalid or expired - show token error UI
+        if (message?.toLowerCase().includes('expirado') || message?.toLowerCase().includes('expired')) {
+          errorMsg = t('auth.resetPassword.error.tokenExpired');
+        } else {
+          errorMsg = t('auth.resetPassword.error.tokenInvalid');
+        }
         setErrorMessage(errorMsg);
         setTokenError(true);
-      } else if (status === 400 && message?.includes('invalid')) {
-        errorMsg = t('auth.resetPassword.error.tokenInvalid');
-        setErrorMessage(errorMsg);
-        setTokenError(true);
-      } else if (status === 403) {
+      } else if (status === 403 || errorCode === 'ACCOUNT_DEACTIVATED') {
         errorMsg = t('auth.resetPassword.error.accountDeactivated');
         setErrorMessage(errorMsg);
       } else {
@@ -202,12 +224,18 @@ export const useResetPasswordViewModel = () => {
    * Handle manual redirect to login from success modal
    */
   const handleGoToLogin = useCallback(() => {
+    // Clear timeout since user is manually navigating
+    if (redirectTimeoutId) {
+      clearTimeout(redirectTimeoutId);
+      setRedirectTimeoutId(null);
+    }
+    
     navigate('/auth/login', { 
       state: { 
         message: t('auth.resetPassword.successMessage') 
       } 
     });
-  }, [navigate, t]);
+  }, [navigate, t, redirectTimeoutId]);
 
   /**
    * Clear all errors
