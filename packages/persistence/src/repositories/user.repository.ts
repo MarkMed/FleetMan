@@ -201,17 +201,16 @@ export class UserRepository implements IUserRepository {
       // Build update operation
       const updateOperation: any = { $set: updateData };
       
-      // Only unset reset fields if they were explicitly loaded and are now undefined
-      // This prevents clearing valid tokens during unrelated profile updates
+      // 🔧 FIX: Improved token clearing detection
+      // null = intentional clear (from User.clearPasswordResetToken())
+      // undefined = field not loaded/not changed, preserve DB value
       const unsetFields: any = {};
-      if (resetToken === undefined && resetExpires === undefined) {
-        // Both undefined likely means they weren't loaded, skip unsetting
-        // to preserve existing tokens in DB
-      } else if (resetToken === null || resetExpires === null) {
-        // Explicitly set to null means intentional clear (from clearResetToken)
+      if (resetToken === null || resetExpires === null) {
+        // Explicitly set to null means intentional clear
         if (resetToken === null) unsetFields.passwordResetToken = '';
         if (resetExpires === null) unsetFields.passwordResetExpires = '';
       }
+      // If both undefined, skip (not loaded, preserve existing DB values)
       
       if (Object.keys(unsetFields).length > 0) {
         updateOperation.$unset = unsetFields;

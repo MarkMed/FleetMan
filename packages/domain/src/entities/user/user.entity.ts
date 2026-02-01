@@ -580,11 +580,14 @@ export abstract class User {
    * Limpia el token de reset de contraseña después de usarlo o cuando expire
    * Sprint #15 - Task 2.4: Password Recovery Flow
    * 
+   * 🔧 FIX: Set to null (not undefined) so UserRepository.save() can detect
+   * the intentional clear and unset the fields from the database
+   * 
    * @returns Result<void, DomainError> - Success siempre (idempotente)
    */
   public clearPasswordResetToken(): Result<void, DomainError> {
-    this.props.passwordResetToken = undefined;
-    this.props.passwordResetExpires = undefined;
+    this.props.passwordResetToken = null as any;
+    this.props.passwordResetExpires = null as any;
     this.props.updatedAt = new Date();
 
     return ok(undefined);
