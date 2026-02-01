@@ -1007,33 +1007,6 @@ Distribución por categoría:
 
 **Riesgos:** Sprint muy denso con buffer negativo, requiere disciplina en estimaciones y ejecución. Priorizar Dashboard y UX core, 2.1b es condicional.
 
-## **Sprint #15**: dom 25 ene → sáb 31 ene 2026
-
-**Objetivo:** 🎁 Full Nice-to-Have + UX - Recuperación password + búsqueda + ayuda + mejoras UX.
-
-| Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
-|-----------:|:-------|:---------------:|:---------------:|:------------:|
-| Documentación | 20.1 Reporte Académico del Sprint #14 | 1 | 5 | |
-| Gestión | 20.2 Demo/UAT de Sprint #14 | 2 | 1.5 | |
-| Gestión | 20.3 Sprint Planning de Sprint #15 | 3 | 1.3 | |
-| Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | |
-| QA | 13.7 Triage & fix post-UAT | 5 | 10 | |
-| QA | 13.9 Gestión de defectos | 6 | 6 | |
-| Desarrollo | 11.1 Ayuda inline mínima / "cómo usar esta página" [NiceToHave] | 7 | 6 | |
-| Gestión | 19.1 Consolidación y tracking del backlog Post-MVP | 8 | 2 | |
-
-| Total Horas Estimadas (sin buffer) | Total Horas Reales | Consumo |
-|:---:|:----------:|:-------:|
-| **32.8**hs | **0**hs | **0.0%** |
-
-Buffer reservado: **2.2**hs
-Total con buffer: **35**hs
-
-Distribución por categoría:
-| Documentación | Desarrollo | QA | Capacitación | Gestión |
-|:-------:|:----------:|:--:|:------------:|:-------------:|
-| **5**hs | **6**hs | **16**hs | **1**hs | **2.8**hs |
-
 ## **Sprint #16**: dom 1 feb → sáb 7 feb 2026
 
 **Objetivo:** ✨ Último Sprint Desarrollo - Full pulida, nada de features nuevas, documentación.
