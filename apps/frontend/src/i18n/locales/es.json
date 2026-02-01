@@ -1352,7 +1352,7 @@
       "noContactsDescription": "Explora usuarios y agrégalos a tu agenda personal para mantener comunicación",
       "exploreUsers": "Descubrir Contactos",
       "sendMessage": "Enviar mensaje",
-      "removeContact": "Eliminar contacto",
+      "removeContact": "Eliminar",
       "viewProfile": "Ver perfil",
       "confirmRemoveTitle": "¿Eliminar contacto?",
       "confirmRemoveMessage": "Eliminarás a {{companyName}} de tus contactos. Esta acción no se puede deshacer.",
