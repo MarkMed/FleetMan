@@ -890,15 +890,15 @@ Distribución por categoría:
 | Documentación | 22.1 Reporte Académico del Sprint #14 | 3 | 5 | 5.5 |
 | Capacitación | 22.4 Tutorías (guía con tutor asignado) | 4 | 1 | 0.6 |
 | Desarrollo | 0.16 Email Infrastructure Setup | 5 | 4 | 6.2 |
-| Desarrollo | 2.4 Recuperación de contraseña (backend + frontend) | 6 | 6 | 4.3 |
-| Desarrollo | 8.7 Email Channel - Notificaciones por Email | 7 | 4 | 2.2 |
-| Desarrollo | 7.1 Alta/edición repuesto (Domain + App + UI) | 8 | 6 | |
-| Desarrollo | 7.2 Listado por máquina (expandir UI) | 9 | 4 | |
-| Documentación | 25.1 Auditoría de Documentación Existente | 10 | 3 | |
+| Desarrollo | 2.4 Recuperación de contraseña (backend + frontend) | 6 | 6 | 5.3 |
+| Desarrollo | 8.7 Email Channel - Notificaciones por Email | 7 | 4 | 3.2 |
+| Desarrollo | 7.1 Alta/edición repuesto (Domain + App + UI) | 8 | 6 | 5.5 |
+| Desarrollo | 7.2 Listado por máquina (expandir UI) | 9 | 4 | 3 |
+| Documentación | 25.1 Auditoría de Documentación Existente | 10 | 3 | 1.2 |
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales | Consumo |
 |:---:|:----------:|:-------:|
-| **35.8**hs | **21.6**hs | **60.3%** |
+| **35.8**hs | **33.3**hs | **93.0%** |
 
 Buffer reservado: **-0.8**hs ⚠️
 Total con buffer: **35**hs
@@ -910,7 +910,7 @@ xychart-beta
     y-axis "Horas" 0 --> 38
     
     line [1.5, 1.3, 5, 1, 4, 6, 4, 6, 4, 3, 35.8]
-    line [1.9, 0.9, 5.5, 0.6, 6.2, 4.3, 2.2, 0, 0, 0, 21.6]
+    line [1.9, 0.9, 5.5, 0.6, 6.2, 5.3, 3.2, 5.5, 3, 1.2, 33.3]
 ```
 
 Distribución por categoría:
