@@ -40,7 +40,7 @@ export const QuickCheckItemCard: React.FC<QuickCheckItemCardProps> = ({
   return (
     <div
       className={cn(
-        'flex items-center gap-3 p-4 border rounded-lg transition-all',
+        'flex flex-row items-stretch gap-3 p-4 border rounded-lg transition-all',
         getBorderColor()
       )}
       style={{
@@ -48,12 +48,14 @@ export const QuickCheckItemCard: React.FC<QuickCheckItemCardProps> = ({
       }}
     >
       {/* Item number badge */}
-      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gray-800/10 dark:bg-gray-100/10 flex items-center justify-center">
-        <span className="text-sm font-semibold text-foreground">{index + 1}</span>
+      <div className="w-8 flex items-center justify-center">
+        <div className="w-8 h-8 rounded-full bg-gray-800/10 dark:bg-gray-100/10 flex items-center justify-center">
+          <span className="text-sm font-semibold text-foreground">{index + 1}</span>
+        </div>
       </div>
 
       {/* Item content */}
-      <div className="flex-1 min-w-0">
+      <div className="h-full">
         <h4 className="font-medium text-foreground">{item.name}</h4>
         {item.description && (
           <p className="text-sm text-muted-foreground mt-1">{item.description}</p>
@@ -79,15 +81,15 @@ export const QuickCheckItemCard: React.FC<QuickCheckItemCardProps> = ({
       </div>
 
       {/* Actions based on mode */}
-      <div className="flex gap-2 flex-shrink-0">
+      <div className="flex items-center">
         {mode === 'EDITING' && onEdit && onDelete && (
-          <div className="flex gap-2">
+          <div className="flex flex-row gap-2 flex-wrap justify-end items-center">
             {/* Edit button */}
             <Button
               variant="outline"
               size="sm"
               onPress={onEdit}
-              className="gap-1.5"
+              className="gap-1.5 min-w-[90px] border-primary"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -100,7 +102,7 @@ export const QuickCheckItemCard: React.FC<QuickCheckItemCardProps> = ({
               variant="outline"
               size="sm"
               onPress={onDelete}
-              className="gap-1.5 bg-destructive/10 text-destructive hover:bg-destructive/30 border-destructive/30 hover:text-red-800 dark:hover:text-red-300"
+              className="gap-1.5 min-w-[90px] bg-destructive/10 text-destructive hover:bg-destructive/30 border-destructive/30 hover:text-red-800 dark:hover:text-red-300"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
