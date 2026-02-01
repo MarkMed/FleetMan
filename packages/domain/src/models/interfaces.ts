@@ -43,6 +43,7 @@ export interface IUser extends IBaseEntity {
     readonly address?: string;
     readonly bio?: string; // 🆕 Sprint #13 Task 10.2: Biografía (max 500 chars)
     readonly tags?: readonly string[]; // 🆕 Sprint #13 Task 10.2: Tags/etiquetas (max 5, cada uno max 100 chars)
+    readonly emailNotifications?: boolean; // 🆕 Sprint #15 Task 8.7: Email notifications toggle (default: true = opt-out)
   };
   readonly type: 'CLIENT' | 'PROVIDER';
   readonly isActive: boolean;

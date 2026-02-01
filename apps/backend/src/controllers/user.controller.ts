@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { UpdateUserProfileUseCase } from '../application/identity/update-user-profile.use-case';
+import { UpdateNotificationPreferencesUseCase } from '../application/identity/update-notification-preferences.use-case';
 import { logger } from '../config/logger.config';
 
 /**
@@ -30,9 +31,11 @@ interface AuthenticatedRequest extends Request {
  */
 export class UserController {
   private updateUserProfileUseCase: UpdateUserProfileUseCase;
+  private updateNotificationPreferencesUseCase: UpdateNotificationPreferencesUseCase;
 
   constructor() {
     this.updateUserProfileUseCase = new UpdateUserProfileUseCase();
+    this.updateNotificationPreferencesUseCase = new UpdateNotificationPreferencesUseCase();
   }
 
   /**
@@ -136,6 +139,170 @@ export class UserController {
         success: false,
         message: 'Failed to update user profile',
         error: 'UPDATE_FAILED'
+      });
+    }
+  };
+
+  /**
+   * PATCH /users/me/notification-preferences
+   * Actualiza las preferencias de notificaciones del usuario autenticado
+   * Sprint #15 Task 8.7: Email Notifications Configuration
+   * 
+   * Ownership: authMiddleware garantiza que req.user.userId es el usuario autenticado
+   * Solo el usuario puede editar sus propias preferencias (/me endpoint pattern)
+   * 
+   * Request Body (validado por Zod middleware):
+   * {
+   *   emailNotifications: boolean
+   * }
+   * 
+   * Responses:
+   * - 200: Preferencias actualizadas exitosamente
+   * - 400: Validación fallida
+   * - 401: No autenticado
+   * - 404: Usuario no encontrado
+   * - 500: Error interno
+   */
+  public updateNotificationPreferences = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+    try {
+      if (!req.user) {
+        logger.error({ path: req.path }, 'Authenticated request missing user data');
+        res.status(500).json({
+          success: false,
+          message: 'Internal authentication error',
+          error: 'MISSING_USER_DATA'
+        });
+        return;
+      }
+
+      const userId = req.user.userId;
+      const { emailNotifications } = req.body;
+
+      logger.info({ 
+        userId, 
+        emailNotifications,
+        ip: req.ip 
+      }, 'Notification preferences update request received');
+
+      // Ejecutar use case
+      const response = await this.updateNotificationPreferencesUseCase.execute(userId, {
+        emailNotifications
+      });
+
+      logger.info({ userId, preferences: response.preferences }, 'Notification preferences updated successfully');
+
+      res.status(200).json({
+        success: true,
+        message: response.message,
+        data: response.preferences
+      });
+
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      
+      logger.error({
+        error: errorMessage,
+        userId: req.user?.userId,
+        path: req.path
+      }, 'Notification preferences update failed');
+
+      // Mapear errores a códigos HTTP apropiados
+      if (errorMessage.includes('not found')) {
+        res.status(404).json({
+          success: false,
+          message: 'User not found',
+          error: 'USER_NOT_FOUND'
+        });
+        return;
+      }
+
+      if (errorMessage.includes('Invalid') || errorMessage.includes('validation')) {
+        res.status(400).json({
+          success: false,
+          message: errorMessage,
+          error: 'VALIDATION_ERROR'
+        });
+        return;
+      }
+
+      if (errorMessage.includes('deactivated')) {
+        res.status(403).json({
+          success: false,
+          message: 'Cannot update preferences for deactivated user',
+          error: 'USER_DEACTIVATED'
+        });
+        return;
+      }
+
+      // Error genérico
+      res.status(500).json({
+        success: false,
+        message: 'Failed to update notification preferences',
+        error: 'UPDATE_FAILED'
+      });
+    }
+  };
+
+  /**
+   * GET /users/me/notification-preferences
+   * Obtiene las preferencias de notificaciones del usuario autenticado
+   * Sprint #15 Task 8.7: Email Notifications Configuration
+   * 
+   * Responses:
+   * - 200: Preferencias obtenidas exitosamente
+   * - 401: No autenticado
+   * - 404: Usuario no encontrado
+   * - 500: Error interno
+   */
+  public getNotificationPreferences = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+    try {
+      if (!req.user) {
+        logger.error({ path: req.path }, 'Authenticated request missing user data');
+        res.status(500).json({
+          success: false,
+          message: 'Internal authentication error',
+          error: 'MISSING_USER_DATA'
+        });
+        return;
+      }
+
+      const userId = req.user.userId;
+
+      logger.info({ userId, ip: req.ip }, 'Fetching notification preferences');
+
+      // Ejecutar use case
+      const preferences = await this.updateNotificationPreferencesUseCase.getPreferences(userId);
+
+      logger.info({ userId, preferences }, 'Notification preferences fetched successfully');
+
+      res.status(200).json({
+        success: true,
+        message: 'Notification preferences retrieved successfully',
+        data: preferences
+      });
+
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      
+      logger.error({
+        error: errorMessage,
+        userId: req.user?.userId,
+        path: req.path
+      }, 'Failed to fetch notification preferences');
+
+      if (errorMessage.includes('not found')) {
+        res.status(404).json({
+          success: false,
+          message: 'User not found',
+          error: 'USER_NOT_FOUND'
+        });
+        return;
+      }
+
+      res.status(500).json({
+        success: false,
+        message: 'Failed to fetch notification preferences',
+        error: 'FETCH_FAILED'
       });
     }
   };

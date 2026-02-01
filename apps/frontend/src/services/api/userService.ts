@@ -1,5 +1,10 @@
 import { apiClient, handleApiResponse } from './apiClient';
-import type { UpdateUserRequest, UpdateUserResponse } from '@contracts';
+import type { 
+  UpdateUserRequest, 
+  UpdateUserResponse,
+  UpdateNotificationPreferencesRequest,
+  NotificationPreferencesResponse
+} from '@contracts';
 
 /**
  * User Service
@@ -27,6 +32,50 @@ export class UserService {
     
     const processed = handleApiResponse(response);
     // Extract data from wrapped response
+    return (processed as any).data ?? (processed as any);
+  }
+
+  /**
+   * Updates notification preferences for the authenticated user
+   * PATCH /api/users/me/notification-preferences
+   * Sprint #14 Task 2.1b: Email Notifications Configuration
+   * 
+   * @param emailNotifications - Enable/disable email notifications
+   * @returns Updated notification preferences
+   */
+  async updateNotificationPreferences(
+    emailNotifications: boolean
+  ): Promise<NotificationPreferencesResponse> {
+    const response = await apiClient.patch<{ 
+      success: boolean; 
+      message?: string; 
+      data: NotificationPreferencesResponse 
+    }>(
+      '/users/me/notification-preferences',
+      { emailNotifications }
+    );
+    
+    const processed = handleApiResponse(response);
+    return (processed as any).data ?? (processed as any);
+  }
+
+  /**
+   * Gets current notification preferences for the authenticated user
+   * GET /api/users/me/notification-preferences
+   * Sprint #14 Task 2.1b: Email Notifications Configuration
+   * 
+   * @returns Current notification preferences
+   */
+  async getNotificationPreferences(): Promise<NotificationPreferencesResponse> {
+    const response = await apiClient.get<{ 
+      success: boolean; 
+      message?: string; 
+      data: NotificationPreferencesResponse 
+    }>(
+      '/users/me/notification-preferences'
+    );
+    
+    const processed = handleApiResponse(response);
     return (processed as any).data ?? (processed as any);
   }
 

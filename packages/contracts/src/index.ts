@@ -37,6 +37,9 @@ export * from "./quickcheck.contract";
 // Notification contracts (Sprint #9)
 export * from "./notification.contract";
 
+// Notification Preferences contracts (Sprint #15 Task 8.7)
+export * from "./notification-preferences.contract";
+
 // User Discovery contracts (Sprint #12 - Module 1)
 // SSOT Architecture: PaginatedUsers es el tipo base, DiscoverUsersResponse = composición
 // Use Cases retornan PaginatedUsers, Controllers envuelven en ApiResponse<PaginatedUsers>

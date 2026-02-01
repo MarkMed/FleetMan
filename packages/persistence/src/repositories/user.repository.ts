@@ -176,13 +176,10 @@ export class UserRepository implements IUserRepository {
       // Preparar datos de actualización desde entidad de dominio
       const updateData: any = {
         email: user.email.getValue(),
-        profile: {
-          phone: user.profile.phone,
-          companyName: user.profile.companyName,
-          address: user.profile.address,
-          bio: user.profile.bio,
-          tags: user.profile.tags
-        },
+        // 🔧 FIX Sprint #15 Task 8.7: Usar spread operator para copiar TODO el profile
+        // Evita bugs por campos olvidados (como emailNotifications que causaba que el switch
+        // volviera a ON después de guardarlo en OFF). Soporta automáticamente futuros campos.
+        profile: { ...user.profile },
         isActive: user.isActive,
         updatedAt: new Date() // Forzar actualización de timestamp
       };
