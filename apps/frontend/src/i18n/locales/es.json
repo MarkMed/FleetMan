@@ -302,6 +302,8 @@
     "recommended": "Recomendado",
     "optional": "Opcional",
     "minutes": "minutos",
+    "createdAt": "Creado",
+    "updatedAt": "Última Actualización",
     "daysOfWeek": {
       "full": {
         "SUN": "Domingo",
@@ -373,7 +375,8 @@
     "owner": "Propietario",
     "actions": {
       "viewEventHistory": "Ver Historial",
-      "viewMaintenanceAlarms": "Alarmas de Mantenimiento"
+      "viewMaintenanceAlarms": "Alarmas de Mantenimiento",
+      "spareParts": "Repuestos"
     },
     "operation": {
       "title": "Programación de Uso",
@@ -1666,6 +1669,71 @@
       "numberMin": "El valor debe ser al menos {{min}}",
       "numberMax": "El valor no puede exceder {{max}}",
       "required": "Este campo es requerido"
+    }
+  },
+  "spareParts": {
+    "title": "Repuestos",
+    "subtitle": "Gestiona el inventario de repuestos de la máquina",
+    "breadcrumb": "Repuestos",
+    "serialId": "ID de Serie",
+    "amount": "Cantidad",
+    "units": "unidades",
+    "createNew": "Registrar",
+    "searchPlaceholder": "Buscar por nombre o ID de serie...",
+    "showing": "Mostrando {{count}} de {{total}} repuestos",
+    "noResults": "No se encontraron repuestos que coincidan con tu búsqueda",
+    "empty": {
+      "title": "No hay repuestos registrados",
+      "description": "Comienza agregando el primer repuesto para esta máquina",
+      "action": "Registrar Primer Repuesto"
+    },
+    "notFound": {
+      "title": "Repuesto no encontrado",
+      "description": "El repuesto que buscas no existe o ha sido eliminado",
+      "action": "Volver a Repuestos"
+    },
+    "form": {
+      "name": "Nombre",
+      "namePlaceholder": "Ej: Filtro de aceite",
+      "nameHelper": "Nombre descriptivo del repuesto",
+      "serialId": "ID de Serie",
+      "serialIdPlaceholder": "Ej: FOL-2024-001",
+      "serialIdHelper": "Identificador único del repuesto",
+      "amount": "Cantidad",
+      "amountPlaceholder": "0",
+      "amountHelper": "Cantidad disponible en inventario",
+      "createTitle": "Registrar Nuevo Repuesto",
+      "editTitle": "Editar Repuesto"
+    },
+    "options": {
+      "title": "Opciones de Repuesto",
+      "selectAction": "Selecciona una acción",
+      "edit": "Editar repuesto",
+      "editDesc": "Modificar información del repuesto",
+      "delete": "Eliminar repuesto",
+      "deleteDesc": "Eliminar permanentemente"
+    },
+    "deleteConfirm": {
+      "title": "Eliminar Repuesto",
+      "warning": "¡Advertencia!",
+      "warningDesc": "Esta acción es permanente y no se puede deshacer",
+      "partDetails": "Detalles del repuesto a eliminar:",
+      "areYouSure": "¿Estás seguro de que deseas eliminar este repuesto?"
+    },
+    "detail": {
+      "subtitle": "Información completa del repuesto",
+      "primaryInfo": "Información Principal",
+      "metadata": "Metadatos"
+    },
+    "notifications": {
+      "created": "Repuesto registrado exitosamente",
+      "updated": "Repuesto actualizado exitosamente",
+      "deleted": "Repuesto eliminado exitosamente",
+      "createError": "Error al crear el repuesto",
+      "updateError": "Error al actualizar el repuesto",
+      "deleteError": "Error al eliminar el repuesto",
+      "duplicateSerialId": "ID de Serie Duplicado",
+      "duplicateSerialIdDesc": "Ya existe un repuesto con este ID de serie para esta máquina"
     }
   }
 }

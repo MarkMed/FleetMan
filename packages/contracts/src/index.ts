@@ -28,6 +28,9 @@ export * from "./dashboard.contract";
 // Maintenance Alarm contracts (Sprint #11)
 export * from "./maintenance-alarm.contract";
 
+// Spare Part contracts (Sprint #15/16 Task 7.1)
+export * from "./spare-part.contract";
+
 // QuickCheck contracts
 export * from "./quickcheck.contract";
 

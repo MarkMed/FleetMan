@@ -300,6 +300,8 @@
     "minutes": "minutes",
     "expand": "Expand",
     "collapse": "Collapse",
+    "createdAt": "Created",
+    "updatedAt": "Last Updated",
     "daysOfWeek": {
       "full": {
         "SUN": "Sunday",
@@ -371,7 +373,8 @@
     "owner": "Owner",
     "actions": {
       "viewEventHistory": "View History",
-      "viewMaintenanceAlarms": "Maintenance Alarms"
+      "viewMaintenanceAlarms": "Maintenance Alarms",
+      "spareParts": "Spare Parts"
     },
     "operation": {
       "title": "Operation Schedule",
@@ -1664,6 +1667,71 @@
       "numberMin": "Value must be at least {{min}}",
       "numberMax": "Value cannot exceed {{max}}",
       "required": "This field is required"
+    }
+  },
+  "spareParts": {
+    "title": "Spare Parts",
+    "subtitle": "Manage machine spare parts inventory",
+    "breadcrumb": "Spare Parts",
+    "serialId": "Serial ID",
+    "amount": "Amount",
+    "units": "units",
+    "createNew": "Register",
+    "searchPlaceholder": "Search by name or serial ID...",
+    "showing": "Showing {{count}} of {{total}} spare parts",
+    "noResults": "No spare parts found matching your search",
+    "empty": {
+      "title": "No spare parts registered",
+      "description": "Start by adding the first spare part for this machine",
+      "action": "Register First Spare Part"
+    },
+    "notFound": {
+      "title": "Spare part not found",
+      "description": "The spare part you're looking for doesn't exist or has been deleted",
+      "action": "Back to Spare Parts"
+    },
+    "form": {
+      "name": "Name",
+      "namePlaceholder": "E.g: Oil filter",
+      "nameHelper": "Descriptive name of the spare part",
+      "serialId": "Serial ID",
+      "serialIdPlaceholder": "E.g: FOL-2024-001",
+      "serialIdHelper": "Unique identifier for the spare part",
+      "amount": "Amount",
+      "amountPlaceholder": "0",
+      "amountHelper": "Available quantity in inventory",
+      "createTitle": "Register New Spare Part",
+      "editTitle": "Edit Spare Part"
+    },
+    "options": {
+      "title": "Spare Part Options",
+      "selectAction": "Select an action",
+      "edit": "Edit spare part",
+      "editDesc": "Modify spare part information",
+      "delete": "Delete spare part",
+      "deleteDesc": "Permanently delete"
+    },
+    "deleteConfirm": {
+      "title": "Delete Spare Part",
+      "warning": "Warning!",
+      "warningDesc": "This action is permanent and cannot be undone",
+      "partDetails": "Details of the spare part to delete:",
+      "areYouSure": "Are you sure you want to delete this spare part?"
+    },
+    "detail": {
+      "subtitle": "Complete spare part information",
+      "primaryInfo": "Primary Information",
+      "metadata": "Metadata"
+    },
+    "notifications": {
+      "created": "Spare part registered successfully",
+      "updated": "Spare part updated successfully",
+      "deleted": "Spare part deleted successfully",
+      "createError": "Error creating spare part",
+      "updateError": "Error updating spare part",
+      "deleteError": "Error deleting spare part",
+      "duplicateSerialId": "Duplicate Serial ID",
+      "duplicateSerialIdDesc": "A spare part with this serial ID already exists for this machine"
     }
   }
 }

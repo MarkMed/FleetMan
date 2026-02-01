@@ -12,7 +12,7 @@ import {
 import { useMachineDetailsViewModel } from "../../viewModels/machines";
 import { useMachineTypeName } from "@hooks";
 import { useTranslation } from "react-i18next";
-import { Settings, Clock} from "lucide-react";
+import { Settings, Clock, Package } from "lucide-react";
 
 const statusVariants: Record<string, string> = {
   ACTIVE: "bg-success/10 text-success",
@@ -180,6 +180,14 @@ export const MachineDetailsScreen: React.FC = () => {
                   onPress={() => navigate(`/machines/${id}/alarms`)}
                 >
                   {t("machines.actions.viewMaintenanceAlarms")}
+                </Button>
+                <Button
+                  variant="outline"
+                  size="default"
+                  onPress={() => navigate(`/machines/${id}/spare-parts`)}
+                >
+                  <Package className="w-4 h-4 mr-2" />
+                  {t("machines.actions.spareParts")}
                 </Button>
               </div>
               <div className="flex-grow flex justify-end gap-3">
