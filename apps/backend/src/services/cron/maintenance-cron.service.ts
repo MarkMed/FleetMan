@@ -209,7 +209,8 @@ export class MaintenanceCronService {
    */
   public start(): void {
   const every1MinutesSchedule = '*/1 * * * *'; // For testing purposes
-  const schedule = every1MinutesSchedule;//process.env.CRON_MAINTENANCE_SCHEDULE || '0 5 * * *'; // Default: daily at 2am UY time
+  const enableFastTesting = false;
+  const schedule = enableFastTesting ? every1MinutesSchedule : (process.env.CRON_MAINTENANCE_SCHEDULE || '0 5 * * *'); // Default: daily at 2am UY time
     
     // Validate cron expression
     if (!cron.validate(schedule)) {
