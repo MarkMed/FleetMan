@@ -111,7 +111,7 @@ export class UpdateNotificationPreferencesUseCase {
       return {
         success: true,
         message: 'Notification preferences updated successfully',
-        preferences
+        data: preferences // 🔧 FIX: Changed from 'preferences' to 'data' to match contract
       };
 
     } catch (error) {

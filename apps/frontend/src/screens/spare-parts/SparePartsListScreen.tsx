@@ -38,7 +38,7 @@ import { useSparePartsViewModel } from "../../viewModels/spare-parts";
  * <Route path="/machines/:id/spare-parts" element={<SparePartsListScreen />} />
  * ```
  */
-const stickyClassStyles = "sticky top-[60px] z-10 backdrop-blur-sm";
+const stickyClassStyles = "sticky top-[10px] sm:top-[60px] z-10 backdrop-blur-sm";
 export function SparePartsListScreen() {
   const { id: machineId } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -181,12 +181,6 @@ export function SparePartsListScreen() {
           </span>
         </div>
         
-        {/* Header, Search Bar, and Actions */}
-        <div className={`space-y-4 ${stickyClassStyles}`}>
-          {/* Header with Stats and Create Button */}
-          <div
-            className={`flex flex-col lg:flex-row justify-between items-start lg:items-end gap-4`}
-          >
             <div>
               <Heading1
                 size="headline"
@@ -201,6 +195,12 @@ export function SparePartsListScreen() {
                 })}
               </BodyText>
             </div>
+        {/* Search Bar, and Actions */}
+        <div className={`space-y-4 ${stickyClassStyles}`}>
+          {/* Header with Stats and Create Button */}
+          <div
+            className={`flex flex-col lg:flex-row justify-between items-start lg:items-end gap-4`}
+          >
 
             {/* Action Buttons */}
             <div className="flex items-center justify-between gap-3 w-full">

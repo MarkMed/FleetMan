@@ -48,10 +48,12 @@ export type NotificationPreferencesResponse = z.infer<typeof NotificationPrefere
 /**
  * Update Response
  * Success response after updating preferences
+ * 🔧 FIX: Changed 'preferences' to 'data' to match controller implementation
+ * and align with standard API response pattern used across the application
  */
 export const UpdateNotificationPreferencesResponseSchema = z.object({
   success: z.boolean(),
   message: z.string(),
-  preferences: NotificationPreferencesResponseSchema
+  data: NotificationPreferencesResponseSchema
 });
 export type UpdateNotificationPreferencesResponse = z.infer<typeof UpdateNotificationPreferencesResponseSchema>;

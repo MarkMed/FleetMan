@@ -189,12 +189,12 @@ export class UserController {
         emailNotifications
       });
 
-      logger.info({ userId, preferences: response.preferences }, 'Notification preferences updated successfully');
+      logger.info({ userId, preferences: response.data }, 'Notification preferences updated successfully');
 
       res.status(200).json({
         success: true,
         message: response.message,
-        data: response.preferences
+        data: response.data
       });
 
     } catch (error) {

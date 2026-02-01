@@ -40,6 +40,8 @@ export class UserService {
    * PATCH /api/users/me/notification-preferences
    * Sprint #14 Task 2.1b: Email Notifications Configuration
    * 
+   * 🔧 FIX: Removed workaround - contract now properly aligned with 'data' key
+   * 
    * @param emailNotifications - Enable/disable email notifications
    * @returns Updated notification preferences
    */
@@ -56,13 +58,15 @@ export class UserService {
     );
     
     const processed = handleApiResponse(response);
-    return (processed as any).data ?? (processed as any);
+    return (processed as any).data;
   }
 
   /**
    * Gets current notification preferences for the authenticated user
    * GET /api/users/me/notification-preferences
    * Sprint #14 Task 2.1b: Email Notifications Configuration
+   * 
+   * 🔧 FIX: Removed workaround - contract now properly aligned with 'data' key
    * 
    * @returns Current notification preferences
    */
@@ -76,7 +80,7 @@ export class UserService {
     );
     
     const processed = handleApiResponse(response);
-    return (processed as any).data ?? (processed as any);
+    return (processed as any).data;
   }
 
   // TODO: Future endpoints (Sprint #13+)

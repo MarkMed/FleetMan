@@ -1,5 +1,5 @@
 import { SparePartRepository, MachineRepository } from '@packages/persistence';
-import { type ISparePart } from '@packages/domain';
+import { type ISparePart, MachineId } from '@packages/domain';
 import { logger } from '../../config/logger.config';
 import type { UpdateSparePartRequest } from '@packages/contracts';
 
@@ -63,7 +63,13 @@ export class UpdateSparePartUseCase {
       }
 
       // 2. Validate machine access
-      const machineResult = await this.machineRepository.findById({ getValue: () => sparePart.machineId } as any);
+      // 🔧 FIX: Use proper MachineId value object instead of casting
+      const machineIdResult = MachineId.create(sparePart.machineId);
+      if (!machineIdResult.success) {
+        throw new Error('Invalid machine ID format');
+      }
+      
+      const machineResult = await this.machineRepository.findById(machineIdResult.data!);
       if (!machineResult.success || !machineResult.data) {
         throw new Error('Machine not found');
       }
