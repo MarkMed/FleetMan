@@ -2,7 +2,7 @@ import React from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Heading1, Heading2, BodyText, Button, Card } from "@components/ui";
-import { AlertCircle, ArrowLeft, Edit, MoreVertical } from "lucide-react";
+import { AlertCircle, ArrowLeft, MoreVertical } from "lucide-react";
 import { formatDateLong } from "@utils";
 import {
   CreateEditSparePartModal,

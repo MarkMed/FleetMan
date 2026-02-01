@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { logger } from '../config/logger.config';
 import {
   CreateSparePartUseCase,
@@ -76,7 +76,7 @@ export class SparePartController {
       logger.error({ 
         error: errorMessage,
         userId: req.user?.userId,
-        machineId: req.body?.machineId
+        machineId: req.params?.machineId
       }, 'Failed to create spare part');
 
       // Map domain errors to HTTP status codes
@@ -197,7 +197,7 @@ export class SparePartController {
   async getById(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
       const userId = req.user!.userId;
-      const { id, machineId } = req.params;
+      const { id } = req.params;
 
       logger.info({ 
         userId,
@@ -259,7 +259,7 @@ export class SparePartController {
   async update(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
       const userId = req.user!.userId;
-      const { id, machineId } = req.params;
+      const { id } = req.params;
 
       logger.info({ 
         userId,
@@ -340,7 +340,7 @@ export class SparePartController {
   async delete(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
       const userId = req.user!.userId;
-      const { id, machineId } = req.params;
+      const { id } = req.params;
 
       logger.info({ 
         userId,

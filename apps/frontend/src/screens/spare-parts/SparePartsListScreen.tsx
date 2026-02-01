@@ -103,7 +103,7 @@ export function SparePartsListScreen() {
   // ========================
   else if (vm.data.isEmpty) {
     content = (
-      <div className={`space-y-6 ${stickyClassStyles}`}>
+      <div className={`space-y-4 ${stickyClassStyles}`}>
         {/* Breadcrumb */}
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <Link to="/machines" className="hover:text-foreground">
@@ -180,6 +180,8 @@ export function SparePartsListScreen() {
             {vm.t("spareParts.breadcrumb")}
           </span>
         </div>
+        
+        {/* Header, Search Bar, and Actions */}
         <div className={`space-y-4 ${stickyClassStyles}`}>
           {/* Header with Stats and Create Button */}
           <div

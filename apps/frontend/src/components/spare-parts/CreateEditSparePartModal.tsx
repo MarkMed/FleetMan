@@ -244,7 +244,7 @@ export const CreateEditSparePartModal: React.FC<CreateEditSparePartModalProps> =
             min={0}
           />
           <BodyText size="small" className="text-muted-foreground mt-1">
-            {t('spareParts.form.amountHint')}
+            {t('spareParts.form.amountHelper')}
           </BodyText>
         </div>
 

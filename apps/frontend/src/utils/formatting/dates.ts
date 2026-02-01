@@ -103,9 +103,7 @@ export const formatDate = (
   if (includeTime) {
     intlOptions.hour = '2-digit';
     intlOptions.minute = '2-digit';
-    if (use12Hour) {
-      intlOptions.hour12 = true;
-    }
+    intlOptions.hour12 = use12Hour; // Explicitly set to ensure 24h when false
   }
 
   // Determine locale based on format

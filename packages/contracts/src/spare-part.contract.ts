@@ -52,13 +52,11 @@ export const CreateSparePartBodySchema = z.object({
   name: z.string()
     .min(2, 'Name must be at least 2 characters')
     .max(200, 'Name must be 200 characters or less')
-    .trim()
     .transform(val => val.trim()),
   
   serialId: z.string()
     .min(1, 'Serial ID is required')
     .max(100, 'Serial ID must be 100 characters or less')
-    .trim()
     .transform(val => val.trim()),
   
   amount: z.number()

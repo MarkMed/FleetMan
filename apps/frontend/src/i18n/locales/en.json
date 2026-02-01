@@ -1700,7 +1700,7 @@
       "amount": "Amount",
       "amountPlaceholder": "0",
       "amountHelper": "Available quantity in inventory",
-      "createTitle": " Register New Spare Part",
+      "createTitle": "Register New Spare Part",
       "editTitle": "Edit Spare Part"
     },
     "options": {

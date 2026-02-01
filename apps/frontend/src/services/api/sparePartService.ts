@@ -43,9 +43,6 @@ const SPARE_PARTS_ENDPOINTS = {
  * - GET /api/machines/:machineId/spare-parts/:id - Get single part
  * - PATCH /api/machines/:machineId/spare-parts/:id - Update part
  * - DELETE /api/machines/:machineId/spare-parts/:id - Delete part
- * - GET /api/spare-parts/:id - Get single part details
- * - PATCH /api/spare-parts/:id - Update part (machineId immutable)
- * - DELETE /api/spare-parts/:id - Delete part permanently
  */
 
 class SparePartService {
