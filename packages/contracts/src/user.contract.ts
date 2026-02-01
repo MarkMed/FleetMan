@@ -102,7 +102,8 @@ export const UserProfileSchema = z.object({
         return uniqueTags.size === tags.length;
       },
       { message: 'Duplicate tags are not allowed' }
-    )
+    ),
+  emailNotifications: z.boolean().optional() // 🆕 Sprint #15 Task 8.7: Email Channel - Notificaciones por Email
 }) satisfies z.ZodType<UserProfile>;
 
 /**

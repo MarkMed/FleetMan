@@ -135,7 +135,7 @@ export const QuickCheckScreen: React.FC = () => {
         </div>
       </div>
 
-      <Card className="p-6">
+      <Card className="p-4">
         {/* EDITING MODE - Sin items */}
         {vm.mode === 'EDITING' && vm.items.length === 0 && (
           <QuickCheckEmptyState onAddFirstItem={() => handleOpenModal('create')} />

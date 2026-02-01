@@ -176,22 +176,51 @@ export class UserRepository implements IUserRepository {
       // Preparar datos de actualización desde entidad de dominio
       const updateData: any = {
         email: user.email.getValue(),
-        profile: {
-          phone: user.profile.phone,
-          companyName: user.profile.companyName,
-          address: user.profile.address,
-          bio: user.profile.bio,
-          tags: user.profile.tags
-        },
+        // 🔧 FIX Sprint #15 Task 8.7: Usar spread operator para copiar TODO el profile
+        // Evita bugs por campos olvidados (como emailNotifications que causaba que el switch
+        // volviera a ON después de guardarlo en OFF). Soporta automáticamente futuros campos.
+        profile: { ...user.profile },
         isActive: user.isActive,
         updatedAt: new Date() // Forzar actualización de timestamp
       };
+
+      // 🔴 CRITICAL FIX: Only include passwordHash if it's explicitly loaded/set
+      // passwordHash is select: false, so findById() doesn't load it
+      // Including undefined would overwrite the DB value with null/empty
+      const passwordHash = user.getPasswordHash();
+      if (passwordHash !== undefined && passwordHash !== null && passwordHash !== '') {
+        updateData.passwordHash = passwordHash;
+      }
+
+      // 🔴 Password reset token handling - only update if explicitly changed
+      // These fields are also select: false and sparse: true
+      // We use dedicated methods (saveResetToken/clearResetToken) for these
+      const resetToken = user.getPasswordResetToken();
+      const resetExpires = user.getPasswordResetExpires();
+      
+      // Build update operation
+      const updateOperation: any = { $set: updateData };
+      
+      // 🔧 FIX: Improved token clearing detection
+      // null = intentional clear (from User.clearPasswordResetToken())
+      // undefined = field not loaded/not changed, preserve DB value
+      const unsetFields: any = {};
+      if (resetToken === null || resetExpires === null) {
+        // Explicitly set to null means intentional clear
+        if (resetToken === null) unsetFields.passwordResetToken = '';
+        if (resetExpires === null) unsetFields.passwordResetExpires = '';
+      }
+      // If both undefined, skip (not loaded, preserve existing DB values)
+      
+      if (Object.keys(unsetFields).length > 0) {
+        updateOperation.$unset = unsetFields;
+      }
 
       // Usar $set para actualización parcial (solo campos especificados)
       // findByIdAndUpdate con runValidators: true ejecuta validaciones del schema
       const result = await UserModel.findByIdAndUpdate(
         user.id.getValue(),
-        { $set: updateData },
+        updateOperation,
         { 
           new: true, // Retornar documento actualizado
           runValidators: true // Ejecutar validaciones del schema
@@ -928,6 +957,106 @@ export class UserRepository implements IUserRepository {
           `Error getting total registered users: ${error.message}`
         )
       );
+    }
+  }
+
+  // =============================================================================
+  // 🔐 PASSWORD RECOVERY METHODS (Sprint #15 - Task 2.4)
+  // =============================================================================
+
+  /**
+   * Busca un usuario por su token de reset de contraseña
+   * Sprint #15 - Task 2.4: Password Recovery Flow
+   * 
+   * Solo retorna el usuario si el token existe y NO ha expirado
+   * 
+   * @param token - Token JWT generado para el reset
+   * @returns Result<User, DomainError> - Success con usuario si token válido, Fail si no existe o expiró
+   */
+  async findByResetToken(token: string): Promise<Result<User, DomainError>> {
+    try {
+      // Buscar usuario con token válido (no expirado)
+      // Incluir passwordHash para que el use case pueda actualizar la contraseña
+      const userDoc = await UserModel.findOne({
+        passwordResetToken: token,
+        passwordResetExpires: { $gt: new Date() } // Token NO expirado
+      }).select('+passwordHash');
+
+      if (!userDoc) {
+        return err(DomainError.notFound('Password reset token is invalid or has expired'));
+      }
+
+      // Convertir documento MongoDB → entidad de dominio
+      const userEntity = await this.documentToEntity(userDoc);
+      return ok(userEntity);
+    } catch (error: any) {
+      return err(DomainError.create('PERSISTENCE_ERROR', `Error finding user by reset token: ${error.message}`));
+    }
+  }
+
+  /**
+   * Guarda el token de reset en el usuario
+   * Sprint #15 - Task 2.4: Password Recovery Flow
+   * 
+   * Actualiza SOLO los campos passwordResetToken y passwordResetExpires
+   * No modifica otros campos del usuario (patrón atomic update)
+   * 
+   * @param userId - ID del usuario
+   * @param token - Token JWT generado
+   * @param expiresAt - Fecha de expiración del token
+   * @returns Result<void, DomainError> - Success si se guardó correctamente
+   */
+  async saveResetToken(userId: UserId, token: string, expiresAt: Date): Promise<Result<void, DomainError>> {
+    try {
+      const result = await UserModel.updateOne(
+        { _id: userId.getValue() },
+        {
+          $set: {
+            passwordResetToken: token,
+            passwordResetExpires: expiresAt
+          }
+        }
+      );
+
+      if (result.matchedCount === 0) {
+        return err(DomainError.notFound(`User with ID ${userId.getValue()} not found`));
+      }
+
+      return ok(undefined);
+    } catch (error: any) {
+      return err(DomainError.create('PERSISTENCE_ERROR', `Error saving reset token: ${error.message}`));
+    }
+  }
+
+  /**
+   * Limpia el token de reset después de usarlo
+   * Sprint #15 - Task 2.4: Password Recovery Flow
+   * 
+   * Establece passwordResetToken y passwordResetExpires a null
+   * Se llama después de un reset exitoso o cuando el token expira
+   * 
+   * @param userId - ID del usuario
+   * @returns Result<void, DomainError> - Success si se limpió correctamente
+   */
+  async clearResetToken(userId: UserId): Promise<Result<void, DomainError>> {
+    try {
+      const result = await UserModel.updateOne(
+        { _id: userId.getValue() },
+        {
+          $unset: {
+            passwordResetToken: '',
+            passwordResetExpires: ''
+          }
+        }
+      );
+
+      if (result.matchedCount === 0) {
+        return err(DomainError.notFound(`User with ID ${userId.getValue()} not found`));
+      }
+
+      return ok(undefined);
+    } catch (error: any) {
+      return err(DomainError.create('PERSISTENCE_ERROR', `Error clearing reset token: ${error.message}`));
     }
   }
 }

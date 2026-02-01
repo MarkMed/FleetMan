@@ -52,6 +52,7 @@ export {
   IMachineType,
   IMachineEvent,
   IMachineEventType,
+  ISparePart, // 🆕 Sprint #15/16 Task 7.1 - Spare part (repuesto)
   INotification,
   IMaintenanceAlarm, // 🔔 Sprint #11 - maintenance alarms embedded in Machine
   IQuickCheckTemplate, // OLD - not used in MVP

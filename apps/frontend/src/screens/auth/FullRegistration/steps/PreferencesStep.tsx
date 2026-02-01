@@ -101,7 +101,7 @@ export const PreferencesStep: React.FC = () => {
                           htmlFor="email-notifications"
                           className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                         >
-                          {t('settings.notifications.email')}
+                          {t('settings.notifications.emailEnabled.label')}
                         </label>
                       </div>
                     )}
@@ -123,7 +123,7 @@ export const PreferencesStep: React.FC = () => {
                           htmlFor="maintenance-notifications"
                           className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                         >
-                          {t('settings.notifications.maintenanceAlerts')}
+                          {t('settings.notifications.maintenanceAlerts.label')}
                         </label>
                       </div>
                     )}

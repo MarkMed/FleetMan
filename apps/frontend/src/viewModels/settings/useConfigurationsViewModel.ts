@@ -5,6 +5,7 @@ import { z } from 'zod';
 import { useTranslation } from 'react-i18next';
 import { toast, modal } from '@components/ui';
 import { useAuthStore } from '@store/slices/authSlice';
+import { userService } from '@services/api/userService';
 
 /**
  * ConfigurationsViewModel - Sprint #14 Tasks 14.5 & 14.6
@@ -100,44 +101,41 @@ export function useConfigurationsViewModel() {
     defaultValues: defaultSettings,
   });
 
-  // ===== Load settings from backend (currently mocked with localStorage) =====
+  // ===== Load settings from backend =====
   useEffect(() => {
     const loadSettings = async () => {
       setIsLoading(true);
       
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 300));
-
-      // TODO: Replace with actual API call: GET /users/me/notification-preferences
-      const mockSettings = localStorage.getItem('fleetman_settings_mock');
-      
-      if (mockSettings) {
-        try {
-          const parsed = JSON.parse(mockSettings);
-          reset(parsed);
-        } catch (error) {
-          console.error('[ConfigurationsViewModel] Failed to parse settings from localStorage:', error);
-          // Clear corrupted data and use defaults
-          localStorage.removeItem('fleetman_settings_mock');
-          reset({
-            ...defaultSettings,
-            emailAddress: user?.email || '',
-          });
-        }
-      } else {
-        // Use user email as default
+      try {
+        // Sprint #15 Task 8.7: Get email notification preferences from backend
+        const preferences = await userService.getNotificationPreferences();
+        
+        reset({
+          ...defaultSettings,
+          emailAddress: user?.email || '',
+          emailEnabled: preferences.emailNotifications ?? true, // Null-safe: default true
+        });
+        
+        console.log('[ConfigurationsViewModel] Settings loaded from backend:', preferences);
+      } catch (error) {
+        console.error('[ConfigurationsViewModel] Failed to load settings:', error);
+        toast.error({
+          title: t('settings.messages.loadError'),
+          description: t('common.tryAgainLater'),
+        });
+        
+        // Use defaults on error
         reset({
           ...defaultSettings,
           emailAddress: user?.email || '',
         });
+      } finally {
+        setIsLoading(false);
       }
-      
-      setIsLoading(false);
-      console.log('[ConfigurationsViewModel] Settings loaded from mock localStorage');
     };
 
     loadSettings();
-  }, [user, reset]);
+  }, [user, reset, t]);
 
   // ===== Handle language change with i18n (auto-persists to localStorage) =====
   const handleLanguageChange = useCallback((newLanguage: 'es' | 'en') => {
@@ -153,21 +151,29 @@ export function useConfigurationsViewModel() {
   const onSubmit = useCallback(async (data: SettingsFormData) => {
     setIsSaving(true);
 
-    // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    try {
+      // Sprint #15 Task 8.7: Update email notification preferences in backend
+      const response = await userService.updateNotificationPreferences(
+        data.emailEnabled
+      );
+      
+      console.log('[ConfigurationsViewModel] Settings saved:', response);
+      
+      toast.success({
+        title: t('settings.messages.saveSuccess'),
+        description: t('settings.messages.settingsSaved'),
+      });
 
-    // TODO: Replace with actual API call: PUT /users/me/notification-preferences
-    localStorage.setItem('fleetman_settings_mock', JSON.stringify(data));
-    
-    console.log('[ConfigurationsViewModel] Settings saved (mock):', data);
-    
-    toast.success({
-      title: t('settings.messages.saveSuccess'),
-      description: t('settings.messages.updatedCount', { count: Object.keys(data).length }),
-    });
-
-    setIsSaving(false);
-    reset(data); // Mark form as pristine after successful save
+      reset(data); // Mark form as pristine after successful save
+    } catch (error) {
+      console.error('[ConfigurationsViewModel] Failed to save settings:', error);
+      toast.error({
+        title: t('settings.messages.saveError'),
+        description: error instanceof Error ? error.message : t('common.tryAgainLater'),
+      });
+    } finally {
+      setIsSaving(false);
+    }
   }, [t, reset]);
 
   // ===== Handle restore defaults =====
@@ -182,20 +188,30 @@ export function useConfigurationsViewModel() {
 
     if (!confirmed) return;
 
-    // TODO: Replace with actual API call: DELETE /users/me/notification-preferences (restore defaults)
-    const restoredData = {
-      ...defaultSettings,
-      emailAddress: user?.email || '',
-    };
-    
-    reset(restoredData);
-    localStorage.setItem('fleetman_settings_mock', JSON.stringify(restoredData));
-    
-    modal.hide();
-    
-    toast.success({
-      title: t('settings.messages.restoreSuccess'),
-    });
+    try {
+      // Sprint #15 Task 8.7: Restore default notification preferences (true = enabled)
+      await userService.updateNotificationPreferences(true);
+      
+      const restoredData = {
+        ...defaultSettings,
+        emailAddress: user?.email || '',
+        emailEnabled: true, // Default: enabled
+      };
+      
+      reset(restoredData);
+      modal.hide();
+      
+      toast.success({
+        title: t('settings.messages.restoreSuccess'),
+      });
+    } catch (error) {
+      console.error('[ConfigurationsViewModel] Failed to restore defaults:', error);
+      modal.hide();
+      toast.error({
+        title: t('settings.messages.restoreError'),
+        description: t('common.tryAgainLater'),
+      });
+    }
   }, [t, user, reset]);
 
   // ===== Handle test email =====

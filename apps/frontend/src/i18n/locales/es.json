@@ -38,6 +38,59 @@
       "createAccount": "Crear cuenta",
       "signUpLink": "Regístrate aquí"
     },
+    "forgotPassword": {
+      "title": "Recuperar Contraseña",
+      "subtitle": "Te enviaremos un correo para reestablecer tu contraseña",
+      "instructions": "Ingresa tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña",
+      "emailLabel": "Correo Electrónico",
+      "emailPlaceholder": "tu@email.com",
+      "emailHelper": "Ingresa el email asociado a tu cuenta",
+      "submitButton": "Enviar Correo",
+      "submitting": "Enviando...",
+      "successTitle": "Correo Enviado",
+      "successMessage": "Se ha enviado un correo electrónico con instrucciones para restablecer tu contraseña. Si tu cuenta existe en nuestro sistema, recibirás el correo en los próximos minutos.",
+      "spamNotice": "Si no lo encuentras en tu bandeja de entrada, revisa tu carpeta de spam o correo no deseado.",
+      "closeModal": "Entendido",
+      "backToLogin": "Volver al inicio de sesión",
+      "newWindowNotice": "Podrás continuar desde el enlace en el correo que se abrirá en una nueva ventana.",
+      "emailRequired": "El correo electrónico es requerido",
+      "invalidEmail": "Formato de correo electrónico inválido",
+      "errorTitle": "Error al Enviar Correo",
+      "error": {
+        "title": "Error",
+        "unknown": "Ocurrió un error al procesar tu solicitud. Por favor, inténtalo de nuevo."
+      }
+    },
+    "resetPassword": {
+      "title": "Restablecer Contraseña",
+      "subtitle": "Crea una nueva contraseña para tu cuenta",
+      "instructions": "Tu nueva contraseña debe tener al menos 8 caracteres e incluir mayúsculas, minúsculas y números",
+      "newPasswordLabel": "Nueva Contraseña",
+      "newPasswordPlaceholder": "Mínimo 8 caracteres",
+      "newPasswordHelper": "Debe contener mayúsculas, minúsculas y números",
+      "confirmPasswordLabel": "Confirmar Nueva Contraseña",
+      "confirmPasswordPlaceholder": "Repite tu nueva contraseña",
+      "confirmPasswordHelper": "Debe ser idéntica a la contraseña anterior",
+      "submitButton": "Restablecer Contraseña",
+      "submitting": "Restableciendo...",
+      "successTitle": "Contraseña Actualizada",
+      "successMessage": "Tu contraseña ha sido actualizada exitosamente. Ya puedes iniciar sesión con tu nueva contraseña.",
+      "redirecting": "Redirigiendo al inicio de sesión...",
+      "goToLogin": "Ir al Inicio de Sesión",
+      "passwordMismatch": "Las contraseñas no coinciden",
+      "passwordRequired": "La nueva contraseña es requerida",
+      "passwordMinLength": "La contraseña debe tener al menos 8 caracteres",
+      "passwordComplexity": "La contraseña debe contener al menos una mayúscula, una minúscula y un número",
+      "errorTitle": "Error al Restablecer",
+      "error": {
+        "title": "Error al Restablecer Contraseña",
+        "tokenExpired": "El enlace de restablecimiento ha expirado. Por favor, solicita uno nuevo.",
+        "tokenInvalid": "El enlace de restablecimiento es inválido. Por favor, solicita uno nuevo.",
+        "accountDeactivated": "Tu cuenta ha sido desactivada. Contacta al soporte para más información.",
+        "unknown": "Ocurrió un error inesperado. Por favor, inténtalo de nuevo.",
+        "requestNewLink": "Solicitar Nuevo Enlace"
+      }
+    },
     "register": {
       "title": "Registrarse",
       "subtitle": "Crea tu cuenta de gestión de flota",
@@ -249,6 +302,8 @@
     "recommended": "Recomendado",
     "optional": "Opcional",
     "minutes": "minutos",
+    "createdAt": "Creado",
+    "updatedAt": "Última Actualización",
     "daysOfWeek": {
       "full": {
         "SUN": "Domingo",
@@ -320,7 +375,8 @@
     "owner": "Propietario",
     "actions": {
       "viewEventHistory": "Ver Historial",
-      "viewMaintenanceAlarms": "Alarmas de Mantenimiento"
+      "viewMaintenanceAlarms": "Alarmas de Mantenimiento",
+      "spareParts": "Repuestos"
     },
     "operation": {
       "title": "Programación de Uso",
@@ -1296,7 +1352,7 @@
       "noContactsDescription": "Explora usuarios y agrégalos a tu agenda personal para mantener comunicación",
       "exploreUsers": "Descubrir Contactos",
       "sendMessage": "Enviar mensaje",
-      "removeContact": "Eliminar contacto",
+      "removeContact": "Eliminar",
       "viewProfile": "Ver perfil",
       "confirmRemoveTitle": "¿Eliminar contacto?",
       "confirmRemoveMessage": "Eliminarás a {{companyName}} de tus contactos. Esta acción no se puede deshacer.",
@@ -1613,6 +1669,71 @@
       "numberMin": "El valor debe ser al menos {{min}}",
       "numberMax": "El valor no puede exceder {{max}}",
       "required": "Este campo es requerido"
+    }
+  },
+  "spareParts": {
+    "title": "Repuestos",
+    "subtitle": "Gestiona el inventario de repuestos de la máquina",
+    "breadcrumb": "Repuestos",
+    "serialId": "ID de Serie",
+    "amount": "Cantidad",
+    "units": "unidades",
+    "createNew": "Registrar",
+    "searchPlaceholder": "Buscar por nombre o ID de serie...",
+    "showing": "Mostrando {{count}} de {{total}} repuestos",
+    "noResults": "No se encontraron repuestos que coincidan con tu búsqueda",
+    "empty": {
+      "title": "No hay repuestos registrados",
+      "description": "Comienza agregando el primer repuesto para esta máquina",
+      "action": "Registrar Primer Repuesto"
+    },
+    "notFound": {
+      "title": "Repuesto no encontrado",
+      "description": "El repuesto que buscas no existe o ha sido eliminado",
+      "action": "Volver a Repuestos"
+    },
+    "form": {
+      "name": "Nombre",
+      "namePlaceholder": "Ej: Filtro de aceite",
+      "nameHelper": "Nombre descriptivo del repuesto",
+      "serialId": "ID de Serie",
+      "serialIdPlaceholder": "Ej: FOL-2024-001",
+      "serialIdHelper": "Identificador único del repuesto",
+      "amount": "Cantidad",
+      "amountPlaceholder": "0",
+      "amountHelper": "Cantidad disponible en inventario",
+      "createTitle": "Registrar Nuevo Repuesto",
+      "editTitle": "Editar Repuesto"
+    },
+    "options": {
+      "title": "Opciones de Repuesto",
+      "selectAction": "Selecciona una acción",
+      "edit": "Editar repuesto",
+      "editDesc": "Modificar información del repuesto",
+      "delete": "Eliminar repuesto",
+      "deleteDesc": "Eliminar permanentemente"
+    },
+    "deleteConfirm": {
+      "title": "Eliminar Repuesto",
+      "warning": "¡Advertencia!",
+      "warningDesc": "Esta acción es permanente y no se puede deshacer",
+      "partDetails": "Detalles del repuesto a eliminar:",
+      "areYouSure": "¿Estás seguro de que deseas eliminar este repuesto?"
+    },
+    "detail": {
+      "subtitle": "Información completa del repuesto",
+      "primaryInfo": "Información Principal",
+      "metadata": "Metadatos"
+    },
+    "notifications": {
+      "created": "Repuesto registrado exitosamente",
+      "updated": "Repuesto actualizado exitosamente",
+      "deleted": "Repuesto eliminado exitosamente",
+      "createError": "Error al crear el repuesto",
+      "updateError": "Error al actualizar el repuesto",
+      "deleteError": "Error al eliminar el repuesto",
+      "duplicateSerialId": "ID de Serie Duplicado",
+      "duplicateSerialIdDesc": "Ya existe un repuesto con este ID de serie para esta máquina"
     }
   }
 }

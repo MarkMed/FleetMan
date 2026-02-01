@@ -120,11 +120,20 @@ export const validateRequest = (schemas: {
 };
 
 // Imports de schemas desde contracts
-import { LoginRequest, RegisterRequest } from '@packages/contracts';
+import { 
+  LoginRequest, 
+  RegisterRequest, 
+  ForgotPasswordRequest, 
+  ResetPasswordRequest 
+} from '@packages/contracts';
 
 // Validadores específicos pre-configurados para los endpoints de auth
 export const validateLoginUser = validateBody(LoginRequest);
 export const validateRegisterUser = validateBody(RegisterRequest);
+
+// Sprint #15 - Task 2.4: Password Recovery Validators
+export const validateForgotPassword = validateBody(ForgotPasswordRequest);
+export const validateResetPassword = validateBody(ResetPasswordRequest);
 
 // TODO: Agregar más validadores según se necesiten:
 // export const validateMachineId = validateParams(machineIdParamsSchema);

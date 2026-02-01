@@ -14,6 +14,7 @@ import contactRoutes from './contact.routes';
 import userStatsRoutes from './user-stats.routes';
 import messageRoutes from './message.routes';
 import dashboardRoutes from './dashboard.routes';
+import sparePartsRoutes from './spare-parts.routes'; // 🆕 Sprint #15/16 Task 7.1 - Spare Parts routes
 
 /**
  * Router principal de la API v1
@@ -66,7 +67,9 @@ router.use('/messages', messageRoutes);
 // Dashboard routes (Sprint #12 - Bundle 12) - Datos de actividad reciente para dashboard
 router.use('/dashboard', dashboardRoutes);
 
+// Spare Parts routes (Sprint #15/16 Task 7.1) - Gestión de repuestos/consumibles
+router.use('/machines', sparePartsRoutes);
+
 // TODO: Agregar más rutas según se implementen los módulos
-// router.use('/maintenance', maintenanceRoutes);
 
 export default router;

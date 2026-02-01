@@ -40,14 +40,41 @@ export const RefreshTokenResponse = z.object({
 export type RefreshTokenResponse = z.infer<typeof RefreshTokenResponse>;
 
 // Forgot password contracts
+// Sprint #15 - Task 2.4: Password Recovery Flow
 export const ForgotPasswordRequest = z.object({
-  email: z.string().email("Invalid email format"),
+  email: z
+    .string()
+    .email("El formato del email es inválido")
+    .toLowerCase() // Normalizar a minúsculas
+    .trim(), // Remover espacios en blanco
 });
 export type ForgotPasswordRequest = z.infer<typeof ForgotPasswordRequest>;
 
+export const ForgotPasswordResponse = z.object({
+  message: z.string(), // Mensaje genérico (security best practice)
+});
+export type ForgotPasswordResponse = z.infer<typeof ForgotPasswordResponse>;
+
 // Reset password contracts
+// Sprint #15 - Task 2.4: Password Recovery Flow
+// Password strength validation: mínimo 8 caracteres, al menos 1 mayúscula, 1 minúscula, 1 número
 export const ResetPasswordRequest = z.object({
-  token: z.string(),
-  newPassword: z.string().min(8, "Password must be at least 8 characters"),
+  token: z
+    .string()
+    .min(1, "El token es requerido")
+    .trim(),
+  password: z
+    .string()
+    .min(8, "La contraseña debe tener al menos 8 caracteres")
+    .max(128, "La contraseña no puede exceder 128 caracteres")
+    .regex(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
+      "La contraseña debe contener al menos una mayúscula, una minúscula y un número"
+    ),
 });
 export type ResetPasswordRequest = z.infer<typeof ResetPasswordRequest>;
+
+export const ResetPasswordResponse = z.object({
+  message: z.string(), // Mensaje de confirmación
+});
+export type ResetPasswordResponse = z.infer<typeof ResetPasswordResponse>;

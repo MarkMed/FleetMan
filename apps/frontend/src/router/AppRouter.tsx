@@ -11,6 +11,8 @@ import { LoginScreen } from '../screens/auth/LoginScreen';
 import { RegisterScreen } from '../screens/auth/RegisterScreen';
 import { RegistrationSelectScreen } from '../screens/auth/RegistrationSelectScreen';
 import { FullRegistrationScreen } from '../screens/auth/FullRegistration/FullRegistrationScreen';
+import { ForgotPasswordScreen } from '../screens/auth/ForgotPasswordScreen';
+import { ResetPasswordScreen } from '../screens/auth/ResetPasswordScreen';
 import { DashboardScreen } from '../screens/dashboard/DashboardScreen';
 import { MachinesScreen } from '../screens/machines/MachinesScreen';
 import { MachineDetailsScreen } from '../screens/machines/MachineDetailsScreen';
@@ -28,6 +30,7 @@ import { ConfigurationsScreen } from '../screens/settings/ConfigurationsScreen';
 import { ExamplesScreen } from '../screens/ExamplesScreen';
 import { UserDiscoveryScreen, MyContactsScreen } from '../screens/users';
 import { ConversationsListScreen, ChatScreen } from '../screens/messaging';
+import { SparePartsListScreen, SparePartDetailScreen } from '../screens/spare-parts';
 
 // Route components
 import { ProtectedRoute } from '../router/ProtectedRoute';
@@ -60,8 +63,14 @@ export const AppRouter: React.FC = () => {
           <Route path="register/select" element={<RegistrationSelectScreen />} />
           <Route path="register/quick" element={<RegisterScreen />} />
           <Route path="register/full-form" element={<FullRegistrationScreen />} />
+          {/* Password Recovery routes - Sprint #15 Task 2.4 */}
+          <Route path="forgot-password" element={<ForgotPasswordScreen />} />
         </Route>
       </Route>
+
+      {/* Reset Password Route - Public but outside AuthLayout (standalone page) */}
+      {/* Note: Backend sends link as /reset-password/:token (not /auth/reset-password) */}
+      <Route path="/reset-password/:token" element={<ResetPasswordScreen />} />
 
       {/* Protected routes - accessible only when authenticated */}
       <Route path="/" element={<ProtectedRoute />}>
@@ -77,6 +86,8 @@ export const AppRouter: React.FC = () => {
           <Route path="machines/:id/events" element={<MachineEventsScreen />} />
           <Route path="machines/:id/alarms" element={<MaintenanceAlarmsListScreen />} />
           <Route path="machines/:id/maintenance-alarms/:alarmId" element={<AlarmDetailScreen />} />
+          <Route path="machines/:id/spare-parts" element={<SparePartsListScreen />} />
+          <Route path="machines/:id/spare-parts/:sparePartId" element={<SparePartDetailScreen />} />
           <Route path="machines/:id/quickcheck" element={<QuickCheckScreen />} />
           <Route path="machines/:id/quickcheck/history" element={<QuickCheckHistoryScreen />} />
 

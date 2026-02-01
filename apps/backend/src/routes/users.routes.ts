@@ -3,7 +3,10 @@ import { requestSanitization } from '../middlewares/requestSanitization';
 import { authMiddleware } from '../middlewares/auth.middleware';
 import { requireRole } from '../middlewares/role-check.middleware';
 import { validateRequest } from '../middlewares/validation.middleware';
-import { UpdateMyProfileRequestSchema } from '@packages/contracts';
+import { 
+  UpdateMyProfileRequestSchema,
+  UpdateNotificationPreferencesRequestSchema 
+} from '@packages/contracts';
 import { UserController } from '../controllers/user.controller';
 
 const router = Router();
@@ -205,6 +208,128 @@ router.patch('/me/profile',
   authMiddleware, // Garantiza req.user.userId existe
   validateRequest({ body: UpdateMyProfileRequestSchema }), // Validación Zod (sin id, viene de JWT)
   userController.updateProfile // Controller invoca use case
+);
+
+/**
+ * @swagger
+ * /api/v1/users/me/notification-preferences:
+ *   patch:
+ *     summary: Update notification preferences
+ *     description: |
+ *       Allows authenticated users to control their email notification preferences.
+ *       
+ *       **Sprint #15 Task 8.7: Email Notifications Configuration**
+ *       
+ *       Opt-out approach: Users receive email notifications by default (true).
+ *       They can disable email notifications by setting emailNotifications to false.
+ *       
+ *       This preference controls whether the user receives email notifications for:
+ *       - Machine events (maintenance alerts, status changes, etc.)
+ *       - System notifications
+ *       - Messages from other users (future)
+ *       
+ *       Note: This setting does NOT affect in-app notifications (badge notifications).
+ *       In-app notifications are always enabled.
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - emailNotifications
+ *             properties:
+ *               emailNotifications:
+ *                 type: boolean
+ *                 description: Enable/disable email notifications
+ *                 example: false
+ *           examples:
+ *             disableEmails:
+ *               summary: Disable email notifications
+ *               value:
+ *                 emailNotifications: false
+ *             enableEmails:
+ *               summary: Enable email notifications
+ *               value:
+ *                 emailNotifications: true
+ *     responses:
+ *       200:
+ *         description: Notification preferences updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Notification preferences updated successfully"
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     emailNotifications:
+ *                       type: boolean
+ *                       example: false
+ *       400:
+ *         description: Validation error
+ *       401:
+ *         description: Not authenticated
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Internal server error
+ *   get:
+ *     summary: Get notification preferences
+ *     description: |
+ *       Retrieves the current notification preferences for the authenticated user.
+ *       
+ *       **Sprint #15 Task 8.7: Email Notifications Configuration**
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Notification preferences retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Notification preferences retrieved successfully"
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     emailNotifications:
+ *                       type: boolean
+ *                       example: true
+ *       401:
+ *         description: Not authenticated
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Internal server error
+ */
+router.patch('/me/notification-preferences',
+  requestSanitization,
+  authMiddleware,
+  validateRequest({ body: UpdateNotificationPreferencesRequestSchema }),
+  userController.updateNotificationPreferences
+);
+
+router.get('/me/notification-preferences',
+  requestSanitization,
+  authMiddleware,
+  userController.getNotificationPreferences
 );
 
 /**

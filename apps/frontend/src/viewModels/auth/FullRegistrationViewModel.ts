@@ -250,7 +250,12 @@ export function useFullRegistrationViewModel(): FullRegistrationViewModel {
           ...(currentFormData.profileCompletion?.tags && 
             currentFormData.profileCompletion.tags.length > 0 && { 
               tags: currentFormData.profileCompletion.tags 
-            })
+            }),
+          // Sprint #14 Task 2.1b: Email notification preferences from wizard
+          // Null-safe: if undefined, backend will use default (true)
+          ...(currentFormData.preferences?.notifications?.email !== undefined && {
+            emailNotifications: currentFormData.preferences.notifications.email
+          })
         }
       };
 

@@ -28,11 +28,17 @@ export * from "./dashboard.contract";
 // Maintenance Alarm contracts (Sprint #11)
 export * from "./maintenance-alarm.contract";
 
+// Spare Part contracts (Sprint #15/16 Task 7.1)
+export * from "./spare-part.contract";
+
 // QuickCheck contracts
 export * from "./quickcheck.contract";
 
 // Notification contracts (Sprint #9)
 export * from "./notification.contract";
+
+// Notification Preferences contracts (Sprint #15 Task 8.7)
+export * from "./notification-preferences.contract";
 
 // User Discovery contracts (Sprint #12 - Module 1)
 // SSOT Architecture: PaginatedUsers es el tipo base, DiscoverUsersResponse = composición

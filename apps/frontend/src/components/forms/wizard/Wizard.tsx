@@ -12,6 +12,8 @@ import {
 } from "../../ui";
 import { cn } from "../../../utils/cn";
 
+const blurredBackdropStyle =
+  "bg-gray-100/70 dark:bg-gray-900/20 backdrop-blur-[3px] z-10";
 /**
  * Componente Wizard principal para formularios multi-step
  */
@@ -26,7 +28,6 @@ export function Wizard<T = any>({
   className,
   showProgress = true,
 }: WizardProps<T>) {
-
   const wizard = useWizard({
     steps,
     initialData,
@@ -64,7 +65,9 @@ export function Wizard<T = any>({
     <div className={cn("w-full max-w-4xl mx-auto", className)}>
       <Card className="shadow-lg max-h-[90vh] overflow-y-auto">
         {/* Header del wizard: solo título grande y mini descripción del paso actual */}
-        <CardHeader className="text-left pb-0 sticky top-0 bg-gray-100/70 dark:bg-gray-900/30 backdrop-blur-[1px]">
+        <CardHeader
+          className={`text-left pb-0 sticky top-0 ${blurredBackdropStyle}`}
+        >
           {/* Progress indicator: solo visual, sin nombres de pasos */}
           {showProgress && (
             <WizardProgress
@@ -110,21 +113,20 @@ export function Wizard<T = any>({
               </ul>
             </div>
           )}
-
-          {/* Controls */}
-          <WizardControls
-            isFirstStep={isFirstStep}
-            isLastStep={isLastStep}
-            isValid={isValid}
-            isSubmitting={isSubmitting}
-            onPrevious={previousStep}
-            onNext={nextStep}
-            onSubmit={submitWizard}
-            onCancel={onCancel}
-            timerLabel={timerLabel}
-            className="mt-8 sticky bottom-0 bg-gray-100/70 dark:bg-gray-900/30 backdrop-blur-[1px] py-4"
-          />
         </CardContent>
+        {/* Controls */}
+        <WizardControls
+          isFirstStep={isFirstStep}
+          isLastStep={isLastStep}
+          isValid={isValid}
+          isSubmitting={isSubmitting}
+          onPrevious={previousStep}
+          onNext={nextStep}
+          onSubmit={submitWizard}
+          onCancel={onCancel}
+          timerLabel={timerLabel}
+          className={`sticky bottom-0 ${blurredBackdropStyle} p-4`}
+        />
       </Card>
     </div>
   );

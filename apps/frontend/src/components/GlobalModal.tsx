@@ -221,7 +221,12 @@ export function GlobalModal() {
 
         {/* Content Section */}
         {!isFeedbackLoading && config.content && (
-          <div className="px-6 py-4">
+          <div 
+            className="px-6 py-4 overflow-y-auto overflow-x-hidden max-h-[60vh] overscroll-contain touch-pan-y"
+            onWheel={(e) => e.stopPropagation()}
+            onTouchMove={(e) => e.stopPropagation()}
+            style={{ WebkitOverflowScrolling: 'touch' }}
+          >
             {config.content}
           </div>
         )}

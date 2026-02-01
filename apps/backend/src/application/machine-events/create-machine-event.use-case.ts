@@ -221,12 +221,13 @@ export class CreateMachineEventUseCase {
 
       await this.addNotificationUseCase.execute(recipientId, {
         notificationType: NOTIFICATION_TYPES[3], // 'info' por defecto
-        message: eventTitle, // Usar título del evento como mensaje
+        message: eventTitle, // Usar título del evento como mensaje (i18n key - will be translated)
         actionUrl,
         sourceType,
         metadata: {
           machineName,
-          eventTitle,
+          // Note: eventTitle not included in metadata to avoid showing raw i18n key in email
+          // The translated message already contains the event information
           eventId,
           ...(responsibleName && { responsibleName }), // Solo incluir si existe
           ...(responsibleWorkerId && { responsibleWorkerId }) // Solo incluir si existe

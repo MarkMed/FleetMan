@@ -179,7 +179,6 @@ export class AddQuickCheckUseCase {
 
       // 2. Buscar tipo de evento del sistema para obtener typeId
       const normalizedKey = eventTypeKey.toLowerCase().trim().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, '_');
-      console.log('!!Creating event for QuickCheck with type key:', eventTypeKey, 'normalized as:', normalizedKey);
       const eventTypeResult = await this.eventTypeRepository.findByNormalizedName(normalizedKey);
 
       if (!eventTypeResult.success) {

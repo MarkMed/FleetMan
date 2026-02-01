@@ -37,11 +37,11 @@ utils/
 │   ├── schemaHelpers.ts  # Utilities para Zod schemas
 │   └── index.ts          # Exports de validation utils
 ├── formatting/
+│   ├── dates.ts          # ✅ Formateo de fechas (internacional/US)
 │   ├── currency.ts       # Formateo de moneda
-│   ├── dates.ts          # Formateo de fechas
 │   ├── numbers.ts        # Formateo de números
 │   ├── text.ts           # Formateo de texto
-│   └── index.ts          # Exports de formatting utils
+│   └── index.ts          # ✅ Exports de formatting utils
 ├── browser/
 │   ├── localStorage.ts   # Wrapper para localStorage
 │   ├── clipboard.ts      # Utilidades de clipboard
@@ -90,6 +90,77 @@ export function cn(...inputs: ClassValue[]) {
 // Uso:
 // cn('px-2 py-1', isActive && 'bg-blue-500', className)
 ```
+
+### `formatting/dates.ts` ✅
+**Propósito**: Formateo de fechas con soporte internacional y estadounidense
+**Implementado**: Sprint #15/16
+
+```typescript
+import { formatDate, formatDateInternational, formatDateUS } from '@/utils';
+
+// Formateo automático (detecta locale del navegador)
+formatDate(new Date('2024-01-15'))
+// Internacional (mayoría del mundo): "15/01/2024"
+// US (solo estadounidenses 🤪): "01/15/2024"
+
+// Forzar formato internacional (dd/mm/yyyy)
+formatDateInternational(new Date('2024-01-15'))
+// "15/01/2024"
+
+// Forzar formato US (mm/dd/yyyy)
+formatDateUS(new Date('2024-01-15'))
+// "01/15/2024"
+
+// Formato ISO (yyyy-mm-dd)
+formatDateISO(new Date('2024-01-15'))
+// "2024-01-15"
+
+// Formato largo con nombre del mes
+formatDateLong(new Date('2024-01-15'), 'es-ES')
+// "15 de enero de 2024"
+
+formatDateLong(new Date('2024-01-15'), 'en-US')
+// "January 15, 2024"
+
+// Formato corto con mes abreviado
+formatDateShort(new Date('2024-01-15'), 'es-ES')
+// "15 ene 2024"
+
+// Solo hora
+formatTime(new Date('2024-01-15T14:30:45'))
+// "14:30"
+
+formatTime(new Date('2024-01-15T14:30:45'), true, true)
+// "2:30:45 PM"
+
+// Tiempo relativo
+formatRelativeTime(new Date(Date.now() - 2 * 24 * 60 * 60 * 1000))
+// "hace 2 días" (español)
+// "2 days ago" (inglés)
+
+// Con tiempo incluido
+formatDate(new Date(), { includeTime: true })
+// "15/01/2024, 14:30"
+
+// Opciones avanzadas
+formatDate(new Date(), {
+  format: 'international', // o 'us' o 'iso' o 'auto'
+  includeTime: true,
+  use12Hour: true,
+  locale: 'es-ES'
+})
+```
+
+**Features**:
+- ✅ Auto-detección de locale del navegador
+- ✅ Formato internacional (dd/mm/yyyy) - usado por la mayoría del mundo civilizado
+- ✅ Formato US (mm/dd/yyyy) - para nuestros amigos estadounidenses
+- ✅ Formato ISO (yyyy-mm-dd) - para APIs y bases de datos
+- ✅ Formatos largos y cortos con nombres de meses
+- ✅ Formateo de hora (12h/24h)
+- ✅ Tiempo relativo ("hace X días")
+- ✅ Soporte completo i18n
+- ✅ Validación de fechas inválidas
 
 ### `arrayHelpers.ts`
 **Propósito**: Operaciones comunes con arrays

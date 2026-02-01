@@ -1,7 +1,12 @@
 import { Router } from 'express';
 import { AuthController } from '../controllers/auth.controller';
 import { requestSanitization } from '../middlewares/requestSanitization';
-import { validateLoginUser, validateRegisterUser } from '../middlewares/validation.middleware';
+import { 
+  validateLoginUser, 
+  validateRegisterUser, 
+  validateForgotPassword, 
+  validateResetPassword 
+} from '../middlewares/validation.middleware';
 import { authMiddleware } from '../middlewares/auth.middleware';
 
 const router = Router();
@@ -157,10 +162,100 @@ router.get('/me',
 // TODO: Implement refresh token endpoint  
 // router.post('/refresh', authController.refreshToken);
 
-// TODO: Implement forgot password endpoint
-// router.post('/forgot-password', authController.forgotPassword);
+/**
+ * @swagger
+ * /api/v1/auth/forgot-password:
+ *   post:
+ *     summary: Request password reset
+ *     description: Sends a password reset email with a link valid for 1 hour. Always returns success (security best practice).
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: "user@example.com"
+ *     responses:
+ *       200:
+ *         description: Request processed (generic message for security)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Si el email está registrado, recibirás un enlace para restablecer tu contraseña"
+ *       400:
+ *         description: Invalid request data (email format)
+ */
+router.post('/forgot-password',
+  requestSanitization,
+  validateForgotPassword,
+  authController.forgotPassword.bind(authController)
+);
 
-// TODO: Implement reset password endpoint
-// router.post('/reset-password', authController.resetPassword);
+/**
+ * @swagger
+ * /api/v1/auth/reset-password:
+ *   post:
+ *     summary: Reset password with token
+ *     description: Updates user password using the token from the email link. Token is valid for 1 hour.
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - token
+ *               - password
+ *             properties:
+ *               token:
+ *                 type: string
+ *                 example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 minLength: 8
+ *                 example: "MyNewPass123!"
+ *                 description: Must contain at least 8 characters, one uppercase, one lowercase, and one number
+ *     responses:
+ *       200:
+ *         description: Password reset successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Tu contraseña ha sido actualizada exitosamente"
+ *       400:
+ *         description: Invalid or expired token
+ *       403:
+ *         description: Account deactivated
+ *       500:
+ *         description: Internal server error
+ */
+router.post('/reset-password',
+  requestSanitization,
+  validateResetPassword,
+  authController.resetPassword.bind(authController)
+);
 
 export default router;

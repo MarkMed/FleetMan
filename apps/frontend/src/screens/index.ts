@@ -20,9 +20,6 @@ export { QuickCheckHistoryScreen } from './quickcheck/QuickCheckHistoryScreen';
 // Notifications Screens
 export { NotificationsScreen } from './notifications/NotificationsScreen';
 
-// Spare Parts Management
-export { SpareScreen } from './spare/SpareScreen';
-
 // Account Management
 export { MyAccountScreen } from './account/MyAccountScreen';
 

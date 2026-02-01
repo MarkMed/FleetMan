@@ -1,7 +1,11 @@
-import React from 'react';
-import { Button } from '@components/ui';
-import type { QuickCheckItemUI, QuickCheckMode, QuickCheckItemResult } from '@models/QuickCheck';
-import { cn } from '@utils/cn';
+import React from "react";
+import { Button } from "@components/ui";
+import type {
+  QuickCheckItemUI,
+  QuickCheckMode,
+  QuickCheckItemResult,
+} from "@models/QuickCheck";
+import { cn } from "@utils/cn";
 
 interface QuickCheckItemCardProps {
   item: QuickCheckItemUI;
@@ -24,73 +28,95 @@ export const QuickCheckItemCard: React.FC<QuickCheckItemCardProps> = ({
 }) => {
   // Border color based on evaluation status
   const getBorderColor = () => {
-    if (mode !== 'EXECUTING' || !status) return 'bg-[hsl(var(--color-background))]/50';
+    if (mode !== "EXECUTING" || !status)
+      return "bg-[hsl(var(--color-background))]/50";
     switch (status) {
-      case 'approved':
-        return 'border-green-500 bg-green-50/50 dark:bg-green-950/20';
-      case 'disapproved':
-        return 'border-red-500 bg-red-50/50 dark:bg-red-950/20';
-      case 'omitted':
-        return 'border-yellow-500 bg-yellow-50/50 dark:bg-yellow-950/20';
+      case "approved":
+        return "border-green-500 bg-green-50/50 dark:bg-green-950/20";
+      case "disapproved":
+        return "border-red-500 bg-red-50/50 dark:bg-red-950/20";
+      case "omitted":
+        return "border-yellow-500 bg-yellow-50/50 dark:bg-yellow-950/20";
       default:
-        return 'border-border bg-blue-200';
+        return "border-border bg-blue-200";
     }
   };
 
   return (
     <div
       className={cn(
-        'flex items-center gap-3 p-4 border rounded-lg transition-all',
-        getBorderColor()
+        "flex flex-row items-stretch justify-between gap-3 p-4 border rounded-lg transition-all",
+        getBorderColor(),
       )}
       style={{
         animation: `fadeSlideIn 0.4s ease-out ${index * 0.16}s both`,
       }}
     >
-      {/* Item number badge */}
-      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gray-800/10 dark:bg-gray-100/10 flex items-center justify-center">
-        <span className="text-sm font-semibold text-foreground">{index + 1}</span>
-      </div>
-
-      {/* Item content */}
-      <div className="flex-1 min-w-0">
-        <h4 className="font-medium text-foreground">{item.name}</h4>
-        {item.description && (
-          <p className="text-sm text-muted-foreground mt-1">{item.description}</p>
-        )}
-
-        {/* Status indicator (EXECUTING mode) */}
-        {mode === 'EXECUTING' && status && (
-          <div className="mt-2">
-            <span
-              className={cn(
-                'inline-flex items-center gap-1 text-xs font-medium px-2 py-1 rounded',
-                status === 'approved' && 'bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300',
-                status === 'disapproved' && 'bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300',
-                status === 'omitted' && 'bg-yellow-100 text-yellow-700 dark:bg-yellow-950 dark:text-yellow-300'
-              )}
-            >
-              {status === 'approved' && 'Aprobado'}
-              {status === 'disapproved' && 'Desaprobado'}
-              {status === 'omitted' && 'Omitido'}
+      <div className="flex flex-row items-stretch gap-3 ">
+        {/* Item number badge */}
+        <div className="w-8 flex items-center justify-center">
+          <div className="w-8 h-8 rounded-full bg-gray-800/10 dark:bg-gray-100/10 flex items-center justify-center">
+            <span className="text-sm font-semibold text-foreground">
+              {index + 1}
             </span>
           </div>
-        )}
+        </div>
+
+        {/* Item content */}
+        <div className="h-full grow">
+          <h4 className="font-medium text-foreground">{item.name}</h4>
+          {item.description && (
+            <p className="text-sm text-muted-foreground mt-1">
+              {item.description}
+            </p>
+          )}
+
+          {/* Status indicator (EXECUTING mode) */}
+          {mode === "EXECUTING" && status && (
+            <div className="mt-2">
+              <span
+                className={cn(
+                  "inline-flex items-center gap-1 text-xs font-medium px-2 py-1 rounded",
+                  status === "approved" &&
+                    "bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300",
+                  status === "disapproved" &&
+                    "bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300",
+                  status === "omitted" &&
+                    "bg-yellow-100 text-yellow-700 dark:bg-yellow-950 dark:text-yellow-300",
+                )}
+              >
+                {status === "approved" && "Aprobado"}
+                {status === "disapproved" && "Desaprobado"}
+                {status === "omitted" && "Omitido"}
+              </span>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Actions based on mode */}
-      <div className="flex gap-2 flex-shrink-0">
-        {mode === 'EDITING' && onEdit && onDelete && (
-          <div className="flex gap-2">
+      <div className="flex items-center justify-end min-w-[30%]">
+        {mode === "EDITING" && onEdit && onDelete && (
+          <div className="flex flex-row gap-2 flex-wrap justify-end items-center">
             {/* Edit button */}
             <Button
               variant="outline"
               size="sm"
               onPress={onEdit}
-              className="gap-1.5"
+              className="gap-1.5 min-w-[90px] border-primary"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                />
               </svg>
               <span>Editar</span>
             </Button>
@@ -100,62 +126,105 @@ export const QuickCheckItemCard: React.FC<QuickCheckItemCardProps> = ({
               variant="outline"
               size="sm"
               onPress={onDelete}
-              className="gap-1.5 bg-destructive/10 text-destructive hover:bg-destructive/30 border-destructive/30 hover:text-red-800 dark:hover:text-red-300"
+              className="gap-1.5 min-w-[90px] bg-destructive/10 text-destructive hover:bg-destructive/30 border-destructive/30 hover:text-red-800 dark:hover:text-red-300"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                />
               </svg>
               <span>Eliminar</span>
             </Button>
           </div>
         )}
 
-        {mode === 'EXECUTING' && onStatusChange && (
+        {mode === "EXECUTING" && onStatusChange && (
           <div className="flex flex-col gap-2 sm:flex-row">
             {/* Aprobado button */}
             <Button
-              variant={status === 'approved' ? 'filled' : 'success'}
+              variant={status === "approved" ? "filled" : "success"}
               size="sm"
-              onPress={() => onStatusChange('approved')}
+              onPress={() => onStatusChange("approved")}
               className={cn(
-                'gap-1.5',
-                status === 'approved' && 'bg-green-600 hover:bg-green-700 text-white'
+                "gap-1.5",
+                status === "approved" &&
+                  "bg-green-600 hover:bg-green-700 text-white",
               )}
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 13l4 4L19 7"
+                />
               </svg>
               <span className="hidden sm:inline">Aprobado</span>
             </Button>
 
             {/* Desaprobar button */}
             <Button
-              variant={status === 'disapproved' ? 'filled' : 'destructive'}
+              variant={status === "disapproved" ? "filled" : "destructive"}
               size="sm"
-              onPress={() => onStatusChange('disapproved')}
+              onPress={() => onStatusChange("disapproved")}
               className={cn(
-                'gap-1.5',
-                status === 'disapproved' && 'bg-red-600 hover:bg-red-700 text-white'
+                "gap-1.5",
+                status === "disapproved" &&
+                  "bg-red-600 hover:bg-red-700 text-white",
               )}
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
               <span className="hidden sm:inline">Desaprobar</span>
             </Button>
 
             {/* Omitir button */}
             <Button
-              variant={status === 'omitted' ? 'filled' : 'warning'}
+              variant={status === "omitted" ? "filled" : "warning"}
               size="sm"
-              onPress={() => onStatusChange('omitted')}
+              onPress={() => onStatusChange("omitted")}
               className={cn(
-                'gap-1.5',
-                status === 'omitted' && 'bg-yellow-600 hover:bg-yellow-700 text-white'
+                "gap-1.5",
+                status === "omitted" &&
+                  "bg-yellow-600 hover:bg-yellow-700 text-white",
               )}
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
               </svg>
               <span className="hidden sm:inline">Omitir</span>
             </Button>

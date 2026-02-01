@@ -43,6 +43,7 @@ export interface IUser extends IBaseEntity {
     readonly address?: string;
     readonly bio?: string; // 🆕 Sprint #13 Task 10.2: Biografía (max 500 chars)
     readonly tags?: readonly string[]; // 🆕 Sprint #13 Task 10.2: Tags/etiquetas (max 5, cada uno max 100 chars)
+    readonly emailNotifications?: boolean; // 🆕 Sprint #15 Task 8.7: Email notifications toggle (default: true = opt-out)
   };
   readonly type: 'CLIENT' | 'PROVIDER';
   readonly isActive: boolean;
@@ -197,6 +198,21 @@ export interface IMachineType {
   readonly id: string;
   readonly name: string;
   readonly languages: string[];
+}
+
+/**
+ * Interface pública para SparePart (Repuesto)
+ * Sprint #15/16 - Task 7.1: Alta/edición repuesto
+ * Entidad independiente con referencia a machineId
+ */
+export interface ISparePart {
+  readonly id: string;
+  readonly name: string;
+  readonly serialId: string;
+  readonly amount: number;
+  readonly machineId: string;
+  readonly createdAt: Date;
+  readonly updatedAt: Date;
 }
 
 /**
