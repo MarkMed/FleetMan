@@ -372,7 +372,8 @@
     "status": "Status",
     "owner": "Owner",
     "actions": {
-      "viewEventHistory": "View History",
+      "edit": "Edit Data",
+      "viewEventHistory": "Events",
       "viewMaintenanceAlarms": "Maintenance Alarms",
       "spareParts": "Spare Parts"
     },

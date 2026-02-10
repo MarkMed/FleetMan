@@ -12,7 +12,7 @@ import {
 import { useMachineDetailsViewModel } from "../../viewModels/machines";
 import { useMachineTypeName } from "@hooks";
 import { useTranslation } from "react-i18next";
-import { Settings, Clock, Package } from "lucide-react";
+import { Settings, Clock, Package, History, AlarmClock, Pencil, ListCheck } from "lucide-react";
 
 const statusVariants: Record<string, string> = {
   ACTIVE: "bg-success/10 text-success",
@@ -172,13 +172,15 @@ export const MachineDetailsScreen: React.FC = () => {
                   size="default"
                   onPress={() => navigate(`/machines/${id}/edit`)}
                 >
-                  Editar Máquina
+                  <Pencil className="w-4 h-4 mr-2" />
+                  {t("machines.actions.edit")}
                 </Button>
                 <Button
                   variant="outline"
                   size="default"
                   onPress={() => navigate(`/machines/${id}/alarms`)}
                 >
+                  <AlarmClock className="w-4 h-4 mr-2" />
                   {t("machines.actions.viewMaintenanceAlarms")}
                 </Button>
                 <Button
@@ -195,8 +197,8 @@ export const MachineDetailsScreen: React.FC = () => {
                   variant="outline"
                   size="default"
                   onPress={() => navigate(`/machines/${id}/events`)}
-                  // icon={<History className="w-4 h-4" />}
                 >
+                  <History className="w-4 h-4 mr-2" />
                   {t("machines.actions.viewEventHistory")}
                 </Button>
                 <Button
@@ -204,6 +206,7 @@ export const MachineDetailsScreen: React.FC = () => {
                   size="default"
                   onPress={() => navigate(`/machines/${id}/quickcheck`)}
                 >
+                  <ListCheck className="w-4 h-4 mr-1" />
                   Quickcheck
                 </Button>
               </div>

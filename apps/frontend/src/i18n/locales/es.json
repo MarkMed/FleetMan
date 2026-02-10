@@ -374,7 +374,8 @@
     "status": "Estado",
     "owner": "Propietario",
     "actions": {
-      "viewEventHistory": "Ver Historial",
+      "edit": "Editar Datos",
+      "viewEventHistory": "Eventos",
       "viewMaintenanceAlarms": "Alarmas de Mantenimiento",
       "spareParts": "Repuestos"
     },
@@ -1380,7 +1381,7 @@
     "performQuickCheckDesc": "Ejecutar chequeo de seguridad en una máquina",
     "reportEvent": "Reportar Evento",
     "reportEventDesc": "Registrar un evento de mantenimiento",
-    "viewHistory": "Ir a Historial",
+    "viewHistory": "Ir a Eventos",
     "viewHistoryDesc": "Ver historial de eventos o chequeos",
     "sendMessage": "Enviar Mensaje a...",
     "sendMessageDesc": "Contactar a un usuario de tus contactos",
