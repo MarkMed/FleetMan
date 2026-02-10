@@ -1755,25 +1755,25 @@ Revisar qué documentación académica ya existe vs. qué requiere la entrega fi
 		- MoSCoW: **Must Have**
 		- Sprint tentativo: **#15**
 
-	- 25.2 **Memoria Técnica - Arquitectura & Diseño** [Sprint #15-#16].
-Documentar decisiones arquitectónicas y diseño del sistema. Secciones: (1) Arquitectura de alto nivel (Clean Architecture, capas Domain/Application/Infrastructure/Presentation), (2) Diagramas actualizados (C4 Context/Container/Component, ER actualizado con colecciones finales, diagramas de flujo de features principales), (3) Decisiones técnicas justificadas (por qué React+Vite, Node/Express, MongoDB, TanStack Query, Zod, etc.), (4) Patrones implementados (Repository, Use Case, Result pattern, Observer para notificaciones), (5) Estructura de código y convenciones (monorepo, shared contracts, naming conventions). Formato: LaTeX o Markdown exportable a PDF, diagramas en Mermaid o Draw.io, secciones de 2-4 páginas cada una.
-		- Horas estimadas: **8**hs
-		- Margen: ±**1.6**hs (P80)
+	- 25.2 **Sección 4.3 - Diseño Final de la Solución** [Sprint #15-#16].
+Documentar diseño técnico final del sistema (DESCRIPTIVO/REPORTAJE - qué se construyó y cómo). Subsecciones según estructura académica: (0) Introducción y Pila de producto final; (1) **4.3.1 Arquitectura Final de la Solución** (Clean Architecture layers: Domain, Application, Infrastructure, Presentation; justificación del enfoque; diagrama C4 Context/Container actualizado; patrones arquitectónicos: Repository, Use Case, Result, DI con tsyringe; estructura monorepo y organización de código); (2) **4.3.2 Diagrama de Clases** (entidades de dominio principales: User, Machine, MachineEvent, MaintenanceAlarm, Notification, SparePart, QuickCheck, HelpRequest con sus relaciones y métodos clave; diagramas UML de módulos core); (3) **4.3.3 MER/Diagrama de Tablas** (modelo de datos MongoDB: colecciones finales con campos, tipos de datos y relaciones; esquemas Mongoose documentados; índices implementados para performance; justificación de decisiones NoSQL). Formato: 4-6 páginas, diagramas en Mermaid/Draw.io, tono técnico descriptivo, enfoque en estado final implementado.
+		- Horas estimadas: **10**hs
+		- Margen: ±**2.0**hs (P80)
 		- Incertidumbre: **Media**
 		- Dependencias: 25.1 (FS)
 		- Spike: **No**
-		- PERT: Optimista 6hs, Probable 8hs, Pesimista 11hs
+		- PERT: Optimista 8hs, Probable 10hs, Pesimista 13hs
 		- MoSCoW: **Must Have**
 		- Sprint tentativo: **#15 inicio, #16 finalización**
 
-	- 25.3 **Memoria Técnica - Implementación & Testing** [Sprint #16].
-Documentar features implementadas con evidencia y estrategia de testing. Secciones: (1) Features core implementadas (Auth, Máquinas, QuickCheck, Eventos, Mantenimientos, Notificaciones, Repuestos, Ayuda) con descripción funcional y screenshots, (2) Estrategia de testing aplicada (unitarios, integración, E2E con qué herramientas, cobertura alcanzada), (3) Resultados de QA (bugs encontrados y resueltos, issues críticos pendientes si existen), (4) NFRs cumplidos (performance, seguridad, accesibilidad, PWA), (5) Limitaciones conocidas del MVP. Formato: Evidencia visual (screenshots, GIFs, tablas de resultados), código relevante como anexo opcional.
-		- Horas estimadas: **10**hs
+	- 25.3 **Sección 4 - Cierre del Proyecto (excepto 4.3)** [Sprint #16].
+Documentar estado final y proceso del proyecto (DESCRIPTIVO/REPORTAJE - qué se hizo, cómo quedó). Subsecciones según estructura académica: (1) **4.1 Introducción al Cierre** (contexto de finalización del proyecto, resumen ejecutivo del alcance final, overview de secciones 4.2-4.4), (2) **4.2 Pila de Producto Final** (WBS completo como anexo, Product Backlog final: features implementadas vs. planificadas con justificaciones, priorización MoSCoW alcanzada, Sprints ejecutados: 1-16 con resumen de objetivos y entregas, métricas de completitud: % RFs/RNFs cumplidos), (3) **4.4 Ejecución de los Planes**: (3a) **4.4.1 Introducción** (overview de planes ejecutados: calidad, configuración, capacitación, riesgos), (3b) **4.4.2 Plan de Calidad** (estrategia de testing aplicada: Jest unitarios + Supertest integración, cobertura alcanzada con métricas, DoD por sprint y code reviews, linting/formateo con ESLint/Prettier, bugs encontrados y resueltos durante desarrollo), (3c) **4.4.3 Plan de Configuración de Software** (Git flow implementado: main/dev/feature branches, Conventional Commits, versionado semántico, ambientes dev/prod, CI/CD con GitHub Actions: workflows de lint/test/deploy), (3d) **4.4.4 Plan de Capacitación** (documentación de usuario generada: manuales, tutoriales, onboarding previsto para clientes), (3e) **4.4.5 Plan de Gestión de Riesgos** (riesgos identificados en docs/risks.md: técnicos, de gestión, académicos; riesgos materializados y su impacto real; mitigaciones aplicadas con efectividad; nuevos riesgos surgidos durante ejecución). Formato: 6-8 páginas, tono descriptivo reportaje, tablas de métricas, screenshots de GitHub Actions/tests, referencias a WBS y docs técnicos.
+		- Horas estimadas: **12**hs
 		- Margen: ±**2.0**hs (P80)
 		- Incertidumbre: **Media-Alta**
 		- Dependencias: 25.2 (FS)
 		- Spike: **No**
-		- PERT: Optimista 8hs, Probable 10hs, Pesimista 14hs
+		- PERT: Optimista 9hs, Probable 12hs, Pesimista 16hs
 		- MoSCoW: **Must Have**
 		- Sprint tentativo: **#16**
 
@@ -1799,14 +1799,14 @@ Documentar proceso completo de deploy y configuración. Secciones: (1) Arquitect
 		- MoSCoW: **Should Have**
 		- Sprint tentativo: **#16**
 
-	- 25.6 **Conclusiones & Trabajo Futuro** [Sprint #16].
-Redactar conclusiones del proyecto y roadmap post-MVP. Secciones: (1) Conclusiones generales (objetivos cumplidos, aprendizajes clave, resultados vs. expectativas), (2) Desafíos encontrados (técnicos, gestión, académicos) y cómo se resolvieron, (3) Retrospectiva técnica (qué funcionó bien, qué se haría diferente), (4) Trabajo futuro (features pendientes del backlog 21.1, mejoras de escalabilidad, integraciones con sistemas externos, monetización), (5) Reflexión académica (aplicación de conocimientos, habilidades desarrolladas, proyección profesional). Formato: 3-5 páginas, tono reflexivo y analítico.
-		- Horas estimadas: **5**hs
-		- Margen: ±**1.0**hs (P80)
-		- Incertidumbre: **Media**
+	- 25.6 **Sección 5 - Conclusiones del Proyecto** [Sprint #16].
+Redactar sección completa de análisis, reflexión y cierre del proyecto (ANALÍTICO/REFLEXIVO - qué aprendimos, qué funcionó, qué no, hacia dónde vamos). Subsecciones según estructura académica: (1) **5.1 Introducción** (síntesis del proyecto ejecutado, contexto de cierre, overview de secciones de conclusiones), (2) **5.2 Grado de Cumplimiento de Objetivos** (análisis cuantitativo: % RFs implementados 100%, % RNFs cumplidos; análisis cualitativo: qué se logró vs. objetivos originales del anteproyecto; comparación WBS inicial vs. alcance final ejecutado; objetivos académicos vs. técnicos: balance logrado), (3) **5.3 Grado de Satisfacción del Cliente** (feedback del cliente/stakeholders recopilado; validaciones UAT: qué se testeó con usuarios finales; expectativas iniciales vs. producto entregado: gaps y aciertos; nivel de aceptación de funcionalidades core; valoración del MVP como solución viable), (4) **5.4 Lecciones Aprendidas** (desafíos técnicos: integración MongoDB, arquitectura limpia, PWA, SSE; cómo se resolvieron: research, pivots, refactoring; desafíos de gestión: estimaciones, scope creep, priorización; qué funcionó bien: metodología ágil, sprints de 7 días, tech stack elegido; qué se haría diferente: testing más temprano, mejor documentación continua, prototipos UX previos), (5) **5.5 Análisis del Esfuerzo Global del Proyecto** (horas estimadas vs. reales: tabla por sprint con desvíos; análisis de causas: complejidad subestimada, bloqueadores, aprendizaje de tecnologías; productividad: horas/feature, velocidad por tipo de tarea; retrospectiva de estimaciones: evolución de precisión PERT durante proyecto; eficiencia por fase: setup vs. desarrollo vs. documentación), (6) **5.6 Posibles Mejoras y Desarrollos Futuros** (features pendientes del backlog original: Nice to Have no implementados; roadmap post-MVP: fase 2 con notificaciones push nativas, módulo analíticas/dashboards, integraciones IoT sensores, sistema de reportes automáticos; mejoras de escalabilidad: caching, CDN, optimizaciones BD; monetización: modelo freemium, planes enterprise), (7) **5.7 Reflexiones Finales** (retrospectiva académica: aplicación de conocimientos de Ingeniería de Software; habilidades técnicas desarrolladas: arquitectura, patrones, DevOps; habilidades blandas: gestión de proyecto, autonomía, resolución de problemas; crecimiento profesional durante el desarrollo; proyección de carrera: qué aprendido es aplicable en industria; valoración personal del proceso: satisfacción, frustraciones, logros destacados). Formato: 6-8 páginas, tono reflexivo-analítico con voice personal, tablas comparativas, gráficos de esfuerzo/completitud, citas de feedback, balance entre datos cuantitativos y análisis cualitativo crítico.
+		- Horas estimadas: **10**hs
+		- Margen: ±**2.0**hs (P80)
+		- Incertidumbre: **Media-Alta**
 		- Dependencias: 25.3 (FS)
 		- Spike: **No**
-		- PERT: Optimista 4hs, Probable 5hs, Pesimista 7hs
+		- PERT: Optimista 7hs, Probable 10hs, Pesimista 14hs
 		- MoSCoW: **Must Have**
 		- Sprint tentativo: **#16**
 

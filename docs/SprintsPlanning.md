@@ -1009,36 +1009,52 @@ Distribución por categoría:
 
 ## **Sprint #16**: dom 1 feb → sáb 7 feb 2026
 
-**Objetivo:** ✨ Último Sprint Desarrollo - Full pulida, nada de features nuevas, documentación.
+**Objetivo:** 📚 Sprint de Cierre y Documentación Final del Proyecto - Sin desarrollo, enfoque 100% en documentación académica, conclusiones y preparación para entrega del 10 de febrero.
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
+| Documentación | 20.1 Reporte Académico del Sprint #15 | 1 | 5 | |
 | Gestión | 20.2 Demo/UAT de Sprint #15 | 2 | 1.5 | |
 | Gestión | 20.3 Sprint Planning de Sprint #16 | 3 | 1.3 | |
-| Documentación | 20.1 Reporte Académico del Sprint #15 | 1 | 5 | |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | |
-| Desarrollo | 7.1 Alta/edición repuesto (RF-012/014) [NiceToHave] | 5 | 8 | |
-| Desarrollo | 7.2 Listado por máquina (RF-013) [NiceToHave] | 6 | 6 | |
-| Desarrollo | 16.3 Script "reset demo" [NiceToHave] | 7 | 4 | |
-| Documentación | 17.3 Manual breve de usuario [NiceToHave] | 8 | 6 | |
+| Documentación | 25.2 Sección 4.3 - Diseño Final de la Solución (continuación) | 5 | 4 | |
+| Documentación | 25.3 Sección 4 - Cierre del Proyecto (4.1, 4.2, 4.4) | 6 | 12 | |
+| Documentación | 25.4 Manual de Usuario Final | 7 | 6 | |
+| Documentación | 25.5 Manual de Deployment | 8 | 4 | |
+| Documentación | 25.6 Sección 5 - Conclusiones del Proyecto | 9 | 10 | |
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales |
 |:---:|:----------:|
-| **32.8**hs | **0**hs |
+| **44.8**hs | **0**hs |
 
-Buffer reservado: **2.2**hs
+Buffer reservado: **-9.8**hs (⚠️ Sprint sobrecargado, priorizar tareas críticas)
 Total con buffer: **35**hs
 
 Distribución por categoría:
 | Documentación | Desarrollo | QA | Capacitación | Gestión |
 |:-------:|:----------:|:--:|:------------:|:-------------:|
-| **5**hs | **18**hs | **0**hs | **1**hs | **2.8**hs |
+| **41**hs | **0**hs | **0**hs | **1**hs | **2.8**hs |
 
-**Nota:** Este sprint incluye principalmente funcionalidades NiceToHave y puede ajustarse según el estado del proyecto.
+**Nota:** Sprint de cierre enfocado exclusivamente en documentación del proyecto. Incluye:
+- **Sección 4 - Cierre del Proyecto (DESCRIPTIVO):** 
+  - 4.1 Introducción al cierre
+  - 4.2 Pila de producto final (WBS, features implementadas, priorización)
+  - 4.3 Diseño final (arquitectura, diagrama de clases, MER/diagrama de tablas)
+  - 4.4 Ejecución de planes (calidad, configuración de software, capacitación, gestión de riesgos)
+- **Sección 5 - Conclusiones (ANALÍTICO/REFLEXIVO):**
+  - 5.1 Introducción
+  - 5.2 Grado de cumplimiento de objetivos
+  - 5.3 Grado de satisfacción del cliente
+  - 5.4 Lecciones aprendidas
+  - 5.5 Análisis del esfuerzo global del proyecto
+  - 5.6 Posibles mejoras y desarrollos futuros
+  - 5.7 Reflexiones finales
+
+**⚠️ Riesgo:** Sprint sobrecargado (+9.8hs). Priorizar tareas **Must Have críticas**: 25.3 (Cierre) y 25.6 (Conclusiones) - son las secciones core académicas. Tareas 25.4 y 25.5 (manuales) pueden simplificarse o acortarse si necesario. La tarea 25.2 se completa desde Sprint #15.
 
 ## **Sprint #17**: dom 8 feb → sáb 14 feb 2026
 
-**Objetivo:** Buffer final de entrega - refinamientos, documentación y verificaciones finales para la entrega académica.
+**Objetivo:** Buffer final de entrega - refinamientos, documentación y verificaciones finales para la entrega académica del 10 de febrero.
 
 | Categoría | Tarea | Orden | Horas Estimadas | Horas Reales |
 |-----------:|:-------|:---------------:|:---------------:|:------------:|
@@ -1046,19 +1062,28 @@ Distribución por categoría:
 | Gestión | 20.2 Demo/UAT de Sprint #16 | 2 | 1.5 | |
 | Gestión | 20.3 Sprint Planning de Sprint #17 | 3 | 1.3 | |
 | Capacitación | 21.2 Tutorías (guía con tutor asignado) | 4 | 1 | |
-| Gestión | 21.21 Buffer de entrega final | 5 | 10 | |
+| Documentación | 25.7 Revisión & Correcciones Finales | 5 | 8 | |
+| Gestión | 23.21 Buffer de entrega final | 6 | 10 | |
 
 | Total Horas Estimadas (sin buffer) | Total Horas Reales | Consumo |
 |:---:|:----------:|:-------:|
-| **18.8**hs | **0**hs | **0.0%** |
+| **26.8**hs | **0**hs | **0.0%** |
 
-Buffer reservado: **16.2**hs
+Buffer reservado: **8.2**hs
 Total con buffer: **35**hs
 
 Distribución por categoría:
 | Documentación | Desarrollo | QA | Capacitación | Gestión |
 |:-------:|:----------:|:--:|:------------:|:-------------:|
-| **5**hs | **0**hs | **0**hs | **1**hs | **12.8**hs |
+| **13**hs | **0**hs | **0**hs | **1**hs | **12.8**hs |
 
-**Nota:** Sprint de cierre con amplio buffer para refinamientos finales y preparación de entrega académica.
+**Nota:** Sprint de cierre final con buffer para últimas correcciones. La tarea 25.7 incluye:
+- Integración de feedback del tutor
+- Correcciones ortográficas y gramaticales
+- Verificación de formato académico (citas, bibliografía, numeración)
+- Checklist pre-entrega completo
+- Generación de versión final (compilar a PDF, empaquetar anexos)
+- Preparación de presentación de defensa
+
+**Entrega Final:** Lunes 10 de febrero de 2026
 

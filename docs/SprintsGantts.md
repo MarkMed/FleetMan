@@ -513,23 +513,49 @@ gantt
 
 ```mermaid
 gantt
-  title Sprint 16 (2026-02-01 → 2026-02-07)
+  title Sprint 16 - Cierre y Documentación Final (2026-02-01 → 2026-02-07)
   dateFormat  YYYY-MM-DD
   axisFormat  %d
 
-  %% Asumimos 5 h/día. Horas estimadas incluidas en el nombre.
+  %% Asumimos 5 h/día. Sprint de documentación 100%, sin desarrollo.
 
-  20.1 Reporte Académico (0.9hs)               :t201, 2026-02-01, 1d
   20.2 Demo/UAT de Sprint #15 (1.5hs)          :t202, 2026-02-01, 1d
-  20.3 Sprint Planning de Sprint #16 (1.3hs)      :t203, 2026-02-01, 1d
-  7.1 Alta/edición repuesto (RF-012/014) (8hs) :t71, after t203, 2d
-  7.2 Listado por máquina (RF-013) (6hs)       :t72, after t71, 2d
-  16.3 Script "reset demo" (4hs)               :t163, after t72, 1d
-  17.3 Manual breve de usuario (6hs)           :t173, after t163, 2d
+  20.3 Sprint Planning de Sprint #16 (1.3hs)   :t203, 2026-02-01, 1d
+
+  20.1 Reporte Académico Sprint #15 (5hs)      :t201, 2026-02-02, 1d
+  21.2 Tutorías (1hs)                          :t212, 2026-02-02, 1d
+
+  25.2 Arquitectura & Diseño Final (4hs)       :t252, 2026-02-03, 1d
+  25.3 Implementación & Ejecución Planes (12hs) :t253, 2026-02-03, 2d
+  25.6 Conclusiones del Proyecto (8hs)         :t256, 2026-02-05, 2d
+  25.4 Manual de Usuario Final (6hs)           :t254, 2026-02-06, 2d
+  25.5 Manual de Deployment (4hs)              :t255, 2026-02-07, 1d
 
   section Hitos
   Cierre Sprint 16                             :milestone, s16, 2026-02-07, 1d
 ```
+
+**Notas del Sprint #16:**
+- **Estado:** Sprint de cierre y documentación final, **sin desarrollo de features**
+- **Enfoque:** Documentación académica completa para entrega del 10 de febrero
+- **Sección de Cierre incluye:**
+  - Introducción al cierre del proyecto
+  - Pila de producto (Product Backlog final)
+  - Diseño final de la solución (arquitectura, diagramas actualizados)
+  - Ejecución de planes: calidad, configuración de software, gestión de riesgos
+- **Sección de Conclusiones incluye:**
+  - Grado de cumplimiento de objetivos
+  - Grado de satisfacción del cliente
+  - Lecciones aprendidas
+  - Análisis del esfuerzo global (estimaciones vs. reales)
+  - Posibles mejoras y desarrollos futuros
+  - Reflexiones finales
+- **⚠️ Carga:** Sprint sobrecargado (42.8hs vs. 35hs), priorizar tareas 25.3 y 25.6 como críticas
+- **Distribución:**
+  - Domingo-Lunes: Overhead + inicio 25.2/25.3
+  - Martes-Jueves: Foco intenso en 25.3 (Implementación & Ejecución de Planes)
+  - Jueves-Viernes: 25.6 (Conclusiones) - sección crítica
+  - Viernes-Sábado: 25.4 (Manual Usuario) + 25.5 (Manual Deployment)
 
 ---
 
@@ -537,25 +563,47 @@ gantt
 
 ```mermaid
 gantt
-  title Sprint 17 (2026-02-08 → 2026-02-14)
+  title Sprint 17 - Buffer Final de Entrega (2026-02-08 → 2026-02-14)
   dateFormat  YYYY-MM-DD
   axisFormat  %d
 
-  %% Asumimos 5 h/día. Horas estimadas incluidas en el nombre.
+  %% Asumimos 5 h/día. Sprint de cierre con correcciones finales.
 
-  20.1 Reporte Académico (0.9hs)               :t201, 2026-02-08, 1d
+  section Overhead Semanal
+  20.1 Reporte Académico Sprint #16 (5hs)      :t201, 2026-02-08, 1d
   20.2 Demo/UAT de Sprint #16 (1.5hs)          :t202, 2026-02-08, 1d
-  20.3 Sprint Planning de Sprint #17 (1.3hs)      :t203, 2026-02-08, 1d
-  21.21 Buffer de entrega final (10hs)         :t2121, after t203, 2d
+  20.3 Sprint Planning de Sprint #17 (1.3hs)   :t203, 2026-02-08, 1d
+  21.2 Tutorías (1hs)                          :t212, 2026-02-09, 1d
+
+  section Revisión Final
+  25.7 Revisión & Correcciones Finales (8hs)   :t257, 2026-02-09, 2d
+  23.21 Buffer de entrega final (10hs)         :t2321, 2026-02-10, 2d
 
   section Hitos
-  Cierre Sprint 17                             :milestone, s17, 2026-02-14, 1d
-  Entrega Final del Proyecto                    :milestone, acadfinal, 2026-02-14, 1d
+  Cierre Sprint 17                             :milestone, s17, 2026-02-14, 0d
+  Entrega Final del Proyecto (10 feb)          :milestone, acadfinal, 2026-02-10, 0d
 ```
+
+**Notas del Sprint #17:**
+- **Estado:** Sprint final con buffer para últimos ajustes
+- **Tarea crítica 25.7 incluye:**
+  - Integración de feedback del tutor
+  - Correcciones ortográficas y gramaticales
+  - Verificación de formato académico (citas, bibliografía, numeración)
+  - Checklist pre-entrega completo
+  - Generación de versión final (compilar a PDF, empaquetar anexos)
+  - Preparación de presentación de defensa
+- **Entrega:** Lunes 10 de febrero de 2026
+- **Buffer:** 8.2hs disponibles para imprevistos
+- **Distribución:**
+  - Domingo: Overhead académico
+  - Lunes-Martes: Revisión y correcciones finales (25.7)
+  - Miércoles-Jueves: Buffer para ajustes de último momento
+  - **🎯 Deadline: Lunes 10 de febrero**
 
 ---
 
-## Eventos Académicos Post-MVP (2026-02-08 → 2026-04-30)
+## Eventos Académicos Post-Entrega (2026-02-10 → 2026-04-30)
 
 ```mermaid
 gantt
