@@ -121,7 +121,12 @@ export const CreateMachineRequestSchema = z.object({
   modelName: z.string()
     .min(1, 'Model name is required')
     .max(100, 'Model name cannot exceed 100 characters'),
-  machineTypeId: z.string().min(1, 'Machine type ID is required'),
+  // LEGACY: machineTypeId replaced by free-text machineTypeName
+  // machineTypeId: z.string().min(1, 'Machine type ID is required'),
+  machineTypeName: z.string()
+    .min(2, 'Machine type name must be at least 2 characters')
+    .max(50, 'Machine type name cannot exceed 50 characters')
+    .trim(),
   ownerId: z.string().min(1, 'Owner ID is required'),
   createdById: z.string().min(1, 'Creator ID is required'),
   specs: MachineSpecsSchema.optional(),
@@ -157,7 +162,9 @@ export const CreateMachineResponseSchema = z.object({
   brand: z.string(),
   modelName: z.string(),
   nickname: z.string().nullable(),
-  machineTypeId: z.string(),
+  // LEGACY: machineTypeId replaced by free-text machineTypeName
+  // machineTypeId: z.string(),
+  machineTypeName: z.string(),
   ownerId: z.string(),
   createdById: z.string(),
   assignedProviderId: z.string().nullish(), // Provider assigned to machine (puede ser undefined)
@@ -196,7 +203,13 @@ export const UpdateMachineRequestSchema = z.object({
   brand: z.string().min(1).max(100).trim().optional(),
   modelName: z.string().min(1).max(100).trim().optional(),
   nickname: z.string().max(100).trim().optional(),
-  machineTypeId: z.string().min(1, 'Machine type ID is required').optional(),
+  // LEGACY: machineTypeId replaced by free-text machineTypeName
+  // machineTypeId: z.string().min(1, 'Machine type ID is required').optional(),
+  machineTypeName: z.string()
+    .min(2, 'Machine type name must be at least 2 characters')
+    .max(50, 'Machine type name cannot exceed 50 characters')
+    .trim()
+    .optional(),
   
   // Assignment
   assignedTo: z.string()
@@ -252,7 +265,8 @@ export const UpdateMachineResponseSchema = CreateMachineResponseSchema;
  */
 export const ListMachinesRequestSchema = PaginationSchema.extend({
   ownerId: z.string().optional(),
-  machineTypeId: z.string().optional(),
+  // LEGACY: machineTypeId filter removed (free-text machineTypeName not suitable for exact filtering)
+  // machineTypeId: z.string().optional(),
   status: MachineStatusCodeSchema.optional(),
   brand: z.string().optional(),
   search: z.string().optional(), // Buscar por serialNumber, brand, modelName, nickname

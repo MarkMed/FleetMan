@@ -19,7 +19,9 @@ export const MachineBasicInfoSchema = z.object({
   serialNumber: BaseCreateMachineRequestSchema.shape.serialNumber,
   brand: BaseCreateMachineRequestSchema.shape.brand,
   modelName: BaseCreateMachineRequestSchema.shape.modelName,
-  machineTypeId: BaseCreateMachineRequestSchema.shape.machineTypeId,
+  // LEGACY: machineTypeId replaced by free-text machineTypeName
+  // machineTypeId: BaseCreateMachineRequestSchema.shape.machineTypeId,
+  machineTypeName: BaseCreateMachineRequestSchema.shape.machineTypeName,
   
   // Campos adicionales para el wizard UI
   name: z.string().min(2).max(100),
@@ -176,7 +178,9 @@ export const defaultMachineRegistrationData: Partial<MachineRegistrationData> = 
     serialNumber: '',
     brand: '',
     modelName: '',
-    machineTypeId: '',
+    // LEGACY: machineTypeId replaced by machineTypeName
+    // machineTypeId: '',
+    machineTypeName: '',
     name: '',
     description: '',
     nickname: '',

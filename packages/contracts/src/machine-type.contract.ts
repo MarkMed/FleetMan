@@ -1,6 +1,12 @@
 import { z } from 'zod';
 
 /**
+ * LEGACY CONTRACTS - Machine types are now free-text fields (machineTypeName).
+ * These schemas are kept for backward compatibility and potential future features.
+ * The Machine entity no longer references MachineType by ID.
+ */
+
+/**
  * Schema para crear un nuevo tipo de máquina
  */
 export const CreateMachineTypeRequestSchema = z.object({

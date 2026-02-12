@@ -66,10 +66,19 @@ const machineSchema = new Schema<IMachineDocument>({
     sparse: true
   },
   
-  machineTypeId: {
+  // LEGACY: machineTypeId replaced by free-text machineTypeName (Sprint #XX)
+  // machineTypeId: {
+  //   type: String,
+  //   required: true,
+  //   ref: 'MachineType'
+  // },
+
+  machineTypeName: {
     type: String,
     required: true,
-    ref: 'MachineType'
+    trim: true,
+    minlength: 2,
+    maxlength: 50
   },
   
   ownerId: {
@@ -443,7 +452,8 @@ machineSchema.set('toJSON', {
 // Compound indexes for performance
 machineSchema.index({ ownerId: 1, 'status.code': 1 });
 machineSchema.index({ assignedProviderId: 1, 'status.isOperational': 1 });
-machineSchema.index({ machineTypeId: 1, 'status.code': 1 });
+// LEGACY: machineTypeId index removed (now free-text machineTypeName)
+// machineSchema.index({ machineTypeId: 1, 'status.code': 1 });
 machineSchema.index({ brand: 1, modelName: 1 });
 
 // 🆕 Sprint #10: Indexes para queries de eventsHistory (embedded array)

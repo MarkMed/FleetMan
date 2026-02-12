@@ -43,8 +43,30 @@ export interface IMachineRepository {
 
   /**
    * Busca máquinas por tipo
+   * 
+   * LEGACY: Machine types are now free-text (machineTypeName).
+   * This method is no longer queryable by ID after the refactoring.
+   * Kept commented for backward compatibility.
    */
-  findByMachineTypeId(typeId: MachineTypeId): Promise<Machine[]>;
+  // findByMachineTypeId(typeId: MachineTypeId): Promise<Machine[]>;
+
+  /**
+   * Busca máquinas por nombre de tipo (free-text, case-insensitive)
+   * Reemplazo de findByMachineTypeId adaptado a texto libre
+   * 
+   * @param typeName - Nombre del tipo a buscar (case-insensitive, partial match)
+   * @returns Array de máquinas que coinciden con el tipo
+   * 
+   * Casos de uso:
+   * - Estadísticas: "¿Cuántos autoelevadores tengo?"
+   * - Agrupación: Listar todas las máquinas de un tipo específico
+   * - Filtrado: Buscar máquinas similares incluso con variaciones de escritura
+   * 
+   * Ejemplos:
+   * - findByMachineTypeName("Autoelevador") → encuentra "Autoelevador", "autoelevador", "AUTOELEVADOR"
+   * - findByMachineTypeName("elev") → encuentra "Autoelevador", "elevador", "Elevadora"
+   */
+  findByMachineTypeName(typeName: string): Promise<Machine[]>;
 
   /**
    * Busca máquinas por estado
@@ -108,7 +130,8 @@ export interface IMachineRepository {
     filter?: {
       ownerId?: string;
       assignedProviderId?: string;
-      machineTypeId?: string;
+      machineTypeId?: string; // LEGACY: Kept for backward compatibility during transition
+      machineTypeName?: string; // NEW: Free-text filter for machine type (case-insensitive)
       status?: string;
       brand?: string;
       searchTerm?: string; // Busca en serialNumber, brand, modelName, nickname

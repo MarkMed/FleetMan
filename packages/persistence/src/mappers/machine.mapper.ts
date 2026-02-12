@@ -3,7 +3,8 @@ import {
   MachineId, 
   SerialNumber, 
   UserId, 
-  MachineTypeId,
+  // LEGACY: MachineTypeId no longer used (now free-text machineTypeName)
+  // MachineTypeId,
   MachineStatusRegistry,
   UsageSchedule,
   type MachineSpecs,
@@ -73,7 +74,9 @@ export class MachineMapper {
         serialNumber: doc.serialNumber,
         brand: doc.brand,
         modelName: doc.modelName,
-        machineTypeId: doc.machineTypeId,
+        // LEGACY: machineTypeId replaced by machineTypeName
+        // machineTypeId: doc.machineTypeId,
+        machineTypeName: doc.machineTypeName,
         ownerId: doc.ownerId,
         createdById: doc.createdById,
         nickname: doc.nickname,
@@ -189,7 +192,9 @@ export class MachineMapper {
       brand: publicInterface.brand,
       modelName: publicInterface.modelName,
       nickname: publicInterface.nickname,
-      machineTypeId: publicInterface.machineTypeId,
+      // LEGACY: machineTypeId replaced by machineTypeName
+      // machineTypeId: publicInterface.machineTypeId,
+      machineTypeName: publicInterface.machineTypeName,
       ownerId: publicInterface.ownerId,
       createdById: publicInterface.createdById,
       assignedProviderId: publicInterface.assignedProviderId,

@@ -3,6 +3,12 @@ import { Schema, model, Document, type Types } from 'mongoose';
 import { type IMachineType } from '@packages/domain';
 
 /**
+ * LEGACY MODEL - Machine types are now free-text fields (machineTypeName).
+ * This model is kept for data migration and potential future features.
+ * The Machine model no longer references MachineType documents.
+ */
+
+/**
  * MachineType Document interface extending domain IMachineType
  * Excluimos 'id' (usamos _id virtual)
  */

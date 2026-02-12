@@ -153,7 +153,9 @@ export interface IMachine extends IBaseEntity {
   readonly brand: string;
   readonly modelName: string;
   readonly nickname?: string;
-  readonly machineTypeId: string;
+  // LEGACY: machineTypeId replaced by free-text machineTypeName (Sprint #XX)
+  // readonly machineTypeId: string;
+  readonly machineTypeName: string;
   readonly ownerId: string;
   readonly createdById: string;
   readonly assignedProviderId?: string;
@@ -193,6 +195,9 @@ export interface IMachine extends IBaseEntity {
 /**
  * Interface pública mínima para MachineType
  * DRY/SSOT: Usar en dominio, contract y persistencia
+ * 
+ * LEGACY: Machine types are now free-text fields (machineTypeName).
+ * This interface is kept for backward compatibility and potential future features.
  */
 export interface IMachineType {
   readonly id: string;

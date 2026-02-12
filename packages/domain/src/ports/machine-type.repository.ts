@@ -3,6 +3,9 @@ import { MachineType } from '../entities/machine-type';
 /**
  * Puerto (interface) para persistencia de MachineType
  * API simple y minimalista para tipos de máquina multilenguaje
+ * 
+ * LEGACY: Machine types are now free-text fields (machineTypeName).
+ * This repository interface is kept for backward compatibility and potential future features.
  */
 export interface IMachineTypeRepository {
   /**

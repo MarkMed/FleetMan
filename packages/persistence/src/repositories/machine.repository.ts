@@ -133,13 +133,44 @@ export class MachineRepository implements IMachineRepository {
 
   /**
    * Busca máquinas por tipo
+   * 
+   * LEGACY: Machine types are now free-text (machineTypeName).
+   * This method is no longer queryable by ID after the refactoring.
+   * Kept commented for reference.
    */
-  async findByMachineTypeId(typeId: MachineTypeId): Promise<Machine[]> {
+  // async findByMachineTypeId(typeId: MachineTypeId): Promise<Machine[]> {
+  //   try {
+  //     const docs = await MachineModel.find({ machineTypeId: typeId.getValue() }).sort({ createdAt: -1 });
+  //     return MachineMapper.toEntityArray(docs);
+  //   } catch (error) {
+  //     logger.error({ error }, 'Error finding machines by machine type ID');
+  //     return [];
+  //   }
+  // }
+
+  /**
+   * Busca máquinas por nombre de tipo (free-text, case-insensitive)
+   * Reemplazo de findByMachineTypeId adaptado a texto libre
+   * 
+   * @param typeName - Nombre del tipo a buscar (case-insensitive, partial match)
+   * @returns Array de máquinas que coinciden con el tipo
+   * 
+   * Ejemplos:
+   * - "Autoelevador" encuentra: "Autoelevador", "autoelevador", "AUTOELEVADOR"
+   * - "elev" encuentra: "Autoelevador", "elevador"
+   * 
+   * Nota: Útil para estadísticas y agrupación por tipo, incluso con variaciones de escritura.
+   */
+  async findByMachineTypeName(typeName: string): Promise<Machine[]> {
     try {
-      const docs = await MachineModel.find({ machineTypeId: typeId.getValue() }).sort({ createdAt: -1 });
+      const docs = await MachineModel.find({ 
+        machineTypeName: { $regex: typeName, $options: 'i' } 
+      }).sort({ createdAt: -1 });
+      
+      logger.debug({ typeName, count: docs.length }, 'Found machines by type name');
       return MachineMapper.toEntityArray(docs);
     } catch (error) {
-      logger.error({ error }, 'Error finding machines by machine type ID');
+      logger.error({ error, typeName }, 'Error finding machines by machine type name');
       return [];
     }
   }
@@ -459,7 +490,8 @@ export class MachineRepository implements IMachineRepository {
     filter?: {
       ownerId?: string;
       assignedProviderId?: string;
-      machineTypeId?: string;
+      machineTypeId?: string; // LEGACY: Kept for backward compatibility
+      machineTypeName?: string; // NEW: Free-text filter for machine type
       status?: string;
       brand?: string;
       searchTerm?: string;
@@ -485,8 +517,14 @@ export class MachineRepository implements IMachineRepository {
         query.assignedProviderId = options.filter.assignedProviderId;
       }
       
-      if (options.filter?.machineTypeId) {
-        query.machineTypeId = options.filter.machineTypeId;
+      // LEGACY: machineTypeId filter removed (now free-text machineTypeName)
+      // if (options.filter?.machineTypeId) {
+      //   query.machineTypeId = options.filter.machineTypeId;
+      // }
+
+      // NEW: Free-text machineTypeName filter (case-insensitive partial match)
+      if (options.filter?.machineTypeName) {
+        query.machineTypeName = { $regex: options.filter.machineTypeName, $options: 'i' };
       }
       
       if (options.filter?.status) {
