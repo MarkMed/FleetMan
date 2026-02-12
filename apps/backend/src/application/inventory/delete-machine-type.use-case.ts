@@ -2,6 +2,11 @@ import { MachineTypeRepository } from '@packages/persistence';
 import { logger } from '../../config/logger.config';
 
 /**
+ * LEGACY Use Case - Machine types are now free-text fields
+ * 
+ * Este use case se mantiene para backward compatibility pero ya no es crítico
+ * dado que las máquinas usan machineTypeName (free-text) en lugar de referencias.
+ * 
  * Use Case para eliminar un tipo de máquina
  * 
  * TODO: Implementar control de acceso - solo usuarios ADMIN deberían poder eliminar tipos
@@ -10,18 +15,9 @@ import { logger } from '../../config/logger.config';
  *   throw new Error('Only administrators can delete machine types');
  * }
  * 
- * TODO: Implementar verificación de uso antes de eliminar (prevenir pérdida de datos)
- * Se recomienda usar soft delete o verificar que no haya máquinas usando este tipo.
- * Ejemplo:
- * const machinesCount = await this.machineTypeRepository.countMachinesUsingType(id);
- * if (machinesCount > 0) {
- *   throw new Error(`Cannot delete machine type: ${machinesCount} machines are using it. Consider marking as inactive instead.`);
- * }
- * 
- * Alternativamente, se puede implementar soft delete agregando un campo "isActive" al modelo:
- * - En lugar de eliminar físicamente, marcar como isActive: false
- * - Filtrar tipos inactivos en las consultas de lista
- * - Permitir reactivar tipos si es necesario
+ * NOTA: La verificación de uso ya no aplica con el nuevo modelo free-text.
+ * Las máquinas ya no dependen de registros en MachineType collection.
+ * LEGACY: Verificación de uso comentada (líneas 54-59)
  */
 export class DeleteMachineTypeUseCase {
   private machineTypeRepository: MachineTypeRepository;
@@ -47,7 +43,8 @@ export class DeleteMachineTypeUseCase {
         throw new Error('Machine type not found');
       }
 
-      // TODO: Descomentar cuando Machine esté implementado
+      // LEGACY: Machine usage validation no longer needed (free-text machineTypeName)
+      // Machines no longer depend on MachineType records, safe to delete
       // const machinesCount = await this.machineTypeRepository.countMachinesUsingType(id);
       // if (machinesCount > 0) {
       //   logger.warn({ id, machinesCount }, 'Cannot delete machine type in use');

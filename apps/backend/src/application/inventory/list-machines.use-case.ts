@@ -60,7 +60,9 @@ export class ListMachinesUseCase {
         filter: {
           ownerId: filter.ownerId,
           assignedProviderId: filter.assignedProviderId,
-          machineTypeId: filter.machineTypeId,
+          machineTypeName: filter.machineTypeName, // NEW: Free-text filter
+          // LEGACY: machineTypeId filter removed
+          // machineTypeId: filter.machineTypeId,
           status: filter.status,
           brand: filter.brand,
           searchTerm: filter.search

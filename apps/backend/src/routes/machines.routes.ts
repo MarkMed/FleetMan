@@ -44,9 +44,10 @@ const machineController = new MachineController();
  *           type: string
  *           enum: [ACTIVE, MAINTENANCE, OUT_OF_SERVICE, RETIRED]
  *       - in: query
- *         name: machineTypeId
+ *         name: machineTypeName
  *         schema:
  *           type: string
+ *         description: Filter by machine type name (free-text)
  *       - in: query
  *         name: search
  *         schema:
@@ -84,7 +85,7 @@ router.get('/',
  *               - serialNumber
  *               - brand
  *               - modelName
- *               - machineTypeId
+ *               - machineTypeName
  *             properties:
  *               serialNumber:
  *                 type: string
@@ -95,8 +96,10 @@ router.get('/',
  *               modelName:
  *                 type: string
  *                 example: "8FBE20"
- *               machineTypeId:
+ *               machineTypeName:
  *                 type: string
+ *                 example: "Autoelevador"
+ *                 description: Free-text machine type (2-50 characters)
  *               nickname:
  *                 type: string
  *               specs:

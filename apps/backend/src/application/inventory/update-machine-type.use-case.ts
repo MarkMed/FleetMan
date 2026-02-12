@@ -4,6 +4,11 @@ import { logger } from '../../config/logger.config';
 import { UpdateMachineTypeRequest } from '@packages/contracts';
 
 /**
+ * LEGACY Use Case - Machine types are now free-text fields
+ * 
+ * Este use case se mantiene para backward compatibility pero ya no es crítico
+ * dado que las máquinas usan machineTypeName (free-text) en lugar de referencias.
+ * 
  * Use Case para actualizar el nombre de un tipo de máquina
  * 
  * TODO: Implementar control de acceso - solo usuarios ADMIN deberían poder actualizar tipos

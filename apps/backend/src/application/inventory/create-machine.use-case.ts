@@ -1,5 +1,5 @@
 import { Machine, UsageSchedule, NOTIFICATION_TYPES, NOTIFICATION_SOURCE_TYPES } from '@packages/domain';
-import { MachineRepository, MachineTypeRepository } from '@packages/persistence';
+import { MachineRepository, /* LEGACY: MachineTypeRepository */ } from '@packages/persistence';
 import { logger } from '../../config/logger.config';
 import { CreateMachineRequest } from '@packages/contracts';
 import { AddNotificationUseCase } from '../notifications/add-notification.use-case';
@@ -11,12 +11,14 @@ import { NOTIFICATION_MESSAGE_KEYS } from '../../constants/notification-messages
  */
 export class CreateMachineUseCase {
   private machineRepository: MachineRepository;
-  private machineTypeRepository: MachineTypeRepository;
+  // LEGACY: MachineType validation no longer needed (free-text machineTypeName)
+  // private machineTypeRepository: MachineTypeRepository;
   private addNotificationUseCase: AddNotificationUseCase;
 
   constructor() {
     this.machineRepository = new MachineRepository();
-    this.machineTypeRepository = new MachineTypeRepository();
+    // LEGACY: No longer validate machineTypeId existence
+    // this.machineTypeRepository = new MachineTypeRepository();
     this.addNotificationUseCase = new AddNotificationUseCase();
   }
 
@@ -38,11 +40,11 @@ export class CreateMachineUseCase {
         throw new Error(`Serial number ${request.serialNumber} already exists`);
       }
 
-      // Validar que el machine type exista
-      const machineType = await this.machineTypeRepository.findById(request.machineTypeId);
-      if (!machineType) {
-        throw new Error(`Machine type with ID ${request.machineTypeId} not found`);
-      }
+      // LEGACY: Machine type validation removed (now free-text machineTypeName)
+      // const machineType = await this.machineTypeRepository.findById(request.machineTypeId);
+      // if (!machineType) {
+      //   throw new Error(`Machine type with ID ${request.machineTypeId} not found`);
+      // }
 
       // Crear UsageSchedule VO si viene en request
       let usageSchedule: UsageSchedule | undefined;
@@ -62,7 +64,7 @@ export class CreateMachineUseCase {
         serialNumber: request.serialNumber,
         brand: request.brand,
         modelName: request.modelName,
-        machineTypeId: request.machineTypeId,
+        machineTypeName: request.machineTypeName,
         ownerId: request.ownerId,
         createdById: request.createdById,
         nickname: request.nickname,
@@ -99,7 +101,8 @@ export class CreateMachineUseCase {
       try {
         const ownerId = machine.ownerId.getValue();
         const machineName = machine.nickname || machine.serialNumber.getValue();
-        const machineTypeName = machineType.name; // Ya disponible de validación anterior (línea 38)
+        // NEW: Use machineTypeName directly from machine entity (free-text field)
+        const machineTypeName = machine.machineTypeName;
 
         await this.addNotificationUseCase.execute(ownerId, {
           notificationType: NOTIFICATION_TYPES[0], // 'success'

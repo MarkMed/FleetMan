@@ -3,6 +3,14 @@ import { MachineType } from '@packages/domain';
 import { logger } from '../../config/logger.config';
 
 /**
+ * LEGACY Use Case - Machine types are now free-text fields
+ * 
+ * Este use case se mantiene para:
+ * 1. Backward compatibility con APIs existentes
+ * 2. Proporcionar sugerencias de tipos comunes en UI (dropdown/combobox)
+ * 
+ * Las máquinas ya no dependen de estos registros (usan machineTypeName libre).
+ * 
  * Use Case para listar tipos de máquina
  * Opcionalmente puede filtrar por idioma
  */

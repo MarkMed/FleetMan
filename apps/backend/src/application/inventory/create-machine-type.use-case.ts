@@ -4,6 +4,11 @@ import { logger } from '../../config/logger.config';
 import { CreateMachineTypeRequest } from '@packages/contracts';
 
 /**
+ * LEGACY Use Case - Machine types are now free-text fields
+ * 
+ * Este use case se mantiene para backward compatibility y para población inicial
+ * de sugerencias de tipos, pero las máquinas ya no dependen de estos registros.
+ * 
  * Use Case para crear un nuevo tipo de máquina
  * Utiliza lógica inteligente: si el tipo ya existe, agrega el idioma; si no, lo crea
  */
