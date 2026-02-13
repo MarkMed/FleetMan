@@ -13,7 +13,8 @@ import { TechnicalSpecsStep } from '../../screens/machines/machine-registration/
 import { PhotoStepEdit, BasicInfoStepEdit, ConfirmationStepEdit } from '../../screens/machines/machine-edit/steps';
 import { useZodForm } from '../../hooks/useZodForm';
 import { useMachine, useUpdateMachine } from '../../hooks/useMachines';
-import { useMachineTypes } from '../../hooks';
+// LEGACY: useMachineTypes no longer needed (free-text machineTypeName)
+// import { useMachineTypes } from '../../hooks';
 import type { MachineTypeResponse } from '@contracts';
 import { toast } from '@components/ui';
 import { modal } from '@helpers/modal';
@@ -58,11 +59,12 @@ export interface MachineEditViewModel {
   handleCancel: () => void;
   reset: () => void;
   
-  // Machine types data (for selects)
-  machineTypeList?: MachineTypeResponse[];
-  machineTypesLoading: boolean;
-  machineTypesError: boolean;
-  refetchMachineTypes: () => Promise<unknown> | void;
+  // LEGACY: Machine types no longer used (free-text machineTypeName)
+  // Users can type any machine type directly in the form
+  // machineTypeList?: MachineTypeResponse[];
+  // machineTypesLoading: boolean;
+  // machineTypesError: boolean;
+  // refetchMachineTypes: () => Promise<unknown> | void;
 }
 
 /**
@@ -187,7 +189,7 @@ export function useMachineEditViewModel(machineId: string): MachineEditViewModel
         const hasRequiredValues = basicInfo?.serialNumber?.trim() && 
                                   basicInfo?.brand?.trim() && 
                                   basicInfo?.modelName?.trim() && 
-                                  basicInfo?.machineTypeId?.trim() && 
+                                  basicInfo?.machineTypeName?.trim() && // NEW: Free-text field
                                   basicInfo?.name?.trim();
         
         return !hasErrors && !!hasRequiredValues;
@@ -227,13 +229,13 @@ export function useMachineEditViewModel(machineId: string): MachineEditViewModel
   // Nota: form no necesita estar en dependencias - las funciones isValid capturan form por closure
   // Si form estuviera en deps, wizardSteps se recrearía en cada form change, causando loops infinitos
 
-  // Fetch machine types (for dropdown in BasicInfoStep)
-  const {
-    data: machineTypeList,
-    isLoading: machineTypesLoading,
-    isError: machineTypesError,
-    refetch: refetchMachineTypes,
-  } = useMachineTypes();
+  // LEGACY: Machine types fetch removed (free-text machineTypeName)
+  // const {
+  //   data: machineTypeList,
+  //   isLoading: machineTypesLoading,
+  //   isError: machineTypesError,
+  //   refetch: refetchMachineTypes,
+  // } = useMachineTypes();
 
   /**
    * Handle wizard submit - main business logic for UPDATE
@@ -425,11 +427,11 @@ export function useMachineEditViewModel(machineId: string): MachineEditViewModel
     // Machine data
     machine,
     
-    // Machine types from hook
-    machineTypeList,
-    machineTypesLoading,
-    machineTypesError,
-    refetchMachineTypes,
+    // LEGACY: Machine types removed (free-text machineTypeName)
+    // machineTypeList,
+    // machineTypesLoading,
+    // machineTypesError,
+    // refetchMachineTypes,
     
     // Actions
     handleWizardSubmit,
@@ -446,13 +448,14 @@ export function useMachineEditViewModel(machineId: string): MachineEditViewModel
     existingPhotoUrl,
     shouldRemovePhoto,
     machine,
-    machineTypeList,
-    machineTypesLoading,
-    machineTypesError,
+    // LEGACY: machineTypes removed (free-text machineTypeName)
+    // machineTypeList,
+    // machineTypesLoading,
+    // machineTypesError,
     handleWizardSubmit,
     handleCancel,
     reset,
-    // Nota: setPhotoFile, setShouldRemovePhoto, refetchMachineTypes son funciones
+    // Nota: setPhotoFile, setShouldRemovePhoto son funciones
     // estables que no cambian, no necesitan estar en dependencias
   ]);
 }
@@ -469,7 +472,7 @@ function mapMachineToWizardData(machine: CreateMachineResponse): MachineRegistra
       serialNumber: machine.serialNumber,
       brand: machine.brand,
       modelName: machine.modelName,
-      machineTypeId: machine.machineTypeId,
+      machineTypeName: machine.machineTypeName, // NEW: Free-text field
       name: machine.nickname || `${machine.brand} ${machine.modelName}`,
       description: '', // Not stored in backend currently
       nickname: machine.nickname || '',
@@ -507,7 +510,7 @@ function mapWizardDataToUpdateRequest(wizardData: MachineRegistrationData): Upda
     brand: wizardData.basicInfo.brand,
     modelName: wizardData.basicInfo.modelName,
     nickname: wizardData.basicInfo.name,
-    machineTypeId: wizardData.basicInfo.machineTypeId,
+    machineTypeName: wizardData.basicInfo.machineTypeName, // NEW: Free-text field
     
     // Assignment
     assignedTo: wizardData.technicalSpecs.assignedTo,

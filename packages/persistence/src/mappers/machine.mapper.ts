@@ -69,6 +69,17 @@ export class MachineMapper {
         }
       }
 
+      // LEGACY FALLBACK: Si no existe machineTypeName (documentos legacy), usar fallback temporal
+      // Esto permite que las máquinas antiguas se carguen mientras se ejecuta la migración
+      const docAny = doc as any;
+      const machineTypeName = doc.machineTypeName || 
+                              docAny.machineTypeId || 
+                              'LEGACY-MIGRATION-REQUIRED';
+
+      if (!doc.machineTypeName) {
+        console.warn(`⚠️  Machine ${doc.id} (${doc.serialNumber}) missing machineTypeName, using fallback: "${machineTypeName}"`);
+      }
+
       // Crear la máquina con las propiedades mínimas requeridas
       const createResult = Machine.create({
         serialNumber: doc.serialNumber,
@@ -76,7 +87,7 @@ export class MachineMapper {
         modelName: doc.modelName,
         // LEGACY: machineTypeId replaced by machineTypeName
         // machineTypeId: doc.machineTypeId,
-        machineTypeName: doc.machineTypeName,
+        machineTypeName,
         ownerId: doc.ownerId,
         createdById: doc.createdById,
         nickname: doc.nickname,

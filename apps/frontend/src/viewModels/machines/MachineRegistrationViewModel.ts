@@ -15,7 +15,8 @@ import { useAuthStore } from '../../store/slices/authSlice';
 import { WizardStep } from '../../components/forms/wizard';
 import { BasicInfoStep, PhotoStep, TechnicalSpecsStep, ConfirmationStep } from '../../screens/machines/machine-registration/steps';
 import { useZodForm } from '../../hooks/useZodForm';
-import { useMachineTypes } from '../../hooks';
+// LEGACY: useMachineTypes no longer needed (free-text machineTypeName)
+// import { useMachineTypes } from '../../hooks';
 import type { MachineTypeResponse } from '@contracts';
 import { toast } from '@components/ui';
 import { useNavigate } from 'react-router-dom';
@@ -59,11 +60,13 @@ export interface MachineRegistrationViewModel {
   handleWizardSubmit: (_wizardData: MachineRegistrationData) => Promise<void>;
   handleCancel: () => void;
   reset: () => void;
-  // Machine types data (for selects)
-  machineTypeList?: MachineTypeResponse[];
-  machineTypesLoading: boolean;
-  machineTypesError: boolean;
-  refetchMachineTypes: () => Promise<unknown> | void;
+  
+  // LEGACY: Machine types no longer used (free-text machineTypeName)
+  // Users can type any machine type directly in the form
+  // machineTypeList?: MachineTypeResponse[];
+  // machineTypesLoading: boolean;
+  // machineTypesError: boolean;
+  // refetchMachineTypes: () => Promise<unknown> | void;
 }
 
 /**
@@ -387,11 +390,11 @@ export function useMachineRegistrationViewModel(): MachineRegistrationViewModel 
     photoFile,
     setPhotoFile,
     
-    // Machine types from hook
-    machineTypeList,
-    machineTypesLoading,
-    machineTypesError,
-    refetchMachineTypes,
+    // LEGACY: Machine types removed (free-text machineTypeName)
+    // machineTypeList,
+    // machineTypesLoading,
+    // machineTypesError,
+    // refetchMachineTypes,
     
     // Actions
     handleWizardSubmit,
@@ -418,7 +421,7 @@ function mapWizardDataToDomain(wizardData: MachineRegistrationData): CreateMachi
     serialNumber: wizardData.basicInfo.serialNumber,
     brand: wizardData.basicInfo.brand,
     modelName: wizardData.basicInfo.modelName,
-    machineTypeId: wizardData.basicInfo.machineTypeId,
+    machineTypeName: wizardData.basicInfo.machineTypeName, // NEW: Free-text field
     ownerId: wizardData.basicInfo.ownerId || currentUserId,
     createdById: wizardData.basicInfo.createdById || currentUserId,
     specs: {

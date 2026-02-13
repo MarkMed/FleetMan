@@ -10,7 +10,8 @@ import {
   Heading3,
 } from "@components/ui";
 import { useMachineDetailsViewModel } from "../../viewModels/machines";
-import { useMachineTypeName } from "@hooks";
+// LEGACY: useMachineTypeName no longer needed (machine.machineTypeName is direct string)
+// import { useMachineTypeName } from "@hooks";
 import { useTranslation } from "react-i18next";
 import { Settings, Clock, Package, History, AlarmClock, Pencil, ListCheck } from "lucide-react";
 
@@ -54,8 +55,8 @@ export const MachineDetailsScreen: React.FC = () => {
     useMachineDetailsViewModel(id);
   const [imageError, setImageError] = useState(false);
 
-  // Resolve machine type name
-  const machineTypeName = useMachineTypeName(machine?.machineTypeId);
+  // LEGACY: No longer resolving machineType from API (direct property access)
+  // const machineTypeName = useMachineTypeName(machine?.machineTypeId);
 
   const specs = machine?.specs;
   const location = machine?.location;
@@ -142,10 +143,7 @@ export const MachineDetailsScreen: React.FC = () => {
                     />
                     <InfoItem
                       label={t("machines.hero.machineType")}
-                      value={
-                        machineTypeName ??
-                        (machine.machineTypeId ? "Cargando..." : undefined)
-                      }
+                      value={machine.machineTypeName}
                     />
                     <InfoItem
                       label={t("machines.hero.nickname")}
@@ -370,10 +368,7 @@ export const MachineDetailsScreen: React.FC = () => {
                 />
                 <InfoItem
                   label={t("machines.hero.machineType")}
-                  value={
-                    machineTypeName ??
-                    (machine?.machineTypeId ? "Cargando..." : undefined)
-                  }
+                  value={machine?.machineTypeName}
                 />
                 <InfoItem
                   label={t("machines.hero.nickname")}

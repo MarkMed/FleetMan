@@ -166,7 +166,30 @@ export class MachineService {
     return handleApiResponse(response);
   }
 
-  // Get machine types (for dropdowns etc.)
+  /**
+   * LEGACY: Get machine types (for dropdowns etc.)
+   * 
+   * STATUS: Deprecated - Machine types are now free-text strings (machineTypeName).
+   * 
+   * KEPT FOR:
+   * - Backward compatibility with existing machines (objectId references in DB)
+   * - Admin panel for managing legacy type catalog
+   * - Future type suggestions/autocomplete from historical data
+   * 
+   * NEW APPROACH:
+   * - Machines use free-text machineTypeName field
+   * - UI uses MACHINE_TYPE_SUGGESTIONS constant
+   * - No API call needed for registration/edit forms
+   * 
+   * MIGRATION PATH:
+   * - Existing machines continue to have machineTypeId references
+   * - Backend /machines endpoints accept LEGACY header for ObjectId lookups
+   * - Backend /machine-types endpoints remain functional for admin/legacy purposes
+   * - This method will be archived once all clients updated
+   * 
+   * @param language - Optional language for i18n type names
+   * @returns Array of machine type objects with id and name
+   */
   async getMachineTypes(language?: string): Promise<MachineTypeResponse[]> {
     const params: Record<string, string> = {};
     if (language) params.language = language;

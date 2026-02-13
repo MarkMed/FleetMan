@@ -6,8 +6,11 @@ import { useMachineRegistrationViewModel } from "../../../viewModels/machines/Ma
 import { MachineRegistrationProvider } from "./MachineRegistrationContext";
 import { useRegistrationConfirmation } from "../../../hooks/useRegistrationConfirmation";
 import { MachineRegistrationData } from "@contracts";
+// LEGACY: Skeleton import no longer needed (removed machineTypes loading UI)
+// import { Button } from "../../../components/ui/Button";
+// import { TextBlock, Skeleton } from "@components/ui";
 import { Button } from "../../../components/ui/Button";
-import { TextBlock, Skeleton } from "@components/ui";
+import { TextBlock } from "@components/ui";
 
 /**
  * Pantalla principal para el registro de máquinas usando wizard multi-step + React Hook Form
@@ -25,11 +28,11 @@ export function MachineRegistrationScreen() {
     isLoading,
     handleWizardSubmit,
     handleCancel,
-    // Machine types provided by the ViewModel
-    machineTypeList,
-    machineTypesLoading,
-    machineTypesError,
-    refetchMachineTypes,
+    // LEGACY: Machine types no longer fetched from API (free-text entry)
+    // machineTypeList,
+    // machineTypesLoading,
+    // machineTypesError,
+    // refetchMachineTypes,
   } = viewModel;
 
   /**
@@ -54,39 +57,9 @@ export function MachineRegistrationScreen() {
         </TextBlock>
       </div>
 
-      {/* If machine types are loading, render a full-form skeleton to reflect the whole structure */}
-      {machineTypesLoading && (!machineTypeList || (Array.isArray(machineTypeList) && machineTypeList.length === 0)) && (
-        <div className="shadow-lg rounded-lg p-6">
-          <div className="space-y-6">
-            <div className="h-8 w-1/3"><Skeleton className="h-8 w-full" /></div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Skeleton className="h-10 w-full" />
-              <Skeleton className="h-10 w-full" />
-              <Skeleton className="h-10 w-full md:col-span-2" />
-              <Skeleton className="h-24 w-full md:col-span-2" />
-            </div>
-            <div className="flex justify-end space-x-2">
-              <Skeleton className="h-10 w-32" />
-              <Skeleton className="h-10 w-32" />
-            </div>
-          </div>
-        </div>
-      )}
+      {/* LEGACY: Removed machine types loading skeleton (no longer needed for free-text entry) */}
 
-      {/* If machine types failed to load, show error + retry */}
-      {machineTypesError && (
-        <div className="mb-6 bg-yellow-50 border border-yellow-200 rounded-md p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-sm font-medium text-yellow-800">{t('machines.registration.screen.loadError')}</h3>
-              <p className="mt-1 text-sm text-yellow-700">{t('machines.registration.screen.loadErrorDescription')}</p>
-            </div>
-            <div>
-              <Button onPress={() => refetchMachineTypes()} className="ml-4">{t('machines.registration.screen.retry')}</Button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* LEGACY: Removed machine types error banner (no API call to fail) */}
 
       {/* RHF Error Display */}
       {form.formState.errors.root && (
@@ -110,26 +83,24 @@ export function MachineRegistrationScreen() {
       )}
 
       {/* FormProvider wraps the entire wizard for RHF context */}
-      {!machineTypesLoading && !machineTypesError && (
-        <MachineRegistrationProvider viewModel={viewModel}>
-          <FormProvider {...form}>
-            <Wizard<MachineRegistrationData>
-              steps={wizardSteps}
-              initialData={form.getValues()}
-              onSubmit={handleSubmitWithConfirmation}
-              onStepChange={() => {
-                // Force wizard to re-read form values from RHF
-                forceUpdate();
-              }}
-              isSubmitting={isLoading}
-              onCancel={handleCancel}
-              timerLabel={t('machines.registration.verificationTime')}
-              className="bg-white shadow-lg rounded-lg"
-              showProgress
-            />
-          </FormProvider>
-        </MachineRegistrationProvider>
-      )}
+      <MachineRegistrationProvider viewModel={viewModel}>
+        <FormProvider {...form}>
+          <Wizard<MachineRegistrationData>
+            steps={wizardSteps}
+            initialData={form.getValues()}
+            onSubmit={handleSubmitWithConfirmation}
+            onStepChange={() => {
+              // Force wizard to re-read form values from RHF
+              forceUpdate();
+            }}
+            isSubmitting={isLoading}
+            onCancel={handleCancel}
+            timerLabel={t('machines.registration.verificationTime')}
+            className="bg-white shadow-lg rounded-lg"
+            showProgress
+          />
+        </FormProvider>
+      </MachineRegistrationProvider>
     </div>
   );
 }

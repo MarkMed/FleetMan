@@ -287,3 +287,6 @@ export type Language = typeof LANGUAGES[keyof typeof LANGUAGES];
 
 // Day of Week labels
 export * from './dayOfWeekLabels';
+
+// Machine Type Suggestions
+export * from './machineTypeSuggestions';

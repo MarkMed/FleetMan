@@ -306,7 +306,8 @@ export { useBrowserNotification } from './useBrowserNotification';
 
 // Machine types
 export { useMachineTypes } from './useMachineTypes';
-export { useMachineTypeName, useMachineTypeResolver } from './useMachineTypeName';
+// LEGACY: Hooks deprecated after migrating to free-text machineTypeName
+// export { useMachineTypeName, useMachineTypeResolver } from './useMachineTypeName';
 
 // Machine registration
 export { useRegistrationConfirmation } from './useRegistrationConfirmation';

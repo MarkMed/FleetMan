@@ -13,6 +13,7 @@ import routes from './routes';
 import { connectDatabase } from './config/database.config';
 import { seedMachineTypesIfEmpty } from './scripts/seed-machine-types';
 import { syncMachineEventTypes } from './scripts/seed-machine-event-types';
+import { migrateMachineTypeToText } from './scripts/migrate-machine-type-to-text';
 import { MaintenanceCronService } from './services/cron/maintenance-cron.service';
 
 const app = express();
@@ -127,6 +128,29 @@ app.get('/api', (req, res) => {
     
     // 2b. Seed de MachineTypes (tipos de máquina)
     await seedMachineTypesIfEmpty();
+    
+    // 2c. Migración automática: machineTypeId (ObjectId) → machineTypeName (free-text)
+    // Sprint #XX: Ejecuta migración de datos legacy si es necesario
+    // SAFE: Solo actualiza máquinas que NO tienen machineTypeName
+    try {
+      console.log('🔄 Checking if machine type migration is needed...');
+      const migrationStats = await migrateMachineTypeToText(false); // false = production mode
+      
+      if (migrationStats.migrated > 0) {
+        console.log(`✅ Machine type migration completed: ${migrationStats.migrated} machines updated`);
+        if (migrationStats.fallbackUsed > 0) {
+          console.warn(`⚠️  ${migrationStats.fallbackUsed} machines used fallback (check logs for details)`);
+        }
+      } else if (migrationStats.skipped > 0) {
+        console.log(`✅ Machine type migration already completed (${migrationStats.skipped} machines up-to-date)`);
+      }
+      
+      if (migrationStats.errors > 0) {
+        console.error(`❌ ${migrationStats.errors} errors during migration (check logs)`);
+      }
+    } catch (migrationError) {
+      console.error('❌ Machine type migration failed (non-critical - server will continue):', migrationError);
+    }
     
     // 3. Inicializar y arrancar cronjobs
     // Sprint #11: Maintenance Alarms - Daily cronjob for automatic maintenance alerts

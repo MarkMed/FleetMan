@@ -1,9 +1,11 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { useFormContext, Controller } from 'react-hook-form';
 import { useTranslation, Trans } from 'react-i18next';
-import { InputField, Select, Textarea, Skeleton, BodyText } from '../../../../components/ui';
+import { InputField, Textarea, Skeleton, BodyText } from '../../../../components/ui';
 import { MachineRegistrationData } from '@contracts';
-import { useMachineTypes } from '@hooks';
+// LEGACY: useMachineTypes no longer needed (free-text machineTypeName)
+// import { useMachineTypes } from '@hooks';
+import { MACHINE_TYPE_SUGGESTIONS } from '@constants';
 import { WizardStepProps } from '../../../../components/forms/wizard';
 
 /**
@@ -28,13 +30,12 @@ export function BasicInfoStep({ isEditMode = false, ...wizardProps }: BasicInfoS
   const { t } = useTranslation();
 
   // Mock data para machine types (en producción vendría del ViewModel/API)
-  const { data: machineTypeList, isLoading, isError } = useMachineTypes();
-
-  // Memoize machineTypes transformation to prevent infinite re-renders
-  const machineTypes = useMemo(() => {
-    if (!Array.isArray(machineTypeList)) return [];
-    return machineTypeList.map((mt: any) => ({ value: mt.id, label: mt.name }));
-  }, [machineTypeList]);
+  // LEGACY: No longer fetching machineTypes from API (free-text entry)
+  // const { data: machineTypeList, isLoading, isError } = useMachineTypes();
+  // const machineTypes = useMemo(() => {
+  //   if (!Array.isArray(machineTypeList)) return [];
+  //   return machineTypeList.map((mt: any) => ({ value: mt.id, label: mt.name }));
+  // }, [machineTypeList]);
 
   return (
     <div className="space-y-6">
@@ -113,31 +114,34 @@ export function BasicInfoStep({ isEditMode = false, ...wizardProps }: BasicInfoS
         </div>
         
         {/* Tipo de máquina */}
-        {/* BUSINESS DECISION: machineTypeId IS editable in edit mode (unlike serialNumber)
+        {/* BUSINESS DECISION: machineTypeName IS editable in edit mode (unlike serialNumber)
             Rationale: Machines may need reclassification (e.g., specialized excavator → standard excavator)
-            Backend validates that the new machineTypeId exists before persisting.
-            Alternative consideration: If machineTypeId should be immutable (like serialNumber),
+            Free-text entry allows custom types not in suggestions.
+            Alternative consideration: If machineTypeName should be immutable (like serialNumber),
             add disabled={isEditMode} prop and helperText explaining it cannot be changed.
         */}
         <Controller
           control={control}
-          name="basicInfo.machineTypeId"
+          name="basicInfo.machineTypeName"
           render={({ field: { onChange, value } }) => (
-            isLoading ? (
-              <Skeleton className="h-10 w-full" />
-            ) : (
-              <Select
+            <>
+              <InputField
                 label={t('machines.registration.basicInfo.machineType')}
                 required
                 value={value || ''}
-                onValueChange={onChange}
-                options={machineTypes}
-                placeholder={isError ? t('machines.registration.basicInfo.machineTypeError') : t('machines.registration.basicInfo.machineTypePlaceholder')}
-                error={errors.basicInfo?.machineTypeId?.message}
-                // disabled={isEditMode} // TODO: Uncomment if machineTypeId should be immutable
+                onChangeText={onChange}
+                placeholder={t('machines.registration.basicInfo.machineTypePlaceholder')}
+                error={errors.basicInfo?.machineTypeName?.message}
+                list="machine-type-suggestions"
+                // disabled={isEditMode} // TODO: Uncomment if machineTypeName should be immutable
                 // helperText={isEditMode ? t('machines.registration.basicInfo.machineTypeImmutable') : undefined}
               />
-            )
+              <datalist id="machine-type-suggestions">
+                {MACHINE_TYPE_SUGGESTIONS.map((type) => (
+                  <option key={type} value={type} />
+                ))}
+              </datalist>
+            </>
           )}
         />
         
