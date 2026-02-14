@@ -123,16 +123,18 @@ export function BasicInfoStep({ isEditMode = false, ...wizardProps }: BasicInfoS
         <Controller
           control={control}
           name="basicInfo.machineTypeName"
-          render={({ field: { onChange, value } }) => (
+          render={({ field: { onChange, onBlur, value } }) => (
             <>
               <InputField
                 label={t('machines.registration.basicInfo.machineType')}
                 required
                 value={value || ''}
                 onChangeText={onChange}
+                onBlur={onBlur}
                 placeholder={t('machines.registration.basicInfo.machineTypePlaceholder')}
                 error={errors.basicInfo?.machineTypeName?.message}
                 list="machine-type-suggestions"
+                autoComplete="off"
                 // disabled={isEditMode} // TODO: Uncomment if machineTypeName should be immutable
                 // helperText={isEditMode ? t('machines.registration.basicInfo.machineTypeImmutable') : undefined}
               />

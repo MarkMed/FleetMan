@@ -150,7 +150,7 @@ export function useMachineRegistrationViewModel(): MachineRegistrationViewModel 
         const hasRequiredValues = basicInfo?.serialNumber?.trim() && 
                                   basicInfo?.brand?.trim() && 
                                   basicInfo?.modelName?.trim() && 
-                                  basicInfo?.machineTypeId?.trim() && 
+                                  basicInfo?.machineTypeName?.trim() && 
                                   basicInfo?.name?.trim();
         
         // 3. Both conditions must be met
@@ -195,13 +195,13 @@ export function useMachineRegistrationViewModel(): MachineRegistrationViewModel 
     },
   ];
 
-  // Fetch machine types (moved to ViewModel to keep screen presentational)
-  const {
-    data: machineTypeList,
-    isLoading: machineTypesLoading,
-    isError: machineTypesError,
-    refetch: refetchMachineTypes,
-  } = useMachineTypes();
+  // LEGACY: No longer fetching machineTypes from API (free-text entry)
+  // const {
+  //   data: machineTypeList,
+  //   isLoading: machineTypesLoading,
+  //   isError: machineTypesError,
+  //   refetch: refetchMachineTypes,
+  // } = useMachineTypes();
 
   /**
    * Handle wizard submit - main business logic

@@ -530,6 +530,7 @@
       },
       "confirmation": {
         "title": "Confirm the information",
+        "description": "Are you sure you want to register this machine with the provided information?",
         "subtitle": "Review all data before registering the machine in the system",
         "basicInfo": "Basic Information",
         "notSelected": "Not selected",

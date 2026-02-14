@@ -532,6 +532,7 @@
       },
       "confirmation": {
         "title": "Confirma la información",
+        "description": "¿Estás seguro de que deseas registrar esta máquina con la información proporcionada?",
         "subtitle": "Revisa todos los datos antes de registrar la máquina en el sistema",
         "basicInfo": "Información Básica",
         "notSelected": "No seleccionado",
