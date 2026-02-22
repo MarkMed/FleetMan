@@ -309,6 +309,9 @@ export { useMachineTypes } from './useMachineTypes';
 // LEGACY: Hooks deprecated after migrating to free-text machineTypeName
 // export { useMachineTypeName, useMachineTypeResolver } from './useMachineTypeName';
 
+// Machines
+export { useMachines, useMachine } from './useMachines';
+
 // Machine registration
 export { useRegistrationConfirmation } from './useRegistrationConfirmation';
 

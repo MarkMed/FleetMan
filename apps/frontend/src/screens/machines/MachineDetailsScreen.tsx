@@ -1,5 +1,5 @@
 ﻿import React, { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import {
   Heading1,
   BodyText,
@@ -63,6 +63,17 @@ export const MachineDetailsScreen: React.FC = () => {
 
   return (
     <div className="space-y-6">
+      {/* Breadcrumb */}
+      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+        <Link to="/machines" className="hover:text-foreground">
+          {t('machines.breadcrumb.machines')}
+        </Link>
+        <span>/</span>
+        <span className="text-foreground">
+          {machine ? `${machine.brand}-${machine.modelName}` : '...'}
+        </span>
+      </div>
+
       {/* Hero Section - Image + Main Metadata + Actions */}
       <Card className="overflow-hidden">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 p-3">

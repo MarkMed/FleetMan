@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { quickCheckService } from '@services/api/quickCheckService';
 import { QUERY_KEYS } from '@constants';
 import { useAuth } from '@store/AuthProvider';
+import { useMachine } from '@hooks';
 import type { IQuickCheckRecord, IQuickCheckItem } from '@domain';
 
 /**
@@ -33,6 +34,10 @@ export function useQuickCheckHistoryViewModel() {
     enabled: !!machineId,
   });
   console.log("data fetch", data);
+
+  // ===== Machine data for breadcrumb =====
+  const { data: machineData } = useMachine(machineId || '');
+  const machineLabel = machineData ? `${machineData.brand}-${machineData.modelName}` : '...';
 
   // ===== Computed values =====
   const records = data?.quickChecks || [];
@@ -134,6 +139,7 @@ export function useQuickCheckHistoryViewModel() {
   return {
     // Data
     machineId,
+    machineLabel,
     records,
     hasRecords,
     totalRecords,

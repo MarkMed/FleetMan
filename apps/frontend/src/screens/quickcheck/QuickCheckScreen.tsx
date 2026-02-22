@@ -106,7 +106,7 @@ export const QuickCheckScreen: React.FC = () => {
         <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
           <Link to="/machines" className="hover:text-foreground">{t('quickchecks.screen.breadcrumbs.machines')}</Link>
           <span>/</span>
-          <Link to={`/machines/${machineId}`} className="hover:text-foreground">{t('quickchecks.screen.breadcrumbs.detail')}</Link>
+          <Link to={`/machines/${machineId}`} className="hover:text-foreground">{vm.machineLabel}</Link>
           <span>/</span>
           <span className="text-foreground">{t('quickchecks.screen.breadcrumbs.quickcheck')}</span>
         </div>

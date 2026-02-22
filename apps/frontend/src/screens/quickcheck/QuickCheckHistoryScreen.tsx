@@ -48,7 +48,7 @@ export const QuickCheckHistoryScreen: React.FC = () => {
           </Link>
           <span>/</span>
           <Link to={vm.paths.machineDetail} className="hover:text-foreground">
-            {t('quickchecks.history.breadcrumbs.detail')}
+            {vm.machineLabel}
           </Link>
           <span>/</span>
           <Link to={vm.paths.quickCheck} className="hover:text-foreground">
