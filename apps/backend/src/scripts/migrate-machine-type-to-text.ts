@@ -226,10 +226,12 @@ export async function migrateMachineTypeToText(dryRun: boolean = false): Promise
     return stats;
 
   } catch (error: any) {
-    // No lanzar error para evitar que falle el startup del servidor si se llama desde main.ts
-    // Solo loguear y retornar stats con el error
-    logger.error({ error: error.message }, 'Critical error during migration (non-critical, returning stats)');
-    throw error;
+    // No relanzar: esta función es llamada desde main.ts al startup.
+    // Si falla, el servidor debe continuar igualmente (datos legacy no deben bloquear arranque).
+    logger.error({ error: error.message }, 'Critical error during migration (non-critical, server will continue)');
+    stats.errors++;
+    stats.errorDetails.push({ machineId: 'GLOBAL', error: error.message });
+    return stats;
   }
 }
 

@@ -13,6 +13,7 @@ import {
   DayOfWeek
 } from '@packages/domain';
 import { type IMachineDocument } from '../models';
+import { logger } from '../utils/logger';
 
 /**
  * Mapper para convertir entre documentos de Mongoose y entidades de dominio Machine
@@ -70,14 +71,12 @@ export class MachineMapper {
       }
 
       // LEGACY FALLBACK: Si no existe machineTypeName (documentos legacy), usar fallback temporal
-      // Esto permite que las máquinas antiguas se carguen mientras se ejecuta la migración
-      const docAny = doc as any;
-      const machineTypeName = doc.machineTypeName || 
-                              docAny.machineTypeId || 
-                              'LEGACY-MIGRATION-REQUIRED';
+      // Esto permite que las máquinas antiguas se carguen mientras se ejecuta la migración.
+      // NOTA: NO usamos machineTypeId como fallback para evitar exponer IDs internos a los clientes.
+      const machineTypeName = doc.machineTypeName || 'LEGACY-MIGRATION-REQUIRED';
 
       if (!doc.machineTypeName) {
-        console.warn(`⚠️  Machine ${doc.id} (${doc.serialNumber}) missing machineTypeName, using fallback: "${machineTypeName}"`);
+        logger.warn({ machineId: doc.id, serialNumber: doc.serialNumber }, 'Machine missing machineTypeName, using LEGACY-MIGRATION-REQUIRED fallback');
       }
 
       // Crear la máquina con las propiedades mínimas requeridas

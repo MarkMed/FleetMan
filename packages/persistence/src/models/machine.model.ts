@@ -454,6 +454,8 @@ machineSchema.index({ ownerId: 1, 'status.code': 1 });
 machineSchema.index({ assignedProviderId: 1, 'status.isOperational': 1 });
 // LEGACY: machineTypeId index removed (now free-text machineTypeName)
 // machineSchema.index({ machineTypeId: 1, 'status.code': 1 });
+// NEW: machineTypeName index for type-based filtering and grouping
+machineSchema.index({ machineTypeName: 1, 'status.code': 1 });
 machineSchema.index({ brand: 1, modelName: 1 });
 
 // 🆕 Sprint #10: Indexes para queries de eventsHistory (embedded array)
@@ -474,6 +476,7 @@ machineSchema.index({
   serialNumber: 'text',
   brand: 'text',
   modelName: 'text',
+  machineTypeName: 'text', // NEW: included for text search by type name
   nickname: 'text',
   'location.siteName': 'text',
   'location.address': 'text'

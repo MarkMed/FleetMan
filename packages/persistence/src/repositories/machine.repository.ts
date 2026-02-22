@@ -23,6 +23,15 @@ import { type CreateQuickCheckRecord, type QuickCheckHistoryFilters } from '@pac
 import { logger } from '../utils/logger';
 
 /**
+ * Escapes special regex metacharacters in a string so it can be used as a
+ * literal substring pattern in a MongoDB $regex query.
+ * Prevents ReDoS and accidental wildcard matches from user-supplied input.
+ */
+function escapeRegex(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+/**
  * Tipo para agregar evento (sin machineId porque se pasa por separado)
  * Agrega isSystemGenerated como opcional (para eventos generados por el sistema)
  */
@@ -163,8 +172,9 @@ export class MachineRepository implements IMachineRepository {
    */
   async findByMachineTypeName(typeName: string): Promise<Machine[]> {
     try {
+      if (!typeName.trim()) return [];
       const docs = await MachineModel.find({ 
-        machineTypeName: { $regex: typeName, $options: 'i' } 
+        machineTypeName: { $regex: escapeRegex(typeName), $options: 'i' } 
       }).sort({ createdAt: -1 });
       
       logger.debug({ typeName, count: docs.length }, 'Found machines by type name');
@@ -523,8 +533,8 @@ export class MachineRepository implements IMachineRepository {
       // }
 
       // NEW: Free-text machineTypeName filter (case-insensitive partial match)
-      if (options.filter?.machineTypeName) {
-        query.machineTypeName = { $regex: options.filter.machineTypeName, $options: 'i' };
+      if (options.filter?.machineTypeName?.trim()) {
+        query.machineTypeName = { $regex: escapeRegex(options.filter.machineTypeName), $options: 'i' };
       }
       
       if (options.filter?.status) {

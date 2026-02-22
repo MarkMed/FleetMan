@@ -33,7 +33,7 @@ export const RecentQuickCheckDTOSchema = z.object({
     //   id: z.string(),
     //   name: z.string()
     // }).optional()
-    machineTypeName: z.string()
+    machineTypeName: z.string().optional() // Optional: legacy/unmigrated machines may not have it yet
   })
 });
 
@@ -73,7 +73,7 @@ export const RecentMachineEventDTOSchema = z.object({
     //   id: z.string(),
     //   name: z.string()
     // }).optional()
-    machineTypeName: z.string()
+    machineTypeName: z.string().optional() // Optional: legacy/unmigrated machines may not have it yet
   }),
   
   // metadata: z.record(z.any()).optional(), // Future: metadata adicional si se necesita
