@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { toast } from '@components/ui';
+import { useMachine } from '@hooks';
 import type {
   QuickCheckItemUI,
   QuickCheckItemInput,
@@ -36,6 +37,10 @@ export function useQuickCheckViewModel() {
   if (!machineId) {
     throw new Error('Machine ID is required');
   }
+
+  // Machine data for breadcrumb label
+  const { data: machineData } = useMachine(machineId);
+  const machineLabel = machineData ? `${machineData.brand}-${machineData.modelName}` : '...';
 
   // ===== State =====
   const [mode, setMode] = useState<QuickCheckMode>('EDITING');
@@ -363,6 +368,7 @@ export function useQuickCheckViewModel() {
   return {
     // Machine context
     machineId,
+    machineLabel,
 
     // UI State
     mode,

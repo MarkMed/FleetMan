@@ -2,6 +2,12 @@ import { MachineType, type IMachineTypeRepository } from '@packages/domain';
 import { MachineTypeModel, type IMachineTypeDocument } from '../models';
 
 /**
+ * LEGACY REPOSITORY - Machine types are now free-text fields (machineTypeName).
+ * This repository is kept for data migration and potential future features.
+ * The Machine entity no longer references MachineType by ID.
+ */
+
+/**
  * Implementación del repositorio de MachineType
  * Incluye lógica inteligente de save para manejar multilenguaje
  */

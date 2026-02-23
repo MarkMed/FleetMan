@@ -7,6 +7,7 @@ import {
   useCreateEventType,
 } from '@hooks/useMachineEvents';
 import { useDebounce } from '@hooks/useDebounce';
+import { useMachine } from '@hooks';
 import type { MachineEvent, GetEventsQuery } from '@services/api/machineEventService';
 
 /**
@@ -55,6 +56,10 @@ import type { MachineEvent, GetEventsQuery } from '@services/api/machineEventSer
  */
 export function useMachineEventsViewModel(machineId: string | undefined) {
   const { t } = useTranslation();
+
+  // Machine data for breadcrumb label
+  const { data: machineData } = useMachine(machineId ?? '');
+  const machineLabel = machineData ? `${machineData.brand}-${machineData.modelName}` : '...';
 
   // ========================
   // STATE MANAGEMENT
@@ -510,6 +515,7 @@ export function useMachineEventsViewModel(machineId: string | undefined) {
       // eventsByType: Map<string, number> - Distribución por tipo
       // eventsByMonth: Array<{month: string, count: number}> - Timeline
       // topEventTypes: Array<{typeId: string, name: string, count: number}> - Top 5
+      machineLabel,
     },
     
     // Actions

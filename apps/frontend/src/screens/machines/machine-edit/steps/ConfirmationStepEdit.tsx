@@ -3,7 +3,8 @@ import { useFormContext, useWatch } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle, ImagePickerField } from '../../../../components/ui';
 import { MachineRegistrationData } from '@contracts';
-import { useMachineTypes } from '@hooks';
+// LEGACY: useMachineTypes no longer needed (machineTypeName is free-text)
+// import { useMachineTypes } from '@hooks';
 import { useMachineEditContext } from '../MachineEditContext';
 
 /**
@@ -22,10 +23,12 @@ export function ConfirmationStepEdit() {
   // Watch all form values for real-time updates
   const data = useWatch({ control });
   const { basicInfo, technicalSpecs } = data;
-  const { data: machineTypes } = useMachineTypes();
-  const selectedMachineTypeName = machineTypes?.find(
-    (type) => type.id === basicInfo?.machineTypeId
-  )?.name;
+  
+  // LEGACY: No longer resolving machineType from API (direct string display)
+  // const { data: machineTypes } = useMachineTypes();
+  // const selectedMachineTypeName = machineTypes?.find(
+  //   (type) => type.id === basicInfo?.machineTypeId
+  // )?.name;
 
   // Helper para mostrar valores con fallback
   const displayValue = (value: any, fallback?: string) => {
@@ -86,9 +89,7 @@ export function ConfirmationStepEdit() {
             <div>
               <dt className="text-sm font-medium text-muted-foreground">Tipo de máquina</dt>
               <dd className="text-sm text-foreground">
-                {selectedMachineTypeName
-                  ? selectedMachineTypeName
-                  : displayValue(basicInfo?.machineTypeId, 'No seleccionado')}
+                {displayValue(basicInfo?.machineTypeName, 'No seleccionado')}
               </dd>
             </div>
             <div>

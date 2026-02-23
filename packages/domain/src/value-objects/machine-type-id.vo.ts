@@ -3,6 +3,9 @@ import { Result, ok, err, DomainError } from '../errors';
 /**
  * Value Object para identificar un tipo de máquina
  * Representa la referencia a una entidad MachineType
+ * 
+ * LEGACY: No longer used by Machine entity after migrating to free-text machineTypeName.
+ * Kept for backward compatibility and potential future features.
  */
 export class MachineTypeId {
   private constructor(private readonly value: string) {}

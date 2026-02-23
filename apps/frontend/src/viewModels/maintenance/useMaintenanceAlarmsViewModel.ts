@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useMaintenanceAlarms, useDeleteMaintenanceAlarm } from '@hooks';
+import { useMaintenanceAlarms, useDeleteMaintenanceAlarm, useMachine } from '@hooks';
 import { useToast } from '@hooks/useToast';
 import type { MaintenanceAlarm } from '@contracts';
 
@@ -67,6 +67,9 @@ export function useMaintenanceAlarmsViewModel(machineId: string | undefined) {
     false // Get all alarms (no filter by active)
   );
 
+  // Fetch machine data for breadcrumb label
+  const { data: machineData } = useMachine(machineId ?? '');
+
   // Delete mutation
   const deleteMutation = useDeleteMaintenanceAlarm(machineId);
 
@@ -76,6 +79,12 @@ export function useMaintenanceAlarmsViewModel(machineId: string | undefined) {
   
   const alarms = data?.alarms || [];
   const isEmpty = alarms.length === 0;
+  
+  // Breadcrumb label: "{Brand}-{ModelName}" (e.g. "Toyota-FD40")
+  // Falls back to '...' while machine data loads
+  const machineLabel = machineData
+    ? `${machineData.brand}-${machineData.modelName}`
+    : '...';
   
   // TODO Sprint #12: Get from machine data instead of mock
   // This will come from machine.specs.operatingHours when we have machine context
@@ -180,6 +189,7 @@ export function useMaintenanceAlarmsViewModel(machineId: string | undefined) {
       currentOperatingHours,
       total: data?.total || 0,
       activeCount: data?.activeCount || 0,
+      machineLabel,
     },
     
     // MODALS: State for create/edit and detail modals

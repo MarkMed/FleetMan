@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { Heading1, BodyText, Button, Card } from '@components/ui';
 import { Plus, AlertCircle } from 'lucide-react';
 import { useMachineEventsViewModel } from '../../viewModels/machines/useMachineEventsViewModel';
@@ -58,6 +58,15 @@ export function MachineEventsScreen() {
   // ========================
   return (
     <div className="space-y-3 max-w-full overflow-x-hidden">
+      {/* Breadcrumb */}
+      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+        <Link to="/machines" className="hover:text-foreground">{vm.t('machines.breadcrumb.machines')}</Link>
+        <span>/</span>
+        <Link to={`/machines/${machineId}`} className="hover:text-foreground">{vm.data.machineLabel}</Link>
+        <span>/</span>
+        <span className="text-foreground">{vm.t('machines.events.title')}</span>
+      </div>
+
       {/* Header with Stats */}
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-4">
         <div> 

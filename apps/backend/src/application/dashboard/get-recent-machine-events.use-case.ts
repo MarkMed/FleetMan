@@ -85,7 +85,7 @@ export class GetRecentMachineEventsUseCase {
           id: item.machine.id,
           name: item.machine.name,
           serialNumber: item.machine.serialNumber,
-          machineType: item.machine.machineType || undefined
+          machineTypeName: item.machine.machineTypeName || undefined
         }
       }));
 

@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Heading1, BodyText, Button, Card, CardContent, CardHeader, CardTitle } from "@components/ui";
 import { useMachinesViewModel } from "../../viewModels/machines";
-import { useMachineTypeResolver } from "@hooks";
+// LEGACY: useMachineTypeResolver no longer needed (machine.machineTypeName is direct string)
+// import { useMachineTypeResolver } from "@hooks";
 import { ROUTES } from "@constants/index";
 
 const statusVariants: Record<string, string> = {
@@ -24,9 +25,9 @@ export const MachinesScreen: React.FC = () => {
   const { t } = useTranslation();
   const { machines, isLoading, isError, errorMessage, refetch } = useMachinesViewModel();
   
-  // Resolve machine type IDs to names efficiently (batch lookup)
-  const machineTypeIds = machines.map(m => m.machineTypeId);
-  const machineTypeNames = useMachineTypeResolver(machineTypeIds);
+  // LEGACY: No longer resolving machineTypes in batch (direct property access)
+  // const machineTypeIds = machines.map(m => m.machineTypeId);
+  // const machineTypeNames = useMachineTypeResolver(machineTypeIds);
 
   return (
     <div className="space-y-8">
@@ -97,7 +98,7 @@ export const MachinesScreen: React.FC = () => {
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">{t('machines.list.type')}</span>
-                <span className="text-foreground">{machineTypeNames.get(machine.machineTypeId) ?? t('machines.list.loading')}</span>
+                <span className="text-foreground">{machine.machineTypeName ?? t('common.notSpecified')}</span>
               </div>
               <div className="text-right">
                 <Button variant="outline" size="sm" onPress={() => navigate(`/machines/${machine.id}`)}>
@@ -147,7 +148,7 @@ export const MachinesScreen: React.FC = () => {
                 <div className="text-foreground">{machine.brand}</div>
                 <div className="text-foreground">{machine.modelName}</div>
                 <div className="text-foreground font-mono">{machine.serialNumber}</div>
-                <div className="text-foreground">{machineTypeNames.get(machine.machineTypeId) ?? t('machines.list.loading')}</div>
+                <div className="text-foreground">{machine.machineTypeName ?? t('common.notSpecified')}</div>
                 <div>
                   <StatusPill status={machine.status} />
                 </div>

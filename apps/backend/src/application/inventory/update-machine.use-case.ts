@@ -64,14 +64,18 @@ export class UpdateMachineUseCase {
       if (request.brand !== undefined) updates.brand = request.brand;
       if (request.modelName !== undefined) updates.modelName = request.modelName;
       if (request.nickname !== undefined) updates.nickname = request.nickname;
-      if (request.machineTypeId !== undefined) {
-        // TODO: Strategic enhancement - Validate machineTypeId exists before allowing update
-        // const machineTypeRepo = new MachineTypeRepository();
-        // const typeExists = await machineTypeRepo.findById(request.machineTypeId);
-        // if (!typeExists) throw new Error('Invalid machine type ID - type does not exist');
-        // Purpose: Prevent referential integrity issues (orphaned machineTypeId references)
-        updates.machineTypeId = request.machineTypeId;
+      if (request.machineTypeName !== undefined) {
+        // NEW: Free-text machineTypeName - no validation needed
+        // Users can enter any machine type name (2-50 characters)
+        updates.machineTypeName = request.machineTypeName;
       }
+      // LEGACY: machineTypeId validation commented out (no longer used)
+      // if (request.machineTypeId !== undefined) {
+      //   const machineTypeRepo = new MachineTypeRepository();
+      //   const typeExists = await machineTypeRepo.findById(request.machineTypeId);
+      //   if (!typeExists) throw new Error('Invalid machine type ID - type does not exist');
+      //   updates.machineTypeId = request.machineTypeId;
+      // }
 
       // Assignment
       if (request.assignedTo !== undefined) updates.assignedTo = request.assignedTo;

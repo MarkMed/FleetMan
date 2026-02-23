@@ -3,7 +3,8 @@ import {
   MachineId, 
   SerialNumber, 
   UserId, 
-  MachineTypeId,
+  // LEGACY: MachineTypeId no longer used (now free-text machineTypeName)
+  // MachineTypeId,
   MachineStatusRegistry,
   UsageSchedule,
   type MachineSpecs,
@@ -12,6 +13,7 @@ import {
   DayOfWeek
 } from '@packages/domain';
 import { type IMachineDocument } from '../models';
+import { logger } from '../utils/logger';
 
 /**
  * Mapper para convertir entre documentos de Mongoose y entidades de dominio Machine
@@ -68,12 +70,23 @@ export class MachineMapper {
         }
       }
 
+      // LEGACY FALLBACK: Si no existe machineTypeName (documentos legacy), usar fallback temporal
+      // Esto permite que las máquinas antiguas se carguen mientras se ejecuta la migración.
+      // NOTA: NO usamos machineTypeId como fallback para evitar exponer IDs internos a los clientes.
+      const machineTypeName = doc.machineTypeName || 'LEGACY-MIGRATION-REQUIRED';
+
+      if (!doc.machineTypeName) {
+        logger.warn({ machineId: doc.id, serialNumber: doc.serialNumber }, 'Machine missing machineTypeName, using LEGACY-MIGRATION-REQUIRED fallback');
+      }
+
       // Crear la máquina con las propiedades mínimas requeridas
       const createResult = Machine.create({
         serialNumber: doc.serialNumber,
         brand: doc.brand,
         modelName: doc.modelName,
-        machineTypeId: doc.machineTypeId,
+        // LEGACY: machineTypeId replaced by machineTypeName
+        // machineTypeId: doc.machineTypeId,
+        machineTypeName,
         ownerId: doc.ownerId,
         createdById: doc.createdById,
         nickname: doc.nickname,
@@ -189,7 +202,9 @@ export class MachineMapper {
       brand: publicInterface.brand,
       modelName: publicInterface.modelName,
       nickname: publicInterface.nickname,
-      machineTypeId: publicInterface.machineTypeId,
+      // LEGACY: machineTypeId replaced by machineTypeName
+      // machineTypeId: publicInterface.machineTypeId,
+      machineTypeName: publicInterface.machineTypeName,
       ownerId: publicInterface.ownerId,
       createdById: publicInterface.createdById,
       assignedProviderId: publicInterface.assignedProviderId,

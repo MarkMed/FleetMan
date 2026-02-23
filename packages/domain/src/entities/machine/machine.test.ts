@@ -17,7 +17,7 @@ const basicProps: CreateMachineProps = {
   serialNumber: 'CAT-320D-ABC123XYZ',
   brand: 'Caterpillar',
   modelName: '320D',
-  machineTypeId: 'mtype_excavator_001',
+  machineTypeName: 'Excavadora',
   ownerId: 'user_client_12345',
   createdById: 'user_admin_67890',
   nickname: 'Excavadora Principal'
@@ -45,7 +45,7 @@ const maintenanceProps: CreateMachineProps = {
   serialNumber: 'VOL-EC480-MNT001',
   brand: 'Volvo',
   modelName: 'EC480D',
-  machineTypeId: 'mtype_excavator_002',
+  machineTypeName: 'Excavadora',
   ownerId: 'user_client_456',
   createdById: 'user_admin_789',
   initialStatus: 'MAINTENANCE'
@@ -89,7 +89,7 @@ const fullProps: CreateMachineProps = {
   serialNumber: 'LIE-R9800-FULL001',
   brand: 'Liebherr',
   modelName: 'R9800',
-  machineTypeId: 'mtype_excavator_heavy_001',
+  machineTypeName: 'Excavadora Pesada',
   ownerId: 'user_client_789',
   createdById: 'user_admin_123',
   specs: specs,
@@ -119,7 +119,7 @@ const invalidSerial = Machine.create({
   serialNumber: 'AB', // muy corto
   brand: 'Test',
   modelName: 'Test',
-  machineTypeId: 'mtype_test_001',
+  machineTypeName: 'Test',
   ownerId: 'user_test_123',
   createdById: 'user_test_456'
 });
@@ -130,7 +130,7 @@ const invalidBrand = Machine.create({
   serialNumber: 'TEST-BRAND-001',
   brand: '',
   modelName: 'TestModel',
-  machineTypeId: 'mtype_test_001',
+  machineTypeName: 'Test',
   ownerId: 'user_test_123',
   createdById: 'user_test_456'
 });
@@ -141,7 +141,7 @@ const invalidStatus = Machine.create({
   serialNumber: 'TEST-STATUS-001',
   brand: 'TestBrand',
   modelName: 'TestModel',
-  machineTypeId: 'mtype_test_001',
+  machineTypeName: 'Test',
   ownerId: 'user_test_123',
   createdById: 'user_test_456',
   initialStatus: 'INVALID_STATUS' as any

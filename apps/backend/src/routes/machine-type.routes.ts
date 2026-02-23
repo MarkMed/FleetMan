@@ -13,6 +13,15 @@ const router = Router();
 const machineTypeController = new MachineTypeController();
 
 /**
+ * LEGACY ROUTES - Machine types are now free-text fields
+ * 
+ * Estas rutas se mantienen para:
+ * 1. Backward compatibility con clientes existentes
+ * 2. Administración de sugerencias de tipos comunes
+ * 3. Proporcionar listados para UI dropdowns/comboboxes
+ * 
+ * Las máquinas ya no dependen de estos registros (usan machineTypeName libre).
+ * 
  * RUTAS DE TIPOS DE MÁQUINA
  * Endpoints CRUD para gestión de tipos de máquina
  */

@@ -48,7 +48,7 @@ export class MachineController {
       brand: publicInterface.brand,
       modelName: publicInterface.modelName,
       nickname: publicInterface.nickname ?? null,
-      machineTypeId: publicInterface.machineTypeId,
+      machineTypeName: publicInterface.machineTypeName, // NEW: Free-text field
       ownerId: publicInterface.ownerId,
       createdById: publicInterface.createdById,
       assignedProviderId: publicInterface.assignedProviderId,

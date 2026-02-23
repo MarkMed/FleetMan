@@ -92,7 +92,7 @@ export class GetRecentQuickChecksUseCase {
             brand: item.machine.brand,
             model: item.machine.model,
             serialNumber: item.machine.serialNumber,
-            machineType: item.machine.machineType || undefined
+            machineTypeName: item.machine.machineTypeName || undefined
           }
         };
       });

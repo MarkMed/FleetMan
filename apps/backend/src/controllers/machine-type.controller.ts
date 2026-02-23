@@ -10,8 +10,17 @@ import { MachineTypeResponse } from '@packages/contracts';
 import { MachineType } from '@packages/domain';
 
 /**
+ * LEGACY Controller - Machine types are now free-text fields
+ *
+ * Este controller se mantiene para:
+ * 1. Backward compatibility con APIs existentes
+ * 2. Administración de sugerencias de tipos comunes
+ * 3. Seeding inicial de tipos predefinidos
+ *
+ * Las máquinas ya no dependen de estos registros.
+ *
  * MachineTypeController handles machine type-related HTTP requests
- * 
+ *
  * Responsibilities:
  * - Call appropriate Use Cases (validation ya se hace en middleware)
  * - Transform domain responses to HTTP responses

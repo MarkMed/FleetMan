@@ -31,7 +31,7 @@ function testMachineInterfaceMapping() {
     serialNumber: 'CAT-2024-001',
     brand: 'Caterpillar',
     modelName: '320D',
-    machineTypeId: 'machine-type-123',
+    machineTypeName: 'Autoelevador',
     ownerId: 'user-456',
     createdById: 'admin-789',
     specs: {

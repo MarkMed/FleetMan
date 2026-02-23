@@ -99,7 +99,7 @@ export function MaintenanceAlarmsListScreen() {
           </Link>
           <span>/</span>
           <Link to={`/machines/${machineId}`} className="hover:text-foreground">
-            {vm.t('machines.breadcrumb.detail')}
+            {vm.data.machineLabel}
           </Link>
           <span>/</span>
           <span className="text-foreground">{vm.t('machines.breadcrumb.alarms')}</span>
@@ -153,7 +153,7 @@ export function MaintenanceAlarmsListScreen() {
           </Link>
           <span>/</span>
           <Link to={`/machines/${machineId}`} className="hover:text-foreground">
-            {vm.t('machines.breadcrumb.detail')}
+            {vm.data.machineLabel}
           </Link>
           <span>/</span>
           <span className="text-foreground">{vm.t('machines.breadcrumb.alarms')}</span>

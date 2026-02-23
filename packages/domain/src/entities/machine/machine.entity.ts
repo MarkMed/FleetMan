@@ -1,6 +1,7 @@
 import { Result, ok, err, DomainError, DomainErrorCodes } from '../../errors';
 import { MachineId } from '../../value-objects/machine-id.vo';
-import { MachineTypeId } from '../../value-objects/machine-type-id.vo';
+// LEGACY: MachineTypeId no longer used by Machine entity (now free-text machineTypeName)
+// import { MachineTypeId } from '../../value-objects/machine-type-id.vo';
 import { SerialNumber } from '../../value-objects/serial-number.vo';
 import { UserId } from '../../value-objects/user-id.vo';
 import { UsageSchedule } from '../../value-objects/usage-schedule.vo';
@@ -52,7 +53,9 @@ export interface CreateMachineProps {
   serialNumber: string;
   brand: string;
   modelName: string;
-  machineTypeId: string; // Se recibe como string y se valida internamente
+  // LEGACY: machineTypeId replaced by free-text machineTypeName (Sprint #XX)
+  // machineTypeId: string; // Se recibía como string y se validaba internamente
+  machineTypeName: string; // Free-text machine type (e.g., "Autoelevador", "Excavadora")
   ownerId: string; // UserId string
   createdById: string; // UserId string
   specs?: MachineSpecs;
@@ -72,7 +75,9 @@ interface MachineProps {
   serialNumber: SerialNumber;
   brand: string;
   modelName: string;
-  machineTypeId: MachineTypeId;
+  // LEGACY: machineTypeId replaced by free-text machineTypeName (Sprint #XX)
+  // machineTypeId: MachineTypeId;
+  machineTypeName: string;
   nickname?: string;
   status: MachineStatus; // Ahora usa la clase MachineStatus
   ownerId: UserId;
@@ -109,7 +114,9 @@ export class Machine {
       brand: this.props.brand,
       modelName: this.props.modelName,
       nickname: this.props.nickname,
-      machineTypeId: this.props.machineTypeId.getValue(),
+      // LEGACY: machineTypeId replaced by machineTypeName
+      // machineTypeId: this.props.machineTypeId.getValue(),
+      machineTypeName: this.props.machineTypeName,
       ownerId: this.props.ownerId.getValue(),
       createdById: this.props.createdById.getValue(),
       assignedProviderId: this.props.assignedProviderId?.getValue(),
@@ -162,10 +169,19 @@ export class Machine {
       return err(serialNumberResult.error);
     }
 
-    // Validar machine type ID
-    const machineTypeIdResult = MachineTypeId.create(createProps.machineTypeId);
-    if (!machineTypeIdResult.success) {
-      return err(machineTypeIdResult.error);
+    // LEGACY: machineTypeId validation removed (now free-text machineTypeName)
+    // Validate machine type ID
+    // const machineTypeIdResult = MachineTypeId.create(createProps.machineTypeId);
+    // if (!machineTypeIdResult.success) {
+    //   return err(machineTypeIdResult.error);
+    // }
+
+    // Validar machineTypeName (free-text, 2-50 caracteres)
+    if (!createProps.machineTypeName || createProps.machineTypeName.trim().length < 2) {
+      return err(DomainError.validation('Machine type name must be at least 2 characters'));
+    }
+    if (createProps.machineTypeName.trim().length > 50) {
+      return err(DomainError.validation('Machine type name cannot exceed 50 characters'));
     }
 
     // Validar owner ID
@@ -218,7 +234,9 @@ export class Machine {
       serialNumber: serialNumberResult.data,
       brand: createProps.brand.trim(),
       modelName: createProps.modelName.trim(),
-      machineTypeId: machineTypeIdResult.data,
+      // LEGACY: machineTypeId replaced by machineTypeName
+      // machineTypeId: machineTypeIdResult.data,
+      machineTypeName: createProps.machineTypeName.trim(),
       nickname: createProps.nickname?.trim(),
       status: initialStatus,
       ownerId: ownerIdResult.data,
@@ -332,8 +350,13 @@ export class Machine {
     return this.props.modelName;
   }
 
-  get machineTypeId(): MachineTypeId {
-    return this.props.machineTypeId;
+  // LEGACY: machineTypeId getter replaced by machineTypeName (Sprint #XX)
+  // get machineTypeId(): MachineTypeId {
+  //   return this.props.machineTypeId;
+  // }
+
+  get machineTypeName(): string {
+    return this.props.machineTypeName;
   }
 
   get nickname(): string | undefined {

@@ -4,16 +4,19 @@ import { NavBar } from './NavBar';
 import { MobileBottomNav } from './MobileBottomNav';
 import { NavigationDrawer } from './NavigationDrawer';
 import { useNavigationSync } from '@hooks/useNavigationSync';
-import { useMachineTypes, useNotificationObserver } from '@hooks';
+// LEGACY: useMachineTypes no longer needed (free-text machineTypeName)
+// import { useMachineTypes, useNotificationObserver } from '@hooks';
+import { useNotificationObserver } from '@hooks';
 import { GlobalQuickActions } from '../dashboard';
 
 export const MainLayout: React.FC = () => {
   // Sync current route with navigation store
   useNavigationSync();
   
+  // LEGACY: Pre-fetch no longer needed (machine types now free-text)
   // Pre-fetch machine types on authenticated layout mount (60min cache)
   // This ensures machine types are cached before any screen needs them
-  useMachineTypes();
+  // useMachineTypes();
 
   // Activate SSE observer for real-time notifications (connects to backend stream)
   // This hook connects SSE client when user is authenticated and disconnects on unmount
