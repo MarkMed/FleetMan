@@ -129,7 +129,8 @@ export function EditMachineScreen() {
             <div className="flex items-center justify-between gap-3 w-full mt-4">
               <Button
                 variant="outline"
-                onPress={() => navigate(`/machines/${viewModel.machine?.id}`)}
+                // onPress={() => navigate(`/machines/${viewModel.machine?.id}`)}
+                onPress={() => navigate(-1)}
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 {t("common.back")}

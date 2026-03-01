@@ -1,7 +1,7 @@
 import React from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Heading1, BodyText, Button, Card } from '@components/ui';
-import { Plus, AlertCircle, Bell } from 'lucide-react';
+import { Plus, AlertCircle, Bell, ArrowLeft } from 'lucide-react';
 import { AlarmCard, CreateEditAlarmModal } from '@components/maintenance';
 import { useMaintenanceAlarmsViewModel } from '../../viewModels/maintenance/useMaintenanceAlarmsViewModel';
 import type { MaintenanceAlarm } from '@contracts';
@@ -37,6 +37,8 @@ export function MaintenanceAlarmsListScreen() {
   // ========================
   
   const vm = useMaintenanceAlarmsViewModel(machineId);
+
+  const navigate = useNavigate();
 
   // ========================
   // RENDER SECTIONS
@@ -169,11 +171,20 @@ export function MaintenanceAlarmsListScreen() {
               {vm.t('maintenance.alarms.subtitle')}
             </BodyText>
           </div>
+        </div>
+        
+      {/* Action Buttons */}
+      <div className="flex items-center justify-between gap-3 w-full">
+        <Button variant="outline" onPress={() => navigate(-1)}>
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          {vm.t("common.back")}
+        </Button>
+
           <Button variant="filled" onPress={vm.actions.handleCreateAlarm}>
             <Plus className="h-4 w-4 mr-2" />
             {vm.t('maintenance.alarms.createAlarm')}
           </Button>
-        </div>
+      </div>
 
         {/* Alarms Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

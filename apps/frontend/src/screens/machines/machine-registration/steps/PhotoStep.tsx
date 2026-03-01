@@ -69,11 +69,11 @@ export function PhotoStep() {
       {/* Header */}
       <div className="space-y-2">
         <TextBlock as="h2" size="large" weight="medium">
-          {t('machineRegistration.photo.title', 'Foto de la Máquina')}
+          {t('machines.registration.photo.title', 'Foto de la Máquina')}
         </TextBlock>
         <TextBlock as="p" size="medium" className="text-gray-600">
           {t(
-            'machineRegistration.photo.description',
+            'machines.registration.photo.description',
             'Agrega una foto representativa de la máquina para facilitar su identificación.'
           )}
         </TextBlock>
@@ -85,7 +85,7 @@ export function PhotoStep() {
         name="technicalSpecs.machinePhotoUrl"
         render={({ field: { value, onChange } }) => (
           <ImagePickerField
-            label={t('machineRegistration.photo.label', 'Foto')}
+            label={t('machines.registration.photo.label', 'Foto')}
             value={value || ''}
             onChangeText={onChange}
             onFileSelect={(file) => {
@@ -96,7 +96,7 @@ export function PhotoStep() {
             }}
             error={errors.technicalSpecs?.machinePhotoUrl?.message}
             helperText={t(
-              'machineRegistration.photo.helperText',
+              'machines.registration.photo.helperText',
               'Formatos soportados: JPEG, PNG, WebP. Tamaño máximo: 5MB. La imagen se subirá al confirmar el registro.'
             )}
             disabled={addPhotoLater} // Disable when "add later" is checked
@@ -136,11 +136,11 @@ export function PhotoStep() {
                 htmlFor="addPhotoLater"
                 className="text-sm font-medium text-gray-900 cursor-pointer"
               >
-                {t('machineRegistration.photo.addLater', 'Agregaré la foto más tarde')}
+                {t('machines.registration.photo.addLater', 'Agregaré la foto más tarde')}
               </label>
               <p className="text-xs text-gray-600 mt-1">
                 {t(
-                  'machineRegistration.photo.addLaterDescription',
+                  'machines.registration.photo.addLaterDescription',
                   'Podrás subir la foto desde la página de detalles de la máquina después del registro.'
                 )}
               </p>
@@ -166,11 +166,11 @@ export function PhotoStep() {
             </svg>
             <div>
               <p className="text-sm font-medium text-yellow-800">
-                {t('machineRegistration.photo.required', 'Acción requerida')}
+                {t('machines.registration.photo.required', 'Acción requerida')}
               </p>
               <p className="text-sm text-yellow-700 mt-1">
                 {t(
-                  'machineRegistration.photo.requiredDescription',
+                  'machines.registration.photo.requiredDescription',
                   'Debes seleccionar una foto o marcar la casilla para continuar.'
                 )}
               </p>

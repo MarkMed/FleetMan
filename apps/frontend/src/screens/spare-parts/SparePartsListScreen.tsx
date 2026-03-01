@@ -206,7 +206,8 @@ export function SparePartsListScreen() {
             <div className="flex items-center justify-between gap-3 w-full">
               <Button
                 variant="outline"
-                onPress={() => navigate(`/machines/${machineId}`)}
+                // onPress={() => navigate(`/machines/${machineId}`)}
+                onPress={() => navigate(-1)}
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 {vm.t("common.back")}

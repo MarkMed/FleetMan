@@ -113,7 +113,7 @@ export function useAlarmDetailViewModel() {
    * Navigate back to alarms list screen
    */
   const handleBack = () => {
-    navigate(`/machines/${machineId}/alarms`);
+    navigate(-1);
   };
 
   /**

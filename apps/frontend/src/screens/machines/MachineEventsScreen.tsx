@@ -83,23 +83,23 @@ export function MachineEventsScreen() {
             {vm.t("machines.events.subtitle")}
           </BodyText>
         </div>
-        {/* Action Buttons */}
-        <div className="flex items-center justify-between gap-3 w-full">
-          <Button variant="outline" onPress={() => navigate(-1)}>
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            {vm.t("common.back")}
-          </Button>
+      </div>
+      {/* Action Buttons */}
+      <div className="flex items-center justify-between gap-3 w-full">
+        <Button variant="outline" onPress={() => navigate(-1)}>
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          {vm.t("common.back")}
+        </Button>
 
-          {/* Report Event Button */}
-          <Button
-            variant="filled"
-            onPress={vm.actions.handleOpenReportModal}
-            className="shrink-0"
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            {vm.t("machines.events.reportEvent")}
-          </Button>
-        </div>
+        {/* Report Event Button */}
+        <Button
+          variant="filled"
+          onPress={vm.actions.handleOpenReportModal}
+          className="shrink-0"
+        >
+          <Plus className="h-4 w-4 mr-2" />
+          {vm.t("machines.events.reportEvent")}
+        </Button>
       </div>
 
       {/* Stats Cards */}
