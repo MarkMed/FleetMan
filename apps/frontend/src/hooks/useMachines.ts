@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { machineService } from '@services/api/machineService';
 import { QUERY_KEYS } from '@constants';
+import { useAuthStore } from '@store/slices/authSlice';
 import type { 
   CreateMachineResponse as Machine, 
   CreateMachineRequest as MachineFormData,
@@ -19,11 +20,19 @@ interface MachineFilters {
 }
 
 // Get machines with filters
-export const useMachines = (filters?: MachineFilters) => {
+export const useMachines = (
+  filters?: MachineFilters,
+  options?: { enabled?: boolean; staleTime?: number }
+) => {
+  const currentUser = useAuthStore((state) => state.user);
+  const ownerId = currentUser?.id;
+  // Always merge ownerId from auth store — single source of truth
+  const mergedFilters = { ownerId, ...filters };
   return useQuery({
-    queryKey: [...QUERY_KEYS.MACHINES, filters],
-    queryFn: () => machineService.getMachines(filters),
-    staleTime: 2 * 60 * 1000, // 2 minutes
+    queryKey: [...QUERY_KEYS.MACHINES, mergedFilters],
+    queryFn: () => machineService.getMachines(mergedFilters),
+    staleTime: options?.staleTime ?? 2 * 60 * 1000,
+    enabled: options?.enabled ?? true,
   });
 };
 

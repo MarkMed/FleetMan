@@ -41,17 +41,21 @@ import type { QuickActionId } from '../components/dashboard/QuickActionsModal';
 export function useQuickActions() {
   const navigate = useNavigate();
 
-  // Fetch data from TanStack Query hooks
-  const { data: machinesData, isLoading: isLoadingMachines } = useMachines();
-  const { data: contactsData, isLoading: isLoadingContacts } = useMyContacts();
-
-  // Modal states
+  // Modal states — declared before useMachines so isMachinesOpen is available for `enabled`
   const [isActionsOpen, setIsActionsOpen] = useState(false);
   const [isMachinesOpen, setIsMachinesOpen] = useState(false);
   const [isContactsOpen, setIsContactsOpen] = useState(false);
 
   // Track selected action for conditional navigation
   const [selectedAction, setSelectedAction] = useState<QuickActionId | null>(null);
+
+  // Lazy fetch: only triggers when machine selection modal opens.
+  // staleTime: 0 ensures the queryFn always runs on open, bypassing any stale cache.
+  const { data: machinesData, isLoading: isLoadingMachines } = useMachines(
+    undefined,
+    { enabled: isMachinesOpen, staleTime: 0 }
+  );
+  const { data: contactsData, isLoading: isLoadingContacts } = useMyContacts();
 
   // Extract data from API responses
   const machines = machinesData?.machines ?? [];

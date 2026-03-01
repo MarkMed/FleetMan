@@ -1,10 +1,7 @@
 ﻿import { useMemo } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { machineService } from "../../services/api/machineService";
-import { QUERY_KEYS } from "../../constants";
+import { useMachines } from "../../hooks/useMachines";
 import type { CreateMachineResponse } from "@contracts";
 import type { MachinesListResult } from "../../services/api/machineService";
-import { useAuthStore } from "../../store/slices/authSlice";
 
 export interface MachinesViewModel {
   machines: CreateMachineResponse[];
@@ -20,20 +17,13 @@ export interface MachinesViewModel {
  * Encapsula la carga de datos, filtrado inicial y mapea la respuesta para la Vista.
  */
 export function useMachinesViewModel(): MachinesViewModel {
-  const currentUser = useAuthStore((state) => state.user);
-  const ownerId = currentUser?.id;
-
   const {
     data,
     isLoading,
     isError,
     error,
     refetch,
-  } = useQuery<MachinesListResult>({
-    queryKey: QUERY_KEYS.MACHINES,
-    queryFn: () => machineService.getMachines(ownerId ? { ownerId } : undefined),
-    staleTime: 5 * 60 * 1000,
-  });
+  } = useMachines();
 
   const machines = useMemo(() => data?.machines ?? [], [data]);
 
