@@ -174,8 +174,7 @@ export const MachineDetailsScreen: React.FC = () => {
             </div>
 
             {/* Action Buttons */}
-            <div className="flex gap-3 mt-6 flex-wrap justify-between">
-              <div className="flex gap-3">
+            <div className="flex gap-2 flex-wrap justify-end mt-6">
                 <Button
                   variant="outline"
                   size="default"
@@ -200,8 +199,6 @@ export const MachineDetailsScreen: React.FC = () => {
                   <Package className="w-4 h-4 mr-2" />
                   {t("machines.actions.spareParts")}
                 </Button>
-              </div>
-              <div className="flex-grow flex justify-end gap-3">
                 <Button
                   variant="outline"
                   size="default"
@@ -218,7 +215,6 @@ export const MachineDetailsScreen: React.FC = () => {
                   <ListCheck className="w-4 h-4 mr-1" />
                   Quickcheck
                 </Button>
-              </div>
             </div>
           </div>
         </div>
