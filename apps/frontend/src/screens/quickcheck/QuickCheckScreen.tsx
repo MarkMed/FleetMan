@@ -11,6 +11,7 @@ import {
   QuickCheckSummary,
   ResponsibleInfoModal,
 } from '@components/quickcheck';
+import { ArrowLeft } from 'lucide-react';
 
 export const QuickCheckScreen: React.FC = () => {
   const { id: machineId } = useParams<{ id: string }>();
@@ -121,6 +122,15 @@ export const QuickCheckScreen: React.FC = () => {
               {vm.mode === 'COMPLETED' && t('quickchecks.screen.modes.completed')}
             </p>
           </div>
+          
+        </div>
+        {/* Action Buttons */}
+        <div className="flex items-center justify-between gap-3 w-full mt-2">
+          <Button variant="outline" onPress={() => navigate(-1)}>
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            {t("common.back")}
+          </Button>
+
           <Button
             variant="outline"
             size="default"

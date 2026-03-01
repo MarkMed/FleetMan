@@ -6,7 +6,8 @@ import { Wizard } from '../../../components/forms/wizard';
 import { useMachineEditViewModel } from '../../../viewModels/machines/MachineEditViewModel';
 import { MachineEditProvider } from './MachineEditContext';
 import { MachineRegistrationData } from '@contracts';
-import { Heading1, BodyText, Card } from '@components/ui';
+import { Heading1, BodyText, Card, Button } from '@components/ui';
+import { ArrowLeft } from 'lucide-react';
 
 /**
  * EditMachineScreen Component
@@ -124,6 +125,16 @@ export function EditMachineScreen() {
           <BodyText size="medium" className="mt-1">
             {t('machines.edit.serialNumber', 'Nº Serie')}:<b> {viewModel.machine.serialNumber}</b>
           </BodyText>
+            {/* Action Buttons */}
+            <div className="flex items-center justify-between gap-3 w-full mt-4">
+              <Button
+                variant="outline"
+                onPress={() => navigate(`/machines/${viewModel.machine?.id}`)}
+              >
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                {t("common.back")}
+              </Button>
+            </div>
         </div>
 
         {/* Wizard with Form Provider + Context Provider */}

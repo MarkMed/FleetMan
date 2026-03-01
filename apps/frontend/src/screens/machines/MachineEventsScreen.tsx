@@ -1,26 +1,26 @@
-import React from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { Heading1, BodyText, Button, Card } from '@components/ui';
-import { Plus, AlertCircle } from 'lucide-react';
-import { useMachineEventsViewModel } from '../../viewModels/machines/useMachineEventsViewModel';
+import React from "react";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import { Heading1, BodyText, Button, Card } from "@components/ui";
+import { Plus, AlertCircle, ArrowLeft } from "lucide-react";
+import { useMachineEventsViewModel } from "../../viewModels/machines/useMachineEventsViewModel";
 import {
   EventsList,
   EventFilters,
   EventDetailModal,
   ReportEventModal,
-} from '@components/machine-events';
+} from "@components/machine-events";
 
 /**
  * MachineEventsScreen: View Layer (MVVM-lite)
- * 
+ *
  * Displays full event history for a machine with filters and pagination.
  * Allows users to report new manual events.
- * 
+ *
  * Responsibilities:
  * - Render UI based on ViewModel state
  * - Handle presentation logic (styles, layout)
  * - Delegate business logic to ViewModel
- * 
+ *
  * @example
  * ```tsx
  * // Route: /machines/:id/events
@@ -29,6 +29,8 @@ import {
  */
 export function MachineEventsScreen() {
   const { id: machineId } = useParams<{ id: string }>();
+
+  const navigate = useNavigate();
   const vm = useMachineEventsViewModel(machineId);
 
   // ========================
@@ -37,15 +39,15 @@ export function MachineEventsScreen() {
   if (vm.state.error) {
     return (
       <div className="space-y-8">
-        <Heading1 size="headline">{vm.t('machines.events.title')}</Heading1>
+        <Heading1 size="headline">{vm.t("machines.events.title")}</Heading1>
         <Card className="p-6">
           <div className="flex flex-col items-center text-center space-y-4">
             <AlertCircle className="h-12 w-12 text-destructive" />
             <BodyText className="text-destructive">
-              {vm.t('machines.events.error.fetchFailed')}
+              {vm.t("machines.events.error.fetchFailed")}
             </BodyText>
             <Button variant="outline" onPress={vm.actions.handleRetry}>
-              {vm.t('common.retry')}
+              {vm.t("common.retry")}
             </Button>
           </div>
         </Card>
@@ -60,24 +62,34 @@ export function MachineEventsScreen() {
     <div className="space-y-3 max-w-full overflow-x-hidden">
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-sm text-muted-foreground">
-        <Link to="/machines" className="hover:text-foreground">{vm.t('machines.breadcrumb.machines')}</Link>
+        <Link to="/machines" className="hover:text-foreground">
+          {vm.t("machines.breadcrumb.machines")}
+        </Link>
         <span>/</span>
-        <Link to={`/machines/${machineId}`} className="hover:text-foreground">{vm.data.machineLabel}</Link>
+        <Link to={`/machines/${machineId}`} className="hover:text-foreground">
+          {vm.data.machineLabel}
+        </Link>
         <span>/</span>
-        <span className="text-foreground">{vm.t('machines.events.title')}</span>
+        <span className="text-foreground">{vm.t("machines.events.title")}</span>
       </div>
 
       {/* Header with Stats */}
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-4">
-        <div> 
+        <div>
           <Heading1 size="headline" className="tracking-tight text-foreground">
-            {vm.t('machines.events.title')}
+            {vm.t("machines.events.title")}
           </Heading1>
           <BodyText className="text-muted-foreground">
-            {vm.t('machines.events.subtitle')}
+            {vm.t("machines.events.subtitle")}
           </BodyText>
         </div>
-        <div className='flex flex-row w-full justify-end'>
+        {/* Action Buttons */}
+        <div className="flex items-center justify-between gap-3 w-full">
+          <Button variant="outline" onPress={() => navigate(-1)}>
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            {vm.t("common.back")}
+          </Button>
+
           {/* Report Event Button */}
           <Button
             variant="filled"
@@ -85,9 +97,8 @@ export function MachineEventsScreen() {
             className="shrink-0"
           >
             <Plus className="h-4 w-4 mr-2" />
-            {vm.t('machines.events.reportEvent')}
+            {vm.t("machines.events.reportEvent")}
           </Button>
-
         </div>
       </div>
 
@@ -95,7 +106,7 @@ export function MachineEventsScreen() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card className="p-4">
           <BodyText size="small" className="text-muted-foreground mb-1">
-            {vm.t('machines.events.stats.total')}
+            {vm.t("machines.events.stats.total")}
           </BodyText>
           <Heading1 size="headline" className="text-foreground">
             {vm.data.totalLoadedCount}
@@ -109,7 +120,7 @@ export function MachineEventsScreen() {
 
         <Card className="p-4">
           <BodyText size="small" className="text-muted-foreground mb-1">
-            {vm.t('machines.events.stats.manual')}
+            {vm.t("machines.events.stats.manual")}
           </BodyText>
           <Heading1 size="headline" className="text-warning">
             {vm.data.manualCount}
@@ -118,7 +129,7 @@ export function MachineEventsScreen() {
 
         <Card className="p-4">
           <BodyText size="small" className="text-muted-foreground mb-1">
-            {vm.t('machines.events.stats.system')}
+            {vm.t("machines.events.stats.system")}
           </BodyText>
           <Heading1 size="headline" className="text-info">
             {vm.data.systemCount}
@@ -150,10 +161,9 @@ export function MachineEventsScreen() {
               disabled={vm.state.isLoadingMore}
               loading={vm.state.isLoadingMore}
             >
-              {vm.state.isLoadingMore 
-                ? vm.t('common.loading') 
-                : vm.t('machines.events.loadMore', { count: 30 })
-              }
+              {vm.state.isLoadingMore
+                ? vm.t("common.loading")
+                : vm.t("machines.events.loadMore", { count: 30 })}
             </Button>
           </div>
         )}
@@ -162,14 +172,14 @@ export function MachineEventsScreen() {
         {vm.data.events.length > 0 && (
           <div className="mt-4 text-center">
             <BodyText size="small" className="text-muted-foreground">
-              {vm.t('machines.events.showing', {
+              {vm.t("machines.events.showing", {
                 count: vm.data.filteredCount,
                 total: vm.data.totalBackendCount,
               })}
             </BodyText>
             {vm.data.filteredCount < vm.data.totalLoadedCount && (
               <BodyText size="small" className="text-muted-foreground">
-                {vm.t('machines.events.filtered', {
+                {vm.t("machines.events.filtered", {
                   loaded: vm.data.totalLoadedCount,
                 })}
               </BodyText>

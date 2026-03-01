@@ -13,7 +13,7 @@ import { useMachineDetailsViewModel } from "../../viewModels/machines";
 // LEGACY: useMachineTypeName no longer needed (machine.machineTypeName is direct string)
 // import { useMachineTypeName } from "@hooks";
 import { useTranslation } from "react-i18next";
-import { Settings, Clock, Package, History, AlarmClock, Pencil, ListCheck } from "lucide-react";
+import { Settings, Clock, Package, History, AlarmClock, Pencil, ListCheck, ArrowLeft } from "lucide-react";
 
 const statusVariants: Record<string, string> = {
   ACTIVE: "bg-success/10 text-success",
@@ -72,6 +72,17 @@ export const MachineDetailsScreen: React.FC = () => {
         <span className="text-foreground">
           {machine ? `${machine.brand}-${machine.modelName}` : '...'}
         </span>
+      </div>
+      
+      {/* Action Buttons */}
+      <div className="flex items-center justify-between gap-3 w-full mt-4">
+        <Button
+          variant="outline"
+          onPress={() => navigate(-1)}
+        >
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          {t("common.back")}
+        </Button>
       </div>
 
       {/* Hero Section - Image + Main Metadata + Actions */}
