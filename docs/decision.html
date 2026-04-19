@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FleetMan - Análisis Estratégico y Viabilidad</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #0f172a; }
+        .chart-wrapper { width: 100%; max-width: 600px; margin-left: auto; margin-right: auto; height: 350px; max-height: 400px; position: relative; }
+        .chart-wrapper-wide { width: 100%; max-width: 900px; margin-left: auto; margin-right: auto; height: 400px; max-height: 500px; position: relative; }
+        @media (max-width: 768px) { .chart-wrapper { height: 280px; } .chart-wrapper-wide { height: 300px; } }
+        .card-shadow { box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01); transition: transform 0.2s ease-in-out; }
+        .card-shadow:hover { transform: translateY(-4px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-gradient-to-br from-[#1e1b4b] via-[#4338ca] to-[#06b6d4] text-white py-20 px-6 relative overflow-hidden">
+        <div class="max-w-5xl mx-auto relative z-10 text-center">
+            <span class="inline-block py-1 px-3 rounded-full bg-white/20 text-xs font-bold uppercase tracking-widest mb-4 border border-white/30">Presentación B2B</span>
+            <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-6">FleetMan</h1>
+            <p class="text-xl md:text-2xl font-light text-indigo-100 max-w-2xl mx-auto mb-10">Análisis Estratégico, Viabilidad y Estructura Operativa. De una idea brillante a un producto tecnológico rentable.</p>
+            
+            <div class="bg-white/10 backdrop-blur-md rounded-2xl p-6 md:p-8 text-left max-w-4xl mx-auto border border-white/20 shadow-2xl">
+                <h3 class="text-lg font-bold text-[#06b6d4] uppercase tracking-widest mb-6 text-center border-b border-white/10 pb-4">Situación Actual y Objetivos</h3>
+                <ul class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 text-indigo-50">
+                    <li class="flex items-start gap-3">
+                        <span class="flex-shrink-0 w-6 h-6 rounded-full bg-[#ec4899] text-white flex items-center justify-center font-bold text-sm shadow-md">&#10003;</span>
+                        <span class="text-sm md:text-base leading-snug">Idea excelente para gestión de flotas con alto potencial comercial.</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="flex-shrink-0 w-6 h-6 rounded-full bg-[#ec4899] text-white flex items-center justify-center font-bold text-sm shadow-md">&#10003;</span>
+                        <span class="text-sm md:text-base leading-snug">Necesidad de comprender la realidad técnica de la industria y el proyecto.</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="flex-shrink-0 w-6 h-6 rounded-full bg-[#ec4899] text-white flex items-center justify-center font-bold text-sm shadow-md">&#10003;</span>
+                        <span class="text-sm md:text-base leading-snug">Alineación de expectativas, responsabilidades operativas y roles.</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="flex-shrink-0 w-6 h-6 rounded-full bg-[#ec4899] text-white flex items-center justify-center font-bold text-sm shadow-md">&#10003;</span>
+                        <span class="text-sm md:text-base leading-snug">Evaluación de riesgos y estructuración de un plan para su continuidad.</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(#ffffff 2px, transparent 2px); background-size: 30px 30px;"></div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-6 py-16 space-y-24">
+
+        <!-- 01. El Paradigma -->
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+                <div class="max-w-4xl mb-4 relative z-10">
+                    <h2 class="text-sm font-bold text-[#ec4899] uppercase tracking-widest mb-2">01. El Paradigma</h2>
+                    <h3 class="text-3xl font-extrabold mb-4 text-gray-900">Software Tradicional vs. Modelo SaaS</h3>
+                </div>
+                <p class="text-lg text-gray-600 mb-6 leading-relaxed">Construir una aplicación de este tipo no es un proceso estático. <strong class="text-gray-900">FleetMan es un Software as a Service (SaaS)</strong>, un ecosistema vivo en la nube que exige un ciclo infinito de integración continua, mantenimiento y evolución dictada por el mercado.</p>
+                <div class="flex gap-4">
+                    <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 card-shadow flex-1 opacity-80 text-center">
+                        <div class="text-2xl mb-2">&#128190;</div>
+                        <h4 class="font-bold text-gray-700 text-sm">App Estática</h4>
+                        <p class="text-xs text-gray-500">Desarrollo con fin lógico. Modelo de gasto único.</p>
+                    </div>
+                    <div class="bg-indigo-50 p-4 rounded-xl border border-indigo-200 card-shadow flex-1 ring-2 ring-indigo-400 text-center">
+                        <div class="text-2xl mb-2">&#9728;</div>
+                        <h4 class="font-bold text-indigo-900 text-sm">SaaS (FleetMan)</h4>
+                        <p class="text-xs text-indigo-700">Ecosistema escalable. Modelo operativo continuo.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-3xl p-8 card-shadow border-t-4 border-[#4338ca]">
+                <h4 class="text-xl font-bold text-center mb-6 text-gray-900">Áreas Técnicas Continuas</h4>
+                <div class="space-y-3">
+                    <div class="flex items-center gap-4 p-3 rounded-xl bg-gray-50 border border-gray-100 transition hover:bg-indigo-50">
+                        <div class="text-2xl w-10 text-center shrink-0">&#128269;</div>
+                        <div class="text-sm"><strong class="text-gray-800">1. Análisis de Negocio:</strong> Requerimientos y flujos de dominio.</div>
+                    </div>
+                    <div class="flex items-center gap-4 p-3 rounded-xl bg-gray-50 border border-gray-100 transition hover:bg-indigo-50">
+                        <div class="text-2xl w-10 text-center shrink-0">&#128187;</div>
+                        <div class="text-sm"><strong class="text-gray-800">2. Ingeniería:</strong> Desarrollo de código y arquitectura.</div>
+                    </div>
+                    <div class="flex items-center gap-4 p-3 rounded-xl bg-gray-50 border border-gray-100 transition hover:bg-indigo-50">
+                        <div class="text-2xl w-10 text-center shrink-0">&#128423;</div>
+                        <div class="text-sm"><strong class="text-gray-800">3. Infraestructura:</strong> Servidores cloud y despliegues.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 02. Evaluación Estratégica (Externa) -->
+        <section class="bg-[#0f172a] rounded-3xl p-8 md:p-12 card-shadow relative overflow-hidden text-white">
+            <div class="absolute -top-24 -left-24 w-96 h-96 bg-[#ec4899] opacity-10 rounded-full blur-3xl"></div>
+            <div class="max-w-4xl mb-12 relative z-10">
+                <h2 class="text-sm font-bold text-[#ec4899] uppercase tracking-widest mb-2">02. Evaluación Estratégica (Externa)</h2>
+                <h3 class="text-3xl font-extrabold mb-4 text-white">Análisis de Tercerización</h3>
+                <p class="text-lg text-gray-300 leading-relaxed">Derivar el desarrollo a un equipo externo presenta beneficios ejecutivos, pero conlleva riesgos operativos y financieros críticos.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 relative z-10">
+                <div class="lg:col-span-1 bg-white/5 border border-white/10 rounded-2xl p-6 h-full flex flex-col">
+                    <div class="flex items-center gap-3 mb-6 border-b border-white/10 pb-4">
+                        <div class="w-10 h-10 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl shrink-0">&#10003;</div>
+                        <h4 class="font-bold text-xl text-white">Beneficios</h4>
+                    </div>
+                    <ul class="space-y-4 text-gray-300 text-sm">
+                        <li><strong class="text-white">Foco Directivo:</strong> Operación en modo ejecutivo.</li>
+                        <li><strong class="text-white">Refinamiento:</strong> Tiempo para definir mejor el producto.</li>
+                        <li><strong class="text-white">Tracción:</strong> Energía volcada 100% a las ventas.</li>
+                    </ul>
+                </div>
+
+                <div class="lg:col-span-2 bg-gradient-to-br from-white to-gray-50 rounded-2xl p-8 card-shadow text-gray-900 border-t-4 border-[#ec4899]">
+                    <h4 class="font-bold text-xl mb-6 border-b border-gray-200 pb-2 text-[#ec4899]">Los Trade-offs y Riesgos</h4>
+                    <div class="space-y-4 text-sm">
+                        <p><strong class="text-gray-800">1. Fricción Comunicacional:</strong> Burocracia de tickets para ajustes que internamente toman minutos.</p>
+                        <p><strong class="text-gray-800">2. Riesgo de Disponibilidad:</strong> Dependencia total de la agenda, crisis y rotación de personal del tercero.</p>
+                        <p><strong class="text-gray-800">3. Caja Negra Técnica:</strong> Incertidumbre sobre la calidad real de los cimientos y seguridad del sistema.</p>
+                        <div class="p-4 bg-red-50 rounded-xl border border-red-200 text-red-800 mt-4">
+                            <strong class="block mb-1">El Punto de No Retorno:</strong> Recuperar código ajeno roto o mal optimizado es infinitamente más costoso que programar bien desde el día cero.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 03. Evaluación Estratégica (Interna) -->
+        <section class="bg-white rounded-3xl p-8 md:p-12 card-shadow relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-64 h-64 bg-[#4338ca] opacity-5 rounded-full blur-3xl -translate-y-1/2 -translate-x-1/2"></div>
+            <div class="max-w-4xl mb-12 relative z-10">
+                <h2 class="text-sm font-bold text-[#4338ca] uppercase tracking-widest mb-2">03. Evaluación Estratégica (Interna)</h2>
+                <h3 class="text-3xl font-extrabold mb-4 text-gray-900">Análisis de Desarrollo Interno</h3>
+                <p class="text-lg text-gray-600 leading-relaxed">Asumir el control total otorga una agilidad de iteración inalcanzable para terceros, pero concentra la presión operativa en el equipo propio.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 relative z-10">
+                <div class="bg-gradient-to-br from-indigo-50 to-cyan-50 border border-indigo-100 rounded-2xl p-8 h-full flex flex-col shadow-sm">
+                    <div class="flex items-center gap-3 mb-6 border-b border-indigo-200/50 pb-4">
+                        <div class="w-10 h-10 rounded-full bg-[#4338ca] text-white flex items-center justify-center text-xl shrink-0">&#128640;</div>
+                        <h4 class="font-bold text-2xl text-indigo-900">Beneficios</h4>
+                    </div>
+                    <ul class="space-y-6 text-gray-700 text-sm flex-grow">
+                        <li><strong class="text-indigo-900 block">Dominio Absoluto:</strong> Conocemos cada "porqué" arquitectónico, permitiendo evolucionar sin límites externos.</li>
+                        <li><strong class="text-indigo-900 block">Confianza y Alineación:</strong> Comunicación directa de dueños, eliminando intermediarios y acelerando validaciones.</li>
+                    </ul>
+                </div>
+
+                <div class="bg-white rounded-2xl p-8 card-shadow text-gray-900 border-t-4 border-[#f59e0b] flex flex-col h-full">
+                    <h4 class="font-bold text-2xl mb-6 border-b border-gray-200 pb-2 text-[#f59e0b]">Riesgos y Realidades</h4>
+                    <div class="space-y-6 text-sm">
+                        <p><strong class="text-gray-800">1. Bus Factor Crítico:</strong> Dependencia estructural de un único motor técnico. Si falla, el proyecto se detiene.</p>
+                        <p><strong class="text-gray-800">2. Tiempos de Desarrollo:</strong> La ejecución secuencial exige un calendario de 3 a 4 meses para robustez comercial.</p>
+                        <div class="p-4 bg-indigo-900 text-white rounded-xl">
+                            <strong class="block mb-1 text-indigo-300">Mitigación con IA:</strong> Usamos Inteligencia Artificial como multiplicador para comprimir semanas de código en horas.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 04. Roles y Responsabilidades -->
+        <section class="bg-gray-50 rounded-3xl p-8 md:p-12 card-shadow relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-64 h-64 bg-[#06b6d4] opacity-5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+            <div class="max-w-4xl mb-12 relative z-10">
+                <h2 class="text-sm font-bold text-[#06b6d4] uppercase tracking-widest mb-2">04. Roles y Responsabilidades</h2>
+                <h3 class="text-3xl font-extrabold mb-4 text-gray-900">Anatomía del Esfuerzo Operativo (El Pipeline)</h3>
+            </div>
+
+            <div class="flex flex-col lg:flex-row w-full rounded-3xl overflow-hidden shadow-xl border border-gray-200 relative z-10">
+                <!-- Miguel -->
+                <div class="w-full lg:w-1/3 bg-amber-50 p-6 lg:p-8 border-b lg:border-b-0 lg:border-r border-amber-100 flex flex-col">
+                    <h4 class="font-extrabold text-2xl text-amber-900 mb-1">Miguel</h4>
+                    <p class="text-xs sm:text-sm text-amber-700 font-bold uppercase tracking-wider mb-6">Experto del Dominio & Business Owner</p>
+                    <ul class="space-y-4 text-amber-900/80 flex-grow text-sm">
+                        <li><strong class="text-amber-900">&#10003; Business Dev:</strong> Ventas e inserción de mercado.</li>
+                        <li><strong class="text-amber-900">&#10003; UAT:</strong> Validación de negocio sobre el código.</li>
+                        <li><strong class="text-amber-900">&#10003; Estructuración:</strong> Legal, Branding y Finanzas.</li>
+                    </ul>
+                    <div class="mt-8 pt-4 border-t border-amber-200 text-center"><span class="text-5xl font-black text-amber-900">20%</span></div>
+                </div>
+
+                <!-- Marcos -->
+                <div class="w-full lg:w-1/3 bg-indigo-50 p-6 lg:p-8 border-b lg:border-b-0 lg:border-r border-indigo-100 flex flex-col">
+                    <h4 class="font-extrabold text-2xl text-indigo-900 mb-1">Marcos</h4>
+                    <p class="text-sm text-indigo-700 font-bold uppercase tracking-wider mb-6">Product Engineer / CTO</p>
+                    <ul class="space-y-4 text-indigo-900/80 flex-grow text-sm">
+                        <li><strong class="text-indigo-900">&#10003; Architecture:</strong> Modelado y escalabilidad.</li>
+                        <li><strong class="text-indigo-900">&#10003; Engineering:</strong> Full-stack development core.</li>
+                        <li><strong class="text-indigo-900">&#10003; DevOps:</strong> Despliegue e infraestructura cloud.</li>
+                    </ul>
+                    <div class="mt-8 pt-4 border-t border-indigo-200 text-center"><span class="text-5xl font-black text-indigo-900">60%</span></div>
+                </div>
+
+                <!-- Leandro -->
+                <div class="w-full lg:w-1/3 bg-cyan-50 p-6 lg:p-8 flex flex-col">
+                    <h4 class="font-extrabold text-2xl text-cyan-900 mb-1">Leandro</h4>
+                    <p class="text-xs sm:text-sm text-cyan-700 font-bold uppercase tracking-wider mb-6">QA & Client Support</p>
+                    <ul class="space-y-4 text-cyan-900/80 flex-grow text-sm">
+                        <li><strong class="text-cyan-900">&#10003; QA:</strong> Regresión, Smoke y Usabilidad.</li>
+                        <li><strong class="text-cyan-900">&#10003; Onboarding:</strong> Soporte y capacitación de clientes.</li>
+                        <li><strong class="text-cyan-900">&#10003; BA Support:</strong> Comprensión del dominio operativo.</li>
+                    </ul>
+                    <div class="mt-8 pt-4 border-t border-cyan-200 text-center"><span class="text-5xl font-black text-cyan-900">20%</span></div>
+                </div>
+            </div>
+
+            <!-- Disclaimer -->
+            <div class="bg-indigo-50/50 border border-indigo-100 rounded-2xl p-6 mb-12 text-sm text-gray-700 flex gap-4 items-start shadow-sm max-w-5xl mx-auto mt-6">
+                <div class="text-2xl mt-0.5 shrink-0">&#9888;&#65039;</div>
+                <div>
+                    <strong class="text-indigo-900 block text-base mb-1">Aclaración sobre la Métrica de Distribución</strong>
+                    <p class="leading-relaxed">Los porcentajes representan la <strong>carga operativa e impacto estructural</strong>, no la dificultad subjetiva. El sistema es indivisible: si una parte falla, el engranaje no alcanza el 100% de operatividad necesaria.</p>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-3xl p-8 card-shadow border border-gray-100">
+                <h4 class="font-bold text-xl text-gray-900 mb-2">Proyección del Esfuerzo Cualitativo</h4>
+                <div class="chart-wrapper-wide"><canvas id="effortTimelineChart"></canvas></div>
+            </div>
+        </section>
+
+        <!-- 05. Alineación de Intereses -->
+        <section>
+            <div class="max-w-4xl mb-12 relative z-10 mx-auto md:mx-0">
+                <h2 class="text-sm font-bold text-[#4338ca] uppercase tracking-widest mb-2">05. Alineación de Intereses</h2>
+                <h3 class="text-3xl font-extrabold mb-4 text-gray-900">El ROI Híbrido</h3>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white p-8 rounded-2xl card-shadow text-center flex flex-col items-center border-t-4 border-[#06b6d4]">
+                    <div class="flex items-center justify-center w-20 h-20 border-4 border-white bg-gradient-to-br from-[#06b6d4] to-[#0369a1] text-white text-3xl font-bold rounded-full mb-6 shadow-lg">🦾</div>
+                    <h4 class="text-xl font-bold text-gray-900 mb-3">Retorno Familiar</h4>
+                    <p class="text-sm text-gray-600">Creación de un activo tecnológico rentable que beneficie económicamente a toda la familia.</p>
+                </div>
+                <div class="bg-white p-8 rounded-2xl card-shadow text-center flex flex-col items-center border-t-4 border-[#ec4899]">
+                    <div class="flex items-center justify-center w-20 h-20 border-4 border-white bg-gradient-to-br from-[#ec4899] to-[#be185d] text-white text-3xl font-bold rounded-full mb-6 shadow-lg">&#127758;</div>
+                    <h4 class="text-xl font-bold text-gray-900 mb-3">Estratégico (Visa)</h4>
+                    <p class="text-sm text-gray-600">Demostración de capacidades de Ingeniería de Software ante el mercado exterior.</p>
+                </div>
+                <div class="bg-white p-8 rounded-2xl card-shadow text-center flex flex-col items-center border-t-4 border-[#4338ca]">
+                    <div class="flex items-center justify-center w-20 h-20 border-4 border-white bg-gradient-to-br from-[#4338ca] to-[#312e81] text-white text-3xl font-bold rounded-full mb-6 shadow-lg">&#128202;</div>
+                    <h4 class="text-xl font-bold text-gray-900 mb-3">Exigencia del Proyecto</h4>
+                    <p class="text-sm text-gray-600">El reparto debe ser sistémicamente proporcional al esfuerzo técnico sostenido para asegurar viabilidad.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 06. Viabilidad Sistémica -->
+        <section class="bg-[#0f172a] rounded-3xl p-8 md:p-12 text-white shadow-2xl relative overflow-hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
+                <div>
+                    <h2 class="text-sm font-bold text-[#f59e0b] uppercase tracking-widest mb-2">06. Viabilidad Sistémica</h2>
+                    <h3 class="text-3xl font-extrabold mb-4 text-white">Estructura 40 / 30 / 30</h3>
+                    <p class="text-lg text-gray-300 leading-relaxed italic">"El software dicta sus propias reglas de supervivencia."</p>
+                    <p class="text-sm text-gray-400 mt-4 leading-relaxed">El diferencial del 40% responde a la asimetría de esfuerzos operativos. Imponer un 33/33/33 desestima el riesgo del motor principal, elevando al máximo el riesgo de abandono silencioso por desgaste.</p>
+                </div>
+                <div class="bg-white rounded-2xl p-6 text-gray-900">
+                    <h4 class="text-lg font-bold text-center mb-4">Modelos de Participación (Equity)</h4>
+                    <div class="chart-wrapper"><canvas id="equityChart"></canvas></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 07. Conclusión -->
+        <section>
+            <div class="max-w-4xl mb-12 relative z-10 mx-auto md:mx-0">
+                <h2 class="text-sm font-bold text-[#06b6d4] uppercase tracking-widest mb-2">07. Conclusión</h2>
+                <h3 class="text-4xl font-extrabold mb-4 text-gray-900">La Decisión Estratégica (Min-Maxing)</h3>
+                <p class="text-lg text-gray-600 leading-relaxed mb-6">Aplicar un enfoque de <em>Min-Maxing</em> (minimizar debilidades y maximizar el control) nos presenta tres posibles rutas operativas:</p>
+            </div>
+            
+            <div class="flex flex-wrap justify-center gap-6 mb-16 w-full relative z-10">
+                <div class="w-full lg:w-[31%] bg-white p-6 rounded-2xl border border-red-100 shadow-sm flex flex-col card-shadow">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-red-500"></div>
+                    <span class="text-xs font-bold text-red-500 uppercase tracking-widest mb-1">Opción A</span>
+                    <h4 class="text-xl font-bold text-gray-900 mb-3">Tercerización Total</h4>
+                    <p class="text-sm text-gray-600 flex-grow">Maximiza el riesgo financiero y arquitectónico. <strong class="text-red-700">Descartado por falta de control.</strong></p>
+                </div>
+                <div class="w-full lg:w-[31%] bg-white p-6 rounded-2xl border border-amber-100 shadow-sm flex flex-col card-shadow">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-amber-500"></div>
+                    <span class="text-xs font-bold text-amber-500 uppercase tracking-widest mb-1">Opción B</span>
+                    <h4 class="text-xl font-bold text-gray-900 mb-3">Gestión Asimétrica</h4>
+                    <p class="text-sm text-gray-600 flex-grow">Salva capital, pero condena al sistema al colapso por "Bus Factor" (33/33/33). <strong class="text-amber-700">Inviable a mediano plazo.</strong></p>
+                </div>
+                <div class="w-full lg:w-[31%] bg-white p-6 rounded-2xl border border-emerald-100 shadow-sm flex flex-col card-shadow ring-1 ring-emerald-500/20">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-emerald-500"></div>
+                    <span class="text-xs font-bold text-emerald-500 uppercase tracking-widest mb-1">Opción C</span>
+                    <h4 class="text-xl font-bold text-gray-900 mb-3">Gestión Estructural</h4>
+                    <p class="text-sm text-gray-600 flex-grow">Retiene capital, asegura calidad técnica y blinda al motor técnico (40/30/30). <strong class="text-emerald-700 mt-2 block">La única ruta viable.</strong></p>
+                </div>
+            </div>
+            
+            <div class="bg-gradient-to-r from-indigo-50 to-cyan-50 p-8 md:p-12 rounded-3xl border border-indigo-100 card-shadow inline-block w-full max-w-full relative overflow-hidden">
+                <div class="absolute -right-10 -top-10 text-[15rem] font-black text-indigo-900/5 leading-none select-none">3%</div>
+                <div class="text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#4338ca] to-[#ec4899] mb-4 relative z-10">3%</div>
+                <p class="text-2xl font-bold text-gray-800 mb-8 relative z-10 max-w-3xl">Ceder apenas un 3% es la póliza de seguro que viabiliza el proyecto. Asumimos el riesgo para desbloquear la ventaja definitiva:</p>
+                
+                <div class="relative z-10 flex flex-col gap-6">
+                    <!-- FILA 1: CONTRAS (CENTRADAS ARRIBA) -->
+                    <div class="flex flex-wrap justify-center gap-6">
+                        <div class="w-full lg:w-[23%] bg-red-50/80 p-5 rounded-xl border border-red-200 border-t-4 border-t-red-500 flex flex-col text-left transition hover:bg-red-100/50">
+                            <div class="text-3xl mb-3 text-red-600">&#8987;&#65039;</div>
+                            <h4 class="font-bold text-gray-900 mb-2">El Calendario</h4>
+                            <p class="text-xs text-gray-800 flex-grow">Alcanzar la robustez comercial con desarrollo interno exige un sacrificio temporal mayor (3 a 4 meses).</p>
+                        </div>
+                        <div class="w-full lg:w-[23%] bg-red-50/80 p-5 rounded-xl border border-red-200 border-t-4 border-t-red-500 flex flex-col text-left transition hover:bg-red-100/50">
+                            <div class="text-3xl mb-3 text-red-600">&#9886;&#65039;</div>
+                            <h4 class="font-bold text-gray-900 mb-2">La Carga Operativa</h4>
+                            <p class="text-xs text-gray-800 flex-grow">El éxito recae sobre un único punto de ejecución técnica masiva. Exige absorber el desgaste para sostener el producto.</p>
+                        </div>
+                    </div>
+
+                    <!-- FILA 2: PROS (ABAJO) -->
+                    <div class="flex flex-wrap justify-center gap-6">
+                        <div class="w-full lg:w-[23%] bg-emerald-50/80 p-5 rounded-xl border border-emerald-200 border-t-4 border-t-emerald-500 flex flex-col text-left transition hover:bg-emerald-100/50">
+                            <div class="text-3xl mb-3 text-emerald-600">&#128176;</div>
+                            <h4 class="font-bold text-gray-900 mb-2">Ahorro y Reinversión</h4>
+                            <p class="text-xs text-gray-700 flex-grow">Evita la fuga de $15k-$150k USD. Permite derivar capital a marketing y servicios cloud de alto rendimiento.</p>
+                        </div>
+                        <div class="w-full lg:w-[23%] bg-emerald-50/80 p-5 rounded-xl border border-emerald-200 border-t-4 border-t-emerald-500 flex flex-col text-left transition hover:bg-emerald-100/50">
+                            <div class="text-3xl mb-3 text-emerald-600">&#128295;</div>
+                            <h4 class="font-bold text-gray-900 mb-2 text-sm">Independencia Total</h4>
+                            <p class="text-xs text-gray-700 flex-grow">Eliminamos la vulnerabilidad ante decisiones y riesgos de terceros. Transformamos la burocracia en comunicación dinámica de confianza.</p>
+                        </div>
+                        <div class="w-full lg:w-[23%] bg-emerald-50/80 p-5 rounded-xl border border-emerald-200 border-t-4 border-t-emerald-500 flex flex-col text-left transition hover:bg-emerald-100/50">
+                            <div class="text-3xl mb-3 text-emerald-600">&#9889;</div>
+                            <h4 class="font-bold text-gray-900 mb-2 text-sm">Calidad y Evolución</h4>
+                            <p class="text-xs text-gray-700 flex-grow">Sustituimos la incertidumbre de terceros por un estándar de ingeniería superior y verificable, asegurando una base sólida y escalable.</p>
+                        </div>
+                        <div class="w-full lg:w-[23%] bg-emerald-50/80 p-5 rounded-xl border border-emerald-200 border-t-4 border-t-emerald-500 flex flex-col text-left transition hover:bg-emerald-100/50">
+                            <div class="text-3xl mb-3 text-emerald-600">📈</div>
+                            <h4 class="font-bold text-gray-900 mb-2 text-sm">Crecimiento e Incentivo</h4>
+                            <p class="text-xs text-gray-700 flex-grow">Ciclo virtuoso de propiedad: ver resultados y ganancias reales alimenta directamente el compromiso y entusiasmo del equipo propio.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-white border-t border-gray-200 py-8 text-center text-gray-500 text-sm mt-12"><p>&copy; 2026 FleetMan. Análisis Estratégico B2B.</p></footer>
+
+    <script>
+        const processLabels = (labels) => labels.map(l => l.length > 16 ? [l.split(' ')[0], l.split(' ').slice(1).join(' ')] : l);
+        const ctxEquity = document.getElementById('equityChart').getContext('2d');
+        new Chart(ctxEquity, {
+            type: 'bar',
+            data: {
+                labels: processLabels(['Inestable (33/33/33)', 'Estructural (40/30/30)']),
+                datasets: [
+                    { label: 'Miguel', data: [33.34, 30], backgroundColor: '#f59e0b', borderRadius: 4 },
+                    { label: 'Marcos', data: [33.33, 40], backgroundColor: '#4338ca', borderRadius: 4 },
+                    { label: 'Leandro', data: [33.33, 30], backgroundColor: '#06b6d4', borderRadius: 4 }
+                ]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false, indexAxis: 'y',
+                scales: { x: { stacked: true, max: 100, ticks: { callback: v => v + '%' } }, y: { stacked: true } }
+            }
+        });
+
+        const yLabels = { 0: 'Nulo', 1: 'Bajo', 2: 'Medio', 3: 'Alto' };
+        new Chart(document.getElementById('effortTimelineChart').getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: ['Fase 1: Refactor', 'Fase 2: Dev Core', 'Fase 3: QA & Beta', 'Fase 4: Lanzamiento', 'Fase 5: Escala'],
+                datasets: [
+                    { label: 'Marcos', data: [3, 3, 3, 2, 2], borderColor: '#4338ca', tension: 0.4 },
+                    { label: 'Miguel', data: [3, 1, 2, 3, 3], borderColor: '#f59e0b', tension: 0.4 },
+                    { label: 'Leandro', data: [0, 1, 3, 3, 2], borderColor: '#06b6d4', tension: 0.4 }
+                ]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                scales: { y: { min: 0, max: 3.5, ticks: { stepSize: 1, callback: v => yLabels[v] || '' } } }
+            }
+        });
+    </script>
+</body>
+</html>
