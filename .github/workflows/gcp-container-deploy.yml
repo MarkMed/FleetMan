@@ -1,0 +1,76 @@
+name: Deploy to GCP Cloud Run
+on:
+  push:
+    branches: [ dev ]
+    paths: [ 'apps/backend/**', 'packages/**', 'Dockerfile', '.github/workflows/gcp-container-deploy.yml' ]
+  workflow_dispatch:
+env:
+  REGISTRY_URL: southamerica-east1-docker.pkg.dev
+  PROJECT_ID: medinafleetmanager
+  REPO_NAME: fleetmanregistry
+  IMAGE_NAME: fleetman-backend
+  SERVICE_NAME: fleetman-backend
+  REGION: southamerica-east1
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write 
+    steps:
+      - name: 📦 Checkout code
+        uses: actions/checkout@v4
+      - name: 🔐 Authenticate to Google Cloud
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+      - name: 🏗️ Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+      - name: 🔑 Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker ${{ env.REGISTRY_URL }}
+      - name: 🏗️ Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: 🐳 Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: |
+            ${{ env.REGISTRY_URL }}/${{ env.PROJECT_ID }}/${{ env.REPO_NAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+            ${{ env.REGISTRY_URL }}/${{ env.PROJECT_ID }}/${{ env.REPO_NAME }}/${{ env.IMAGE_NAME }}:latest
+          build-args: |
+            NODE_ENV=production
+      - name: 🚀 Deploy to Cloud Run
+        id: deploy
+        uses: google-github-actions/deploy-cloudrun@v2
+        with:
+          service: ${{ env.SERVICE_NAME }}
+          region: ${{ env.REGION }}
+          image: ${{ env.REGISTRY_URL }}/${{ env.PROJECT_ID }}/${{ env.REPO_NAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          flags: '--allow-unauthenticated --min-instances=1 --max-instances=1 --no-cpu-throttling'
+          env_vars: |
+            NODE_ENV=production
+            MONGODB_URI=${{ secrets.MONGODB_URI }}
+            JWT_SECRET=${{ secrets.JWT_SECRET }}
+            JWT_EXPIRES_IN=${{ secrets.JWT_EXPIRES_IN }}
+            CORS_ORIGIN=${{ secrets.CORS_ORIGIN }}
+            CRON_MAINTENANCE_SCHEDULE=${{ secrets.CRON_MAINTENANCE_SCHEDULE }}
+            RATE_LIMIT_WINDOW_MS=${{ secrets.RATE_LIMIT_WINDOW_MS }}
+            RATE_LIMIT_MAX_REQUESTS=${{ secrets.RATE_LIMIT_MAX_REQUESTS }}
+            SMTP_HOST=${{ secrets.SMTP_HOST }}
+            SMTP_PORT=${{ secrets.SMTP_PORT }}
+            SMTP_SECURE=false
+            SMTP_USER=${{ secrets.SMTP_USER }}
+            SMTP_PASS=${{ secrets.SMTP_PASS }}
+            EMAIL_FROM=${{ secrets.EMAIL_FROM }}
+            APP_BASE_URL=${{ secrets.APP_BASE_URL }}
+      - name: 🏥 Health Check
+        run: |
+          sleep 10 
+          HEALTH_URL="${{ steps.deploy.outputs.url }}/health"
+          echo "Checking health at: $HEALTH_URL"
+          curl --retry 5 --retry-delay 5 --fail -s -o /dev/null -w "%{http_code}" $HEALTH_URL
+

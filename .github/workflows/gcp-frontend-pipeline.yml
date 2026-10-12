@@ -1,0 +1,89 @@
+name: Firebase Hosting CI/CD
+
+on:
+  push:
+    branches: [ dev ]
+    paths:
+      - 'apps/frontend/**'
+      - 'packages/**'
+      - 'firebase.json'
+      - '.github/workflows/gcp-frontend-pipeline.yml'
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    branches: [ dev ]
+  workflow_dispatch:
+
+concurrency:
+  group: firebase-hosting-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  PROJECT_ID: medinafleetmanager
+
+jobs:
+  build_and_deploy:
+    # push / manual: always. PR: not on close, and only for PRs from this repo (forks have no secrets/OIDC).
+    if: >
+      github.event_name == 'push' ||
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'pull_request' &&
+       github.event.action != 'closed' &&
+       github.event.pull_request.head.repo.full_name == github.repository)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Activate corepack and pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@9 --activate
+
+      - name: Install dependencies (pnpm)
+        run: pnpm install --frozen-lockfile
+
+      # El frontend importa @packages/* que se resuelven vía ./dist (tsup), por eso deben compilarse antes.
+      - name: Build workspace packages
+        run: pnpm --filter "./packages/*" build
+
+      - name: Build frontend (pnpm)
+        run: pnpm --filter @app/frontend build
+        env:
+          VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL_DEV }}
+          VITE_CLOUDINARY_CLOUD_NAME: ${{ secrets.VITE_CLOUDINARY_CLOUD_NAME_DEV }}
+          VITE_CLOUDINARY_UPLOAD_PRESET: ${{ secrets.VITE_CLOUDINARY_UPLOAD_PRESET_DEV }}
+
+      - name: Verificar archivos PWA generados
+        run: |
+          MISSING=""
+          for f in manifest.webmanifest sw.js registerSW.js pwa-192x192.png pwa-512x512.png index.html; do
+            [ ! -f "apps/frontend/dist/$f" ] && MISSING="${MISSING}${f} "
+          done
+          if [ -n "$MISSING" ]; then
+            echo "::warning::Archivos faltantes en dist: $MISSING"
+          else
+            echo "✅ Archivos críticos PWA presentes"
+          fi
+
+      - name: 🔐 Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+
+      - name: 🚀 Deploy to Firebase Hosting (Preview)
+        if: github.event_name == 'pull_request'
+        run: npx --yes firebase-tools@13 hosting:channel:deploy pr-${{ github.event.number }} --project ${{ env.PROJECT_ID }} --expires 7d
+
+      - name: 🚀 Deploy to Firebase Hosting (Live)
+        if: github.event_name != 'pull_request'
+        run: npx --yes firebase-tools@13 deploy --only hosting --project ${{ env.PROJECT_ID }}
