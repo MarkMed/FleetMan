@@ -23,7 +23,7 @@ class ApiClient {
   private defaultHeaders: Record<string, string>;
 
   constructor(baseURL: string) {
-    this.baseURL = baseURL;
+    this.baseURL = baseURL + config.API.API_VERSION;
     this.defaultHeaders = {
       "Content-Type": "application/json",
     };

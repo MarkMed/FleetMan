@@ -28,6 +28,7 @@ export const config = {
     TIMEOUT: 30000,
     RETRY_ATTEMPTS: 3,
     RETRY_DELAY: 1000,
+    API_VERSION: '/api/v1', // /api/v1
   },
 
   // Storage keys
