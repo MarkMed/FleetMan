@@ -103,16 +103,18 @@ export class MachineController {
       }, 'Failed to create machine');
 
       // Mapear errores de dominio a códigos HTTP
-      if (errorMessage.includes('already exists')) {
+      const lowerMessage = errorMessage.toLowerCase();
+
+      if (lowerMessage.includes('already exists')) {
         res.status(409).json({
           success: false,
-          message: errorMessage,
+          message: 'machines.registration.errors.serialNumberDuplicate',
           error: 'DUPLICATE_SERIAL'
         });
         return;
       }
 
-      if (errorMessage.includes('not found')) {
+      if (lowerMessage.includes('not found')) {
         res.status(404).json({
           success: false,
           message: errorMessage,
@@ -121,10 +123,14 @@ export class MachineController {
         return;
       }
 
-      if (errorMessage.includes('validation') || errorMessage.includes('Invalid')) {
+      if (
+        lowerMessage.includes('validation') ||
+        lowerMessage.includes('invalid') ||
+        lowerMessage.includes('serial')
+      ) {
         res.status(400).json({
           success: false,
-          message: errorMessage,
+          message: 'machines.registration.errors.serialNumberInvalid',
           error: 'VALIDATION_ERROR'
         });
         return;

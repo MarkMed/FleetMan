@@ -29,6 +29,11 @@ export function BasicInfoStep({ isEditMode = false, ...wizardProps }: BasicInfoS
 
   const { t } = useTranslation();
 
+  const getFieldError = (errorMessage?: string) => {
+    if (!errorMessage) return undefined;
+    return t(errorMessage, { defaultValue: errorMessage });
+  };
+
   // Mock data para machine types (en producción vendría del ViewModel/API)
   // LEGACY: No longer fetching machineTypes from API (free-text entry)
   // const { data: machineTypeList, isLoading, isError } = useMachineTypes();
@@ -53,7 +58,7 @@ export function BasicInfoStep({ isEditMode = false, ...wizardProps }: BasicInfoS
               onChangeText={onChange}
               onBlur={onBlur}
               placeholder={t('machines.registration.basicInfo.brandPlaceholder')}
-              error={errors.basicInfo?.brand?.message}
+              error={getFieldError(errors.basicInfo?.brand?.message)}
             />
           )}
         />
@@ -70,7 +75,7 @@ export function BasicInfoStep({ isEditMode = false, ...wizardProps }: BasicInfoS
               onChangeText={onChange}
               onBlur={onBlur}
               placeholder={t('machines.registration.basicInfo.modelPlaceholder')}
-              error={errors.basicInfo?.modelName?.message}
+              error={getFieldError(errors.basicInfo?.modelName?.message)}
             />
           )}
         />
@@ -88,7 +93,8 @@ export function BasicInfoStep({ isEditMode = false, ...wizardProps }: BasicInfoS
                 onChangeText={onChange}
                 onBlur={onBlur}
                 placeholder={t('machines.registration.basicInfo.serialNumberPlaceholder')}
-                error={errors.basicInfo?.serialNumber?.message}
+                error={getFieldError(errors.basicInfo?.serialNumber?.message)}
+                maxLength={30}
                 disabled={isEditMode} // READ-ONLY in edit mode (immutable field)
                 helperText={isEditMode ? t('machines.registration.basicInfo.serialNumberImmutable') : undefined}
               />

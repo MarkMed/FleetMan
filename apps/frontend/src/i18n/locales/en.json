@@ -583,6 +583,14 @@
         "noToken": "Authentication token not found. Please log in again.",
         "unknown": "Unknown error while registering machine"
       },
+      "errors": {
+        "serialNumberRequired": "Serial number is required",
+        "serialNumberMin": "Serial number must be at least 3 characters",
+        "serialNumberMax": "Serial number cannot exceed 30 characters",
+        "serialNumberNoSpaces": "Serial number cannot contain spaces",
+        "serialNumberInvalid": "Serial number contains invalid format or characters",
+        "serialNumberDuplicate": "Serial number is already registered in the system"
+      },
       "loading": "Processing and redirecting..."
     },
     "edit": {

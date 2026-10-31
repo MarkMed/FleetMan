@@ -585,6 +585,14 @@
         "noToken": "No se encontró token de autenticación. Por favor, inicia sesión nuevamente.",
         "unknown": "Error desconocido al registrar la máquina"
       },
+      "errors": {
+        "serialNumberRequired": "El número de serie es obligatorio",
+        "serialNumberMin": "El número de serie debe tener al menos 3 caracteres",
+        "serialNumberMax": "El número de serie no puede exceder los 30 caracteres",
+        "serialNumberNoSpaces": "El número de serie no puede contener espacios",
+        "serialNumberInvalid": "El número de serie contiene un formato o caracteres inválidos",
+        "serialNumberDuplicate": "El número de serie ya está registrado en el sistema"
+      },
       "loading": "Procesando y redireccionando..."
     },
     "edit": {

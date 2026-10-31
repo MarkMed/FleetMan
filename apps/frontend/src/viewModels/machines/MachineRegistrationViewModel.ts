@@ -1,4 +1,4 @@
-﻿import { useState, useCallback, useEffect, useReducer } from 'react';
+import { useState, useCallback, useEffect, useReducer } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import {
@@ -338,11 +338,21 @@ export function useMachineRegistrationViewModel(): MachineRegistrationViewModel 
       modal.hide();
       
       // Determine error message
-      const errorMessage = error instanceof Error 
+      const rawErrorMessage = error instanceof Error 
         ? error.message 
         : t('machines.registration.error.unknown');
       
+      const errorMessage = t(rawErrorMessage, { defaultValue: rawErrorMessage });
+
       setError(errorMessage);
+
+      // If error is related to serial number, set server error on the form field
+      if (rawErrorMessage.toLowerCase().includes('serial')) {
+        form.setError('basicInfo.serialNumber', {
+          type: 'server',
+          message: errorMessage,
+        });
+      }
       
       // Show error toast
       toast.error({
