@@ -109,12 +109,22 @@ export const UsageScheduleSchema = z.object({
 }) satisfies z.ZodType<Omit<IUsageSchedule, 'weeklyHours'>>;
 
 /**
+ * Schema para SerialNumber (3 a 30 caracteres, sin espacios)
+ * Claves i18n configuradas para feedback localizado en frontend y backend
+ */
+export const SerialNumberSchema = z.string()
+  .min(1, 'machines.registration.errors.serialNumberRequired')
+  .min(3, 'machines.registration.errors.serialNumberMin')
+  .max(30, 'machines.registration.errors.serialNumberMax')
+  .refine((val) => !val.includes(' ') && !/\s/.test(val), {
+    message: 'machines.registration.errors.serialNumberNoSpaces'
+  });
+
+/**
  * Schema para crear máquina basado en CreateMachineProps del dominio
  */
 export const CreateMachineRequestSchema = z.object({
-  serialNumber: z.string()
-    .min(1, 'Serial number is required')
-    .max(100, 'Serial number cannot exceed 100 characters'),
+  serialNumber: SerialNumberSchema,
   brand: z.string()
     .min(1, 'Brand is required')
     .max(100, 'Brand cannot exceed 100 characters'),

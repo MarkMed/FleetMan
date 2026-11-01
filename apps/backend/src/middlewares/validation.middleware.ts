@@ -38,7 +38,7 @@ const createValidator = (schema: ZodSchema, source: 'body' | 'query' | 'params' 
         
         return res.status(400).json({
           success: false,
-          message: 'Validation failed',
+          message: errorMessages[0]?.message || 'Validation failed',
           errors: errorMessages
         });
       }
@@ -105,7 +105,7 @@ export const validateRequest = (schemas: {
         
         return res.status(400).json({
           success: false,
-          message: 'Validation failed',
+          message: errorMessages[0]?.message || 'Validation failed',
           errors: errorMessages
         });
       }

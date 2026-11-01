@@ -186,7 +186,9 @@ class ApiClient {
           // Show error toast for conflict errors
           try {
             const { toast } = await import('../../hooks/useToast');
-            const errorMessage = data?.message || 'Resource conflict';
+            const { i18n } = await import('../../i18n');
+            const rawMessage = data?.message || 'Resource conflict';
+            const errorMessage = i18n.t(rawMessage, { defaultValue: rawMessage });
             toast.error({
               title: 'Error',
               description: errorMessage,
@@ -199,6 +201,7 @@ class ApiClient {
         return {
           success: false,
           error:
+            data?.errors?.[0]?.message ||
             data?.message ||
             data?.error ||
             `HTTP ${response.status}: ${response.statusText}`,
