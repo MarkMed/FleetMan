@@ -124,9 +124,9 @@ export class MachineController {
       }
 
       if (
+        lowerMessage.includes('serial') ||
         lowerMessage.includes('validation') ||
-        lowerMessage.includes('invalid') ||
-        lowerMessage.includes('serial')
+        lowerMessage.includes('invalid')
       ) {
         res.status(400).json({
           success: false,

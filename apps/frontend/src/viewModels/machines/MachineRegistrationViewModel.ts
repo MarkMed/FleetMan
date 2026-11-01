@@ -355,10 +355,10 @@ export function useMachineRegistrationViewModel(): MachineRegistrationViewModel 
       }
       
       // Show error toast
-      toast.error({
-        title: t('machines.registration.error.title'),
-        description: errorMessage,
-      });
+      // toast.error({
+      //   title: t('machines.registration.error.title'),
+      //   description: errorMessage,
+      // });
       
       throw error; // Re-throw to be handled by wizard
     } finally {
