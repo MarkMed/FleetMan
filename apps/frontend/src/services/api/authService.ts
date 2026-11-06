@@ -35,7 +35,9 @@ export class AuthService {
     
     const response = await apiClient.post<BackendApiResponse<RegisterResponse>>(
       API_ENDPOINTS.AUTH.REGISTER,
-      userData
+      userData,
+      undefined,
+      { skipErrorToast: true }
     );
     
     console.log('🔗 Raw API response:', response);

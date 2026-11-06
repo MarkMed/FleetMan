@@ -3,6 +3,7 @@ import { useForm, UseFormReturn } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../store/AuthProvider';
+import { modal } from '../../helpers/modal';
 import type { WizardStep } from '../../components/forms/wizard/types';
 import type { CompleteRegistrationData } from '../../types/registration.types';
 import type { RegisterRequest } from '@contracts';
@@ -273,11 +274,18 @@ export function useFullRegistrationViewModel(): FullRegistrationViewModel {
       console.error('❌ Full registration failed:', error);
       
       // Determine error message
-      const errorMessage = error instanceof Error 
-        ? error.message 
-        : t('auth.register.error.unknown');
       
+      const rawMessage = error instanceof Error 
+        ? error.message 
+        : 'auth.register.error.unknown';
+      const errorMessage = t(rawMessage, { defaultValue: rawMessage });
       setError(errorMessage);
+
+      modal.error({
+        title: t('auth.register.error.title'),
+        description: errorMessage,
+        dismissText: t('common.close', { defaultValue: 'Cerrar' }),
+      });
       
       throw error; // Re-throw to be handled by wizard
     } finally {

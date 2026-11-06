@@ -71,7 +71,7 @@ export class AuthController {
       if (errorMessage.includes('Email already registered')) {
         res.status(409).json({
           success: false,
-          message: 'Email already exists',
+          message: 'auth.register.error.emailAlreadyExists',
           error: 'EMAIL_ALREADY_EXISTS'
         });
         return;
@@ -80,7 +80,7 @@ export class AuthController {
       if (errorMessage.includes('Company name is required')) {
         res.status(400).json({
           success: false,
-          message: 'Company name is required for Provider users',
+          message: 'auth.register.error.companyNameRequired',
           error: 'VALIDATION_ERROR'
         });
         return;
