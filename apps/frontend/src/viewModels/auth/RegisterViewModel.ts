@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { modal } from '../../helpers/modal';
@@ -23,6 +23,14 @@ export const useRegisterViewModel = () => {
   });
 
   const [formErrors, setFormErrors] = useState<RegisterFormErrors>({});
+
+  // Clear any stale global auth error on mount and unmount
+  useEffect(() => {
+    clearError();
+    return () => {
+      clearError();
+    };
+  }, [clearError]);
 
   const validateForm = useCallback((): RegisterFormErrors => {
     const errors: RegisterFormErrors = {};

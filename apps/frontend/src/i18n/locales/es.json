@@ -1554,7 +1554,6 @@
       "title": "Notificaciones",
       "subtitle": "Configura cómo y cuándo recibir notificaciones",
       "email": "Notificaciones por Email",
-      "maintenanceAlerts": "Alertas de Mantenimiento",
       "emailEnabled": {
         "label": "Notificaciones por Email",
         "description": "Recibir alertas importantes por correo electrónico"

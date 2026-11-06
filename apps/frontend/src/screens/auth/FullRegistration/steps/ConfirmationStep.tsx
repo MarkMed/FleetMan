@@ -195,7 +195,7 @@ export const ConfirmationStep: React.FC = () => {
                       {data.preferences.notifications.maintenanceAlerts && (
                         <div className="flex items-center gap-2 text-sm">
                           <Badge variant="success" className="h-5 w-5 p-0 flex items-center justify-center">✓</Badge>
-                          {t('settings.notifications.maintenanceAlerts')}
+                          {t('settings.notifications.maintenanceAlerts.label')}
                         </div>
                       )}
                     </dd>
