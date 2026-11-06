@@ -36,7 +36,10 @@
       "loggingIn": "Iniciando sesión...",
       "noAccount": "¿No tienes una cuenta?",
       "createAccount": "Crear cuenta",
-      "signUpLink": "Regístrate aquí"
+      "signUpLink": "Regístrate aquí",
+      "error": {
+        "invalidCredentials": "El correo o la contraseña son incorrectos"
+      }
     },
     "forgotPassword": {
       "title": "Recuperar Contraseña",

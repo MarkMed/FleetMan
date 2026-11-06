@@ -126,7 +126,7 @@ export class AuthController {
       if (errorMessage.includes('Invalid credentials')) {
         res.status(401).json({
           success: false,
-          message: 'Invalid credentials',
+          message: 'auth.login.error.invalidCredentials',
           error: 'INVALID_CREDENTIALS'
         });
         return;

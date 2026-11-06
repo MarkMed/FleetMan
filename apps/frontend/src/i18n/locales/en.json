@@ -36,7 +36,10 @@
       "loggingIn": "Signing in...",
       "noAccount": "Don't have an account?",
       "createAccount": "Create account",
-      "signUpLink": "Sign up here"
+      "signUpLink": "Sign up here",
+      "error": {
+        "invalidCredentials": "Invalid email or password"
+      }
     },
     "forgotPassword": {
       "title": "Recover Password",
