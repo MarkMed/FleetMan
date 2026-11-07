@@ -110,7 +110,7 @@ export const LoginScreen: React.FC = () => {
                 {authError && (
                   <div className="rounded-md bg-destructive/10 border border-destructive/20 p-3">
                     <p className="text-sm text-destructive font-medium">
-                      {authError}
+                      {t(authError, { defaultValue: authError })}
                     </p>
                   </div>
                 )}

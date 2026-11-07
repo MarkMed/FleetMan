@@ -36,7 +36,10 @@
       "loggingIn": "Iniciando sesión...",
       "noAccount": "¿No tienes una cuenta?",
       "createAccount": "Crear cuenta",
-      "signUpLink": "Regístrate aquí"
+      "signUpLink": "Regístrate aquí",
+      "error": {
+        "invalidCredentials": "El correo o la contraseña son incorrectos"
+      }
     },
     "forgotPassword": {
       "title": "Recuperar Contraseña",
@@ -141,7 +144,9 @@
       "error": {
         "title": "Error en el registro",
         "invalidData": "Por favor, verifica que todos los campos estén correctos",
-        "unknown": "Ocurrió un error inesperado. Por favor, inténtalo de nuevo"
+        "unknown": "Ocurrió un error inesperado. Por favor, inténtalo de nuevo",
+        "emailAlreadyExists": "El correo electrónico ya se encuentra registrado en el sistema",
+        "companyNameRequired": "El nombre de la empresa es obligatorio para cuentas de proveedor"
       },
       "chooseMethod": "Elige tu método de registro",
       "methodDescription": "Selecciona la opción que mejor se adapte a tus necesidades",
@@ -1552,7 +1557,6 @@
       "title": "Notificaciones",
       "subtitle": "Configura cómo y cuándo recibir notificaciones",
       "email": "Notificaciones por Email",
-      "maintenanceAlerts": "Alertas de Mantenimiento",
       "emailEnabled": {
         "label": "Notificaciones por Email",
         "description": "Recibir alertas importantes por correo electrónico"

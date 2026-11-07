@@ -36,7 +36,10 @@
       "loggingIn": "Signing in...",
       "noAccount": "Don't have an account?",
       "createAccount": "Create account",
-      "signUpLink": "Sign up here"
+      "signUpLink": "Sign up here",
+      "error": {
+        "invalidCredentials": "Invalid email or password"
+      }
     },
     "forgotPassword": {
       "title": "Recover Password",
@@ -141,7 +144,9 @@
       "error": {
         "title": "Registration Error",
         "invalidData": "Please check that all fields are correct",
-        "unknown": "An unexpected error occurred. Please try again"
+        "unknown": "An unexpected error occurred. Please try again",
+        "emailAlreadyExists": "The email address is already registered in the system",
+        "companyNameRequired": "Company name is required for Provider accounts"
       },
       "chooseMethod": "Choose your registration method",
       "methodDescription": "Select the option that best suits your needs",
@@ -1550,7 +1555,6 @@
       "title": "Notifications",
       "subtitle": "Configure how and when to receive notifications",
       "email": "Email Notifications",
-      "maintenanceAlerts": "Maintenance Alerts",
       "emailEnabled": {
         "label": "Email Notifications",
         "description": "Receive important alerts via email"

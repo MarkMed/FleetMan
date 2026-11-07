@@ -26,7 +26,8 @@ export const isAuthStateReady = (state: AuthTransitionState): boolean => {
   }
 
   // Ready if we're clearly not authenticated (no token, no user)
-  if (!state.isAuthenticated && !state.hasToken && !state.hasUser && !state.isLoading) {
+  // Public routes remain ready during submit (isLoading) to avoid unmounting forms and losing state
+  if (!state.isAuthenticated && !state.hasToken && !state.hasUser) {
     return true;
   }
 

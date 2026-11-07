@@ -16,6 +16,7 @@ export interface RequestConfig {
   body?: any;
   params?: Record<string, string>;
   timeout?: number;
+  skipErrorToast?: boolean;
 }
 
 class ApiClient {
@@ -84,6 +85,7 @@ class ApiClient {
       body,
       params,
       timeout = TIMEOUT,
+      skipErrorToast = false,
     } = requestConfig;
 
     const url = this.buildUrl(endpoint, params);
@@ -118,7 +120,7 @@ class ApiClient {
     const timeoutId = setTimeout(() => controller.abort(), timeout);
 
     try {
-      const requestConfig: RequestInit = {
+      const fetchConfig: RequestInit = {
         method,
         headers: requestHeaders,
         signal: controller.signal,
@@ -130,13 +132,13 @@ class ApiClient {
         if (body instanceof FormData) {
           // For FormData, don't set Content-Type (browser will set it with boundary)
           delete requestHeaders["Content-Type"];
-          requestConfig.body = body;
+          fetchConfig.body = body;
         } else {
-          requestConfig.body = JSON.stringify(body);
+          fetchConfig.body = JSON.stringify(body);
         }
       }
 
-      const response = await fetch(url, requestConfig);
+      const response = await fetch(url, fetchConfig);
       clearTimeout(timeoutId);
 
       // Handle different response types
@@ -182,7 +184,7 @@ class ApiClient {
         }
         
         // Detect 409 Conflict (e.g., duplicate email, resource conflict)
-        if (response.status === 409) {
+        if (response.status === 409 && !skipErrorToast) {
           // Show error toast for conflict errors
           try {
             const { toast } = await import('../../hooks/useToast');
@@ -234,40 +236,45 @@ class ApiClient {
   get<T = any>(
     endpoint: string,
     params?: Record<string, string>,
-    headers?: Record<string, string>
+    headers?: Record<string, string>,
+    config?: Partial<RequestConfig>
   ): Promise<ApiResponse<T>> {
-    return this.request<T>(endpoint, { method: "GET", params, headers });
+    return this.request<T>(endpoint, { method: "GET", params, headers, ...config });
   }
 
   post<T = any>(
     endpoint: string,
     body?: any,
-    headers?: Record<string, string>
+    headers?: Record<string, string>,
+    config?: Partial<RequestConfig>
   ): Promise<ApiResponse<T>> {
-    return this.request<T>(endpoint, { method: "POST", body, headers });
+    return this.request<T>(endpoint, { method: "POST", body, headers, ...config });
   }
 
   put<T = any>(
     endpoint: string,
     body?: any,
-    headers?: Record<string, string>
+    headers?: Record<string, string>,
+    config?: Partial<RequestConfig>
   ): Promise<ApiResponse<T>> {
-    return this.request<T>(endpoint, { method: "PUT", body, headers });
+    return this.request<T>(endpoint, { method: "PUT", body, headers, ...config });
   }
 
   patch<T = any>(
     endpoint: string,
     body?: any,
-    headers?: Record<string, string>
+    headers?: Record<string, string>,
+    config?: Partial<RequestConfig>
   ): Promise<ApiResponse<T>> {
-    return this.request<T>(endpoint, { method: "PATCH", body, headers });
+    return this.request<T>(endpoint, { method: "PATCH", body, headers, ...config });
   }
 
   delete<T = any>(
     endpoint: string,
-    headers?: Record<string, string>
+    headers?: Record<string, string>,
+    config?: Partial<RequestConfig>
   ): Promise<ApiResponse<T>> {
-    return this.request<T>(endpoint, { method: "DELETE", headers });
+    return this.request<T>(endpoint, { method: "DELETE", headers, ...config });
   }
 }
 

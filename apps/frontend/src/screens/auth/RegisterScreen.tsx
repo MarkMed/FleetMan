@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useRegisterViewModel } from '../../viewModels/auth';
-import { InputField, Button, Card, CardContent, Skeleton, BodyText, Heading3, Heading1 } from '../../components/ui';
+import { InputField, Button, Card, CardContent, BodyText, Heading3, Heading1 } from '../../components/ui';
 import { Mail, Lock, User, Briefcase, Users } from 'lucide-react';
 import { cn } from '@utils/cn';
 
@@ -63,18 +63,7 @@ export const RegisterScreen: React.FC = () => {
 
         <Card className="border-0 shadow-xl">
           <CardContent className="p-6">
-            {isLoading ? (
-              <div className="space-y-6">
-                <div className="space-y-4">
-                  <Skeleton className="h-10 w-full rounded" />
-                  <Skeleton className="h-10 w-full rounded" />
-                  <Skeleton className="h-10 w-full rounded" />
-                  <Skeleton className="h-10 w-full rounded" />
-                </div>
-                <Skeleton className="h-10 w-full rounded" />
-              </div>
-            ) : (
-              <form className="space-y-6" onSubmit={handleSubmit}>
+            <form className="space-y-6" onSubmit={handleSubmit}>
                 <div className="space-y-4">
                   {/* Name Field */}
                   <InputField
@@ -259,7 +248,7 @@ export const RegisterScreen: React.FC = () => {
                 {authError && (
                   <div className="rounded-md bg-destructive/10 border border-destructive/20 p-3">
                     <p className="text-sm text-destructive font-medium">
-                      {authError}
+                      {t(authError, { defaultValue: authError })}
                     </p>
                   </div>
                 )}
@@ -276,7 +265,6 @@ export const RegisterScreen: React.FC = () => {
                   {isLoading ? t('auth.register.creatingAccount') : t('auth.register.registerButton')}
                 </Button>
               </form>
-            )}
           </CardContent>
         </Card>
 

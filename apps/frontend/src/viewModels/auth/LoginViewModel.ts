@@ -1,12 +1,14 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../store/AuthProvider';
 import type { LoginRequest } from '@contracts';
 import type { LoginFormData, LoginFormErrors } from '../../models';
 import { ROUTES } from '../../constants';
 
 export const useLoginViewModel = () => {
-  const { login, isLoading, error: authError } = useAuth();
+  const { login, isLoading, error: authError, clearError } = useAuth();
+  const { t } = useTranslation();
   const navigate = useNavigate();
   
   const [formData, setFormData] = useState<LoginFormData>({
@@ -16,6 +18,14 @@ export const useLoginViewModel = () => {
   });
 
   const [formErrors, setFormErrors] = useState<LoginFormErrors>({});
+
+  // Clear any stale global auth error on mount and unmount
+  useEffect(() => {
+    clearError();
+    return () => {
+      clearError();
+    };
+  }, [clearError]);
 
   const validateForm = useCallback((): LoginFormErrors => {
     const errors: LoginFormErrors = {};
@@ -44,14 +54,17 @@ export const useLoginViewModel = () => {
       [field]: value,
     }));
     
-    // Clear field error when user starts typing
+    // Clear field error and auth error when user starts typing
     if (formErrors[field as keyof LoginFormErrors]) {
       setFormErrors(prev => ({
         ...prev,
         [field]: undefined,
       }));
     }
-  }, [formErrors]);
+    if (authError) {
+      clearError();
+    }
+  }, [formErrors, authError, clearError]);
 
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
@@ -87,14 +100,17 @@ export const useLoginViewModel = () => {
 
   const clearErrors = useCallback(() => {
     setFormErrors({});
-  }, []);
+    clearError();
+  }, [clearError]);
+
+  const translatedAuthError = authError ? t(authError, { defaultValue: authError }) : undefined;
 
   return {
     // State
     formData,
     formErrors,
     isLoading,
-    authError,
+    authError: translatedAuthError,
     
     // Actions
     handleInputChange,

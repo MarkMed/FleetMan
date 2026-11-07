@@ -3,6 +3,7 @@ import { useForm, UseFormReturn } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../store/AuthProvider';
+import { modal } from '../../helpers/modal';
 import type { WizardStep } from '../../components/forms/wizard/types';
 import type { CompleteRegistrationData } from '../../types/registration.types';
 import type { RegisterRequest } from '@contracts';
@@ -65,7 +66,7 @@ export interface FullRegistrationViewModel {
 export function useFullRegistrationViewModel(): FullRegistrationViewModel {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
-  const { register, isLoading: authLoading, error: authError } = useAuth();
+  const { register, isLoading: authLoading, error: authError, clearError } = useAuth();
 
   // React Hook Form setup
   const form = useForm<CompleteRegistrationData>({
@@ -98,6 +99,15 @@ export function useFullRegistrationViewModel(): FullRegistrationViewModel {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Clear any stale global auth error on mount and unmount
+  useEffect(() => {
+    clearError();
+    setError(null);
+    return () => {
+      clearError();
+    };
+  }, [clearError]);
+
   // Force re-render when form state changes to make validation reactive
   const [, forceUpdateReducer] = useReducer(x => x + 1, 0);
   const forceUpdate = useCallback(() => forceUpdateReducer(), []);
@@ -106,9 +116,11 @@ export function useFullRegistrationViewModel(): FullRegistrationViewModel {
   useEffect(() => {
     const subscription = form.watch(() => {
       forceUpdateReducer(); // Force wizard to re-evaluate isValid functions
+      if (error) setError(null);
+      if (authError) clearError();
     });
     return () => subscription.unsubscribe();
-  }, [form]);
+  }, [form, error, authError, clearError]);
 
   // Configuración de los steps del wizard
   const wizardSteps: WizardStep<CompleteRegistrationData>[] = [
@@ -273,11 +285,18 @@ export function useFullRegistrationViewModel(): FullRegistrationViewModel {
       console.error('❌ Full registration failed:', error);
       
       // Determine error message
-      const errorMessage = error instanceof Error 
-        ? error.message 
-        : t('auth.register.error.unknown');
       
+      const rawMessage = error instanceof Error 
+        ? error.message 
+        : 'auth.register.error.unknown';
+      const errorMessage = t(rawMessage, { defaultValue: rawMessage });
       setError(errorMessage);
+
+      modal.error({
+        title: t('auth.register.error.title'),
+        description: errorMessage,
+        dismissText: t('common.close', { defaultValue: 'Cerrar' }),
+      });
       
       throw error; // Re-throw to be handled by wizard
     } finally {
@@ -303,6 +322,8 @@ export function useFullRegistrationViewModel(): FullRegistrationViewModel {
     setIsLoading(false);
   }, [form]);
 
+  const displayError = error ?? (authError ? t(authError, { defaultValue: authError }) : null);
+
   return {
     // Form state
     form,
@@ -313,7 +334,7 @@ export function useFullRegistrationViewModel(): FullRegistrationViewModel {
     
     // UI State
     isLoading: isLoading || authLoading,
-    error: error ?? authError ?? null,
+    error: displayError,
     
     // Actions
     handleWizardSubmit,

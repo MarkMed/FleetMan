@@ -1,5 +1,7 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { modal } from '../../helpers/modal';
 import { useAuth } from '../../store/AuthProvider';
 import type { RegisterRequest } from '@contracts';
 import { UserType } from '@contracts';
@@ -8,7 +10,8 @@ import { mapRegisterFormToRequest } from '../../utils/mappers';
 import { ROUTES } from '../../constants';
 
 export const useRegisterViewModel = () => {
-  const { register, isLoading, error: authError } = useAuth();
+  const { register, isLoading, error: authError, clearError } = useAuth();
+  const { t } = useTranslation();
   const navigate = useNavigate();
   
   const [formData, setFormData] = useState<RegisterFormData>({
@@ -20,6 +23,14 @@ export const useRegisterViewModel = () => {
   });
 
   const [formErrors, setFormErrors] = useState<RegisterFormErrors>({});
+
+  // Clear any stale global auth error on mount and unmount
+  useEffect(() => {
+    clearError();
+    return () => {
+      clearError();
+    };
+  }, [clearError]);
 
   const validateForm = useCallback((): RegisterFormErrors => {
     const errors: RegisterFormErrors = {};
@@ -83,7 +94,10 @@ export const useRegisterViewModel = () => {
         [field]: undefined,
       }));
     }
-  }, [formErrors]);
+    if (authError) {
+      clearError();
+    }
+  }, [formErrors, authError, clearError]);
 
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -110,13 +124,21 @@ export const useRegisterViewModel = () => {
       } catch (error) {
         // Auth error is handled by the AuthProvider
         console.error('Registration error:', error);
+        const rawMessage = error instanceof Error ? error.message : 'auth.register.error.unknown';
+        const errorMessage = t(rawMessage, { defaultValue: rawMessage });
+        modal.error({
+          title: t('auth.register.error.title'),
+          description: errorMessage,
+          dismissText: t('common.close', { defaultValue: 'Cerrar' }),
+        });
       }
     }
-  }, [formData, validateForm, register, navigate]);
+  }, [formData, validateForm, register, navigate, t]);
 
   const clearErrors = useCallback(() => {
     setFormErrors({});
-  }, []);
+    clearError();
+  }, [clearError]);
 
   const resetForm = useCallback(() => {
     setFormData({
@@ -129,12 +151,14 @@ export const useRegisterViewModel = () => {
     setFormErrors({});
   }, []);
 
+  const translatedAuthError = authError ? t(authError, { defaultValue: authError }) : undefined;
+
   return {
     // State
     formData,
     formErrors,
     isLoading,
-    authError,
+    authError: translatedAuthError,
     
     // Actions
     handleInputChange,

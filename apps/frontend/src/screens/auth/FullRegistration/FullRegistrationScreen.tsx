@@ -55,7 +55,7 @@ export const FullRegistrationScreen: React.FC = () => {
             <h3 className="text-sm font-medium text-red-800">
               {t('auth.register.error.title')}
             </h3>
-            <p className="mt-1 text-sm text-red-700">{error}</p>
+            <p className="mt-1 text-sm text-red-700">{t(error, { defaultValue: error })}</p>
           </div>
         )}
 
