@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Modal, ModalContent, ModalHeader, ModalTitle, ModalDescription, Card, BodyText, Heading3, Badge } from '@components/ui';
+import { Modal, Card, BodyText, Heading3, Badge } from '@components/ui';
 import { Star, Zap } from 'lucide-react';
 import { cn } from '@utils/cn';
 
@@ -41,14 +41,14 @@ export const RegistrationModeModal: React.FC<RegistrationModeModalProps> = ({
   };
 
   return (
-    <Modal open={open} onOpenChange={onOpenChange}>
-      <ModalContent className="max-w-2xl">
-        <ModalHeader>
-          <ModalTitle>{t('auth.register.chooseMethod')}</ModalTitle>
-          <ModalDescription>{t('auth.register.methodDescription')}</ModalDescription>
-        </ModalHeader>
-
-        <div className="flex flex-col gap-4 mt-4">
+    <Modal
+      open={open}
+      onOpenChange={onOpenChange}
+      className="max-w-2xl"
+      title={t('auth.register.chooseMethod')}
+      description={t('auth.register.methodDescription')}
+    >
+      <div className="flex flex-col gap-4 overflow-y-auto max-h-[60vh] px-1 pb-2 overflow-x-hidden">
           {/* Opción 1: Registro Completo (Recomendado) */}
           <Card
             className={cn(
@@ -135,13 +135,12 @@ export const RegistrationModeModal: React.FC<RegistrationModeModalProps> = ({
           </Card>
         </div>
 
-        {/* Footer hint */}
-        <div className="mt-4 text-center">
-          <BodyText size="small" className="text-muted-foreground">
-            {t('auth.register.canChangeAnytime')}
-          </BodyText>
-        </div>
-      </ModalContent>
+      {/* Footer hint */}
+      <div className="mt-4 text-center">
+        <BodyText size="small" className="text-muted-foreground">
+          {t('auth.register.canChangeAnytime')}
+        </BodyText>
+      </div>
     </Modal>
   );
 };

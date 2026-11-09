@@ -107,7 +107,7 @@ export function UserProfileButton() {
         title={t('profile.menu.title')}
         showCloseButton={true}
       >
-        <div className="flex flex-col gap-2 p-4">
+        <div className="flex flex-col gap-2 p-4 overflow-y-auto max-h-[60vh] overflow-x-hidden">
           {/* User Info Header */}
           <div className="pb-3 mb-2 border-b border-border">
             <BodyText weight="medium" size="medium" className="text-foreground">
