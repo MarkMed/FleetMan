@@ -167,7 +167,7 @@ export const ChatOptionsModal = ({
       description={t('messages.chatOptions.selectAction')}
       // showCloseButton={false}
     >
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 overflow-y-auto max-h-[60vh] px-2 pb-3 overflow-x-hidden">
         {actions.map((action, index) => {
           const Icon = action.icon;
           return (
